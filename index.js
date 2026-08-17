@@ -24,3 +24,29 @@
     localStorage.setItem('zuz-theme', isDark ? 'dark' : 'light');
   });
 })();
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const navItems = document.querySelectorAll(".nav-item");
+
+  const paginaAtual = window.location.pathname;
+
+  navItems.forEach(item => {
+    const link = item.getAttribute("href");
+
+    if (
+      link === "index.html" &&
+      (paginaAtual.endsWith("/") || paginaAtual.endsWith("index.html"))
+    ) {
+      item.classList.add("active");
+    }
+
+    if (
+      link !== "index.html" &&
+      paginaAtual.endsWith(link)
+    ) {
+      item.classList.add("active");
+    }
+  });
+});

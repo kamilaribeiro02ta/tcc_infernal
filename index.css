@@ -136,34 +136,44 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  padding: 10px 10px;
+
   text-decoration: none;
   color: var(--nav-inactive);
+
   font-size: 14.5px;
   font-weight: 500;
-  padding: 10px 10px;
-  border-radius: 8px;
-  transition: background 0.15s ease, color 0.15s ease;
+
   border-left: 3px solid transparent;
+  border-radius: 8px;
+
+  background: transparent;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
+/* Esconde a bolinha */
 .nav-item .nav-dot {
-  font-size: 9px;
-  width: 10px;
-  text-align: center;
+  display: none;
 }
 
+/* Quando passar o mouse */
 .nav-item:hover {
-  background: var(--nav-hover-bg);
   color: var(--purple);
+  background: var(--nav-hover-bg);
 }
 
+/* Página atualmente selecionada */
 .nav-item.active {
   color: var(--purple);
   font-weight: 700;
   border-left: 3px solid var(--purple);
   background: transparent;
 }
-
 /* ============ THEME TOGGLE (pill switch) ============ */
 .theme-toggle {
   margin-top: auto;
