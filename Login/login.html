@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZUZ - Entrar na sua conta</title>
+<link rel="stylesheet" href="../Login/login.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Alex+Brush&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="login-page">
+
+    <!-- Lado esquerdo: onda decorativa + mensagem -->
+    <section class="login-hero">
+      <svg class="login-wave" viewBox="0 0 600 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="waveGrad" x1="0" y1="900" x2="520" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#7c5cff"/>
+            <stop offset="0.55" stop-color="#a78bfa" stop-opacity="0.85"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,900 L0,520 C 60,420 160,380 230,300 C 260,265 235,235 190,210 C 140,180 150,120 230,70 C 300,25 420,0 600,-40 L600,900 Z" fill="url(#waveGrad)"/>
+      </svg>
+
+      <div class="login-hero-text">
+        <h1 class="login-hero-title">
+          <span class="script-letter">B</span>em-vindo de volta com a
+          <br>
+          <span class="login-hero-highlight">ZUZ</span>
+        </h1>
+        <p class="login-hero-description">
+          Entre na sua conta e continue organizando, gerenciando e
+          impulsionando o seu negócio no dia a dia.
+        </p>
+      </div>
+    </section>
+
+    <!-- Lado direito: formulário -->
+    <section class="login-form-side">
+      <form class="login-card" id="loginForm">
+        <h2 class="login-form-title">Entrar</h2>
+        <p class="login-form-subtitle">Digite suas credenciais para acessar sua conta.</p>
+
+        <hr class="login-divider">
+
+        <label class="field-label" for="email">Email</label>
+        <input class="field-input" type="email" id="email" name="email" placeholder="eg. johnfrans@gmail.com" required>
+
+        <label class="field-label" for="senha">Senha</label>
+        <div class="password-field">
+          <input class="field-input" type="password" id="senha" name="senha" placeholder="Digite sua senha" required minlength="8">
+          <button type="button" class="password-toggle" id="passwordToggle" aria-label="Mostrar senha">
+            <span class="password-dot"></span>
+          </button>
+        </div>
+
+        <a class="forgot-link" href="#">Esqueceu sua senha?</a>
+
+        <button type="submit" class="login-cta">Entrar</button>
+
+        <p class="signup-hint">
+          Não tem uma conta? <a href="../cadastro/cadastro.html">Cadastre-se</a>
+        </p>
+      </form>
+    </section>
+
+  </div>
+
+<script src="../Login/login.js"></script>
+</body>
+</html>
