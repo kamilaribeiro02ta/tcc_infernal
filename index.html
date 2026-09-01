@@ -9,6 +9,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+<link
+  href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+  rel="stylesheet"
+>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+
 <body>
 
   <div class="page">
@@ -23,7 +34,7 @@
           </svg>
         </div>
         <div class="login-text">
-          <a href="../tcc_infernal/Login/login.html">
+          <a href="../tcc_infernal-main/Login/login.html">
   <div class="login-title">Login</div>
 </a>
           <div class="login-subtitle">Minha Conta</div>
@@ -42,25 +53,26 @@
           <span>Instruções</span>
         </a>
       
-        <a href="#produtos" class="nav-item">
+        <a href="../tcc_infernal-main/produtos/produtos.html" class="nav-item">
           <span class="nav-dot"></span>
           <span>Produtos</span>
-        </a>
-      
-        <a href="#equipe" class="nav-item">
+
+     <a href="../tcc_infernal-main/equipe/equipe.html" class="nav-item">
           <span class="nav-dot"></span>
           <span>Equipe</span>
         </a>
       
-        <a href="#referencias" class="nav-item">
+        <a href="../tcc_infernal-main/referencias/refe.html" class="nav-item">
           <span class="nav-dot"></span>
           <span>Referências</span>
         </a>
       
-        <a href="#jogo" class="nav-item">
+        <a href="../tcc_infernal-main/logo/jogo.html" class="nav-item">
           <span class="nav-dot"></span>
           <span>Jogo</span>
-        </a>
+        </a>      </a>
+      
+     
       
       </nav>
 
@@ -97,38 +109,56 @@
       </p>
 
       <button class="cta-button" id="ctaButton">
-        Fazer login e Testar Sistema <span class="arrow">→</span>
+        Fazer login e Testar Sistema <span class="arrow">↗</span>
       </button>
     </main>
 
-    <!-- Cards column -->
-    <section class="cards-column">
-      <div class="card">
-        <div class="card-icon">🎯</div>
-        <div class="card-text">
-          <h3>Diferencial</h3>
-          <p>Algoritmo que considera todos os custos reais</p>
-        </div>
-      </div>
+  <section class="cards-column">
 
-      <div class="card">
-        <div class="card-icon">📊</div>
-        <div class="card-text">
-          <h3>Objetivo</h3>
-          <p>Eliminar achismos com dados e precisão</p>
-        </div>
-      </div>
+  <div class="card" tabindex="0">
+    <div class="card-icon">
+      <i class="bx bx-target-lock"></i>
+    </div>
 
-      <div class="card">
-        <div class="card-icon">🏢</div>
-        <div class="card-text">
-          <h3>Público-alvo</h3>
-          <p>Micro e pequenas empresas do Brasil</p>
-        </div>
-      </div>
-    </section>
+    <div class="card-text">
+      <h3>Diferencial</h3>
+      <p>Algoritmo que considera todos os custos reais</p>
+    </div>
   </div>
 
-<script src="index.js"></script>
+  <div class="card" tabindex="0">
+    <div class="card-icon">
+      <i class="bx bx-bar-chart-alt-2"></i>
+    </div>
+
+    <div class="card-text">
+      <h3>Objetivo</h3>
+      <p>Eliminar achismos com dados e precisão</p>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0">
+    <div class="card-icon">
+      <i class="bx bx-buildings"></i>
+    </div>
+
+    <div class="card-text">
+      <h3>Público-alvo</h3>
+      <p>Micro e pequenas empresas do Brasil</p>
+    </div>
+  </div>
+
+</section>
+
+<script src="index.js">
+   
+    const temaSalvo = localStorage.getItem("tema");
+
+    if (temaSalvo === "escuro") {
+      document.documentElement.classList.add("dark");
+    }
+ 
+
+</script>
 </body>
 </html>

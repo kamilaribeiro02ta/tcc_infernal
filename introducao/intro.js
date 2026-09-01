@@ -24,3 +24,37 @@
       localStorage.setItem('zuz-theme', isDark ? 'dark' : 'light');
     });
   })();
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const navItems = document.querySelectorAll(".nav-item");
+
+  function normalizarCaminho(caminho) {
+    return caminho
+      .replace(/\/index\.html$/, "")
+      .replace(/\/$/, "");
+  }
+
+  const paginaAtual = normalizarCaminho(window.location.pathname);
+
+  navItems.forEach((item) => {
+
+    const href = item.getAttribute("href");
+
+    // Ignora links internos como #produtos
+    if (!href || href.startsWith("#")) {
+      return;
+    }
+
+    // Converte ../ e ./ para o endereço real
+    const urlDoLink = new URL(href, window.location.href);
+
+    const caminhoDoLink = normalizarCaminho(urlDoLink.pathname);
+
+    if (paginaAtual === caminhoDoLink) {
+      item.classList.add("active");
+    }
+
+  });
+
+});

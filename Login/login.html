@@ -1,75 +1,383 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZUZ - Entrar na sua conta</title>
-<link rel="stylesheet" href="../Login/login.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Alex+Brush&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ZUZ - Criar Conta</title>
+
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Qwigley&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./login.css">
 </head>
+
 <body>
 
-  <div class="login-page">
+    <main class="page">
 
-    <!-- Lado esquerdo: onda decorativa + mensagem -->
-    <section class="login-hero">
-      <svg class="login-wave" viewBox="0 0 600 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="waveGrad" x1="0" y1="900" x2="520" y2="0" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#7c5cff"/>
-            <stop offset="0.55" stop-color="#a78bfa" stop-opacity="0.85"/>
-            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <path d="M0,900 L0,520 C 60,420 160,380 230,300 C 260,265 235,235 190,210 C 140,180 150,120 230,70 C 300,25 420,0 600,-40 L600,900 Z" fill="url(#waveGrad)"/>
-      </svg>
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
 
-      <div class="login-hero-text">
-        <h1 class="login-hero-title">
-          <span class="script-letter">B</span>em-vindo de volta com a
-          <br>
-          <span class="login-hero-highlight">ZUZ</span>
-        </h1>
-        <p class="login-hero-description">
-          Entre na sua conta e continue organizando, gerenciando e
-          impulsionando o seu negócio no dia a dia.
-        </p>
-      </div>
-    </section>
+            <div class="login-block">
 
-    <!-- Lado direito: formulário -->
-    <section class="login-form-side">
-      <form class="login-card" id="loginForm">
-        <h2 class="login-form-title">Entrar</h2>
-        <p class="login-form-subtitle">Digite suas credenciais para acessar sua conta.</p>
+                <div class="avatar">
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <circle
+                            cx="12"
+                            cy="8"
+                            r="4"
+                            fill="white"
+                        />
 
-        <hr class="login-divider">
+                        <path
+                            d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
+                            fill="white"
+                        />
+                    </svg>
+                </div>
 
-        <label class="field-label" for="email">Email</label>
-        <input class="field-input" type="email" id="email" name="email" placeholder="eg. johnfrans@gmail.com" required>
+                <div class="login-text">
 
-        <label class="field-label" for="senha">Senha</label>
-        <div class="password-field">
-          <input class="field-input" type="password" id="senha" name="senha" placeholder="Digite sua senha" required minlength="8">
-          <button type="button" class="password-toggle" id="passwordToggle" aria-label="Mostrar senha">
-            <span class="password-dot"></span>
-          </button>
-        </div>
+                    <div class="login-title">
+                        Login
+                    </div>
 
-        <a class="forgot-link" href="#">Esqueceu sua senha?</a>
+                    <div class="login-subtitle">
+                        Minha Conta
+                    </div>
 
-        <button type="submit" class="login-cta">Entrar</button>
+                </div>
 
-        <p class="signup-hint">
-          Não tem uma conta? <a href="../cadastro/cadastro.html">Cadastre-se</a>
-        </p>
-      </form>
-    </section>
+            </div>
 
-  </div>
 
-<script src="../Login/login.js"></script>
+            <!-- MENU -->
+            <nav class="nav-menu">
+
+                <!-- INÍCIO -->
+                <a href="../index.html" class="nav-item">
+                    <span class="nav-dot"></span>
+                    <span>Início</span>
+                </a>
+
+
+                <!-- INSTRUÇÕES -->
+                <a href="../introducao/intro.html" class="nav-item">
+                    <span class="nav-dot"></span>
+                    <span>Instruções</span>
+                </a>
+
+
+                <!-- PRODUTOS -->
+                <a href="../produtos/produtos.html" class="nav-item">
+                    <span class="nav-dot"></span>
+                    <span>Produtos</span>
+                </a>
+
+
+                <!-- EQUIPE -->
+                <a href="../equipe/equipe.html" class="nav-item">
+                    <span class="nav-dot"></span>
+                    <span>Equipe</span>
+                </a>
+
+
+                <!-- REFERÊNCIAS -->
+                <a href="../referencias/referencias.html" class="nav-item">
+                    <span class="nav-dot"></span>
+                    <span>Referências</span>
+                </a>
+
+
+                <!-- JOGO -->
+                <a href="../jogo/jogo.html" class="nav-item">
+                    <span class="nav-dot"></span>
+                    <span>Jogo</span>
+                </a>
+
+            </nav>
+
+
+            <!-- TEMA -->
+            <button
+                class="theme-toggle"
+                id="themeToggle"
+                type="button"
+                aria-pressed="false"
+            >
+
+                <span
+                    class="theme-toggle-label"
+                    id="themeLabel"
+                >
+                    Modo Claro
+                </span>
+
+
+                <span class="theme-toggle-knob">
+
+                    <!-- SOL -->
+                    <svg
+                        id="iconSun"
+                        class="theme-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+
+                        <circle cx="12" cy="12" r="4"></circle>
+
+                        <line x1="12" y1="2" x2="12" y2="4"></line>
+                        <line x1="12" y1="20" x2="12" y2="22"></line>
+                        <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
+                        <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
+                        <line x1="2" y1="12" x2="4" y2="12"></line>
+                        <line x1="20" y1="12" x2="22" y2="12"></line>
+                        <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
+                        <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
+
+                    </svg>
+
+
+                    <!-- LUA -->
+                    <svg
+                        id="iconMoon"
+                        class="theme-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        style="display: none"
+                    >
+
+                        <path
+                            d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"
+                        ></path>
+
+                        <line x1="18" y1="3" x2="18" y2="6"></line>
+                        <line x1="16.5" y1="4.5" x2="19.5" y2="4.5"></line>
+
+                    </svg>
+
+                </span>
+
+            </button>
+
+        </aside>
+
+
+
+        <!-- LADO ESQUERDO -->
+        <section
+            class="hero"
+            aria-label="Apresentação ZUZ"
+        >
+
+            <div class="hero-copy">
+
+                <div
+                    class="hero-heading"
+                    aria-label="Leve seu negócio mais longe com a ZUZ"
+                >
+
+                    <div class="hero-line hero-line-1">
+
+                        <span class="hero-script">
+                            Leve
+                        </span>
+
+                        <span class="hero-bold hero-business">
+                            seu negócio
+                        </span>
+
+                    </div>
+
+
+                    <div class="hero-bold hero-line-2">
+                        mais longe com a
+                    </div>
+
+
+                    <div class="hero-brand">
+                        ZUZ
+                    </div>
+
+                </div>
+
+
+                <p class="hero-description">
+
+                    Mais do que uma plataforma, somos uma solução criada<br>
+                    para transformar a maneira como você organiza, gerencia e<br>
+                    impulsiona o seu negócio no dia a dia.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- LADO DIREITO -->
+        <section
+            class="signup"
+            aria-label="Criar conta"
+        >
+
+            <form
+                class="signup-form"
+                id="signupForm"
+                novalidate
+            >
+
+                <!-- TÍTULO -->
+                <header class="form-header">
+
+                    <h1>
+                        Criar Conta
+                    </h1>
+
+                    <p>
+                        Digite seus dados para criar sua conta.
+                    </p>
+
+                </header>
+
+
+                <div class="divider"></div>
+
+
+
+                <!-- NOME E SOBRENOME -->
+                <div class="name-row">
+
+                    <label class="field first-name">
+
+                        <span>
+                            Primeiro Nome
+                        </span>
+
+                        <input
+                            type="text"
+                            name="firstName"
+                            placeholder="eg. John"
+                            autocomplete="given-name"
+                        >
+
+                    </label>
+
+
+                    <label class="field last-name">
+
+                        <span>
+                            Sobrenome
+                        </span>
+
+                        <input
+                            type="text"
+                            name="lastName"
+                            placeholder="eg. Francisco"
+                            autocomplete="family-name"
+                        >
+
+                    </label>
+
+                </div>
+
+
+
+                <!-- EMAIL -->
+                <label class="field field-wide email-field">
+
+                    <span>
+                        Email
+                    </span>
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="eg. johnfrans@gmail.com"
+                        autocomplete="email"
+                    >
+
+                </label>
+
+
+
+                <!-- SENHA -->
+                <label class="field field-wide password-field">
+
+                    <span>
+                        Senha
+                    </span>
+
+
+                    <div class="password-wrap">
+
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            placeholder="Digite sua senha"
+                            minlength="8"
+                            autocomplete="new-password"
+                        >
+
+
+                        <button
+                            class="password-dot"
+                            type="button"
+                            aria-label="Mostrar ou ocultar senha"
+                        ></button>
+
+                    </div>
+
+
+                    <small>
+                        Deve ter pelo menos 8 caracteres
+                    </small>
+
+                </label>
+
+
+
+                <!-- CADASTRAR -->
+                <button
+                    class="submit-button"
+                    type="submit"
+                >
+                    Cadastrar-se
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="./script.js"></script>
+
 </body>
+
 </html>
