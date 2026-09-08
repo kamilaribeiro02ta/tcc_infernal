@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>ZUZ - Criar Conta</title>
+    <title>ZUZ - Login</title>
 
     <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,7 @@
     >
 
     <!-- CSS -->
-    <link rel="stylesheet" href="./login.css">
+    <link rel="stylesheet" href="./login-2.css">
 </head>
 
 <body>
@@ -30,6 +30,7 @@
             <div class="login-block">
 
                 <div class="avatar">
+
                     <svg
                         viewBox="0 0 24 24"
                         fill="none"
@@ -47,6 +48,7 @@
                             fill="white"
                         />
                     </svg>
+
                 </div>
 
                 <div class="login-text">
@@ -111,7 +113,7 @@
             </nav>
 
 
-            <!-- TEMA -->
+            <!-- MODO CLARO / ESCURO -->
             <button
                 class="theme-toggle"
                 id="themeToggle"
@@ -165,7 +167,7 @@
                         stroke-width="2"
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                        style="display: none"
+                        style="display: none;"
                     >
 
                         <path
@@ -188,31 +190,31 @@
         <!-- LADO ESQUERDO -->
         <section
             class="hero"
-            aria-label="Apresentação ZUZ"
+            aria-label="Boas-vindas ao ZUZ"
         >
 
             <div class="hero-copy">
 
                 <div
                     class="hero-heading"
-                    aria-label="Leve seu negócio mais longe com a ZUZ"
+                    aria-label="Bem-vindo de volta ao ZUZ"
                 >
 
                     <div class="hero-line hero-line-1">
 
                         <span class="hero-script">
-                            Leve
+                            Bem-vindo(a)
                         </span>
 
                         <span class="hero-bold hero-business">
-                            seu negócio
+                            de volta!
                         </span>
 
                     </div>
 
 
                     <div class="hero-bold hero-line-2">
-                        mais longe com a
+                        Que bom ter você aqui.
                     </div>
 
 
@@ -224,11 +226,8 @@
 
 
                 <p class="hero-description">
-
-                    Mais do que uma plataforma, somos uma solução criada<br>
-                    para transformar a maneira como você organiza, gerencia e<br>
-                    impulsiona o seu negócio no dia a dia.
-
+                    Acesse sua conta e continue tomando decisões mais inteligentes<br>
+                    para o seu negócio, com mais clareza, estratégia e controle.
                 </p>
 
             </div>
@@ -240,7 +239,7 @@
         <!-- LADO DIREITO -->
         <section
             class="signup"
-            aria-label="Criar conta"
+            aria-label="Fazer login"
         >
 
             <form
@@ -253,11 +252,11 @@
                 <header class="form-header">
 
                     <h1>
-                        Criar Conta
+                        Acesse sua conta
                     </h1>
 
                     <p>
-                        Digite seus dados para criar sua conta.
+                        Digite seus dados para continuar.
                     </p>
 
                 </header>
@@ -279,7 +278,7 @@
                         <input
                             type="text"
                             name="firstName"
-                            placeholder="eg. John"
+                            placeholder="Ex. John"
                             autocomplete="given-name"
                         >
 
@@ -295,7 +294,7 @@
                         <input
                             type="text"
                             name="lastName"
-                            placeholder="eg. Francisco"
+                            placeholder="Ex. Francisco"
                             autocomplete="family-name"
                         >
 
@@ -339,7 +338,7 @@
                             name="password"
                             placeholder="Digite sua senha"
                             minlength="8"
-                            autocomplete="new-password"
+                            autocomplete="current-password"
                         >
 
 
@@ -360,12 +359,12 @@
 
 
 
-                <!-- CADASTRAR -->
+                <!-- LOGIN -->
                 <button
                     class="submit-button"
                     type="submit"
                 >
-                    Cadastrar-se
+                    Fazer Login
                 </button>
 
             </form>
@@ -376,7 +375,7 @@
 
 
     <!-- JAVASCRIPT -->
-    <script src="./login.js"></script>
+    <script src="./login-2.js"></script>
 
 </body>
 

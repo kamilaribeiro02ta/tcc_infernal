@@ -742,6 +742,10 @@ body.dark .card:focus .card-icon {
   transform: scale(1.1);
 }
 
+.cta-button {
+    text-decoration: none;
+}
+
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 1200px) {
