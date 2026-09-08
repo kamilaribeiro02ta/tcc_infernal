@@ -7,6 +7,20 @@
   <title>Painel Financeiro</title>
 
   <link rel="stylesheet" href="grafico.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+<link
+  href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+  rel="stylesheet"
+>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+
 </head>
 
 <body>
@@ -20,74 +34,79 @@
 
   <div class="app">
 
+    <!-- Sidebar -->
     <aside class="sidebar">
-
-      <div class="brand">
-        <div class="brand-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="8" r="4" fill="currentColor"/>
-            <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" fill="currentColor"/>
+      <div class="login-block">
+        <div class="avatar">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="8" r="4" fill="white"/>
+            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"/>
           </svg>
         </div>
-
-        <div class="brand-text">
-          <div class="title">Login</div>
-          <div class="sub">Minha Conta</div>
+        <div class="login-text">
+          <a href="../Login-2/login-2.html">
+  <div class="login-title">Login</div>
+</a>
+          <div class="login-subtitle">Minha Conta</div>
         </div>
       </div>
+      
+      <nav class="nav-menu">
 
-      <nav id="nav">
-        <button class="nav-item" data-view="Início">
+        <a href="index.html" class="nav-item">
           <span class="nav-dot"></span>
-          Início
-        </button>
+          <span>Início</span>
+        </a>
+      
+        <a href="introducao/intro.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Instruções</span>
+        </a>
+      
+        <a href="../produtos/produtos.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Produtos</span>
 
-        <button class="nav-item" data-view="Instruções">
+     <a href="../equipe/equipe.html" class="nav-item">
           <span class="nav-dot"></span>
-          Instruções
-        </button>
-
-        <button class="nav-item active" data-view="Gráfico">
+          <span>Equipe</span>
+        </a>
+      
+        <a href="./garfico/grafico.html" class="nav-item">
           <span class="nav-dot"></span>
-          Gráfico
-        </button>
-
-        <button class="nav-item" data-view="Equipe">
+          <span>Referências</span>
+        </a>
+      
+        <a href="../logo/jogo.html" class="nav-item">
           <span class="nav-dot"></span>
-          Equipe
-        </button>
-
-        <button class="nav-item" data-view="Referências">
-          <span class="nav-dot"></span>
-          Referências
-        </button>
-
-        <button class="nav-item" data-view="Jogo">
-          <span class="nav-dot"></span>
-          Jogo
-        </button>
+          <span>Jogo</span>
+        </a>      </a>
+      
+     
+      
       </nav>
 
-      <div class="sidebar-footer">
-        <button class="theme-toggle" id="themeToggle" aria-pressed="false">
-
-          <svg
-            id="themeIcon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <circle cx="12" cy="12" r="4"/>
-            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">
+        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
+        <span class="theme-toggle-knob">
+          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <line x1="12" y1="2" x2="12" y2="4"></line>
+            <line x1="12" y1="20" x2="12" y2="22"></line>
+            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
+            <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
+            <line x1="2" y1="12" x2="4" y2="12"></line>
+            <line x1="20" y1="12" x2="22" y2="12"></line>
+            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
+            <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
           </svg>
-
-          <span id="themeLabel">Modo claro</span>
-
-          <span class="switch" id="switchVisual"></span>
-        </button>
-      </div>
-
+          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
+            <line x1="18" y1="3" x2="18" y2="6"></line>
+            <line x1="16.5" y1="4.5" x2="19.5" y2="4.5"></line>
+          </svg>
+        </span>
+      </button>
     </aside>
 
     <main>
