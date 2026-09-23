@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZUZ - Produtos</title>
+  <title>ZUZ | Produtos</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="../index.css">
+  <link rel="stylesheet" href="produtos.css">
   <link rel="stylesheet" href="../shared/sidebar.css">
 </head>
 
 <body>
-  <div class="page">
-
+  <div class="app">
     <aside class="sidebar">
       <div class="login-block">
         <div class="avatar">
@@ -34,7 +34,6 @@
       </div>
 
       <nav class="nav-menu">
-
         <a href="../index.html" class="nav-item">
           <span class="nav-dot"></span>
           <span>Início</span>
@@ -84,22 +83,267 @@
             <line x1="2" y1="12" x2="4" y2="12"></line>
             <line x1="20" y1="12" x2="22" y2="12"></line>
             <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
-            <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
+            <line x1="17.66" y1="6.34" x2="19.5" y2="4.5"></line>
           </svg>
 
           <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
             <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
-            <line x1="18" y1="3" x2="18" y2="6"></line>
-            <line x1="16.5" y1="4.5" x2="19.5" y2="4.5"></line>
           </svg>
         </span>
       </button>
     </aside>
 
-    <main class="main-content"></main>
+    <main class="products-page">
+      <header class="page-header">
+        <div>
+          <span class="eyebrow">Gestão de catálogo</span>
+          <h1>Produtos</h1>
+          <p>Organize seus produtos, acompanhe custos e identifique rapidamente onde sua margem precisa de atenção.</p>
+        </div>
 
+        <div class="header-actions">
+          <a class="btn btn-secondary" href="../garfico/grafico.html">
+            <i class="bx bx-line-chart"></i>
+            Ver análise
+          </a>
+
+          <button class="btn btn-primary" id="newProductBtn" type="button">
+            <i class="bx bx-plus"></i>
+            Novo produto
+          </button>
+        </div>
+      </header>
+
+      <section class="summary-grid" aria-label="Resumo dos produtos">
+        <article class="summary-card">
+          <span class="summary-icon"><i class="bx bx-package"></i></span>
+          <div>
+            <span>Produtos</span>
+            <strong id="summaryProducts">0</strong>
+            <small>cadastrados</small>
+          </div>
+        </article>
+
+        <article class="summary-card">
+          <span class="summary-icon"><i class="bx bx-category"></i></span>
+          <div>
+            <span>Categorias</span>
+            <strong id="summaryCategories">0</strong>
+            <small>em uso</small>
+          </div>
+        </article>
+
+        <article class="summary-card">
+          <span class="summary-icon"><i class="bx bx-trending-up"></i></span>
+          <div>
+            <span>Margem média</span>
+            <strong id="summaryMargin">0%</strong>
+            <small>sobre o preço</small>
+          </div>
+        </article>
+
+        <article class="summary-card summary-card-accent">
+          <span class="summary-icon"><i class="bx bx-wallet"></i></span>
+          <div>
+            <span>Faturamento estimado</span>
+            <strong id="summaryRevenue">R$ 0,00</strong>
+            <small>pelas vendas cadastradas</small>
+          </div>
+        </article>
+      </section>
+
+      <section class="catalog-shell">
+        <div class="catalog-head">
+          <div>
+            <span class="section-kicker">Catálogo</span>
+            <h2>Seus produtos</h2>
+          </div>
+
+          <div class="view-counter" id="viewCounter">0 produtos</div>
+        </div>
+
+        <div class="toolbar">
+          <label class="search-box">
+            <i class="bx bx-search"></i>
+            <input type="search" id="searchInput" placeholder="Buscar por produto ou categoria">
+          </label>
+
+          <select id="categoryFilter" aria-label="Filtrar por categoria">
+            <option value="">Todas as categorias</option>
+          </select>
+
+          <select id="marginFilter" aria-label="Filtrar por margem">
+            <option value="">Todas as margens</option>
+            <option value="good">Margem saudável</option>
+            <option value="warn">Margem baixa</option>
+            <option value="bad">Prejuízo</option>
+          </select>
+
+          <select id="sortSelect" aria-label="Ordenar produtos">
+            <option value="recent">Mais recentes</option>
+            <option value="name">Nome A a Z</option>
+            <option value="margin-desc">Maior margem</option>
+            <option value="margin-asc">Menor margem</option>
+            <option value="price-desc">Maior preço</option>
+          </select>
+        </div>
+
+        <div class="active-filters" id="activeFilters" hidden></div>
+
+        <div class="products-table-wrap">
+          <table class="products-table">
+            <thead>
+              <tr>
+                <th>PRODUTO</th>
+                <th>CATEGORIA</th>
+                <th>CUSTO UNIT.</th>
+                <th>PREÇO</th>
+                <th>MARGEM</th>
+                <th>VENDAS</th>
+                <th>RESULTADO</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="productsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="mobile-products" id="mobileProducts"></div>
+
+        <div class="empty-state" id="emptyState" hidden>
+          <span class="empty-icon"><i class="bx bx-package"></i></span>
+          <strong>Nenhum produto encontrado</strong>
+          <p>Cadastre um novo produto ou limpe os filtros para visualizar o catálogo.</p>
+          <button class="btn btn-primary" id="emptyAddBtn" type="button">
+            <i class="bx bx-plus"></i>
+            Cadastrar produto
+          </button>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <script src="../index.js"></script>
+  <div class="modal-overlay" id="productModal" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <header class="modal-header">
+        <div>
+          <span class="modal-kicker" id="modalKicker">Novo produto</span>
+          <h2 id="modalTitle">Cadastrar produto</h2>
+          <p>Preencha os dados principais. Você pode fazer uma precificação mais detalhada depois na área de Gráfico.</p>
+        </div>
+
+        <button class="icon-btn" id="closeModalBtn" type="button" aria-label="Fechar">
+          <i class="bx bx-x"></i>
+        </button>
+      </header>
+
+      <form id="productForm" novalidate>
+        <div class="modal-content">
+          <div class="form-grid two-cols">
+            <div class="field">
+              <label for="nameInput">Nome do produto</label>
+              <input id="nameInput" type="text" maxlength="60" placeholder="Ex: Brownie tradicional">
+            </div>
+
+            <div class="field">
+              <label for="categoryInput">Categoria</label>
+              <input id="categoryInput" type="text" maxlength="40" placeholder="Ex: Doces">
+            </div>
+          </div>
+
+          <div class="form-grid three-cols">
+            <div class="field">
+              <label for="baseCostInput">Custo base</label>
+              <div class="money-input">
+                <span>R$</span>
+                <input id="baseCostInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="extraCostInput">Custos adicionais</label>
+              <div class="money-input">
+                <span>R$</span>
+                <input id="extraCostInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="salePriceInput">Preço de venda</label>
+              <div class="money-input">
+                <span>R$</span>
+                <input id="salePriceInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-grid three-cols">
+            <div class="field">
+              <label for="unitsInput">Unidades vendidas</label>
+              <input id="unitsInput" type="number" min="0" step="1" inputmode="numeric" value="0">
+            </div>
+
+            <div class="field">
+              <label for="targetMarginInput">Margem desejada</label>
+              <div class="suffix-input">
+                <input id="targetMarginInput" type="number" min="0" max="95" step="1" inputmode="decimal" value="30">
+                <span>%</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="dateInput">Data de referência</label>
+              <input id="dateInput" type="date">
+            </div>
+          </div>
+
+          <section class="pricing-feedback" id="pricingFeedback">
+            <div>
+              <span>Custo total unitário</span>
+              <strong id="feedbackCost">R$ 0,00</strong>
+            </div>
+
+            <div>
+              <span>Margem atual</span>
+              <strong id="feedbackMargin">0%</strong>
+            </div>
+
+            <div>
+              <span>Preço sugerido</span>
+              <strong id="feedbackSuggested">R$ 0,00</strong>
+            </div>
+
+            <button class="text-action" id="useSuggestionBtn" type="button">Usar sugestão</button>
+          </section>
+
+          <div class="form-message" id="formMessage" role="alert" aria-live="polite"></div>
+        </div>
+
+        <footer class="modal-footer">
+          <button class="btn btn-secondary" id="cancelModalBtn" type="button">Cancelar</button>
+          <button class="btn btn-primary" type="submit">
+            <i class="bx bx-check"></i>
+            Salvar produto
+          </button>
+        </footer>
+      </form>
+    </section>
+  </div>
+
+  <div class="confirm-overlay" id="confirmOverlay" aria-hidden="true">
+    <section class="confirm-box" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <span class="confirm-icon"><i class="bx bx-trash"></i></span>
+      <h2 id="confirmTitle">Excluir produto?</h2>
+      <p id="confirmText">Essa ação remove o produto também dos dados usados no gráfico.</p>
+      <div class="confirm-actions">
+        <button class="btn btn-secondary" id="cancelDeleteBtn" type="button">Cancelar</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn" type="button">Excluir</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="produtos.js"></script>
 </body>
 </html>
