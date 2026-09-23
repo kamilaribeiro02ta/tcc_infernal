@@ -196,7 +196,7 @@
               <tr>
                 <th>PRODUTO</th>
                 <th>CATEGORIA</th>
-                <th>CUSTO UNIT.</th>
+                <th>PREÇO BRUTO</th>
                 <th>PREÇO</th>
                 <th>MARGEM</th>
                 <th>VENDAS</th>
@@ -229,7 +229,7 @@
         <div>
           <span class="modal-kicker" id="modalKicker">Novo produto</span>
           <h2 id="modalTitle">Cadastrar produto</h2>
-          <p>Preencha os dados principais. Você pode fazer uma precificação mais detalhada depois na área de Gráfico.</p>
+          <p>Adicione tudo que é usado no produto. O preço bruto será calculado automaticamente, sem incluir lucro.</p>
         </div>
 
         <button class="icon-btn" id="closeModalBtn" type="button" aria-label="Fechar">
@@ -251,25 +251,36 @@
             </div>
           </div>
 
-          <div class="form-grid three-cols">
-            <div class="field">
-              <label for="baseCostInput">Custo base</label>
-              <div class="money-input">
-                <span>R$</span>
-                <input id="baseCostInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+          <section class="cost-composition">
+            <div class="cost-composition-head">
+              <div>
+                <span class="cost-kicker">Composição do custo</span>
+                <h3>O que você usa neste produto?</h3>
+                <p>Adicione matéria-prima, embalagem, taxa, energia, entrega ou qualquer outro custo.</p>
               </div>
+
+              <button class="add-cost-button" id="addCostItemBtn" type="button">
+                <i class="bx bx-plus"></i>
+                Adicionar item
+              </button>
             </div>
 
-            <div class="field">
-              <label for="extraCostInput">Custos adicionais</label>
+            <div class="cost-items" id="costItems"></div>
+          </section>
+
+          <div class="form-grid two-cols pricing-main-fields">
+            <div class="field gross-price-field">
+              <label for="grossPriceInput">Preço bruto</label>
+              <span class="field-help">Soma de todos os custos, sem lucro.</span>
               <div class="money-input">
                 <span>R$</span>
-                <input id="extraCostInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+                <input id="grossPriceInput" type="text" value="0,00" readonly aria-readonly="true">
               </div>
             </div>
 
             <div class="field">
               <label for="salePriceInput">Preço de venda</label>
+              <span class="field-help">Valor final que será cobrado do cliente.</span>
               <div class="money-input">
                 <span>R$</span>
                 <input id="salePriceInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
@@ -299,7 +310,7 @@
 
           <section class="pricing-feedback" id="pricingFeedback">
             <div>
-              <span>Custo total unitário</span>
+              <span>Preço bruto · sem lucro</span>
               <strong id="feedbackCost">R$ 0,00</strong>
             </div>
 
