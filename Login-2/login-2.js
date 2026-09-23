@@ -135,6 +135,11 @@ document.addEventListener(
                         : "Mostrar senha"
                 );
 
+                const label = passwordButton.querySelector("span");
+                if (label) {
+                    label.textContent = isPassword ? "Ocultar" : "Mostrar";
+                }
+
             }
         );
 
