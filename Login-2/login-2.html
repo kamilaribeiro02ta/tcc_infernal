@@ -247,91 +247,32 @@
                 id="signupForm"
                 novalidate
             >
-
-                <!-- TÍTULO -->
                 <header class="form-header">
-
-                    <h1>
-                        Acesse sua conta
-                    </h1>
-
-                    <p>
-                        Digite seus dados para continuar.
-                    </p>
-
+                    <span class="form-eyebrow">Área da conta</span>
+                    <h1>Acesse sua conta</h1>
+                    <p>Use seu email e sua senha para continuar.</p>
                 </header>
-
 
                 <div class="divider"></div>
 
-
-
-                <!-- NOME E SOBRENOME -->
-                <div class="name-row">
-
-                    <label class="field first-name">
-
-                        <span>
-                            Primeiro Nome
-                        </span>
-
-                        <input
-                            type="text"
-                            name="firstName"
-                            placeholder="Ex. John"
-                            autocomplete="given-name"
-                        >
-
-                    </label>
-
-
-                    <label class="field last-name">
-
-                        <span>
-                            Sobrenome
-                        </span>
-
-                        <input
-                            type="text"
-                            name="lastName"
-                            placeholder="Ex. Francisco"
-                            autocomplete="family-name"
-                        >
-
-                    </label>
-
-                </div>
-
-
-
-                <!-- EMAIL -->
                 <label class="field field-wide email-field">
-
-                    <span>
-                        Email
-                    </span>
-
+                    <span>Email *</span>
                     <input
+                        id="loginEmail"
                         type="email"
                         name="email"
-                        placeholder="ex. johnfrans@gmail.com"
+                        placeholder="seuemail@exemplo.com"
                         autocomplete="email"
+                        required
+                        aria-describedby="loginEmailError"
                     >
-
+                    <small class="field-error" id="loginEmailError"></small>
                 </label>
 
-
-
-                <!-- SENHA -->
                 <label class="field field-wide password-field">
-
-                    <span>
-                        Senha
-                    </span>
-
+                    <span>Senha *</span>
 
                     <div class="password-wrap">
-
                         <input
                             id="password"
                             type="password"
@@ -339,34 +280,31 @@
                             placeholder="Digite sua senha"
                             minlength="8"
                             autocomplete="current-password"
+                            required
+                            aria-describedby="loginPasswordHelp loginPasswordError"
                         >
-
 
                         <button
                             class="password-dot"
                             type="button"
-                            aria-label="Mostrar ou ocultar senha"
+                            aria-label="Mostrar senha"
                         ></button>
-
                     </div>
 
-
-                    <small>
-                        Deve ter pelo menos 8 caracteres
-                    </small>
-
+                    <small id="loginPasswordHelp">Use pelo menos 8 caracteres.</small>
+                    <small class="field-error" id="loginPasswordError"></small>
                 </label>
 
-
-
-                <!-- LOGIN -->
-                <button
-                    class="submit-button"
-                    type="submit"
-                >
-                    Fazer Login
+                <button class="submit-button" type="submit">
+                    Entrar
                 </button>
 
+                <div class="form-status" id="loginStatus" role="status" aria-live="polite"></div>
+
+                <p class="form-switch">
+                    Ainda não tem uma conta?
+                    <a href="../Login/login.html">Criar conta</a>
+                </p>
             </form>
 
         </section>
