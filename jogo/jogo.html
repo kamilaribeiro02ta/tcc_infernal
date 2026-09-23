@@ -9,7 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../index.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/placeholder-page.css">
   <link rel="stylesheet" href="../shared/sidebar.css">
   <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
   <link rel="stylesheet" href="../shared/design-system.css">
@@ -103,7 +104,22 @@
       </button>
     </aside>
 
-    <main class="main-content"></main>
+    <main class="main-content">
+      <section class="empty-page-state" aria-labelledby="pageTitle">
+        <div class="empty-icon" aria-hidden="true">
+          <i class="bx bx-joystick"></i>
+        </div>
+
+        <span class="page-eyebrow">Experiência ZUZ</span>
+        <h1 id="pageTitle">Jogo em desenvolvimento</h1>
+        <p>A área do jogo ainda está sendo construída. O menu permanece disponível para que você não perca o contexto e possa continuar usando as partes já funcionais do sistema.</p>
+
+        <div class="empty-page-actions">
+          <a class="ui-button-primary" href="../produtos/produtos.html">Gerenciar produtos</a>
+          <a class="ui-button-secondary" href="../index.html">Voltar ao Início</a>
+        </div>
+      </section>
+    </main>
 
   </div>
 
