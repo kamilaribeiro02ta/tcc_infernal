@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZUZ - Produtos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../index.css">
+  <link rel="stylesheet" href="../shared/sidebar.css">
+</head>
+
+<body>
+  <div class="page">
+
+    <aside class="sidebar">
+      <div class="login-block">
+        <div class="avatar">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="8" r="4" fill="white"/>
+            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"/>
+          </svg>
+        </div>
+
+        <div class="login-text">
+          <a href="../Login-2/login-2.html">
+            <div class="login-title">Login</div>
+          </a>
+          <div class="login-subtitle">Minha Conta</div>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+
+        <a href="../index.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Início</span>
+        </a>
+
+        <a href="../introducao/intro.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Instruções</span>
+        </a>
+
+        <a href="../produtos/produtos.html" class="nav-item active">
+          <span class="nav-dot"></span>
+          <span>Produtos</span>
+        </a>
+
+        <a href="../garfico/grafico.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Gráfico</span>
+        </a>
+
+        <a href="../equipe/equipe.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Equipe</span>
+        </a>
+
+        <a href="../referencias/refe.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Referências</span>
+        </a>
+
+        <a href="../jogo/jogo.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Jogo</span>
+        </a>
+      </nav>
+
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">
+        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
+
+        <span class="theme-toggle-knob">
+          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <line x1="12" y1="2" x2="12" y2="4"></line>
+            <line x1="12" y1="20" x2="12" y2="22"></line>
+            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
+            <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
+            <line x1="2" y1="12" x2="4" y2="12"></line>
+            <line x1="20" y1="12" x2="22" y2="12"></line>
+            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
+            <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
+          </svg>
+
+          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
+            <line x1="18" y1="3" x2="18" y2="6"></line>
+            <line x1="16.5" y1="4.5" x2="19.5" y2="4.5"></line>
+          </svg>
+        </span>
+      </button>
+    </aside>
+
+    <main class="main-content"></main>
+
+  </div>
+
+  <script src="../index.js"></script>
+</body>
+</html>
