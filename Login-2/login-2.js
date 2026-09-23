@@ -46,26 +46,8 @@
         localStorage.getItem("zuz-theme");
 
 
-    // Preferência do sistema
-    const prefersDark =
-        window.matchMedia &&
-        window.matchMedia(
-            "(prefers-color-scheme: dark)"
-        ).matches;
-
-
-    // Aplica o tema
-    if (savedTheme) {
-
-        applyTheme(
-            savedTheme === "dark"
-        );
-
-    } else {
-
-        applyTheme(prefersDark);
-
-    }
+    // Aplica o tema salvo. O primeiro acesso começa no modo claro.
+    applyTheme(savedTheme === "dark");
 
 
     // Clique no botão
