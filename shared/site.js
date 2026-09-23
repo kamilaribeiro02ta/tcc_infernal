@@ -52,6 +52,7 @@
 
     if (saved !== "dark" && saved !== "light") {
       localStorage.setItem("zuz-theme", "light");
+      document.body.classList.remove("dark");
       return;
     }
 
