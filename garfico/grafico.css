@@ -1410,3 +1410,84 @@ tbody tr:hover {
     width: 100%;
   }
 }
+
+
+/* =========================================================
+   Revisão UX do painel Gráfico
+========================================================= */
+
+.dashboard {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: 40px clamp(24px, 3.5vw, 56px) 56px;
+}
+
+.dashboard-header {
+  margin-bottom: 24px;
+}
+
+.dashboard-header p {
+  max-width: 62ch;
+}
+
+.stats-grid {
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card,
+.panel {
+  box-shadow: var(--shadow-soft);
+}
+
+.dashboard-grid {
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.panel {
+  padding: 22px;
+}
+
+.filters-row input,
+.filters-row select,
+.month-input {
+  min-height: 44px;
+}
+
+.section-title > span {
+  display: none;
+}
+
+.section-title {
+  gap: 0;
+}
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.modal-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+}
+
+@media (max-width: 760px) {
+  .dashboard {
+    padding: 32px 18px 40px;
+  }
+}
+
+@media (max-width: 520px) {
+  .dashboard {
+    padding: 28px 16px 36px;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+}
