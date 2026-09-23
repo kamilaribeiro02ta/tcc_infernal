@@ -159,3 +159,56 @@ body.dark .nav-item.active {
   border-left-color: var(--purple, #8c6bff);
   background: transparent;
 }
+
+
+/* Logo ZUZ no cabeçalho lateral */
+.site-brand-header {
+  width: 100%;
+  min-height: 68px;
+  margin: 0 0 18px;
+  padding: 0 4px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid var(--sidebar-border, #eeeeee);
+  text-decoration: none;
+}
+
+.site-brand-header-logo {
+  width: 42px;
+  height: 62px;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+}
+
+body.dark .site-brand-header {
+  border-bottom-color: var(--sidebar-border, #2a2440);
+}
+
+@media (max-width: 992px) {
+  .site-brand-header {
+    width: auto;
+    min-height: 48px;
+    margin: 0;
+    padding: 0 10px 0 0;
+    border-bottom: 0;
+    border-right: 1px solid var(--sidebar-border, #eeeeee);
+  }
+
+  .site-brand-header-logo {
+    width: 30px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-brand-header {
+    padding-right: 8px;
+  }
+
+  .site-brand-header-logo {
+    width: 27px;
+    height: 40px;
+  }
+}
