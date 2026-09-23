@@ -38,8 +38,9 @@
 
     nameInput: document.getElementById("nameInput"),
     categoryInput: document.getElementById("categoryInput"),
-    baseCostInput: document.getElementById("baseCostInput"),
-    extraCostInput: document.getElementById("extraCostInput"),
+    grossPriceInput: document.getElementById("grossPriceInput"),
+    costItems: document.getElementById("costItems"),
+    addCostItemBtn: document.getElementById("addCostItemBtn"),
     salePriceInput: document.getElementById("salePriceInput"),
     unitsInput: document.getElementById("unitsInput"),
     targetMarginInput: document.getElementById("targetMarginInput"),
@@ -615,18 +616,68 @@
     editingId = null;
   }
 
+  function addCostItemRow(label = "", value = "") {
+    const row = document.createElement("div");
+    row.className = "cost-item-row";
+
+    row.innerHTML = `
+      <div class="cost-item-name">
+        <i class="bx bx-purchase-tag-alt"></i>
+        <input type="text" class="cost-item-label" maxlength="45" placeholder="Ex: Farinha, embalagem, taxa">
+      </div>
+
+      <div class="cost-item-value money-input">
+        <span>R$</span>
+        <input type="number" class="cost-item-amount" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+      </div>
+
+      <button class="remove-cost-item" type="button" aria-label="Remover item de custo" title="Remover">
+        <i class="bx bx-trash"></i>
+      </button>
+    `;
+
+    row.querySelector(".cost-item-label").value = label;
+    row.querySelector(".cost-item-amount").value = value === "" ? "" : String(value);
+
+    row.querySelectorAll("input").forEach(input => {
+      input.addEventListener("input", updatePricingFeedback);
+    });
+
+    row.querySelector(".remove-cost-item").addEventListener("click", () => {
+      row.remove();
+
+      if (!els.costItems.children.length) {
+        addCostItemRow();
+      }
+
+      updatePricingFeedback();
+    });
+
+    els.costItems.appendChild(row);
+    updatePricingFeedback();
+  }
+
+  function costItemsFromForm() {
+    return [...els.costItems.querySelectorAll(".cost-item-row")]
+      .map(row => ({
+        label: row.querySelector(".cost-item-label").value.trim() || "Custo do produto",
+        value: Math.max(0, numberValue(row.querySelector(".cost-item-amount").value))
+      }))
+      .filter(item => item.value > 0);
+  }
+
   function resetForm() {
     els.productForm.reset();
     els.nameInput.value = "";
     els.categoryInput.value = "";
-    els.baseCostInput.value = "";
-    els.extraCostInput.value = "";
     els.salePriceInput.value = "";
     els.unitsInput.value = "0";
     els.targetMarginInput.value = "30";
     els.dateInput.value = todayInputValue();
+    els.costItems.innerHTML = "";
     els.formMessage.textContent = "";
 
+    addCostItemRow();
     updatePricingFeedback();
   }
 
@@ -654,22 +705,34 @@
 
     els.nameInput.value = product.name;
     els.categoryInput.value = product.category;
-    els.baseCostInput.value = String(numberValue(product.baseCost));
-    els.extraCostInput.value = String(additionalCostTotal(product) || "");
     els.salePriceInput.value = String(numberValue(product.salePrice));
     els.unitsInput.value = String(Math.round(numberValue(product.units)));
     els.targetMarginInput.value = String(numberValue(product.targetMargin || 30));
     els.dateInput.value = product.date;
+    els.costItems.innerHTML = "";
     els.formMessage.textContent = "";
+
+    if (numberValue(product.baseCost) > 0) {
+      addCostItemRow("Custo principal", numberValue(product.baseCost));
+    }
+
+    if (Array.isArray(product.additionalCosts)) {
+      product.additionalCosts.forEach(item => {
+        addCostItemRow(item.label || "Custo adicional", numberValue(item.value));
+      });
+    }
+
+    if (!els.costItems.children.length) {
+      addCostItemRow();
+    }
 
     updatePricingFeedback();
     openModal();
   }
 
   function formPricing() {
-    const baseCost = Math.max(0, numberValue(els.baseCostInput.value));
-    const extraCost = Math.max(0, numberValue(els.extraCostInput.value));
-    const totalCost = baseCost + extraCost;
+    const costItems = costItemsFromForm();
+    const totalCost = costItems.reduce((sum, item) => sum + item.value, 0);
     const salePrice = Math.max(0, numberValue(els.salePriceInput.value));
     const targetMargin = Math.min(95, Math.max(0, numberValue(els.targetMarginInput.value)));
     const currentMargin =
@@ -683,8 +746,7 @@
         : 0;
 
     return {
-      baseCost,
-      extraCost,
+      costItems,
       totalCost,
       salePrice,
       targetMargin,
@@ -697,6 +759,10 @@
     const pricing = formPricing();
 
     els.feedbackCost.textContent = currency(pricing.totalCost);
+    els.grossPriceInput.value = pricing.totalCost.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
     els.feedbackMargin.textContent = percent(pricing.currentMargin);
     els.feedbackSuggested.textContent = currency(pricing.suggestedPrice);
 
@@ -722,8 +788,9 @@
     }
 
     if (pricing.totalCost <= 0) {
-      els.formMessage.textContent = "Informe um custo total maior que zero.";
-      els.baseCostInput.focus();
+      els.formMessage.textContent = "Adicione pelo menos um item de custo com valor maior que zero.";
+      const firstCostInput = els.costItems.querySelector(".cost-item-amount");
+      firstCostInput?.focus();
       return;
     }
 
@@ -743,11 +810,8 @@
       id: editingId || randomId(),
       name,
       category,
-      baseCost: pricing.baseCost,
-      additionalCosts:
-        pricing.extraCost > 0
-          ? [{ label: "Custos adicionais", value: pricing.extraCost }]
-          : [],
+      baseCost: 0,
+      additionalCosts: pricing.costItems,
       targetMargin: pricing.targetMargin,
       salePrice: pricing.salePrice,
       units,
@@ -848,20 +912,25 @@
   els.productForm.addEventListener("submit", saveForm);
 
   [
-    els.baseCostInput,
-    els.extraCostInput,
     els.salePriceInput,
     els.targetMarginInput
   ].forEach(input => {
     input.addEventListener("input", updatePricingFeedback);
   });
 
+  els.addCostItemBtn.addEventListener("click", () => {
+    addCostItemRow();
+    const rows = els.costItems.querySelectorAll(".cost-item-row");
+    rows[rows.length - 1]?.querySelector(".cost-item-label")?.focus();
+  });
+
   els.useSuggestionBtn.addEventListener("click", () => {
     const pricing = formPricing();
 
     if (pricing.totalCost <= 0) {
-      els.formMessage.textContent = "Informe primeiro o custo do produto.";
-      els.baseCostInput.focus();
+      els.formMessage.textContent = "Adicione primeiro os custos usados no produto.";
+      const firstCostInput = els.costItems.querySelector(".cost-item-amount");
+      firstCostInput?.focus();
       return;
     }
 
