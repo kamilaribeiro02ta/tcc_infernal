@@ -1,0 +1,161 @@
+/* Menu lateral compartilhado: padrão visual da página Início */
+
+.login-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 24px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--sidebar-border, #eeeeee);
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7c5cff, #6a3df0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: none;
+}
+
+.avatar svg {
+  width: 22px;
+  height: 22px;
+}
+
+.login-title {
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.2;
+  color: var(--login-title, #111111);
+}
+
+.login-subtitle {
+  font-size: 13px;
+  color: var(--login-subtitle, #9a9a9a);
+  margin-top: 2px;
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 0;
+  padding: 10px;
+  text-decoration: none;
+  color: var(--nav-inactive, #8a8a8a);
+  font-size: 14.5px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  transform: none;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.nav-item .nav-dot,
+.nav-dot {
+  display: none;
+}
+
+.nav-item:hover {
+  color: var(--purple, #6a3df0);
+  background: var(--nav-hover-bg, #f6f5ff);
+  transform: none;
+}
+
+.nav-item.active {
+  color: var(--purple, #6a3df0);
+  font-weight: 700;
+  border-left: 3px solid var(--purple, #6a3df0);
+  background: transparent;
+}
+
+.theme-toggle {
+  margin-top: auto;
+  width: 100%;
+  height: 48px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  border-radius: 999px;
+  background: var(--toggle-track, #ece9f6);
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.25s ease, flex-direction 0.25s ease;
+}
+
+body.dark .theme-toggle {
+  flex-direction: row-reverse;
+}
+
+.theme-toggle-label {
+  font-family: "Poppins", sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--toggle-text, #6a6a78);
+  padding: 0 14px;
+}
+
+.theme-toggle-knob {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  background: var(--toggle-knob-bg, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(27, 23, 48, 0.18);
+}
+
+.theme-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--toggle-icon, #6a3df0);
+}
+
+body.dark .login-block {
+  border-bottom-color: var(--sidebar-border, #2a2440);
+}
+
+body.dark .login-title {
+  color: var(--login-title, #f3f1fa);
+}
+
+body.dark .login-subtitle {
+  color: var(--login-subtitle, #9088ac);
+}
+
+body.dark .nav-item {
+  color: var(--nav-inactive, #9088ac);
+}
+
+body.dark .nav-item:hover {
+  color: var(--purple, #8c6bff);
+  background: var(--nav-hover-bg, #241d3d);
+}
+
+body.dark .nav-item.active {
+  color: var(--purple, #8c6bff);
+  border-left-color: var(--purple, #8c6bff);
+  background: transparent;
+}
