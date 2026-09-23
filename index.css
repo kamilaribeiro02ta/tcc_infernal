@@ -831,3 +831,356 @@ body.dark .card:focus .card-text p {
 .card:focus .card-text p {
   color: #29242f;
 }
+
+
+/* ============ RESPONSIVIDADE REFORÇADA ============
+   Mantém o layout desktop original acima de 1200px.
+   As regras abaixo só reorganizam a página em telas menores.
+==================================================== */
+
+@media (max-width: 1200px) and (min-width: 993px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .page .sidebar {
+    flex: 0 0 220px;
+    width: 220px;
+    min-width: 220px;
+  }
+
+  .main-content {
+    min-width: 0;
+    padding: 48px 350px 48px 44px;
+  }
+
+  .hero-title {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    margin-bottom: 24px;
+    font-size: clamp(54px, 6vw, 72px);
+    line-height: 0.9;
+    letter-spacing: -0.07em;
+  }
+
+  .hero-description {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    margin-top: 64px;
+  }
+
+  .cta-button {
+    margin-top: 48px;
+  }
+
+  .cards-column {
+    top: 50%;
+    right: 36px;
+    width: 285px;
+    transform: translateY(-50%) scale(1);
+    gap: 18px;
+  }
+
+  .card {
+    min-height: 78px;
+    padding: 18px 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+
+  .page {
+    width: 100%;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  .page .sidebar {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    min-height: auto;
+    padding: 14px 18px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+
+  .page .sidebar .login-block {
+    flex: 1 1 auto;
+    min-width: 170px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .page .sidebar .theme-toggle {
+    flex: 0 0 170px;
+    width: 170px;
+    margin: 0 0 0 auto;
+  }
+
+  .page .sidebar .nav-menu {
+    order: 3;
+    width: 100%;
+    margin-top: 2px;
+    padding-bottom: 2px;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .page .sidebar .nav-menu::-webkit-scrollbar {
+    display: none;
+  }
+
+  .page .sidebar .nav-item {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 40px;
+    padding: 9px 12px;
+    border-left: 0;
+    border-bottom: 3px solid transparent;
+    border-radius: 8px;
+  }
+
+  .page .sidebar .nav-item.active {
+    border-left: 0;
+    border-bottom: 3px solid var(--purple);
+  }
+
+  .main-content {
+    width: 100%;
+    min-width: 0;
+    padding: 48px 30px 34px;
+  }
+
+  .hero-title {
+    width: 100%;
+    max-width: 680px;
+    height: auto;
+    margin-bottom: 22px;
+    font-size: clamp(52px, 9vw, 76px);
+    line-height: 0.9;
+    letter-spacing: -0.07em;
+  }
+
+  .hero-description {
+    width: 100%;
+    max-width: 470px;
+    height: auto;
+    margin-top: 46px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .cta-button {
+    margin-top: 38px;
+  }
+
+  .cards-column {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    padding: 0 30px 48px;
+    transform: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .card {
+    width: 100%;
+    min-width: 0;
+    min-height: 104px;
+    padding: 18px;
+  }
+
+  .card:hover,
+  .card:focus {
+    min-height: 145px;
+  }
+}
+
+@media (max-width: 720px) {
+  .page .sidebar {
+    padding: 12px 14px;
+  }
+
+  .page .sidebar .login-block {
+    min-width: 150px;
+  }
+
+  .page .sidebar .avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .page .sidebar .theme-toggle {
+    flex-basis: 150px;
+    width: 150px;
+  }
+
+  .page .sidebar .theme-toggle-label {
+    padding: 0 10px;
+    font-size: 10px;
+  }
+
+  .main-content {
+    padding: 38px 20px 30px;
+  }
+
+  .hero-title {
+    max-width: 560px;
+    font-size: clamp(46px, 12vw, 66px);
+    line-height: 0.92;
+    letter-spacing: -0.065em;
+  }
+
+  .hero-description {
+    margin-top: 34px;
+    max-width: 100%;
+  }
+
+  .cta-button {
+    margin-top: 30px;
+  }
+
+  .cards-column {
+    padding: 0 20px 40px;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .card,
+  .card:hover,
+  .card:focus {
+    min-height: auto;
+    height: auto;
+    transform: none;
+  }
+
+  .card-text p,
+  .card:hover .card-text p,
+  .card:focus .card-text p {
+    max-height: none;
+    margin-top: 7px;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .page .sidebar {
+    gap: 10px;
+  }
+
+  .page .sidebar .login-block {
+    width: calc(100% - 138px);
+    min-width: 0;
+  }
+
+  .page .sidebar .login-subtitle {
+    display: none;
+  }
+
+  .page .sidebar .theme-toggle {
+    flex: 0 0 132px;
+    width: 132px;
+    height: 44px;
+  }
+
+  .page .sidebar .theme-toggle-knob {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+
+  .page .sidebar .nav-item {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .main-content {
+    padding: 32px 16px 28px;
+  }
+
+  .hero-title {
+    font-size: clamp(40px, 13vw, 56px);
+    line-height: 0.94;
+    letter-spacing: -0.055em;
+  }
+
+  .hero-description {
+    margin-top: 26px;
+    font-size: 13.5px;
+  }
+
+  .cta-button {
+    width: 100%;
+    margin-top: 26px;
+    padding: 15px 18px;
+    text-align: center;
+  }
+
+  .cards-column {
+    padding: 0 16px 34px;
+  }
+
+  .card {
+    padding: 16px;
+    gap: 14px;
+    border-radius: 18px;
+  }
+
+  .card-icon {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 360px) {
+  .page .sidebar .login-title {
+    font-size: 13px;
+  }
+
+  .page .sidebar .theme-toggle {
+    flex-basis: 120px;
+    width: 120px;
+  }
+
+  .page .sidebar .theme-toggle-label {
+    padding: 0 7px;
+    font-size: 9px;
+  }
+
+  .hero-title {
+    font-size: 38px;
+  }
+
+  .main-content,
+  .cards-column {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
