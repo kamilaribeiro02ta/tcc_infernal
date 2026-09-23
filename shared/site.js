@@ -34,6 +34,12 @@
   }
 
   function improveGlobalControls() {
+    document.querySelectorAll(".nav-menu").forEach(nav => {
+      if (!nav.hasAttribute("aria-label")) {
+        nav.setAttribute("aria-label", "Navegação principal");
+      }
+    });
+
     const themeToggle = document.getElementById("themeToggle");
 
     if (themeToggle && !themeToggle.hasAttribute("aria-label")) {
