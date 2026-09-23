@@ -239,92 +239,239 @@
 
       <form id="productForm" novalidate>
         <div class="modal-content">
-          <div class="form-grid two-cols">
-            <div class="field">
-              <label for="nameInput">Nome do produto</label>
-              <input id="nameInput" type="text" maxlength="60" placeholder="Ex: Brownie tradicional">
+          <div class="registration-guide" aria-label="Etapas do cadastro">
+            <div class="guide-step">
+              <span>1</span>
+              <div>
+                <strong>Produto</strong>
+                <small>Identifique</small>
+              </div>
             </div>
 
-            <div class="field">
-              <label for="categoryInput">Categoria</label>
-              <input id="categoryInput" type="text" maxlength="40" placeholder="Ex: Doces">
+            <div class="guide-line"></div>
+
+            <div class="guide-step">
+              <span>2</span>
+              <div>
+                <strong>Custos</strong>
+                <small>Some tudo</small>
+              </div>
+            </div>
+
+            <div class="guide-line"></div>
+
+            <div class="guide-step">
+              <span>3</span>
+              <div>
+                <strong>Preço</strong>
+                <small>Defina a margem</small>
+              </div>
             </div>
           </div>
 
-          <section class="cost-composition">
-            <div class="cost-composition-head">
+          <section class="guided-section">
+            <div class="guided-section-head">
+              <span class="step-badge">1</span>
               <div>
-                <span class="cost-kicker">Composição do custo</span>
-                <h3>O que você usa neste produto?</h3>
-                <p>Adicione matéria-prima, embalagem, taxa, energia, entrega ou qualquer outro custo.</p>
+                <h3>Informações básicas</h3>
+                <p>Dê um nome claro e escolha a categoria que melhor representa o produto.</p>
               </div>
-
-              <button class="add-cost-button" id="addCostItemBtn" type="button">
-                <i class="bx bx-plus"></i>
-                Adicionar item
-              </button>
             </div>
 
-            <div class="cost-items" id="costItems"></div>
+            <div class="form-grid two-cols">
+              <div class="field">
+                <label for="nameInput">Nome do produto</label>
+                <span class="field-help compact">Use um nome que você reconheça facilmente depois.</span>
+                <input id="nameInput" type="text" maxlength="60" placeholder="Ex: Brownie tradicional">
+              </div>
+
+              <div class="field">
+                <label for="categorySelect">Categoria</label>
+                <span class="field-help compact">A categoria ajuda a comparar produtos parecidos.</span>
+                <select id="categorySelect">
+                  <option value="">Selecione uma categoria</option>
+                  <option value="Alimentos e bebidas">Alimentos e bebidas</option>
+                  <option value="Doces e confeitaria">Doces e confeitaria</option>
+                  <option value="Vestuário">Vestuário</option>
+                  <option value="Acessórios">Acessórios</option>
+                  <option value="Beleza e cuidados">Beleza e cuidados</option>
+                  <option value="Artesanato">Artesanato</option>
+                  <option value="Papelaria">Papelaria</option>
+                  <option value="Presentes">Presentes</option>
+                  <option value="Casa e decoração">Casa e decoração</option>
+                  <option value="Eletrônicos">Eletrônicos</option>
+                  <option value="Serviços">Serviços</option>
+                  <option value="Outros">Outros</option>
+                  <option value="__custom__">+ Criar outra categoria</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="custom-category-wrap" id="customCategoryWrap" hidden>
+              <div class="field">
+                <label for="customCategoryInput">Nome da nova categoria</label>
+                <input id="customCategoryInput" type="text" maxlength="40" placeholder="Ex: Produtos personalizados">
+              </div>
+            </div>
+
+            <div class="learning-tip">
+              <i class="bx bx-category-alt"></i>
+              <div>
+                <strong>Por que usar categorias?</strong>
+                <span>Elas deixam a busca e os relatórios mais úteis e ajudam você a comparar produtos do mesmo tipo.</span>
+              </div>
+            </div>
           </section>
 
-          <div class="form-grid two-cols pricing-main-fields">
-            <div class="field gross-price-field">
-              <label for="grossPriceInput">Preço bruto</label>
-              <span class="field-help">Soma de todos os custos, sem lucro.</span>
-              <div class="money-input">
-                <span>R$</span>
-                <input id="grossPriceInput" type="text" value="0,00" readonly aria-readonly="true">
+          <section class="guided-section">
+            <div class="guided-section-head">
+              <span class="step-badge">2</span>
+              <div>
+                <h3>Monte o preço bruto</h3>
+                <p>Liste tudo que é gasto para produzir ou entregar uma unidade. O sistema soma automaticamente.</p>
               </div>
             </div>
 
-            <div class="field">
-              <label for="salePriceInput">Preço de venda</label>
-              <span class="field-help">Valor final que será cobrado do cliente.</span>
-              <div class="money-input">
-                <span>R$</span>
-                <input id="salePriceInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
-              </div>
-            </div>
-          </div>
-
-          <div class="form-grid three-cols">
-            <div class="field">
-              <label for="unitsInput">Unidades vendidas</label>
-              <input id="unitsInput" type="number" min="0" step="1" inputmode="numeric" value="0">
-            </div>
-
-            <div class="field">
-              <label for="targetMarginInput">Margem desejada</label>
-              <div class="suffix-input">
-                <input id="targetMarginInput" type="number" min="0" max="95" step="1" inputmode="decimal" value="30">
-                <span>%</span>
+            <div class="quick-costs">
+              <span>Adicionar rápido:</span>
+              <div class="quick-cost-buttons">
+                <button type="button" data-cost-template="Matéria-prima"><i class="bx bx-plus"></i> Matéria-prima</button>
+                <button type="button" data-cost-template="Embalagem"><i class="bx bx-plus"></i> Embalagem</button>
+                <button type="button" data-cost-template="Mão de obra"><i class="bx bx-plus"></i> Mão de obra</button>
+                <button type="button" data-cost-template="Taxa de plataforma"><i class="bx bx-plus"></i> Taxa</button>
+                <button type="button" data-cost-template="Entrega"><i class="bx bx-plus"></i> Entrega</button>
+                <button type="button" data-cost-template="Energia"><i class="bx bx-plus"></i> Energia</button>
               </div>
             </div>
 
-            <div class="field">
-              <label for="dateInput">Data de referência</label>
-              <input id="dateInput" type="date">
-            </div>
-          </div>
+            <section class="cost-composition">
+              <div class="cost-composition-head">
+                <div>
+                  <span class="cost-kicker">Itens de custo</span>
+                  <h3>O que você usa neste produto?</h3>
+                  <p>Você pode escrever qualquer custo. Pense sempre no valor gasto para uma unidade.</p>
+                </div>
 
-          <section class="pricing-feedback" id="pricingFeedback">
-            <div>
-              <span>Preço bruto · sem lucro</span>
-              <strong id="feedbackCost">R$ 0,00</strong>
+                <button class="add-cost-button" id="addCostItemBtn" type="button">
+                  <i class="bx bx-plus"></i>
+                  Adicionar item
+                </button>
+              </div>
+
+              <div class="cost-items" id="costItems"></div>
+            </section>
+
+            <div class="gross-price-summary">
+              <div class="gross-price-icon">
+                <i class="bx bx-calculator"></i>
+              </div>
+              <div>
+                <span>Preço bruto</span>
+                <strong id="grossPriceSummary">R$ 0,00</strong>
+                <small>É o custo total do produto antes de qualquer lucro.</small>
+              </div>
             </div>
 
-            <div>
-              <span>Margem atual</span>
-              <strong id="feedbackMargin">0%</strong>
+            <div class="learning-tip">
+              <i class="bx bx-bulb"></i>
+              <div>
+                <strong>Não esqueça dos custos pequenos</strong>
+                <span>Embalagem, etiquetas, taxas, energia, deslocamento e mão de obra podem parecer pequenos, mas alteram o preço final.</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="guided-section">
+            <div class="guided-section-head">
+              <span class="step-badge">3</span>
+              <div>
+                <h3>Defina seu preço</h3>
+                <p>Escolha a margem que deseja manter e compare com o preço que pretende cobrar.</p>
+              </div>
             </div>
 
-            <div>
-              <span>Preço sugerido</span>
-              <strong id="feedbackSuggested">R$ 0,00</strong>
+            <div class="form-grid three-cols pricing-fields">
+              <div class="field gross-price-field">
+                <label for="grossPriceInput">Preço bruto</label>
+                <span class="field-help">Custos somados, sem lucro.</span>
+                <div class="money-input">
+                  <span>R$</span>
+                  <input id="grossPriceInput" type="text" value="0,00" readonly aria-readonly="true">
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="targetMarginInput">Margem desejada</label>
+                <span class="field-help">Percentual do preço final que sobra após os custos.</span>
+                <div class="suffix-input">
+                  <input id="targetMarginInput" type="number" min="0" max="95" step="1" inputmode="decimal" value="30">
+                  <span>%</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="salePriceInput">Preço de venda</label>
+                <span class="field-help">Valor que será cobrado do cliente.</span>
+                <div class="money-input">
+                  <span>R$</span>
+                  <input id="salePriceInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+                </div>
+              </div>
             </div>
 
-            <button class="text-action" id="useSuggestionBtn" type="button">Usar sugestão</button>
+            <div class="margin-shortcuts">
+              <span>Atalhos de margem:</span>
+              <button type="button" data-margin-value="20">20%</button>
+              <button type="button" data-margin-value="30">30%</button>
+              <button type="button" data-margin-value="40">40%</button>
+              <button type="button" data-margin-value="50">50%</button>
+            </div>
+
+            <section class="pricing-feedback" id="pricingFeedback">
+              <div>
+                <span>Preço bruto · sem lucro</span>
+                <strong id="feedbackCost">R$ 0,00</strong>
+              </div>
+
+              <div>
+                <span>Margem atual</span>
+                <strong id="feedbackMargin">0%</strong>
+              </div>
+
+              <div>
+                <span>Preço sugerido</span>
+                <strong id="feedbackSuggested">R$ 0,00</strong>
+              </div>
+
+              <button class="text-action" id="useSuggestionBtn" type="button">Usar sugestão</button>
+            </section>
+
+            <div class="pricing-explanation" id="pricingExplanation">
+              <i class="bx bx-info-circle"></i>
+              <span>Adicione os custos para o sistema calcular um preço sugerido.</span>
+            </div>
+
+            <div class="formula-tip">
+              <i class="bx bx-book-open"></i>
+              <div>
+                <strong>Margem não é só “somar a porcentagem” ao custo</strong>
+                <span>Para uma margem sobre o preço final, a ZUZ calcula: preço bruto ÷ (1 − margem). Assim o percentual realmente representa a parte do preço que sobra após os custos.</span>
+              </div>
+            </div>
+
+            <div class="form-grid two-cols sales-tracking">
+              <div class="field">
+                <label for="unitsInput">Unidades vendidas</label>
+                <span class="field-help compact">Opcional. Ajuda o gráfico a estimar faturamento e resultado.</span>
+                <input id="unitsInput" type="number" min="0" step="1" inputmode="numeric" value="0">
+              </div>
+
+              <div class="field">
+                <label for="dateInput">Data de referência</label>
+                <span class="field-help compact">Usada para organizar os dados por mês.</span>
+                <input id="dateInput" type="date">
+              </div>
+            </div>
           </section>
 
           <div class="form-message" id="formMessage" role="alert" aria-live="polite"></div>

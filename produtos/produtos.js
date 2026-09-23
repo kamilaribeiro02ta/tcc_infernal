@@ -37,8 +37,11 @@
     modalTitle: document.getElementById("modalTitle"),
 
     nameInput: document.getElementById("nameInput"),
-    categoryInput: document.getElementById("categoryInput"),
+    categorySelect: document.getElementById("categorySelect"),
+    customCategoryWrap: document.getElementById("customCategoryWrap"),
+    customCategoryInput: document.getElementById("customCategoryInput"),
     grossPriceInput: document.getElementById("grossPriceInput"),
+    grossPriceSummary: document.getElementById("grossPriceSummary"),
     costItems: document.getElementById("costItems"),
     addCostItemBtn: document.getElementById("addCostItemBtn"),
     salePriceInput: document.getElementById("salePriceInput"),
@@ -50,6 +53,7 @@
     feedbackMargin: document.getElementById("feedbackMargin"),
     feedbackSuggested: document.getElementById("feedbackSuggested"),
     pricingFeedback: document.getElementById("pricingFeedback"),
+    pricingExplanation: document.getElementById("pricingExplanation"),
     useSuggestionBtn: document.getElementById("useSuggestionBtn"),
     formMessage: document.getElementById("formMessage"),
 
@@ -666,10 +670,44 @@
       .filter(item => item.value > 0);
   }
 
+  function selectedCategory() {
+    if (els.categorySelect.value === "__custom__") {
+      return els.customCategoryInput.value.trim();
+    }
+
+    return els.categorySelect.value.trim();
+  }
+
+  function toggleCustomCategory() {
+    const isCustom = els.categorySelect.value === "__custom__";
+    els.customCategoryWrap.hidden = !isCustom;
+
+    if (!isCustom) {
+      els.customCategoryInput.value = "";
+    }
+  }
+
+  function setCategoryFormValue(category) {
+    const existingValues = [...els.categorySelect.options].map(option => option.value);
+
+    if (existingValues.includes(category)) {
+      els.categorySelect.value = category;
+      els.customCategoryInput.value = "";
+      els.customCategoryWrap.hidden = true;
+      return;
+    }
+
+    els.categorySelect.value = "__custom__";
+    els.customCategoryInput.value = category;
+    els.customCategoryWrap.hidden = false;
+  }
+
   function resetForm() {
     els.productForm.reset();
     els.nameInput.value = "";
-    els.categoryInput.value = "";
+    els.categorySelect.value = "";
+    els.customCategoryInput.value = "";
+    els.customCategoryWrap.hidden = true;
     els.salePriceInput.value = "";
     els.unitsInput.value = "0";
     els.targetMarginInput.value = "30";
@@ -704,7 +742,7 @@
     els.modalTitle.textContent = product.name;
 
     els.nameInput.value = product.name;
-    els.categoryInput.value = product.category;
+    setCategoryFormValue(product.category);
     els.salePriceInput.value = String(numberValue(product.salePrice));
     els.unitsInput.value = String(Math.round(numberValue(product.units)));
     els.targetMarginInput.value = String(numberValue(product.targetMargin || 30));
@@ -759,6 +797,7 @@
     const pricing = formPricing();
 
     els.feedbackCost.textContent = currency(pricing.totalCost);
+    els.grossPriceSummary.textContent = currency(pricing.totalCost);
     els.grossPriceInput.value = pricing.totalCost.toLocaleString("pt-BR", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
@@ -770,13 +809,35 @@
       pricing.salePrice > 0 && pricing.currentMargin < 0
         ? "var(--red)"
         : "var(--border)";
+
+    els.pricingExplanation.className = "pricing-explanation";
+
+    if (pricing.totalCost <= 0) {
+      els.pricingExplanation.innerHTML =
+        '<i class="bx bx-info-circle"></i><span>Adicione os custos para o sistema calcular o preço bruto e a sugestão de venda.</span>';
+    } else if (pricing.salePrice <= 0) {
+      els.pricingExplanation.innerHTML =
+        '<i class="bx bx-bulb"></i><span>Seu preço bruto está pronto. Agora use a margem desejada para gerar uma sugestão ou informe seu preço de venda.</span>';
+    } else if (pricing.currentMargin < 0) {
+      els.pricingExplanation.classList.add("bad");
+      els.pricingExplanation.innerHTML =
+        '<i class="bx bx-error-circle"></i><span>O preço de venda está abaixo do preço bruto. Nesse valor, você vende com prejuízo.</span>';
+    } else if (pricing.currentMargin + 0.01 < pricing.targetMargin) {
+      els.pricingExplanation.classList.add("warn");
+      els.pricingExplanation.innerHTML =
+        '<i class="bx bx-info-circle"></i><span>A margem atual está abaixo da margem desejada. Compare com o preço sugerido antes de salvar.</span>';
+    } else {
+      els.pricingExplanation.classList.add("good");
+      els.pricingExplanation.innerHTML =
+        '<i class="bx bx-check-circle"></i><span>A margem atual atende ou supera a margem desejada.</span>';
+    }
   }
 
   function saveForm(event) {
     event.preventDefault();
 
     const name = els.nameInput.value.trim();
-    const category = els.categoryInput.value.trim() || "Sem categoria";
+    const category = selectedCategory();
     const pricing = formPricing();
     const units = Math.max(0, Math.round(numberValue(els.unitsInput.value)));
     const date = els.dateInput.value;
@@ -784,6 +845,16 @@
     if (!name) {
       els.formMessage.textContent = "Informe o nome do produto.";
       els.nameInput.focus();
+      return;
+    }
+
+    if (!category) {
+      els.formMessage.textContent = "Escolha uma categoria para organizar o produto.";
+      if (els.categorySelect.value === "__custom__") {
+        els.customCategoryInput.focus();
+      } else {
+        els.categorySelect.focus();
+      }
       return;
     }
 
@@ -905,6 +976,29 @@
     els.emptyAddBtn
   ].forEach(button => {
     button.addEventListener("click", openNewModal);
+  });
+
+  els.categorySelect.addEventListener("change", () => {
+    toggleCustomCategory();
+
+    if (els.categorySelect.value === "__custom__") {
+      requestAnimationFrame(() => els.customCategoryInput.focus());
+    }
+  });
+
+  document.querySelectorAll("[data-cost-template]").forEach(button => {
+    button.addEventListener("click", () => {
+      addCostItemRow(button.dataset.costTemplate, "");
+      const rows = els.costItems.querySelectorAll(".cost-item-row");
+      rows[rows.length - 1]?.querySelector(".cost-item-amount")?.focus();
+    });
+  });
+
+  document.querySelectorAll("[data-margin-value]").forEach(button => {
+    button.addEventListener("click", () => {
+      els.targetMarginInput.value = button.dataset.marginValue;
+      updatePricingFeedback();
+    });
   });
 
   els.closeModalBtn.addEventListener("click", closeModal);
