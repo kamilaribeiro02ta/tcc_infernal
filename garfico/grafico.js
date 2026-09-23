@@ -130,103 +130,6 @@
       parts[1];
   }
 
-  /* ---------------- THEME ---------------- */
-
-  const html = document.documentElement;
-  const themeToggle = document.getElementById("themeToggle");
-  const themeLabel = document.getElementById("themeLabel");
-  const themeIcon = document.getElementById("themeIcon");
-
-  function setTheme(mode){
-
-    html.setAttribute(
-      "data-theme",
-      mode
-    );
-
-    themeLabel.textContent =
-      mode === "dark"
-        ? "Modo escuro"
-        : "Modo claro";
-
-    themeToggle.setAttribute(
-      "aria-pressed",
-      mode === "dark"
-    );
-
-    themeIcon.innerHTML =
-      mode === "dark"
-        ? `
-          <path
-            d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"
-            fill="currentColor"
-            stroke="none"
-          />
-        `
-        : `
-          <circle cx="12" cy="12" r="4"/>
-          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
-        `;
-  }
-
-  themeToggle.addEventListener(
-    "click",
-    ()=>{
-      const next =
-        html.getAttribute("data-theme") === "dark"
-          ? "light"
-          : "dark";
-
-      setTheme(next);
-    }
-  );
-
-  /* ---------------- NAV ---------------- */
-
-  const navButtons =
-    document.querySelectorAll(".nav-item");
-
-  const dashboardView =
-    document.getElementById("dashboardView");
-
-  const placeholderView =
-    document.getElementById("placeholderView");
-
-  const placeholderTitle =
-    document.getElementById("placeholderTitle");
-
-  navButtons.forEach(btn=>{
-
-    btn.addEventListener(
-      "click",
-      ()=>{
-
-        navButtons.forEach(b =>
-          b.classList.remove("active")
-        );
-
-        btn.classList.add("active");
-
-        const view = btn.dataset.view;
-
-        if(view === "Gráfico"){
-
-          dashboardView.style.display = "";
-          placeholderView.style.display = "none";
-
-        }else{
-
-          dashboardView.style.display = "none";
-          placeholderView.style.display = "";
-          placeholderTitle.textContent = view;
-
-        }
-
-      }
-    );
-
-  });
-
   /* ---------------- MONTH FILTER ---------------- */
 
   const monthFilter =
@@ -1440,7 +1343,6 @@
 
   /* ---------------- INIT ---------------- */
 
-  setTheme("light");
 
   renderStats();
 
@@ -1461,6 +1363,7 @@
  
   function applyTheme(isDark) {
     document.body.classList.toggle('dark', isDark);
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
     toggleBtn?.setAttribute('aria-pressed', String(isDark));
     if (label) label.textContent = isDark ? 'Modo Escuro' : 'Modo Claro';
     if (iconSun) iconSun.style.display = isDark ? 'none' : 'block';
