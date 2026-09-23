@@ -15,8 +15,7 @@
  
   // Lê preferência salva, ou usa a preferência do sistema como padrão
   const saved = localStorage.getItem('zuz-theme');
-  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  applyTheme(saved ? saved === 'dark' : prefersDark);
+  applyTheme(saved === 'dark');
  
   toggleBtn?.addEventListener('click', function () {
     const isDark = !document.body.classList.contains('dark');
