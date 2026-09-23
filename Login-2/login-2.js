@@ -46,26 +46,8 @@
         localStorage.getItem("zuz-theme");
 
 
-    // Preferência do sistema
-    const prefersDark =
-        window.matchMedia &&
-        window.matchMedia(
-            "(prefers-color-scheme: dark)"
-        ).matches;
-
-
-    // Aplica o tema
-    if (savedTheme) {
-
-        applyTheme(
-            savedTheme === "dark"
-        );
-
-    } else {
-
-        applyTheme(prefersDark);
-
-    }
+    // Aplica o tema salvo. O primeiro acesso começa no modo claro.
+    applyTheme(savedTheme === "dark");
 
 
     // Clique no botão
@@ -135,6 +117,11 @@ document.addEventListener(
                         : "Mostrar senha"
                 );
 
+                const label = passwordButton.querySelector("span");
+                if (label) {
+                    label.textContent = isPassword ? "Ocultar" : "Mostrar";
+                }
+
             }
         );
 
@@ -199,82 +186,69 @@ document.addEventListener(
 
 // ============ FORMULÁRIO DE LOGIN ============
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("signupForm");
+    const email = document.getElementById("loginEmail");
+    const password = document.getElementById("password");
+    const emailError = document.getElementById("loginEmailError");
+    const passwordError = document.getElementById("loginPasswordError");
+    const status = document.getElementById("loginStatus");
 
-        const form =
-            document.getElementById("signupForm");
-
-
-        form?.addEventListener(
-            "submit",
-            function (event) {
-
-                event.preventDefault();
-
-
-                const email =
-                    form.querySelector(
-                        'input[name="email"]'
-                    );
-
-                const password =
-                    form.querySelector(
-                        'input[name="password"]'
-                    );
-
-
-                if (
-                    !email?.value.trim() ||
-                    !password?.value.trim()
-                ) {
-
-                    alert(
-                        "Preencha seu email e sua senha."
-                    );
-
-                    return;
-
-                }
-
-
-                if (
-                    password.value.length < 8
-                ) {
-
-                    alert(
-                        "A senha deve ter pelo menos 8 caracteres."
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                    Aqui futuramente entra
-                    a autenticação real do ZUZ.
-
-                    Exemplo:
-
-                    fetch(...)
-                    Firebase
-                    Supabase
-                    API própria
-                */
-
-
-                console.log(
-                    "Tentativa de login:",
-                    {
-                        email:
-                            email.value.trim()
-                    }
-                );
-
-            }
-        );
-
+    function clearField(input, error) {
+        input?.removeAttribute("aria-invalid");
+        if (error) error.textContent = "";
     }
-);
+
+    function setError(input, error, message) {
+        input?.setAttribute("aria-invalid", "true");
+        if (error) error.textContent = message;
+    }
+
+    email?.addEventListener("input", () => clearField(email, emailError));
+    password?.addEventListener("input", () => clearField(password, passwordError));
+
+    form?.addEventListener("submit", event => {
+        event.preventDefault();
+
+        clearField(email, emailError);
+        clearField(password, passwordError);
+
+        if (status) {
+            status.textContent = "";
+            status.className = "form-status";
+        }
+
+        let firstInvalid = null;
+
+        if (!email?.value.trim()) {
+            setError(email, emailError, "Informe seu email.");
+            firstInvalid = email;
+        } else if (!email.validity.valid) {
+            setError(email, emailError, "Digite um email válido.");
+            firstInvalid = email;
+        }
+
+        if (!password?.value) {
+            setError(password, passwordError, "Informe sua senha.");
+            firstInvalid ??= password;
+        } else if (password.value.length < 8) {
+            setError(password, passwordError, "A senha precisa ter pelo menos 8 caracteres.");
+            firstInvalid ??= password;
+        }
+
+        if (firstInvalid) {
+            firstInvalid.focus();
+            return;
+        }
+
+        if (status) {
+            status.textContent =
+                "Dados validados. A autenticação ainda precisa ser conectada ao backend.";
+            status.classList.add("is-success");
+        }
+
+        console.log("Tentativa de login:", {
+            email: email.value.trim()
+        });
+    });
+});

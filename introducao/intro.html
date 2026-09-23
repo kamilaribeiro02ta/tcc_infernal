@@ -20,6 +20,7 @@
   >
   <link rel="stylesheet" href="../shared/sidebar.css">
   <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
+  <link rel="stylesheet" href="../shared/design-system.css">
 </head>
 
 <body>
@@ -190,6 +191,7 @@
 
       <!-- COLUNA DE TEXTO -->
       <div class="instr-text">
+        <span class="instr-kicker">Entenda o sistema</span>
 
         <h1 class="instr-title">
 
@@ -230,7 +232,7 @@
         </svg>
 
 
-        <p class="instr-paragraph">
+        <p class="instr-paragraph instr-lead">
           O ZUZ é um sistema inteligente de precificação criado para transformar a
           forma como pequenas empresas definem seus preços. Utilizando análise de
           dados, automação e inteligência artificial, a plataforma ajuda
@@ -267,13 +269,15 @@
 
 
         <!-- BOTÃO EQUIPE -->
-        <a
-          href="../equipe/equipe.html"
-          class="instr-cta"
-          id="ctaEquipe"
-        >
-          Conheça a equipe
-        </a>
+        <div class="instr-actions" aria-label="Próximos passos">
+          <a href="../produtos/produtos.html" class="instr-cta instr-cta-primary">
+            Cadastrar primeiro produto
+          </a>
+
+          <a href="../equipe/equipe.html" class="instr-cta instr-cta-secondary" id="ctaEquipe">
+            Conheça a equipe
+          </a>
+        </div>
 
       </div>
 
@@ -506,6 +510,7 @@
   <!-- JAVASCRIPT -->
   <script src="intro.js"></script>
 
+  <script src="../shared/site.js"></script>
 </body>
 
 </html>

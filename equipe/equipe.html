@@ -9,9 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../index.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/placeholder-page.css">
   <link rel="stylesheet" href="../shared/sidebar.css">
   <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
+  <link rel="stylesheet" href="../shared/design-system.css">
 </head>
 
 <body>
@@ -102,10 +104,26 @@
       </button>
     </aside>
 
-    <main class="main-content"></main>
+    <main class="main-content">
+      <section class="empty-page-state" aria-labelledby="pageTitle">
+        <div class="empty-icon" aria-hidden="true">
+          <i class="bx bx-group"></i>
+        </div>
+
+        <span class="page-eyebrow">Projeto ZUZ</span>
+        <h1 id="pageTitle">Equipe</h1>
+        <p>Esta área será usada para apresentar os integrantes do projeto e suas responsabilidades. Enquanto o conteúdo da equipe é finalizado, você pode continuar explorando como o sistema funciona.</p>
+
+        <div class="empty-page-actions">
+          <a class="ui-button-primary" href="../introducao/intro.html">Entender o ZUZ</a>
+          <a class="ui-button-secondary" href="../produtos/produtos.html">Ir para Produtos</a>
+        </div>
+      </section>
+    </main>
 
   </div>
 
   <script src="../index.js"></script>
+  <script src="../shared/site.js"></script>
 </body>
 </html>

@@ -1040,3 +1040,87 @@ body.dark .theme-toggle {
     padding: 40px 22px;
   }
 }
+
+
+/* =========================================================
+   Revisão UX da página Referências
+========================================================= */
+
+.main-content {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 56px clamp(28px, 5vw, 72px) 64px;
+}
+
+.hero {
+  max-width: 760px;
+  margin-bottom: 32px;
+}
+
+.hero h1 {
+  margin-bottom: 12px;
+}
+
+.hero p {
+  max-width: 66ch;
+  line-height: 1.7;
+}
+
+.reference-highlight {
+  margin-bottom: 40px;
+  padding: 24px;
+  gap: 18px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+}
+
+.references-grid {
+  gap: 16px;
+}
+
+.reference-card {
+  min-height: 260px;
+  padding: 22px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+}
+
+.reference-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+.reference-link {
+  min-height: 40px;
+  margin-top: 16px;
+}
+
+.reference-link:hover {
+  gap: 8px;
+}
+
+.reference-note {
+  margin-top: 24px;
+}
+
+@media (max-width: 800px) {
+  .main-content {
+    padding: 40px 22px 48px;
+  }
+
+  .reference-highlight {
+    margin-bottom: 32px;
+  }
+}
+
+@media (max-width: 500px) {
+  .main-content {
+    padding: 32px 16px 40px;
+  }
+
+  .reference-highlight,
+  .reference-card {
+    padding: 18px;
+  }
+}

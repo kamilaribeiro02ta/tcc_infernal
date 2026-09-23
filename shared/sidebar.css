@@ -212,3 +212,123 @@ body.dark .site-brand-header {
     height: 40px;
   }
 }
+
+
+/* =========================================================
+   UX global da navegação
+========================================================= */
+
+.sidebar {
+  gap: 0;
+}
+
+.site-brand-header {
+  min-height: 64px;
+  margin-bottom: 16px;
+}
+
+.login-block {
+  min-height: 60px;
+  padding: 8px 8px 20px;
+  margin-bottom: 8px;
+  border-radius: 12px 12px 0 0;
+}
+
+.login-text {
+  min-width: 0;
+}
+
+.login-title,
+.login-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-menu {
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.nav-item {
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border-left-width: 3px;
+}
+
+.nav-item:hover {
+  transform: none;
+}
+
+.nav-item.active,
+.nav-item[aria-current="page"] {
+  color: var(--purple, #6a3df0);
+  border-left-color: var(--purple, #6a3df0);
+  background: var(--nav-hover-bg, #f6f5ff);
+}
+
+body.dark .nav-item.active,
+body.dark .nav-item[aria-current="page"] {
+  color: var(--purple, #8c6bff);
+  border-left-color: var(--purple, #8c6bff);
+  background: var(--nav-hover-bg, #241d3d);
+}
+
+.theme-toggle {
+  min-height: 48px;
+  margin-top: auto;
+}
+
+.theme-toggle:hover {
+  filter: brightness(0.98);
+}
+
+@media (max-width: 992px) {
+  .sidebar,
+  .page .sidebar {
+    min-height: auto;
+  }
+
+  .site-brand-header {
+    min-height: 48px;
+    margin: 0;
+  }
+
+  .login-block,
+  .page .sidebar .login-block {
+    min-height: 48px;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 0;
+  }
+
+  .nav-menu,
+  .page .sidebar .nav-menu,
+  .sidebar .nav-menu {
+    scroll-snap-type: x proximity;
+  }
+
+  .nav-item,
+  .page .sidebar .nav-item,
+  .sidebar .nav-item {
+    min-height: 44px;
+    scroll-snap-align: start;
+  }
+
+  .nav-item.active,
+  .nav-item[aria-current="page"],
+  .page .sidebar .nav-item.active,
+  .page .sidebar .nav-item[aria-current="page"],
+  .sidebar .nav-item.active,
+  .sidebar .nav-item[aria-current="page"] {
+    border-left: 0;
+    border-bottom: 3px solid var(--purple, #6a3df0);
+    background: var(--nav-hover-bg, #f6f5ff);
+  }
+
+  body.dark .nav-item.active,
+  body.dark .nav-item[aria-current="page"] {
+    border-bottom-color: var(--purple, #8c6bff);
+  }
+}

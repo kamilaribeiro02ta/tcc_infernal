@@ -69,6 +69,11 @@
     simulationStatus: document.getElementById("simulationStatus"),
 
     formMessage: document.getElementById("formMessage"),
+    nameError: document.getElementById("nameError"),
+    categoryError: document.getElementById("categoryError"),
+    costError: document.getElementById("costError"),
+    salePriceError: document.getElementById("salePriceError"),
+    dateError: document.getElementById("dateError"),
 
     confirmOverlay: document.getElementById("confirmOverlay"),
     confirmText: document.getElementById("confirmText"),
@@ -713,7 +718,11 @@
     row.querySelector(".cost-item-amount").value = value === "" ? "" : String(value);
 
     row.querySelectorAll("input").forEach(input => {
-      input.addEventListener("input", updatePricingAndSimulation);
+      input.addEventListener("input", () => {
+        input.removeAttribute("aria-invalid");
+        if (els.costError) els.costError.textContent = "";
+        updatePricingAndSimulation();
+      });
     });
 
     row.querySelector(".remove-cost-item").addEventListener("click", () => {
@@ -849,6 +858,47 @@
       "A projeção está positiva e atende à margem definida.";
   }
 
+  function clearFormErrors() {
+    els.formMessage.textContent = "";
+
+    [
+      [els.nameInput, els.nameError],
+      [els.categorySelect, els.categoryError],
+      [els.salePriceInput, els.salePriceError],
+      [els.dateInput, els.dateError]
+    ].forEach(([input, error]) => {
+      input?.removeAttribute("aria-invalid");
+      if (error) error.textContent = "";
+    });
+
+    if (els.costError) {
+      els.costError.textContent = "";
+    }
+
+    els.costItems.querySelectorAll("input").forEach(input => {
+      input.removeAttribute("aria-invalid");
+    });
+  }
+
+  function setFieldError(input, errorElement, message) {
+    input?.setAttribute("aria-invalid", "true");
+
+    if (errorElement) {
+      errorElement.textContent = message;
+    }
+
+    input?.focus();
+  }
+
+  function markInvalidCost(item) {
+    const input = !item.label
+      ? item.row.querySelector(".cost-item-label")
+      : item.row.querySelector(".cost-item-amount");
+
+    input?.setAttribute("aria-invalid", "true");
+    input?.focus();
+  }
+
   function resetForm() {
     els.productForm.reset();
     els.nameInput.value = "";
@@ -860,7 +910,7 @@
     els.unitsInput.value = "100";
     els.dateInput.value = todayInputValue();
     els.costItems.innerHTML = "";
-    els.formMessage.textContent = "";
+    clearFormErrors();
     currentPhotoData = "";
     renderPhotoPreview();
 
@@ -895,7 +945,7 @@
     els.targetMarginInput.value = String(numberValue(product.targetMargin || 30));
     els.dateInput.value = product.date;
     els.costItems.innerHTML = "";
-    els.formMessage.textContent = "";
+    clearFormErrors();
     currentPhotoData = product.image || "";
     renderPhotoPreview();
 
@@ -919,6 +969,7 @@
 
   function saveForm(event) {
     event.preventDefault();
+    clearFormErrors();
 
     const name = els.nameInput.value.trim();
     const category = selectedCategory();
@@ -927,42 +978,43 @@
     const allCosts = allCostItemsFromForm();
 
     if (!name) {
-      els.formMessage.textContent = "Informe o nome do produto.";
-      els.nameInput.focus();
+      setFieldError(els.nameInput, els.nameError, "Informe o nome do produto.");
       return;
     }
 
     if (!category) {
-      els.formMessage.textContent = "Escolha uma categoria.";
-      (els.categorySelect.value === "__custom__"
+      const target = els.categorySelect.value === "__custom__"
         ? els.customCategoryInput
-        : els.categorySelect).focus();
+        : els.categorySelect;
+
+      setFieldError(target, els.categoryError, "Escolha ou crie uma categoria.");
       return;
     }
 
     if (pricing.costItems.length < 2) {
-      els.formMessage.textContent =
-        "Cadastre pelo menos 2 custos, cada um com nome e valor maior que zero.";
+      if (els.costError) {
+        els.costError.textContent =
+          "Cadastre pelo menos 2 custos com nome e valor maior que zero.";
+      }
 
       const incomplete = allCosts.find(item => !item.label || item.value <= 0);
       if (incomplete) {
-        const input = !incomplete.label
-          ? incomplete.row.querySelector(".cost-item-label")
-          : incomplete.row.querySelector(".cost-item-amount");
-        input?.focus();
+        markInvalidCost(incomplete);
       }
       return;
     }
 
     if (pricing.salePrice <= 0) {
-      els.formMessage.textContent = "Informe um preço de venda maior que zero.";
-      els.salePriceInput.focus();
+      setFieldError(
+        els.salePriceInput,
+        els.salePriceError,
+        "Informe um preço de venda maior que zero."
+      );
       return;
     }
 
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      els.formMessage.textContent = "Informe uma data válida.";
-      els.dateInput.focus();
+      setFieldError(els.dateInput, els.dateError, "Informe uma data válida.");
       return;
     }
 
@@ -1058,7 +1110,25 @@
     button.addEventListener("click", openNewModal);
   });
 
+  els.nameInput.addEventListener("input", () => {
+    els.nameInput.removeAttribute("aria-invalid");
+    if (els.nameError) els.nameError.textContent = "";
+  });
+
+  els.salePriceInput.addEventListener("input", () => {
+    els.salePriceInput.removeAttribute("aria-invalid");
+    if (els.salePriceError) els.salePriceError.textContent = "";
+  });
+
+  els.dateInput.addEventListener("change", () => {
+    els.dateInput.removeAttribute("aria-invalid");
+    if (els.dateError) els.dateError.textContent = "";
+  });
+
   els.categorySelect.addEventListener("change", () => {
+    els.categorySelect.removeAttribute("aria-invalid");
+    els.customCategoryInput.removeAttribute("aria-invalid");
+    if (els.categoryError) els.categoryError.textContent = "";
     toggleCustomCategory();
 
     if (els.categorySelect.value === "__custom__") {

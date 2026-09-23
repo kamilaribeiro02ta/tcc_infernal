@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="produtos.css">
   <link rel="stylesheet" href="../shared/sidebar.css">
   <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
+  <link rel="stylesheet" href="../shared/design-system.css">
 </head>
 
 <body>
@@ -115,7 +116,7 @@
 
           <button class="btn btn-primary" id="newProductBtn" type="button">
             <i class="bx bx-plus"></i>
-            Novo produto
+            Cadastrar produto
           </button>
         </div>
       </header>
@@ -235,7 +236,7 @@
         <div>
           <span class="modal-kicker" id="modalKicker">Novo produto</span>
           <h2 id="modalTitle">Cadastrar produto</h2>
-          <p>Cadastre os custos, defina o preço e veja uma simulação antes de salvar.</p>
+          <p>Cadastre os custos, defina o preço e veja uma simulação antes de salvar. Campos com * são obrigatórios.</p>
         </div>
 
         <button class="icon-btn" id="closeModalBtn" type="button" aria-label="Fechar">
@@ -271,13 +272,14 @@
 
                 <div class="basic-fields">
                   <div class="field">
-                    <label for="nameInput">Nome do produto</label>
-                    <input id="nameInput" type="text" maxlength="60" placeholder="Ex: Brownie tradicional">
+                    <label for="nameInput">Nome do produto *</label>
+                    <input id="nameInput" type="text" maxlength="60" placeholder="Ex: Brownie tradicional" required aria-describedby="nameError">
+                    <span class="field-error" id="nameError"></span>
                   </div>
 
                   <div class="field">
-                    <label for="categorySelect">Categoria</label>
-                    <select id="categorySelect">
+                    <label for="categorySelect">Categoria *</label>
+                    <select id="categorySelect" required aria-describedby="categoryError">
                       <option value="">Selecione uma categoria</option>
                       <option value="Alimentos e bebidas">Alimentos e bebidas</option>
                       <option value="Doces e confeitaria">Doces e confeitaria</option>
@@ -293,6 +295,7 @@
                       <option value="Outros">Outros</option>
                       <option value="__custom__">+ Criar outra categoria</option>
                     </select>
+                    <span class="field-error" id="categoryError"></span>
                   </div>
 
                   <div class="custom-category-wrap" id="customCategoryWrap" hidden>
@@ -331,6 +334,7 @@
               </div>
 
               <div class="cost-items" id="costItems"></div>
+              <span class="field-error" id="costError"></span>
 
               <div class="gross-price-bar">
                 <span>Preço bruto</span>
@@ -365,11 +369,12 @@
                 </div>
 
                 <div class="field">
-                  <label for="salePriceInput">Preço de venda</label>
+                  <label for="salePriceInput">Preço de venda *</label>
                   <div class="money-input">
                     <span>R$</span>
-                    <input id="salePriceInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+                    <input id="salePriceInput" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0,00" required aria-describedby="salePriceError">
                   </div>
+                  <span class="field-error" id="salePriceError"></span>
                 </div>
               </div>
 
@@ -440,8 +445,9 @@
             </div>
 
             <div class="field date-field">
-              <label for="dateInput">Data de referência</label>
-              <input id="dateInput" type="date">
+              <label for="dateInput">Data de referência *</label>
+              <input id="dateInput" type="date" required aria-describedby="dateError">
+              <span class="field-error" id="dateError"></span>
             </div>
           </aside>
 
@@ -474,5 +480,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="produtos.js"></script>
+  <script src="../shared/site.js"></script>
 </body>
 </html>

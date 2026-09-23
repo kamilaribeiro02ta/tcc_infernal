@@ -1,0 +1,114 @@
+:root {
+  --bg-image: url("../imagens/Main.png");
+  --text-primary: #17131f;
+  --text-secondary: #665f73;
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #eeeeee;
+  --nav-inactive: #8a8a8a;
+  --nav-hover-bg: #f6f5ff;
+  --purple: #6a3df0;
+  --purple-dark: #5c2fe0;
+  --card-bg: rgba(255, 255, 255, 0.94);
+  --login-title: #111111;
+  --login-subtitle: #9a9a9a;
+  --toggle-track: #ece9f6;
+  --toggle-text: #6a6a78;
+  --toggle-knob-bg: #ffffff;
+  --toggle-icon: #6a3df0;
+}
+
+body.dark {
+  --bg-image: url("../imagens/Main\ \(1\).png");
+  --text-primary: #f3f1fa;
+  --text-secondary: #c7c2db;
+  --sidebar-bg: #15111f;
+  --sidebar-border: #2a2440;
+  --nav-inactive: #9088ac;
+  --nav-hover-bg: #241d3d;
+  --purple: #8c6bff;
+  --purple-dark: #7c5cff;
+  --card-bg: rgba(25, 20, 37, 0.92);
+  --login-title: #f3f1fa;
+  --login-subtitle: #9088ac;
+  --toggle-track: #1b1730;
+  --toggle-text: #f3f1fa;
+  --toggle-knob-bg: #271c4e;
+  --toggle-icon: #c4b0ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  color: var(--text-primary);
+  background-image: var(--bg-image);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+}
+
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  min-height: 100vh;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  padding: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-page-state {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@media (max-width: 992px) {
+  .page {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    min-height: auto;
+    padding: 14px 18px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+
+  .main-content {
+    min-height: auto;
+    padding: 48px 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .main-content {
+    padding: 32px 16px;
+  }
+}
