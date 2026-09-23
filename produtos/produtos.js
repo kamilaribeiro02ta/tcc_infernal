@@ -502,7 +502,7 @@
 
         <div class="product-mobile-meta">
           <div>
-            <span>Custo unit.</span>
+            <span>Preço bruto</span>
             <strong>${currency(cost)}</strong>
           </div>
 
