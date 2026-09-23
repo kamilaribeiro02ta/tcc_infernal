@@ -1,41 +1,21 @@
-
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Financeiro</title>
+  <title>ZUZ | Painel de Precificação</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <link rel="stylesheet" href="grafico.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
-<link
-  href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-  rel="stylesheet"
->
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
-
   <link rel="stylesheet" href="../shared/sidebar.css">
 </head>
 
 <body>
-
-  <img
-    class="bg-decor"
-    src="data:image/png;base64,__BG_BASE64__"
-    alt=""
-    aria-hidden="true"
-  >
-
   <div class="app">
-
-    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="login-block">
         <div class="avatar">
@@ -44,14 +24,15 @@
             <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"/>
           </svg>
         </div>
+
         <div class="login-text">
           <a href="../Login-2/login-2.html">
-  <div class="login-title">Login</div>
-</a>
+            <div class="login-title">Login</div>
+          </a>
           <div class="login-subtitle">Minha Conta</div>
         </div>
       </div>
-      
+
       <nav class="nav-menu">
         <a href="../index.html" class="nav-item">
           <span class="nav-dot"></span>
@@ -103,383 +84,317 @@
             <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
             <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
           </svg>
+
           <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
             <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
-            <line x1="18" y1="3" x2="18" y2="6"></line>
-            <line x1="16.5" y1="4.5" x2="19.5" y2="4.5"></line>
           </svg>
         </span>
       </button>
     </aside>
 
-    <main>
+    <main class="dashboard">
+      <header class="dashboard-header">
+        <div>
+          <span class="eyebrow">Painel de precificação</span>
+          <h1>Visão geral do negócio</h1>
+          <p>Acompanhe faturamento, custos e margem dos produtos cadastrados.</p>
+        </div>
 
-      <div id="dashboardView">
-
-        <div class="topbar">
-
+        <div class="header-actions">
           <div class="month-select">
+            <label class="sr-only" for="monthFilter">Mês</label>
             <select id="monthFilter" class="month-input"></select>
           </div>
 
-          <div class="topbar-actions">
-            <button class="btn" id="manageProductsBtn">
-              Gerenciar Produtos
-            </button>
+          <button class="btn btn-secondary" id="manageProductsBtn" type="button">
+            <i class="bx bx-package"></i>
+            Gerenciar produtos
+          </button>
 
-            <button class="btn btn-primary" id="newProductBtn">
-              + Novo Produto
-            </button>
-          </div>
-
+          <button class="btn btn-primary" id="newProductBtn" type="button">
+            <i class="bx bx-plus"></i>
+            Cadastrar produto
+          </button>
         </div>
+      </header>
 
-        <div class="stats-grid" id="statsGrid"></div>
+      <section class="stats-grid" id="statsGrid" aria-label="Resumo financeiro"></section>
 
-        <div class="content-row">
-
-          <div class="panel">
-
-            <div class="panel-head">
-
-              <div class="panel-title">
-                Fluxo de dinheiro
-              </div>
-
-              <div class="legend">
-
-                <div class="legend-item">
-                  <span class="legend-dot renda"></span>
-                  Renda
-                </div>
-
-                <div class="legend-item">
-                  <span class="legend-dot despesa"></span>
-                  Despesa
-                </div>
-
-              </div>
-
-            </div>
-
-            <div class="chart-wrap">
-
-              <div class="chart-tooltip" id="chartTooltip">
-                --
-              </div>
-
-              <div class="chart-bars" id="chartBars"></div>
-
-            </div>
-
-          </div>
-
-          <div class="panel">
-
-            <div class="panel-head">
-              <div class="panel-title">
-                Objetivos de poupança
-              </div>
-            </div>
-
-            <div id="goalsList"></div>
-
-            <button class="btn btn-primary btn-full" id="newGoalBtn">
-              + Novo Objetivos
-            </button>
-
-          </div>
-
-        </div>
-
-        <div class="panel">
-
+      <section class="dashboard-grid">
+        <article class="panel chart-panel">
           <div class="panel-head">
-
-            <div class="panel-title">
-              Transações recentes
+            <div>
+              <span class="panel-kicker">Evolução</span>
+              <h2>Faturamento x custos</h2>
             </div>
 
-            <div class="topbar-actions" style="margin-left:0;">
-
-              <button class="btn btn-small" id="viewAllBtn">
-                Ver todos
-              </button>
-
-              <button class="btn btn-primary btn-small" id="newProductBtn2">
-                + Novo Objetivos
-              </button>
-
+            <div class="legend" aria-label="Legenda do gráfico">
+              <span class="legend-item"><span class="legend-dot revenue"></span>Faturamento</span>
+              <span class="legend-item"><span class="legend-dot cost"></span>Custos</span>
             </div>
-
           </div>
 
-          <div class="filters-row">
+          <div class="chart-wrap">
+            <div class="chart-tooltip" id="chartTooltip" role="status" aria-live="polite"></div>
+            <div class="chart-bars" id="chartBars" aria-label="Gráfico mensal"></div>
+          </div>
+        </article>
 
-            <input
-              type="text"
-              id="searchTx"
-              placeholder="Buscar por nome..."
-            >
-
-            <select id="categoryFilter">
-              <option value="">Todas categorias</option>
-            </select>
-
+        <article class="panel insight-panel">
+          <div class="panel-head">
+            <div>
+              <span class="panel-kicker">Mês selecionado</span>
+              <h2>Resumo de margem</h2>
+            </div>
           </div>
 
-          <div class="table-wrap">
+          <div class="insight-list" id="insightList"></div>
+        </article>
+      </section>
 
-            <table>
-
-              <thead>
-                <tr>
-                  <th>DATA</th>
-                  <th>QUANTIDADE</th>
-                  <th>NOME DO PAGAMENTO</th>
-                  <th>CATEGORIA</th>
-                  <th></th>
-                </tr>
-              </thead>
-
-              <tbody id="txBody"></tbody>
-
-            </table>
-
+      <section class="panel products-panel">
+        <div class="panel-head products-head">
+          <div>
+            <span class="panel-kicker">Cadastro</span>
+            <h2>Produtos cadastrados</h2>
           </div>
 
-          <div class="empty-state" id="txEmpty" style="display:none;">
-            Nenhuma transação encontrada.
-          </div>
-
+          <button class="btn btn-primary btn-small" id="newProductBtn2" type="button">
+            <i class="bx bx-plus"></i>
+            Novo produto
+          </button>
         </div>
 
-      </div>
+        <div class="filters-row">
+          <div class="search-field">
+            <i class="bx bx-search"></i>
+            <input type="search" id="searchProduct" placeholder="Buscar produto">
+          </div>
 
-      <div id="placeholderView" style="display:none;">
-
-        <div
-          class="panel"
-          style="text-align:center; padding:60px 20px;"
-        >
-
-          <h2 style="margin-bottom:8px;" id="placeholderTitle">
-            Página
-          </h2>
-
-          <p style="color:var(--text-muted); font-size:14px;">
-            Esta seção ainda não foi implementada nesta demonstração.
-            Clique em <strong>Gráfico</strong> para voltar ao painel funcional.
-          </p>
-
+          <select id="categoryFilter" aria-label="Filtrar por categoria">
+            <option value="">Todas as categorias</option>
+          </select>
         </div>
 
-      </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>PRODUTO</th>
+                <th>CATEGORIA</th>
+                <th>CUSTO UNIT.</th>
+                <th>PREÇO</th>
+                <th>MARGEM</th>
+                <th>VENDAS</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="productsBody"></tbody>
+          </table>
+        </div>
 
+        <div class="empty-state" id="productsEmpty" hidden>
+          <i class="bx bx-package"></i>
+          <strong>Nenhum produto encontrado</strong>
+          <span>Cadastre um produto para começar a alimentar o gráfico.</span>
+        </div>
+      </section>
     </main>
-
   </div>
 
-  <!-- MODAL: novo produto/transação -->
-  <div class="modal-overlay" id="modalProduct">
+  <div class="modal-overlay" id="modalProduct" aria-hidden="true">
+    <section class="modal modal-product" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-icon"><i class="bx bx-package"></i></span>
+          <div>
+            <h2 id="productModalTitle">Cadastrar produto</h2>
+            <p>Preencha os custos e veja a precificação calculada em tempo real.</p>
+          </div>
+        </div>
 
-    <div class="modal">
-
-      <h3>Novo Produto</h3>
-
-      <p class="modal-sub">
-        Registre uma nova entrada ou saída.
-      </p>
-
-      <div class="field">
-        <label>Nome</label>
-        <input
-          type="text"
-          id="txNameInput"
-          placeholder="Ex: Netflix"
-        >
-      </div>
-
-      <div class="field">
-        <label>Categoria</label>
-        <input
-          type="text"
-          id="txCategoryInput"
-          placeholder="Ex: Subscription"
-        >
-      </div>
-
-      <div class="field">
-        <label>Tipo</label>
-
-        <select id="txTypeInput">
-          <option value="expense">Despesa</option>
-          <option value="income">Renda</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Valor ($)</label>
-
-        <input
-          type="number"
-          id="txAmountInput"
-          placeholder="0.00"
-          min="0"
-          step="0.01"
-        >
-      </div>
-
-      <div class="modal-actions">
-
-        <button class="btn" data-close>
-          Cancelar
+        <button class="icon-btn" type="button" data-close aria-label="Fechar">
+          <i class="bx bx-x"></i>
         </button>
-
-        <button class="btn btn-primary" id="saveProductBtn">
-          Salvar
-        </button>
-
       </div>
 
-    </div>
+      <form id="productForm" novalidate>
+        <div class="modal-body product-layout">
+          <div class="form-column">
+            <section class="form-section">
+              <div class="section-title">
+                <span>1</span>
+                <div>
+                  <h3>Identificação</h3>
+                  <p>Informações básicas do produto.</p>
+                </div>
+              </div>
 
+              <div class="form-grid two-cols">
+                <div class="field">
+                  <label for="productNameInput">Nome do produto</label>
+                  <input type="text" id="productNameInput" maxlength="60" placeholder="Ex: Brownie tradicional" autocomplete="off">
+                </div>
+
+                <div class="field">
+                  <label for="productCategoryInput">Categoria</label>
+                  <input type="text" id="productCategoryInput" maxlength="40" placeholder="Ex: Doces" autocomplete="off">
+                </div>
+              </div>
+            </section>
+
+            <section class="form-section">
+              <div class="section-title">
+                <span>2</span>
+                <div>
+                  <h3>Custos</h3>
+                  <p>Informe o custo unitário e acrescente despesas extras quando necessário.</p>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="baseCostInput">Custo base por unidade</label>
+                <div class="money-input">
+                  <span>R$</span>
+                  <input type="number" id="baseCostInput" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+                </div>
+              </div>
+
+              <div class="additional-costs-head">
+                <div>
+                  <strong>Custos adicionais</strong>
+                  <span>Embalagem, taxa, entrega ou outro custo unitário.</span>
+                </div>
+
+                <button class="text-btn" id="addCostBtn" type="button">
+                  <i class="bx bx-plus"></i>
+                  Adicionar custo
+                </button>
+              </div>
+
+              <div class="additional-costs" id="additionalCosts"></div>
+            </section>
+
+            <section class="form-section">
+              <div class="section-title">
+                <span>3</span>
+                <div>
+                  <h3>Preço e vendas</h3>
+                  <p>Use a margem desejada como apoio para definir seu preço.</p>
+                </div>
+              </div>
+
+              <div class="form-grid three-cols">
+                <div class="field">
+                  <label for="targetMarginInput">Margem desejada</label>
+                  <div class="suffix-input">
+                    <input type="number" id="targetMarginInput" min="0" max="95" step="1" inputmode="decimal" value="30">
+                    <span>%</span>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="salePriceInput">Preço de venda</label>
+                  <div class="money-input">
+                    <span>R$</span>
+                    <input type="number" id="salePriceInput" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="unitsSoldInput">Unidades vendidas</label>
+                  <input type="number" id="unitsSoldInput" min="0" step="1" inputmode="numeric" value="1">
+                </div>
+              </div>
+
+              <div class="suggestion-row">
+                <div>
+                  <span>Preço sugerido pela margem</span>
+                  <strong id="suggestedPrice">R$ 0,00</strong>
+                </div>
+
+                <button class="btn btn-secondary btn-compact" id="useSuggestedPriceBtn" type="button">
+                  Usar sugestão
+                </button>
+              </div>
+
+              <div class="field">
+                <label for="productDateInput">Data de referência</label>
+                <input type="date" id="productDateInput">
+              </div>
+            </section>
+
+            <div class="form-error" id="productFormError" role="alert" aria-live="polite"></div>
+          </div>
+
+          <aside class="pricing-preview" aria-label="Resumo da precificação">
+            <span class="preview-label">Resumo da precificação</span>
+            <h3 id="previewProductName">Novo produto</h3>
+
+            <div class="preview-price">
+              <span>Preço de venda</span>
+              <strong id="previewSalePrice">R$ 0,00</strong>
+            </div>
+
+            <div class="preview-metrics">
+              <div>
+                <span>Custo total unitário</span>
+                <strong id="previewTotalCost">R$ 0,00</strong>
+              </div>
+
+              <div>
+                <span>Margem unitária</span>
+                <strong id="previewUnitMargin">R$ 0,00</strong>
+              </div>
+
+              <div>
+                <span>Margem sobre venda</span>
+                <strong id="previewMarginPct">0%</strong>
+              </div>
+
+              <div>
+                <span>Faturamento estimado</span>
+                <strong id="previewRevenue">R$ 0,00</strong>
+              </div>
+            </div>
+
+            <div class="preview-status" id="previewStatus">
+              Informe os custos e o preço para analisar a margem.
+            </div>
+          </aside>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-close>Cancelar</button>
+          <button class="btn btn-primary" type="submit">
+            <i class="bx bx-check"></i>
+            Salvar produto
+          </button>
+        </div>
+      </form>
+    </section>
   </div>
 
-  <!-- MODAL: novo objetivo -->
-  <div class="modal-overlay" id="modalGoal">
-
-    <div class="modal">
-
-      <h3>Novo Objetivo</h3>
-
-      <p class="modal-sub">
-        Defina uma nova meta de poupança.
-      </p>
-
-      <div class="field">
-        <label>Nome do objetivo</label>
-
-        <input
-          type="text"
-          id="goalNameInput"
-          placeholder="Ex: Viagem"
-        >
+  <div class="modal-overlay" id="modalManage" aria-hidden="true">
+    <section class="modal modal-manage" role="dialog" aria-modal="true" aria-labelledby="manageModalTitle">
+      <div class="modal-header">
+        <div>
+          <h2 id="manageModalTitle">Gerenciar produtos</h2>
+          <p>Revise os produtos cadastrados e remova os que não forem mais necessários.</p>
+        </div>
+        <button class="icon-btn" type="button" data-close aria-label="Fechar"><i class="bx bx-x"></i></button>
       </div>
 
-      <div class="field">
-        <label>Valor da meta ($)</label>
+      <div class="manage-list" id="manageList"></div>
 
-        <input
-          type="number"
-          id="goalTargetInput"
-          placeholder="0.00"
-          min="1"
-          step="1"
-        >
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-close>Fechar</button>
       </div>
-
-      <div class="field">
-        <label>Valor já guardado ($)</label>
-
-        <input
-          type="number"
-          id="goalCurrentInput"
-          placeholder="0.00"
-          min="0"
-          step="1"
-          value="0"
-        >
-      </div>
-
-      <div class="modal-actions">
-
-        <button class="btn" data-close>
-          Cancelar
-        </button>
-
-        <button class="btn btn-primary" id="saveGoalBtn">
-          Criar
-        </button>
-
-      </div>
-
-    </div>
-
+    </section>
   </div>
 
-  <!-- MODAL: gerenciar produtos -->
-  <div class="modal-overlay" id="modalManage">
-
-    <div class="modal">
-
-      <h3>Gerenciar Objetivos</h3>
-
-      <p class="modal-sub">
-        Remova objetivos que não são mais necessários.
-      </p>
-
-      <div class="products-list" id="manageList"></div>
-
-      <div class="modal-actions">
-
-        <button class="btn" data-close style="flex:1;">
-          Fechar
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- MODAL: adicionar valor a objetivo -->
-  <div class="modal-overlay" id="modalContribute">
-
-    <div class="modal">
-
-      <h3>Adicionar valor</h3>
-
-      <p class="modal-sub" id="contributeSub">
-        Aportar valor no objetivo.
-      </p>
-
-      <div class="field">
-
-        <label>Valor a adicionar ($)</label>
-
-        <input
-          type="number"
-          id="contributeInput"
-          placeholder="0.00"
-          min="1"
-          step="1"
-        >
-
-      </div>
-
-      <div class="modal-actions">
-
-        <button class="btn" data-close>
-          Cancelar
-        </button>
-
-        <button class="btn btn-primary" id="saveContributeBtn">
-          Adicionar
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="toast" id="toast">
-    Salvo com sucesso
-  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="grafico.js"></script>
-
 </body>
 </html>
-```
