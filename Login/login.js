@@ -98,6 +98,11 @@ document.addEventListener("DOMContentLoaded", () => {
       "aria-label",
       shouldShow ? "Ocultar senha" : "Mostrar senha"
     );
+
+    const label = passwordButton.querySelector("span");
+    if (label) {
+      label.textContent = shouldShow ? "Ocultar" : "Mostrar";
+    }
   });
 
   form?.addEventListener("submit", event => {
