@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>ZUZ | Painel de Precificação</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  >
 
   <link rel="stylesheet" href="grafico.css">
   <link rel="stylesheet" href="../shared/sidebar.css">
@@ -17,68 +27,144 @@
 </head>
 
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <a href="../index.html" class="site-brand-header" aria-label="ZUZ - Página inicial">
-        <img src="../imagens/logo-zuz-header.png" alt="ZUZ" class="site-brand-header-logo">
-      </a>
 
-      
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- LOGIN -->
       <div class="login-block">
+
         <div class="avatar">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="8" r="4" fill="white"/>
-            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"/>
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+
+            <circle
+              cx="12"
+              cy="8"
+              r="4"
+              fill="white"
+            />
+
+            <path
+              d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
+              fill="white"
+            />
+
           </svg>
+
         </div>
+
 
         <div class="login-text">
+
           <a href="../Login-2/login-2.html">
-            <div class="login-title">Login</div>
+
+            <div class="login-title">
+              Login
+            </div>
+
           </a>
-          <div class="login-subtitle">Minha Conta</div>
+
+          <div class="login-subtitle">
+            Minha Conta
+          </div>
+
         </div>
+
       </div>
 
+
+      <!-- MENU -->
       <nav class="nav-menu">
-        <a href="../index.html" class="nav-item">
+
+        <a
+          href="../index.html"
+          class="nav-item"
+        >
           <span class="nav-dot"></span>
           <span>Início</span>
         </a>
 
-        <a href="../introducao/intro.html" class="nav-item">
+        <a
+          href="../introducao/intro.html"
+          class="nav-item"
+        >
           <span class="nav-dot"></span>
           <span>Instruções</span>
         </a>
 
-        <a href="../produtos/produtos.html" class="nav-item">
+        <a
+          href="../produtos/produtos.html"
+          class="nav-item"
+        >
           <span class="nav-dot"></span>
           <span>Produtos</span>
         </a>
 
-        <a href="../garfico/grafico.html" class="nav-item active">
+        <a
+          href="../garfico/grafico.html"
+          class="nav-item active"
+        >
           <span class="nav-dot"></span>
           <span>Gráfico</span>
         </a>
 
-        <a href="../equipe/equipe.html" class="nav-item">
+        <a
+          href="../equipe/equipe.html"
+          class="nav-item"
+        >
           <span class="nav-dot"></span>
           <span>Equipe</span>
         </a>
 
-        <a href="../referencias/refe.html" class="nav-item">
+        <a
+          href="../referencias/refe.html"
+          class="nav-item"
+        >
           <span class="nav-dot"></span>
           <span>Referências</span>
         </a>
 
-        
       </nav>
 
-      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">
-        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
+
+      <!-- MODO CLARO / ESCURO -->
+      <button
+        class="theme-toggle"
+        id="themeToggle"
+        type="button"
+        aria-pressed="false"
+      >
+
+        <span
+          class="theme-toggle-label"
+          id="themeLabel"
+        >
+          Modo Claro
+        </span>
+
         <span class="theme-toggle-knob">
-          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
+          <!-- SOL -->
+          <svg
+            id="iconSun"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+
             <circle cx="12" cy="12" r="4"></circle>
+
             <line x1="12" y1="2" x2="12" y2="4"></line>
             <line x1="12" y1="20" x2="12" y2="22"></line>
             <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
@@ -87,103 +173,286 @@
             <line x1="20" y1="12" x2="22" y2="12"></line>
             <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
             <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
+
           </svg>
 
-          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-            <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
+          <!-- LUA -->
+          <svg
+            id="iconMoon"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="display:none"
+          >
+
+            <path
+              d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"
+            ></path>
+
           </svg>
+
         </span>
+
       </button>
+
     </aside>
 
+
+    <!-- DASHBOARD -->
     <main class="dashboard">
+
+      <!-- CABEÇALHO -->
       <header class="dashboard-header">
+
         <div>
-          <span class="eyebrow">Painel de precificação</span>
-          <h1>Visão geral do negócio</h1>
-          <p>Acompanhe faturamento, custos e margem dos produtos cadastrados.</p>
+
+          <span class="eyebrow">
+            Painel de precificação
+          </span>
+
+          <h1>
+            Visão geral do negócio
+          </h1>
+
+          <p>
+            Acompanhe faturamento, custos e margem dos produtos cadastrados.
+          </p>
+
         </div>
+
 
         <div class="header-actions">
+
           <div class="month-select">
-            <label class="sr-only" for="monthFilter">Mês</label>
-            <select id="monthFilter" class="month-input"></select>
+
+            <label
+              class="sr-only"
+              for="monthFilter"
+            >
+              Mês
+            </label>
+
+            <select
+              id="monthFilter"
+              class="month-input"
+            ></select>
+
           </div>
 
-          <button class="btn btn-secondary" id="manageProductsBtn" type="button">
+
+          <button
+            class="btn btn-secondary"
+            id="manageProductsBtn"
+            type="button"
+          >
+
             <i class="bx bx-package"></i>
+
             Gerenciar produtos
+
           </button>
 
-          <button class="btn btn-primary" id="newProductBtn" type="button">
+
+          <button
+            class="btn btn-primary"
+            id="newProductBtn"
+            type="button"
+          >
+
             <i class="bx bx-plus"></i>
+
             Cadastrar produto
+
           </button>
+
         </div>
+
       </header>
 
-      <section class="stats-grid" id="statsGrid" aria-label="Resumo financeiro"></section>
 
+      <!-- ESTATÍSTICAS -->
+      <section
+        class="stats-grid"
+        id="statsGrid"
+        aria-label="Resumo financeiro"
+      ></section>
+
+
+      <!-- GRID DO DASHBOARD -->
       <section class="dashboard-grid">
+
+
+        <!-- GRÁFICO -->
         <article class="panel chart-panel">
+
           <div class="panel-head">
+
             <div>
-              <span class="panel-kicker">Evolução</span>
-              <h2>Faturamento x custos</h2>
+
+              <span class="panel-kicker">
+                Evolução
+              </span>
+
+              <h2>
+                Faturamento x custos
+              </h2>
+
             </div>
 
-            <div class="legend" aria-label="Legenda do gráfico">
-              <span class="legend-item"><span class="legend-dot revenue"></span>Faturamento</span>
-              <span class="legend-item"><span class="legend-dot cost"></span>Custos</span>
+
+            <div
+              class="legend"
+              aria-label="Legenda do gráfico"
+            >
+
+              <span class="legend-item">
+
+                <span class="legend-dot revenue"></span>
+
+                Faturamento
+
+              </span>
+
+
+              <span class="legend-item">
+
+                <span class="legend-dot cost"></span>
+
+                Custos
+
+              </span>
+
             </div>
+
           </div>
+
 
           <div class="chart-wrap">
-            <div class="chart-tooltip" id="chartTooltip" role="status" aria-live="polite"></div>
-            <div class="chart-bars" id="chartBars" aria-label="Gráfico mensal"></div>
+
+            <div
+              class="chart-tooltip"
+              id="chartTooltip"
+              role="status"
+              aria-live="polite"
+            ></div>
+
+            <div
+              class="chart-bars"
+              id="chartBars"
+              aria-label="Gráfico mensal"
+            ></div>
+
           </div>
+
         </article>
 
+
+        <!-- RESUMO DE MARGEM -->
         <article class="panel insight-panel">
+
           <div class="panel-head">
+
             <div>
-              <span class="panel-kicker">Mês selecionado</span>
-              <h2>Resumo de margem</h2>
+
+              <span class="panel-kicker">
+                Mês selecionado
+              </span>
+
+              <h2>
+                Resumo de margem
+              </h2>
+
             </div>
+
           </div>
 
-          <div class="insight-list" id="insightList"></div>
+
+          <div
+            class="insight-list"
+            id="insightList"
+          ></div>
+
         </article>
+
       </section>
 
+
+      <!-- PRODUTOS CADASTRADOS -->
       <section class="panel products-panel">
+
         <div class="panel-head products-head">
+
           <div>
-            <span class="panel-kicker">Cadastro</span>
-            <h2>Produtos cadastrados</h2>
+
+            <span class="panel-kicker">
+              Cadastro
+            </span>
+
+            <h2>
+              Produtos cadastrados
+            </h2>
+
           </div>
 
-          <button class="btn btn-primary btn-small" id="newProductBtn2" type="button">
+
+          <button
+            class="btn btn-primary btn-small"
+            id="newProductBtn2"
+            type="button"
+          >
+
             <i class="bx bx-plus"></i>
+
             Cadastrar produto
+
           </button>
+
         </div>
 
+
+        <!-- FILTROS -->
         <div class="filters-row">
+
           <div class="search-field">
+
             <i class="bx bx-search"></i>
-            <input type="search" id="searchProduct" placeholder="Buscar produto">
+
+            <input
+              type="search"
+              id="searchProduct"
+              placeholder="Buscar produto"
+            >
+
           </div>
 
-          <select id="categoryFilter" aria-label="Filtrar por categoria">
-            <option value="">Todas as categorias</option>
+
+          <select
+            id="categoryFilter"
+            aria-label="Filtrar por categoria"
+          >
+
+            <option value="">
+              Todas as categorias
+            </option>
+
           </select>
+
         </div>
 
+
+        <!-- TABELA -->
         <div class="table-wrap">
+
           <table>
+
             <thead>
+
               <tr>
+
                 <th>PRODUTO</th>
                 <th>CATEGORIA</th>
                 <th>CUSTO UNIT.</th>
@@ -191,215 +460,631 @@
                 <th>MARGEM</th>
                 <th>VENDAS</th>
                 <th></th>
+
               </tr>
+
             </thead>
+
+
             <tbody id="productsBody"></tbody>
+
           </table>
+
         </div>
 
-        <div class="empty-state" id="productsEmpty" hidden>
+
+        <!-- VAZIO -->
+        <div
+          class="empty-state"
+          id="productsEmpty"
+          hidden
+        >
+
           <i class="bx bx-package"></i>
-          <strong>Nenhum produto encontrado</strong>
-          <span>Cadastre um produto para começar a alimentar o gráfico.</span>
+
+          <strong>
+            Nenhum produto encontrado
+          </strong>
+
+          <span>
+            Cadastre um produto para começar a alimentar o gráfico.
+          </span>
+
         </div>
+
       </section>
+
     </main>
+
   </div>
 
-  <div class="modal-overlay" id="modalProduct" aria-hidden="true">
-    <section class="modal modal-product" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
+
+  <!-- =========================================
+       MODAL CADASTRAR PRODUTO
+  ========================================= -->
+
+  <div
+    class="modal-overlay"
+    id="modalProduct"
+    aria-hidden="true"
+  >
+
+    <section
+      class="modal modal-product"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="productModalTitle"
+    >
+
+      <!-- CABEÇALHO MODAL -->
       <div class="modal-header">
+
         <div class="modal-title-group">
-          <span class="modal-icon"><i class="bx bx-package"></i></span>
+
+          <span class="modal-icon">
+            <i class="bx bx-package"></i>
+          </span>
+
           <div>
-            <h2 id="productModalTitle">Cadastrar produto</h2>
-            <p>Preencha os custos e veja a precificação calculada em tempo real.</p>
+
+            <h2 id="productModalTitle">
+              Cadastrar produto
+            </h2>
+
+            <p>
+              Preencha os custos e veja a precificação calculada em tempo real.
+            </p>
+
           </div>
+
         </div>
 
-        <button class="icon-btn" type="button" data-close aria-label="Fechar">
+
+        <button
+          class="icon-btn"
+          type="button"
+          data-close
+          aria-label="Fechar"
+        >
+
           <i class="bx bx-x"></i>
+
         </button>
+
       </div>
 
-      <form id="productForm" novalidate>
+
+      <form
+        id="productForm"
+        novalidate
+      >
+
         <div class="modal-body product-layout">
+
+          <!-- FORMULÁRIO -->
           <div class="form-column">
+
+
+            <!-- IDENTIFICAÇÃO -->
             <section class="form-section">
+
               <div class="section-title">
-                <span>1</span>
+
+                <span>
+                  1
+                </span>
+
                 <div>
-                  <h3>Identificação</h3>
-                  <p>Informações básicas do produto.</p>
+
+                  <h3>
+                    Identificação
+                  </h3>
+
+                  <p>
+                    Informações básicas do produto.
+                  </p>
+
                 </div>
+
               </div>
+
 
               <div class="form-grid two-cols">
-                <div class="field">
-                  <label for="productNameInput">Nome do produto</label>
-                  <input type="text" id="productNameInput" maxlength="60" placeholder="Ex: Brownie tradicional" autocomplete="off">
-                </div>
 
                 <div class="field">
-                  <label for="productCategoryInput">Categoria</label>
-                  <input type="text" id="productCategoryInput" maxlength="40" placeholder="Ex: Doces" autocomplete="off">
+
+                  <label for="productNameInput">
+                    Nome do produto
+                  </label>
+
+                  <input
+                    type="text"
+                    id="productNameInput"
+                    maxlength="60"
+                    placeholder="Ex: Brownie tradicional"
+                    autocomplete="off"
+                  >
+
                 </div>
+
+
+                <div class="field">
+
+                  <label for="productCategoryInput">
+                    Categoria
+                  </label>
+
+                  <input
+                    type="text"
+                    id="productCategoryInput"
+                    maxlength="40"
+                    placeholder="Ex: Doces"
+                    autocomplete="off"
+                  >
+
+                </div>
+
               </div>
+
             </section>
 
+
+            <!-- CUSTOS -->
             <section class="form-section">
+
               <div class="section-title">
-                <span>2</span>
+
+                <span>
+                  2
+                </span>
+
                 <div>
-                  <h3>Custos</h3>
-                  <p>Informe o custo unitário e acrescente despesas extras quando necessário.</p>
+
+                  <h3>
+                    Custos
+                  </h3>
+
+                  <p>
+                    Informe o custo unitário e acrescente despesas extras quando necessário.
+                  </p>
+
                 </div>
+
               </div>
+
 
               <div class="field">
-                <label for="baseCostInput">Custo base por unidade</label>
+
+                <label for="baseCostInput">
+                  Custo base por unidade
+                </label>
+
                 <div class="money-input">
-                  <span>R$</span>
-                  <input type="number" id="baseCostInput" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+
+                  <span>
+                    R$
+                  </span>
+
+                  <input
+                    type="number"
+                    id="baseCostInput"
+                    min="0"
+                    step="0.01"
+                    inputmode="decimal"
+                    placeholder="0,00"
+                  >
+
                 </div>
+
               </div>
 
+
+              <!-- CUSTOS ADICIONAIS -->
               <div class="additional-costs-head">
+
                 <div>
-                  <strong>Custos adicionais</strong>
-                  <span>Embalagem, taxa, entrega ou outro custo unitário.</span>
+
+                  <strong>
+                    Custos adicionais
+                  </strong>
+
+                  <span>
+                    Embalagem, taxa, entrega ou outro custo unitário.
+                  </span>
+
                 </div>
 
-                <button class="text-btn" id="addCostBtn" type="button">
+
+                <button
+                  class="text-btn"
+                  id="addCostBtn"
+                  type="button"
+                >
+
                   <i class="bx bx-plus"></i>
+
                   Adicionar custo
+
                 </button>
+
               </div>
 
-              <div class="additional-costs" id="additionalCosts"></div>
+
+              <div
+                class="additional-costs"
+                id="additionalCosts"
+              ></div>
+
             </section>
 
+
+            <!-- PREÇO E VENDAS -->
             <section class="form-section">
+
               <div class="section-title">
-                <span>3</span>
+
+                <span>
+                  3
+                </span>
+
                 <div>
-                  <h3>Preço e vendas</h3>
-                  <p>Use a margem desejada como apoio para definir seu preço.</p>
+
+                  <h3>
+                    Preço e vendas
+                  </h3>
+
+                  <p>
+                    Use a margem desejada como apoio para definir seu preço.
+                  </p>
+
                 </div>
+
               </div>
+
 
               <div class="form-grid three-cols">
+
+                <!-- MARGEM -->
                 <div class="field">
-                  <label for="targetMarginInput">Margem desejada</label>
+
+                  <label for="targetMarginInput">
+                    Margem desejada
+                  </label>
+
                   <div class="suffix-input">
-                    <input type="number" id="targetMarginInput" min="0" max="95" step="1" inputmode="decimal" value="30">
-                    <span>%</span>
+
+                    <input
+                      type="number"
+                      id="targetMarginInput"
+                      min="0"
+                      max="95"
+                      step="1"
+                      inputmode="decimal"
+                      value="30"
+                    >
+
+                    <span>
+                      %
+                    </span>
+
                   </div>
+
                 </div>
 
+
+                <!-- PREÇO -->
                 <div class="field">
-                  <label for="salePriceInput">Preço de venda</label>
+
+                  <label for="salePriceInput">
+                    Preço de venda
+                  </label>
+
                   <div class="money-input">
-                    <span>R$</span>
-                    <input type="number" id="salePriceInput" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+
+                    <span>
+                      R$
+                    </span>
+
+                    <input
+                      type="number"
+                      id="salePriceInput"
+                      min="0"
+                      step="0.01"
+                      inputmode="decimal"
+                      placeholder="0,00"
+                    >
+
                   </div>
+
                 </div>
 
+
+                <!-- VENDAS -->
                 <div class="field">
-                  <label for="unitsSoldInput">Unidades vendidas</label>
-                  <input type="number" id="unitsSoldInput" min="0" step="1" inputmode="numeric" value="1">
+
+                  <label for="unitsSoldInput">
+                    Unidades vendidas
+                  </label>
+
+                  <input
+                    type="number"
+                    id="unitsSoldInput"
+                    min="0"
+                    step="1"
+                    inputmode="numeric"
+                    value="1"
+                  >
+
                 </div>
+
               </div>
 
+
+              <!-- SUGESTÃO -->
               <div class="suggestion-row">
+
                 <div>
-                  <span>Preço sugerido pela margem</span>
-                  <strong id="suggestedPrice">R$ 0,00</strong>
+
+                  <span>
+                    Preço sugerido pela margem
+                  </span>
+
+                  <strong id="suggestedPrice">
+                    R$ 0,00
+                  </strong>
+
                 </div>
 
-                <button class="btn btn-secondary btn-compact" id="useSuggestedPriceBtn" type="button">
+
+                <button
+                  class="btn btn-secondary btn-compact"
+                  id="useSuggestedPriceBtn"
+                  type="button"
+                >
                   Usar sugestão
                 </button>
+
               </div>
 
+
+              <!-- DATA -->
               <div class="field">
-                <label for="productDateInput">Data de referência</label>
-                <input type="date" id="productDateInput">
+
+                <label for="productDateInput">
+                  Data de referência
+                </label>
+
+                <input
+                  type="date"
+                  id="productDateInput"
+                >
+
               </div>
+
             </section>
 
-            <div class="form-error" id="productFormError" role="alert" aria-live="polite"></div>
+
+            <div
+              class="form-error"
+              id="productFormError"
+              role="alert"
+              aria-live="polite"
+            ></div>
+
           </div>
 
-          <aside class="pricing-preview" aria-label="Resumo da precificação">
-            <span class="preview-label">Resumo da precificação</span>
-            <h3 id="previewProductName">Novo produto</h3>
+
+          <!-- PREVIEW -->
+          <aside
+            class="pricing-preview"
+            aria-label="Resumo da precificação"
+          >
+
+            <span class="preview-label">
+              Resumo da precificação
+            </span>
+
+
+            <h3 id="previewProductName">
+              Novo produto
+            </h3>
+
 
             <div class="preview-price">
-              <span>Preço de venda</span>
-              <strong id="previewSalePrice">R$ 0,00</strong>
+
+              <span>
+                Preço de venda
+              </span>
+
+              <strong id="previewSalePrice">
+                R$ 0,00
+              </strong>
+
             </div>
+
 
             <div class="preview-metrics">
-              <div>
-                <span>Custo total unitário</span>
-                <strong id="previewTotalCost">R$ 0,00</strong>
-              </div>
 
               <div>
-                <span>Margem unitária</span>
-                <strong id="previewUnitMargin">R$ 0,00</strong>
+
+                <span>
+                  Custo total unitário
+                </span>
+
+                <strong id="previewTotalCost">
+                  R$ 0,00
+                </strong>
+
               </div>
 
-              <div>
-                <span>Margem sobre venda</span>
-                <strong id="previewMarginPct">0%</strong>
-              </div>
 
               <div>
-                <span>Faturamento estimado</span>
-                <strong id="previewRevenue">R$ 0,00</strong>
+
+                <span>
+                  Margem unitária
+                </span>
+
+                <strong id="previewUnitMargin">
+                  R$ 0,00
+                </strong>
+
               </div>
+
+
+              <div>
+
+                <span>
+                  Margem sobre venda
+                </span>
+
+                <strong id="previewMarginPct">
+                  0%
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  Faturamento estimado
+                </span>
+
+                <strong id="previewRevenue">
+                  R$ 0,00
+                </strong>
+
+              </div>
+
             </div>
 
-            <div class="preview-status" id="previewStatus">
+
+            <div
+              class="preview-status"
+              id="previewStatus"
+            >
               Informe os custos e o preço para analisar a margem.
             </div>
+
           </aside>
+
         </div>
 
+
+        <!-- RODAPÉ -->
         <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-close>Cancelar</button>
-          <button class="btn btn-primary" type="submit">
-            <i class="bx bx-check"></i>
-            Salvar produto
+
+          <button
+            class="btn btn-secondary"
+            type="button"
+            data-close
+          >
+            Cancelar
           </button>
+
+
+          <button
+            class="btn btn-primary"
+            type="submit"
+          >
+
+            <i class="bx bx-check"></i>
+
+            Salvar produto
+
+          </button>
+
         </div>
+
       </form>
+
     </section>
+
   </div>
 
-  <div class="modal-overlay" id="modalManage" aria-hidden="true">
-    <section class="modal modal-manage" role="dialog" aria-modal="true" aria-labelledby="manageModalTitle">
+
+  <!-- =========================================
+       MODAL GERENCIAR PRODUTOS
+  ========================================= -->
+
+  <div
+    class="modal-overlay"
+    id="modalManage"
+    aria-hidden="true"
+  >
+
+    <section
+      class="modal modal-manage"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="manageModalTitle"
+    >
+
       <div class="modal-header">
+
         <div>
-          <h2 id="manageModalTitle">Gerenciar produtos</h2>
-          <p>Revise os produtos cadastrados e remova os que não forem mais necessários.</p>
+
+          <h2 id="manageModalTitle">
+            Gerenciar produtos
+          </h2>
+
+          <p>
+            Revise os produtos cadastrados e remova os que não forem mais necessários.
+          </p>
+
         </div>
-        <button class="icon-btn" type="button" data-close aria-label="Fechar"><i class="bx bx-x"></i></button>
+
+
+        <button
+          class="icon-btn"
+          type="button"
+          data-close
+          aria-label="Fechar"
+        >
+
+          <i class="bx bx-x"></i>
+
+        </button>
+
       </div>
 
-      <div class="manage-list" id="manageList"></div>
+
+      <div
+        class="manage-list"
+        id="manageList"
+      ></div>
+
 
       <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-close>Fechar</button>
+
+        <button
+          class="btn btn-secondary"
+          type="button"
+          data-close
+        >
+          Fechar
+        </button>
+
       </div>
+
     </section>
+
   </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <!-- TOAST -->
+  <div
+    class="toast"
+    id="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+
+  <!-- JAVASCRIPT -->
   <script src="grafico.js"></script>
   <script src="../shared/site.js"></script>
+
 </body>
+
 </html>

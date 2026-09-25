@@ -2,22 +2,22 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>ZUZ | Criar Conta</title>
+  <title>ZUZ | Criar Conta</title>
 
-    <!-- Fontes -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Qwigley&display=swap"
-        rel="stylesheet"
-    >
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Qwigley&display=swap"
+    rel="stylesheet"
+  >
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="./login.css">
+  <!-- CSS -->
+  <link rel="stylesheet" href="./login.css">
   <link rel="stylesheet" href="../shared/sidebar.css">
   <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
   <link rel="stylesheet" href="../shared/design-system.css">
@@ -25,55 +25,56 @@
 
 <body>
 
-    <main class="page">
+  <main class="page">
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-      <a href="../index.html" class="site-brand-header" aria-label="ZUZ - Página inicial">
-        <img src="../imagens/logo-zuz-header.png" alt="ZUZ" class="site-brand-header-logo">
-      </a>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
 
-      
+      <!-- LOGIN -->
+      <div class="login-block">
 
-            <div class="login-block">
+        <div class="avatar">
 
-                <div class="avatar">
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <circle
-                            cx="12"
-                            cy="8"
-                            r="4"
-                            fill="white"
-                        />
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
 
-                        <path
-                            d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
-                            fill="white"
-                        />
-                    </svg>
-                </div>
+            <circle
+              cx="12"
+              cy="8"
+              r="4"
+              fill="white"
+            />
 
-                <div class="login-text">
+            <path
+              d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
+              fill="white"
+            />
 
-                    <div class="login-title">
-                        Login
-                    </div>
+          </svg>
 
-                    <div class="login-subtitle">
-                        Minha Conta
-                    </div>
+        </div>
 
-                </div>
+        <div class="login-text">
 
-            </div>
+          <div class="login-title">
+            Login
+          </div>
+
+          <div class="login-subtitle">
+            Minha Conta
+          </div>
+
+        </div>
+
+      </div>
 
 
-            <!-- MENU -->
-            <nav class="nav-menu">
+      <!-- MENU -->
+      <nav class="nav-menu">
+
         <a href="../index.html" class="nav-item">
           <span class="nav-dot"></span>
           <span>Início</span>
@@ -104,242 +105,332 @@
           <span>Referências</span>
         </a>
 
-        
       </nav>
 
 
-            <!-- TEMA -->
-            <button
-                class="theme-toggle"
-                id="themeToggle"
-                type="button"
-                aria-pressed="false"
+      <!-- TEMA -->
+      <button
+        class="theme-toggle"
+        id="themeToggle"
+        type="button"
+        aria-pressed="false"
+      >
+
+        <span
+          class="theme-toggle-label"
+          id="themeLabel"
+        >
+          Modo Claro
+        </span>
+
+        <span class="theme-toggle-knob">
+
+          <!-- SOL -->
+          <svg
+            id="iconSun"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+
+            <circle cx="12" cy="12" r="4"></circle>
+
+            <line x1="12" y1="2" x2="12" y2="4"></line>
+            <line x1="12" y1="20" x2="12" y2="22"></line>
+            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
+            <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
+            <line x1="2" y1="12" x2="4" y2="12"></line>
+            <line x1="20" y1="12" x2="22" y2="12"></line>
+            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
+            <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
+
+          </svg>
+
+
+          <!-- LUA -->
+          <svg
+            id="iconMoon"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="display: none"
+          >
+
+            <path
+              d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"
+            ></path>
+
+            <line x1="18" y1="3" x2="18" y2="6"></line>
+
+            <line
+              x1="16.5"
+              y1="4.5"
+              x2="19.5"
+              y2="4.5"
+            ></line>
+
+          </svg>
+
+        </span>
+
+      </button>
+
+    </aside>
+
+
+    <!-- LADO ESQUERDO -->
+    <section
+      class="hero"
+      aria-label="Apresentação ZUZ"
+    >
+
+      <div class="hero-copy">
+
+        <div
+          class="hero-heading"
+          aria-label="Leve seu negócio mais longe com a ZUZ"
+        >
+
+          <div class="hero-line hero-line-1">
+
+            <span class="hero-script">
+              Leve
+            </span>
+
+            <span class="hero-bold hero-business">
+              seu negócio
+            </span>
+
+          </div>
+
+
+          <div class="hero-bold hero-line-2">
+            mais longe com a
+          </div>
+
+
+          <div class="hero-brand">
+            ZUZ
+          </div>
+
+        </div>
+
+
+        <p class="hero-description">
+
+          Mais do que uma plataforma, somos uma solução criada<br>
+          para transformar a maneira como você organiza, gerencia e<br>
+          impulsiona o seu negócio no dia a dia.
+
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- LADO DIREITO -->
+    <section
+      class="signup"
+      aria-label="Criar conta"
+    >
+
+      <form
+        class="signup-form"
+        id="signupForm"
+        novalidate
+      >
+
+        <header class="form-header">
+
+          <span class="form-eyebrow">
+            Comece pela sua conta
+          </span>
+
+          <h1>
+            Criar conta
+          </h1>
+
+          <p>
+            Preencha apenas os dados necessários para começar.
+          </p>
+
+        </header>
+
+
+        <div class="divider"></div>
+
+
+        <!-- NOME -->
+        <div class="name-row">
+
+          <label class="field first-name">
+
+            <span>
+              Primeiro nome *
+            </span>
+
+            <input
+              id="firstName"
+              type="text"
+              name="firstName"
+              placeholder="Ex: Kamila"
+              autocomplete="given-name"
+              required
+              aria-describedby="firstNameError"
             >
 
-                <span
-                    class="theme-toggle-label"
-                    id="themeLabel"
-                >
-                    Modo Claro
-                </span>
+            <small
+              class="field-error"
+              id="firstNameError"
+            ></small>
+
+          </label>
 
 
-                <span class="theme-toggle-knob">
+          <label class="field last-name">
 
-                    <!-- SOL -->
-                    <svg
-                        id="iconSun"
-                        class="theme-icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
+            <span>
+              Sobrenome *
+            </span>
 
-                        <circle cx="12" cy="12" r="4"></circle>
+            <input
+              id="lastName"
+              type="text"
+              name="lastName"
+              placeholder="Ex: Ribeiro"
+              autocomplete="family-name"
+              required
+              aria-describedby="lastNameError"
+            >
 
-                        <line x1="12" y1="2" x2="12" y2="4"></line>
-                        <line x1="12" y1="20" x2="12" y2="22"></line>
-                        <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
-                        <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
-                        <line x1="2" y1="12" x2="4" y2="12"></line>
-                        <line x1="20" y1="12" x2="22" y2="12"></line>
-                        <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
-                        <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
+            <small
+              class="field-error"
+              id="lastNameError"
+            ></small>
 
-                    </svg>
+          </label>
+
+        </div>
 
 
-                    <!-- LUA -->
-                    <svg
-                        id="iconMoon"
-                        class="theme-icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        style="display: none"
-                    >
+        <!-- EMAIL -->
+        <label class="field field-wide email-field">
 
-                        <path
-                            d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"
-                        ></path>
+          <span>
+            Email *
+          </span>
 
-                        <line x1="18" y1="3" x2="18" y2="6"></line>
-                        <line x1="16.5" y1="4.5" x2="19.5" y2="4.5"></line>
+          <input
+            id="signupEmail"
+            type="email"
+            name="email"
+            placeholder="seuemail@exemplo.com"
+            autocomplete="email"
+            required
+            aria-describedby="signupEmailError"
+          >
 
-                    </svg>
+          <small
+            class="field-error"
+            id="signupEmailError"
+          ></small>
 
-                </span>
+        </label>
 
+
+        <!-- SENHA -->
+        <label class="field field-wide password-field">
+
+          <span>
+            Senha *
+          </span>
+
+          <div class="password-wrap">
+
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Crie uma senha"
+              minlength="8"
+              autocomplete="new-password"
+              required
+              aria-describedby="signupPasswordHelp signupPasswordError"
+            >
+
+
+            <button
+              class="password-dot"
+              type="button"
+              aria-label="Mostrar senha"
+            >
+              <span>
+                Mostrar
+              </span>
             </button>
 
-        </aside>
+          </div>
 
 
+          <small id="signupPasswordHelp">
+            Use pelo menos 8 caracteres.
+          </small>
 
-        <!-- LADO ESQUERDO -->
-        <section
-            class="hero"
-            aria-label="Apresentação ZUZ"
+          <small
+            class="field-error"
+            id="signupPasswordError"
+          ></small>
+
+        </label>
+
+
+        <!-- BOTÃO -->
+        <button
+          class="submit-button"
+          type="submit"
         >
-
-            <div class="hero-copy">
-
-                <div
-                    class="hero-heading"
-                    aria-label="Leve seu negócio mais longe com a ZUZ"
-                >
-
-                    <div class="hero-line hero-line-1">
-
-                        <span class="hero-script">
-                            Leve
-                        </span>
-
-                        <span class="hero-bold hero-business">
-                            seu negócio
-                        </span>
-
-                    </div>
+          Criar conta
+        </button>
 
 
-                    <div class="hero-bold hero-line-2">
-                        mais longe com a
-                    </div>
+        <div
+          class="form-status"
+          id="signupStatus"
+          role="status"
+          aria-live="polite"
+        ></div>
 
 
-                    <div class="hero-brand">
-                        ZUZ
-                    </div>
+        <p class="form-switch">
 
-                </div>
+          Já tem uma conta?
 
+          <a href="../Login-2/login-2.html">
+            Fazer login
+          </a>
 
-                <p class="hero-description">
+        </p>
 
-                    Mais do que uma plataforma, somos uma solução criada<br>
-                    para transformar a maneira como você organiza, gerencia e<br>
-                    impulsiona o seu negócio no dia a dia.
+      </form>
 
-                </p>
+    </section>
 
-            </div>
-
-        </section>
+  </main>
 
 
-
-        <!-- LADO DIREITO -->
-        <section
-            class="signup"
-            aria-label="Criar conta"
-        >
-
-            <form
-                class="signup-form"
-                id="signupForm"
-                novalidate
-            >
-                <header class="form-header">
-                    <span class="form-eyebrow">Comece pela sua conta</span>
-                    <h1>Criar conta</h1>
-                    <p>Preencha apenas os dados necessários para começar.</p>
-                </header>
-
-                <div class="divider"></div>
-
-                <div class="name-row">
-                    <label class="field first-name">
-                        <span>Primeiro nome *</span>
-                        <input
-                            id="firstName"
-                            type="text"
-                            name="firstName"
-                            placeholder="Ex: Kamila"
-                            autocomplete="given-name"
-                            required
-                            aria-describedby="firstNameError"
-                        >
-                        <small class="field-error" id="firstNameError"></small>
-                    </label>
-
-                    <label class="field last-name">
-                        <span>Sobrenome *</span>
-                        <input
-                            id="lastName"
-                            type="text"
-                            name="lastName"
-                            placeholder="Ex: Ribeiro"
-                            autocomplete="family-name"
-                            required
-                            aria-describedby="lastNameError"
-                        >
-                        <small class="field-error" id="lastNameError"></small>
-                    </label>
-                </div>
-
-                <label class="field field-wide email-field">
-                    <span>Email *</span>
-                    <input
-                        id="signupEmail"
-                        type="email"
-                        name="email"
-                        placeholder="seuemail@exemplo.com"
-                        autocomplete="email"
-                        required
-                        aria-describedby="signupEmailError"
-                    >
-                    <small class="field-error" id="signupEmailError"></small>
-                </label>
-
-                <label class="field field-wide password-field">
-                    <span>Senha *</span>
-
-                    <div class="password-wrap">
-                        <input
-                            id="password"
-                            type="password"
-                            name="password"
-                            placeholder="Crie uma senha"
-                            minlength="8"
-                            autocomplete="new-password"
-                            required
-                            aria-describedby="signupPasswordHelp signupPasswordError"
-                        >
-
-                        <button class="password-dot" type="button" aria-label="Mostrar senha"><span>Mostrar</span></button>
-                    </div>
-
-                    <small id="signupPasswordHelp">Use pelo menos 8 caracteres.</small>
-                    <small class="field-error" id="signupPasswordError"></small>
-                </label>
-
-                <button class="submit-button" type="submit">
-                    Criar conta
-                </button>
-
-                <div class="form-status" id="signupStatus" role="status" aria-live="polite"></div>
-
-                <p class="form-switch">
-                    Já tem uma conta?
-                    <a href="../Login-2/login-2.html">Fazer login</a>
-                </p>
-            </form>
-
-        </section>
-
-    </main>
-
-
-    <!-- JAVASCRIPT -->
-    <script src="./login.js"></script>
-
+  <!-- JAVASCRIPT -->
+  <script src="./login.js"></script>
   <script src="../shared/site.js"></script>
+
 </body>
 
 </html>

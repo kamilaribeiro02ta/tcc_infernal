@@ -3,7 +3,6 @@
 
 <head>
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -46,34 +45,14 @@
     type="image/png"
     href="../imagens/logo-zuz-header.png"
   >
-
 </head>
 
 <body>
 
   <div class="page">
 
-    <!-- ========================================
-         SIDEBAR
-    ========================================= -->
-
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-
-      <!-- LOGO -->
-      <a
-        href="../index.html"
-        class="site-brand-header"
-        aria-label="Página inicial ZUZ"
-      >
-
-        <img
-          src="../imagens/logo-zuz-header.png"
-          alt="ZUZ"
-          class="site-brand-header-logo"
-        >
-
-      </a>
-
 
       <!-- LOGIN -->
       <div class="login-block">
@@ -85,7 +64,6 @@
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-
             <circle
               cx="12"
               cy="8"
@@ -97,7 +75,6 @@
               d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
               fill="white"
             />
-
           </svg>
 
         </div>
@@ -106,11 +83,9 @@
         <div class="login-text">
 
           <a href="../Login-2/login-2.html">
-
             <div class="login-title">
               Login
             </div>
-
           </a>
 
           <div class="login-subtitle">
@@ -122,10 +97,7 @@
       </div>
 
 
-      <!-- ========================================
-           MENU
-      ========================================= -->
-
+      <!-- MENU -->
       <nav class="nav-menu">
 
         <a
@@ -135,14 +107,12 @@
           Início
         </a>
 
-
         <a
           href="../introducao/intro.html"
           class="nav-item"
         >
           Instruções
         </a>
-
 
         <a
           href="../produtos/produtos.html"
@@ -151,7 +121,6 @@
           Produtos
         </a>
 
-
         <a
           href="../garfico/grafico.html"
           class="nav-item"
@@ -159,14 +128,12 @@
           Gráfico
         </a>
 
-
         <a
           href="../equipe/equipe.html"
           class="nav-item active"
         >
           Equipe
         </a>
-
 
         <a
           href="../referencias/refe.html"
@@ -178,10 +145,7 @@
       </nav>
 
 
-      <!-- ========================================
-           TEMA
-      ========================================= -->
-
+      <!-- MODO CLARO / ESCURO -->
       <button
         class="theme-toggle"
         id="themeToggle"
@@ -316,10 +280,7 @@
     </aside>
 
 
-    <!-- ========================================
-         CONTEÚDO PRINCIPAL
-    ========================================= -->
-
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content">
 
       <section
@@ -328,6 +289,7 @@
       >
 
         <div class="team-carousel">
+
 
           <!-- SETA ESQUERDA -->
           <button
@@ -342,14 +304,12 @@
           </button>
 
 
-          <!-- ========================================
-               CARDS
-          ========================================= -->
-
+          <!-- CARDS -->
           <div
             class="team-track"
             id="teamTrack"
           >
+
 
             <!-- KAMILLA -->
             <article class="member-card">
@@ -440,17 +400,14 @@
   </div>
 
 
-  <!-- ========================================
-       JAVASCRIPT
-  ========================================= -->
-
+  <!-- JAVASCRIPT -->
   <script>
 
     document.addEventListener("DOMContentLoaded", () => {
 
-      /* ========================================
+      /* ================================
          MODO CLARO / ESCURO
-      ========================================= */
+      ================================= */
 
       const themeToggle =
         document.getElementById("themeToggle");
@@ -559,9 +516,9 @@
       }
 
 
-      /* ========================================
+      /* ================================
          MENU ATIVO
-      ========================================= */
+      ================================= */
 
       const navItems =
         document.querySelectorAll(
@@ -599,9 +556,9 @@
       });
 
 
-      /* ========================================
+      /* ================================
          CARROSSEL
-      ========================================= */
+      ================================= */
 
       const teamTrack =
         document.getElementById("teamTrack");
@@ -640,8 +597,7 @@
             [
               {
                 opacity: 1,
-                transform:
-                  "translateX(0)"
+                transform: "translateX(0)"
               },
 
               {
@@ -664,6 +620,7 @@
 
 
         setTimeout(() => {
+
 
           /* DIREITA */
 
@@ -726,8 +683,7 @@
 
                 {
                   opacity: 1,
-                  transform:
-                    "translateX(0)"
+                  transform: "translateX(0)"
                 }
               ],
 
@@ -785,9 +741,7 @@
       }
 
 
-      /* ========================================
-         SETAS DO TECLADO
-      ========================================= */
+      /* SETAS DO TECLADO */
 
       document.addEventListener(
         "keydown",

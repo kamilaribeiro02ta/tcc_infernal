@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>ZUZ | Produtos</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  >
 
   <link rel="stylesheet" href="produtos.css">
   <link rel="stylesheet" href="../shared/sidebar.css">
@@ -17,69 +27,134 @@
 </head>
 
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <a href="../index.html" class="site-brand-header" aria-label="ZUZ - Página inicial">
-        <img src="../imagens/logo-zuz-header.png" alt="ZUZ" class="site-brand-header-logo">
-      </a>
 
-      
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- LOGIN -->
       <div class="login-block">
+
         <div class="avatar">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <circle cx="12" cy="8" r="4" fill="white"/>
-            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"/>
+
+            <path
+              d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
+              fill="white"
+            />
           </svg>
+
         </div>
 
         <div class="login-text">
+
           <a href="../Login-2/login-2.html">
-            <div class="login-title">Login</div>
+            <div class="login-title">
+              Login
+            </div>
           </a>
-          <div class="login-subtitle">Minha Conta</div>
+
+          <div class="login-subtitle">
+            Minha Conta
+          </div>
+
         </div>
+
       </div>
 
+
+      <!-- MENU -->
       <nav class="nav-menu">
-        <a href="../index.html" class="nav-item">
+
+        <a
+          href="../index.html"
+          class="nav-item"
+        >
           <span class="nav-dot"></span>
           <span>Início</span>
         </a>
 
-        <a href="../introducao/intro.html" class="nav-item">
+        <a
+          href="../introducao/intro.html"
+          class="nav-item"
+        >
           <span class="nav-dot"></span>
           <span>Instruções</span>
         </a>
 
-        <a href="../produtos/produtos.html" class="nav-item active">
+        <a
+          href="../produtos/produtos.html"
+          class="nav-item active"
+        >
           <span class="nav-dot"></span>
           <span>Produtos</span>
         </a>
 
-        <a href="../garfico/grafico.html" class="nav-item">
+        <a
+          href="../garfico/grafico.html"
+          class="nav-item"
+        >
           <span class="nav-dot"></span>
           <span>Gráfico</span>
         </a>
 
-        <a href="../equipe/equipe.html" class="nav-item">
+        <a
+          href="../equipe/equipe.html"
+          class="nav-item"
+        >
           <span class="nav-dot"></span>
           <span>Equipe</span>
         </a>
 
-        <a href="../referencias/refe.html" class="nav-item">
+        <a
+          href="../referencias/refe.html"
+          class="nav-item"
+        >
           <span class="nav-dot"></span>
           <span>Referências</span>
         </a>
 
-        
       </nav>
 
-      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">
-        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
+
+      <!-- MODO CLARO / ESCURO -->
+      <button
+        class="theme-toggle"
+        id="themeToggle"
+        type="button"
+        aria-pressed="false"
+      >
+
+        <span
+          class="theme-toggle-label"
+          id="themeLabel"
+        >
+          Modo Claro
+        </span>
 
         <span class="theme-toggle-knob">
-          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
+          <!-- SOL -->
+          <svg
+            id="iconSun"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+
             <circle cx="12" cy="12" r="4"></circle>
+
             <line x1="12" y1="2" x2="12" y2="4"></line>
             <line x1="12" y1="20" x2="12" y2="22"></line>
             <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
@@ -88,116 +163,323 @@
             <line x1="20" y1="12" x2="22" y2="12"></line>
             <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
             <line x1="17.66" y1="6.34" x2="19.5" y2="4.5"></line>
+
           </svg>
 
-          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-            <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
+          <!-- LUA -->
+          <svg
+            id="iconMoon"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="display:none"
+          >
+
+            <path
+              d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"
+            ></path>
+
           </svg>
+
         </span>
+
       </button>
+
     </aside>
 
+
+    <!-- PÁGINA DE PRODUTOS -->
     <main class="products-page">
+
+      <!-- CABEÇALHO -->
       <header class="page-header">
+
         <div>
-          <span class="eyebrow">Gestão de catálogo</span>
-          <h1>Produtos</h1>
-          <p>Organize seus produtos, acompanhe custos e identifique rapidamente onde sua margem precisa de atenção.</p>
+
+          <span class="eyebrow">
+            Gestão de catálogo
+          </span>
+
+          <h1>
+            Produtos
+          </h1>
+
+          <p>
+            Organize seus produtos, acompanhe custos e identifique rapidamente
+            onde sua margem precisa de atenção.
+          </p>
+
         </div>
+
 
         <div class="header-actions">
-          <a class="btn btn-secondary" href="../garfico/grafico.html">
+
+          <a
+            class="btn btn-secondary"
+            href="../garfico/grafico.html"
+          >
+
             <i class="bx bx-line-chart"></i>
+
             Ver análise
+
           </a>
 
-          <button class="btn btn-primary" id="newProductBtn" type="button">
+
+          <button
+            class="btn btn-primary"
+            id="newProductBtn"
+            type="button"
+          >
+
             <i class="bx bx-plus"></i>
+
             Cadastrar produto
+
           </button>
+
         </div>
+
       </header>
 
-      <section class="summary-grid" aria-label="Resumo dos produtos">
-        <article class="summary-card">
-          <span class="summary-icon"><i class="bx bx-package"></i></span>
-          <div>
-            <span>Produtos</span>
-            <strong id="summaryProducts">0</strong>
-            <small>cadastrados</small>
-          </div>
-        </article>
+
+      <!-- RESUMO -->
+      <section
+        class="summary-grid"
+        aria-label="Resumo dos produtos"
+      >
 
         <article class="summary-card">
-          <span class="summary-icon"><i class="bx bx-category"></i></span>
+
+          <span class="summary-icon">
+            <i class="bx bx-package"></i>
+          </span>
+
           <div>
-            <span>Categorias</span>
-            <strong id="summaryCategories">0</strong>
-            <small>em uso</small>
+
+            <span>
+              Produtos
+            </span>
+
+            <strong id="summaryProducts">
+              0
+            </strong>
+
+            <small>
+              cadastrados
+            </small>
+
           </div>
+
         </article>
 
+
         <article class="summary-card">
-          <span class="summary-icon"><i class="bx bx-trending-up"></i></span>
+
+          <span class="summary-icon">
+            <i class="bx bx-category"></i>
+          </span>
+
           <div>
-            <span>Margem média</span>
-            <strong id="summaryMargin">0%</strong>
-            <small>sobre o preço</small>
+
+            <span>
+              Categorias
+            </span>
+
+            <strong id="summaryCategories">
+              0
+            </strong>
+
+            <small>
+              em uso
+            </small>
+
           </div>
+
         </article>
+
+
+        <article class="summary-card">
+
+          <span class="summary-icon">
+            <i class="bx bx-trending-up"></i>
+          </span>
+
+          <div>
+
+            <span>
+              Margem média
+            </span>
+
+            <strong id="summaryMargin">
+              0%
+            </strong>
+
+            <small>
+              sobre o preço
+            </small>
+
+          </div>
+
+        </article>
+
 
         <article class="summary-card summary-card-accent">
-          <span class="summary-icon"><i class="bx bx-wallet"></i></span>
+
+          <span class="summary-icon">
+            <i class="bx bx-wallet"></i>
+          </span>
+
           <div>
-            <span>Faturamento estimado</span>
-            <strong id="summaryRevenue">R$ 0,00</strong>
-            <small>pelas vendas cadastradas</small>
+
+            <span>
+              Faturamento estimado
+            </span>
+
+            <strong id="summaryRevenue">
+              R$ 0,00
+            </strong>
+
+            <small>
+              pelas vendas cadastradas
+            </small>
+
           </div>
+
         </article>
+
       </section>
 
+
+      <!-- CATÁLOGO -->
       <section class="catalog-shell">
+
         <div class="catalog-head">
+
           <div>
-            <span class="section-kicker">Catálogo</span>
-            <h2>Seus produtos</h2>
+
+            <span class="section-kicker">
+              Catálogo
+            </span>
+
+            <h2>
+              Seus produtos
+            </h2>
+
           </div>
 
-          <div class="view-counter" id="viewCounter">0 produtos</div>
+          <div
+            class="view-counter"
+            id="viewCounter"
+          >
+            0 produtos
+          </div>
+
         </div>
 
+
+        <!-- FILTROS -->
         <div class="toolbar">
+
           <label class="search-box">
+
             <i class="bx bx-search"></i>
-            <input type="search" id="searchInput" placeholder="Buscar por produto ou categoria">
+
+            <input
+              type="search"
+              id="searchInput"
+              placeholder="Buscar por produto ou categoria"
+            >
+
           </label>
 
-          <select id="categoryFilter" aria-label="Filtrar por categoria">
-            <option value="">Todas as categorias</option>
+
+          <select
+            id="categoryFilter"
+            aria-label="Filtrar por categoria"
+          >
+
+            <option value="">
+              Todas as categorias
+            </option>
+
           </select>
 
-          <select id="marginFilter" aria-label="Filtrar por margem">
-            <option value="">Todas as margens</option>
-            <option value="good">Margem saudável</option>
-            <option value="warn">Margem baixa</option>
-            <option value="bad">Prejuízo</option>
+
+          <select
+            id="marginFilter"
+            aria-label="Filtrar por margem"
+          >
+
+            <option value="">
+              Todas as margens
+            </option>
+
+            <option value="good">
+              Margem saudável
+            </option>
+
+            <option value="warn">
+              Margem baixa
+            </option>
+
+            <option value="bad">
+              Prejuízo
+            </option>
+
           </select>
 
-          <select id="sortSelect" aria-label="Ordenar produtos">
-            <option value="recent">Mais recentes</option>
-            <option value="name">Nome A a Z</option>
-            <option value="margin-desc">Maior margem</option>
-            <option value="margin-asc">Menor margem</option>
-            <option value="price-desc">Maior preço</option>
+
+          <select
+            id="sortSelect"
+            aria-label="Ordenar produtos"
+          >
+
+            <option value="recent">
+              Mais recentes
+            </option>
+
+            <option value="name">
+              Nome A a Z
+            </option>
+
+            <option value="margin-desc">
+              Maior margem
+            </option>
+
+            <option value="margin-asc">
+              Menor margem
+            </option>
+
+            <option value="price-desc">
+              Maior preço
+            </option>
+
           </select>
+
         </div>
 
-        <div class="active-filters" id="activeFilters" hidden></div>
 
+        <div
+          class="active-filters"
+          id="activeFilters"
+          hidden
+        ></div>
+
+
+        <!-- TABELA -->
         <div class="products-table-wrap">
+
           <table class="products-table">
+
             <thead>
+
               <tr>
+
                 <th>PRODUTO</th>
                 <th>CATEGORIA</th>
                 <th>PREÇO BRUTO</th>
@@ -206,277 +488,901 @@
                 <th>QTD. EST.</th>
                 <th>LUCRO EST.</th>
                 <th></th>
+
               </tr>
+
             </thead>
+
             <tbody id="productsBody"></tbody>
+
           </table>
+
         </div>
 
-        <div class="mobile-products" id="mobileProducts"></div>
 
-        <div class="empty-state" id="emptyState" hidden>
-          <span class="empty-icon"><i class="bx bx-package"></i></span>
-          <strong>Nenhum produto encontrado</strong>
-          <p>Cadastre um novo produto ou limpe os filtros para visualizar o catálogo.</p>
-          <button class="btn btn-primary" id="emptyAddBtn" type="button">
+        <!-- MOBILE -->
+        <div
+          class="mobile-products"
+          id="mobileProducts"
+        ></div>
+
+
+        <!-- VAZIO -->
+        <div
+          class="empty-state"
+          id="emptyState"
+          hidden
+        >
+
+          <span class="empty-icon">
+            <i class="bx bx-package"></i>
+          </span>
+
+          <strong>
+            Nenhum produto encontrado
+          </strong>
+
+          <p>
+            Cadastre um novo produto ou limpe os filtros para visualizar o catálogo.
+          </p>
+
+          <button
+            class="btn btn-primary"
+            id="emptyAddBtn"
+            type="button"
+          >
+
             <i class="bx bx-plus"></i>
+
             Cadastrar produto
+
           </button>
+
         </div>
+
       </section>
+
     </main>
+
   </div>
 
-  <div class="modal-overlay" id="productModal" aria-hidden="true">
-    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+  <!-- =========================================
+       MODAL DE PRODUTO
+  ========================================= -->
+
+  <div
+    class="modal-overlay"
+    id="productModal"
+    aria-hidden="true"
+  >
+
+    <section
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+    >
+
       <header class="modal-header">
+
         <div>
-          <span class="modal-kicker" id="modalKicker">Novo produto</span>
-          <h2 id="modalTitle">Cadastrar produto</h2>
-          <p>Cadastre os custos, defina o preço e veja uma simulação antes de salvar. Campos com * são obrigatórios.</p>
+
+          <span
+            class="modal-kicker"
+            id="modalKicker"
+          >
+            Novo produto
+          </span>
+
+          <h2 id="modalTitle">
+            Cadastrar produto
+          </h2>
+
+          <p>
+            Cadastre os custos, defina o preço e veja uma simulação antes de salvar.
+            Campos com * são obrigatórios.
+          </p>
+
         </div>
 
-        <button class="icon-btn" id="closeModalBtn" type="button" aria-label="Fechar">
+
+        <button
+          class="icon-btn"
+          id="closeModalBtn"
+          type="button"
+          aria-label="Fechar"
+        >
+
           <i class="bx bx-x"></i>
+
         </button>
+
       </header>
 
-      <form id="productForm" novalidate>
+
+      <form
+        id="productForm"
+        novalidate
+      >
+
         <div class="modal-content product-form-layout">
+
+
+          <!-- CONTEÚDO PRINCIPAL -->
           <div class="product-form-main">
+
+
+            <!-- INFORMAÇÕES -->
             <section class="form-card basic-card">
+
               <div class="form-card-head">
+
                 <div>
-                  <h3>Informações do produto</h3>
-                  <p>Cadastre o produto de um jeito fácil de reconhecer depois.</p>
+
+                  <h3>
+                    Informações do produto
+                  </h3>
+
+                  <p>
+                    Cadastre o produto de um jeito fácil de reconhecer depois.
+                  </p>
+
                 </div>
+
               </div>
+
 
               <div class="basic-product-grid">
+
+                <!-- FOTO -->
                 <div class="product-photo-field">
-                  <input id="productPhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
-                  <button class="photo-upload" id="photoUploadBtn" type="button">
-                    <span class="photo-preview" id="photoPreview">
+
+                  <input
+                    id="productPhotoInput"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    hidden
+                  >
+
+
+                  <button
+                    class="photo-upload"
+                    id="photoUploadBtn"
+                    type="button"
+                  >
+
+                    <span
+                      class="photo-preview"
+                      id="photoPreview"
+                    >
+
                       <i class="bx bx-image-add"></i>
+
                     </span>
+
+
                     <span class="photo-copy">
-                      <strong>Adicionar foto</strong>
-                      <small>PNG, JPG ou WEBP</small>
+
+                      <strong>
+                        Adicionar foto
+                      </strong>
+
+                      <small>
+                        PNG, JPG ou WEBP
+                      </small>
+
                     </span>
+
                   </button>
-                  <button class="remove-photo-btn" id="removePhotoBtn" type="button" hidden>Remover foto</button>
+
+
+                  <button
+                    class="remove-photo-btn"
+                    id="removePhotoBtn"
+                    type="button"
+                    hidden
+                  >
+                    Remover foto
+                  </button>
+
                 </div>
 
+
+                <!-- CAMPOS -->
                 <div class="basic-fields">
-                  <div class="field">
-                    <label for="nameInput">Nome do produto *</label>
-                    <input id="nameInput" type="text" maxlength="60" placeholder="Ex: Brownie tradicional" required aria-describedby="nameError">
-                    <span class="field-error" id="nameError"></span>
-                  </div>
 
                   <div class="field">
-                    <label for="categorySelect">Categoria *</label>
-                    <select id="categorySelect" required aria-describedby="categoryError">
-                      <option value="">Selecione uma categoria</option>
-                      <option value="Alimentos e bebidas">Alimentos e bebidas</option>
-                      <option value="Doces e confeitaria">Doces e confeitaria</option>
-                      <option value="Vestuário">Vestuário</option>
-                      <option value="Acessórios">Acessórios</option>
-                      <option value="Beleza e cuidados">Beleza e cuidados</option>
-                      <option value="Artesanato">Artesanato</option>
-                      <option value="Papelaria">Papelaria</option>
-                      <option value="Presentes">Presentes</option>
-                      <option value="Casa e decoração">Casa e decoração</option>
-                      <option value="Eletrônicos">Eletrônicos</option>
-                      <option value="Serviços">Serviços</option>
-                      <option value="Outros">Outros</option>
-                      <option value="__custom__">+ Criar outra categoria</option>
+
+                    <label for="nameInput">
+                      Nome do produto *
+                    </label>
+
+                    <input
+                      id="nameInput"
+                      type="text"
+                      maxlength="60"
+                      placeholder="Ex: Brownie tradicional"
+                      required
+                      aria-describedby="nameError"
+                    >
+
+                    <span
+                      class="field-error"
+                      id="nameError"
+                    ></span>
+
+                  </div>
+
+
+                  <div class="field">
+
+                    <label for="categorySelect">
+                      Categoria *
+                    </label>
+
+                    <select
+                      id="categorySelect"
+                      required
+                      aria-describedby="categoryError"
+                    >
+
+                      <option value="">
+                        Selecione uma categoria
+                      </option>
+
+                      <option value="Alimentos e bebidas">
+                        Alimentos e bebidas
+                      </option>
+
+                      <option value="Doces e confeitaria">
+                        Doces e confeitaria
+                      </option>
+
+                      <option value="Vestuário">
+                        Vestuário
+                      </option>
+
+                      <option value="Acessórios">
+                        Acessórios
+                      </option>
+
+                      <option value="Beleza e cuidados">
+                        Beleza e cuidados
+                      </option>
+
+                      <option value="Artesanato">
+                        Artesanato
+                      </option>
+
+                      <option value="Papelaria">
+                        Papelaria
+                      </option>
+
+                      <option value="Presentes">
+                        Presentes
+                      </option>
+
+                      <option value="Casa e decoração">
+                        Casa e decoração
+                      </option>
+
+                      <option value="Eletrônicos">
+                        Eletrônicos
+                      </option>
+
+                      <option value="Serviços">
+                        Serviços
+                      </option>
+
+                      <option value="Outros">
+                        Outros
+                      </option>
+
+                      <option value="__custom__">
+                        + Criar outra categoria
+                      </option>
+
                     </select>
-                    <span class="field-error" id="categoryError"></span>
+
+                    <span
+                      class="field-error"
+                      id="categoryError"
+                    ></span>
+
                   </div>
 
-                  <div class="custom-category-wrap" id="customCategoryWrap" hidden>
+
+                  <div
+                    class="custom-category-wrap"
+                    id="customCategoryWrap"
+                    hidden
+                  >
+
                     <div class="field">
-                      <label for="customCategoryInput">Nova categoria</label>
-                      <input id="customCategoryInput" type="text" maxlength="40" placeholder="Ex: Produtos personalizados">
+
+                      <label for="customCategoryInput">
+                        Nova categoria
+                      </label>
+
+                      <input
+                        id="customCategoryInput"
+                        type="text"
+                        maxlength="40"
+                        placeholder="Ex: Produtos personalizados"
+                      >
+
                     </div>
+
                   </div>
+
                 </div>
+
               </div>
+
             </section>
 
+
+            <!-- CUSTOS -->
             <section class="form-card costs-card">
+
               <div class="form-card-head costs-head">
+
                 <div>
-                  <h3>Custos do produto</h3>
-                  <p>Cadastre pelo menos 2 custos. O preço bruto é a soma de tudo, sem lucro.</p>
+
+                  <h3>
+                    Custos do produto
+                  </h3>
+
+                  <p>
+                    Cadastre pelo menos 2 custos.
+                    O preço bruto é a soma de tudo, sem lucro.
+                  </p>
+
                 </div>
 
-                <button class="add-cost-button" id="addCostItemBtn" type="button">
+
+                <button
+                  class="add-cost-button"
+                  id="addCostItemBtn"
+                  type="button"
+                >
+
                   <i class="bx bx-plus"></i>
+
                   Adicionar custo
+
                 </button>
+
               </div>
 
+
+              <!-- SUGESTÕES -->
               <div class="quick-costs">
-                <span>Sugestões:</span>
+
+                <span>
+                  Sugestões:
+                </span>
+
                 <div class="quick-cost-buttons">
-                  <button type="button" data-cost-template="Matéria-prima">Matéria-prima</button>
-                  <button type="button" data-cost-template="Embalagem">Embalagem</button>
-                  <button type="button" data-cost-template="Mão de obra">Mão de obra</button>
-                  <button type="button" data-cost-template="Taxa">Taxa</button>
-                  <button type="button" data-cost-template="Entrega">Entrega</button>
-                  <button type="button" data-cost-template="Energia">Energia</button>
+
+                  <button
+                    type="button"
+                    data-cost-template="Matéria-prima"
+                  >
+                    Matéria-prima
+                  </button>
+
+                  <button
+                    type="button"
+                    data-cost-template="Embalagem"
+                  >
+                    Embalagem
+                  </button>
+
+                  <button
+                    type="button"
+                    data-cost-template="Mão de obra"
+                  >
+                    Mão de obra
+                  </button>
+
+                  <button
+                    type="button"
+                    data-cost-template="Taxa"
+                  >
+                    Taxa
+                  </button>
+
+                  <button
+                    type="button"
+                    data-cost-template="Entrega"
+                  >
+                    Entrega
+                  </button>
+
+                  <button
+                    type="button"
+                    data-cost-template="Energia"
+                  >
+                    Energia
+                  </button>
+
                 </div>
+
               </div>
 
-              <div class="cost-items" id="costItems"></div>
-              <span class="field-error" id="costError"></span>
 
+              <div
+                class="cost-items"
+                id="costItems"
+              ></div>
+
+              <span
+                class="field-error"
+                id="costError"
+              ></span>
+
+
+              <!-- PREÇO BRUTO -->
               <div class="gross-price-bar">
-                <span>Preço bruto</span>
-                <strong id="grossPriceSummary">R$ 0,00</strong>
-                <small>Soma dos custos por unidade, sem lucro.</small>
+
+                <span>
+                  Preço bruto
+                </span>
+
+                <strong id="grossPriceSummary">
+                  R$ 0,00
+                </strong>
+
+                <small>
+                  Soma dos custos por unidade, sem lucro.
+                </small>
+
               </div>
+
             </section>
 
+
+            <!-- PREÇO E MARGEM -->
             <section class="form-card pricing-card">
+
               <div class="form-card-head">
+
                 <div>
-                  <h3>Preço e margem</h3>
-                  <p>Defina quanto pretende cobrar e compare com a margem desejada.</p>
+
+                  <h3>
+                    Preço e margem
+                  </h3>
+
+                  <p>
+                    Defina quanto pretende cobrar e compare com a margem desejada.
+                  </p>
+
                 </div>
+
               </div>
+
 
               <div class="form-grid three-cols pricing-fields">
+
+
+                <!-- PREÇO BRUTO -->
                 <div class="field gross-price-field">
-                  <label for="grossPriceInput">Preço bruto</label>
+
+                  <label for="grossPriceInput">
+                    Preço bruto
+                  </label>
+
                   <div class="money-input">
-                    <span>R$</span>
-                    <input id="grossPriceInput" type="text" value="0,00" readonly aria-readonly="true">
+
+                    <span>
+                      R$
+                    </span>
+
+                    <input
+                      id="grossPriceInput"
+                      type="text"
+                      value="0,00"
+                      readonly
+                      aria-readonly="true"
+                    >
+
                   </div>
+
                 </div>
 
+
+                <!-- MARGEM -->
                 <div class="field">
-                  <label for="targetMarginInput">Margem desejada</label>
+
+                  <label for="targetMarginInput">
+                    Margem desejada
+                  </label>
+
                   <div class="suffix-input">
-                    <input id="targetMarginInput" type="number" min="0" max="95" step="1" inputmode="decimal" value="30">
-                    <span>%</span>
+
+                    <input
+                      id="targetMarginInput"
+                      type="number"
+                      min="0"
+                      max="95"
+                      step="1"
+                      inputmode="decimal"
+                      value="30"
+                    >
+
+                    <span>
+                      %
+                    </span>
+
                   </div>
+
                 </div>
 
+
+                <!-- PREÇO DE VENDA -->
                 <div class="field">
-                  <label for="salePriceInput">Preço de venda *</label>
+
+                  <label for="salePriceInput">
+                    Preço de venda *
+                  </label>
+
                   <div class="money-input">
-                    <span>R$</span>
-                    <input id="salePriceInput" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0,00" required aria-describedby="salePriceError">
+
+                    <span>
+                      R$
+                    </span>
+
+                    <input
+                      id="salePriceInput"
+                      type="number"
+                      min="0.01"
+                      step="0.01"
+                      inputmode="decimal"
+                      placeholder="0,00"
+                      required
+                      aria-describedby="salePriceError"
+                    >
+
                   </div>
-                  <span class="field-error" id="salePriceError"></span>
+
+                  <span
+                    class="field-error"
+                    id="salePriceError"
+                  ></span>
+
                 </div>
+
               </div>
 
-              <section class="pricing-feedback" id="pricingFeedback">
-                <div>
-                  <span>Margem atual</span>
-                  <strong id="feedbackMargin">0%</strong>
-                </div>
+
+              <!-- FEEDBACK -->
+              <section
+                class="pricing-feedback"
+                id="pricingFeedback"
+              >
 
                 <div>
-                  <span>Preço sugerido</span>
-                  <strong id="feedbackSuggested">R$ 0,00</strong>
+
+                  <span>
+                    Margem atual
+                  </span>
+
+                  <strong id="feedbackMargin">
+                    0%
+                  </strong>
+
                 </div>
 
-                <button class="text-action" id="useSuggestionBtn" type="button">Usar sugestão</button>
+
+                <div>
+
+                  <span>
+                    Preço sugerido
+                  </span>
+
+                  <strong id="feedbackSuggested">
+                    R$ 0,00
+                  </strong>
+
+                </div>
+
+
+                <button
+                  class="text-action"
+                  id="useSuggestionBtn"
+                  type="button"
+                >
+                  Usar sugestão
+                </button>
+
               </section>
 
-              <strong id="feedbackCost" hidden>R$ 0,00</strong>
-              <div class="pricing-explanation" id="pricingExplanation">
+
+              <strong
+                id="feedbackCost"
+                hidden
+              >
+                R$ 0,00
+              </strong>
+
+
+              <div
+                class="pricing-explanation"
+                id="pricingExplanation"
+              >
+
                 <i class="bx bx-info-circle"></i>
-                <span>Adicione os custos para calcular a sugestão de preço.</span>
+
+                <span>
+                  Adicione os custos para calcular a sugestão de preço.
+                </span>
+
               </div>
+
             </section>
+
           </div>
 
+
+          <!-- SIMULAÇÃO -->
           <aside class="simulation-card">
+
             <div class="simulation-head">
-              <span class="simulation-icon"><i class="bx bx-calculator"></i></span>
+
+              <span class="simulation-icon">
+                <i class="bx bx-calculator"></i>
+              </span>
+
               <div>
-                <h3>Simulação de venda</h3>
-                <p>Veja o que acontece se vender a quantidade estimada.</p>
+
+                <h3>
+                  Simulação de venda
+                </h3>
+
+                <p>
+                  Veja o que acontece se vender a quantidade estimada.
+                </p>
+
               </div>
+
             </div>
 
+
+            <!-- QUANTIDADE -->
             <div class="field">
-              <label for="unitsInput">Quantidade estimada</label>
+
+              <label for="unitsInput">
+                Quantidade estimada
+              </label>
+
               <div class="units-input">
-                <input id="unitsInput" type="number" min="1" step="1" inputmode="numeric" value="100">
-                <span>unidades</span>
+
+                <input
+                  id="unitsInput"
+                  type="number"
+                  min="1"
+                  step="1"
+                  inputmode="numeric"
+                  value="100"
+                >
+
+                <span>
+                  unidades
+                </span>
+
               </div>
-              <small class="simulation-help">Exemplo: 100 unidades.</small>
+
+              <small class="simulation-help">
+                Exemplo: 100 unidades.
+              </small>
+
             </div>
 
+
+            <!-- RESULTADOS -->
             <div class="simulation-results">
-              <div class="simulation-row">
-                <span>Investimento total</span>
-                <strong id="simulationInvestment">R$ 0,00</strong>
-              </div>
 
               <div class="simulation-row">
-                <span>Faturamento estimado</span>
-                <strong id="simulationRevenue">R$ 0,00</strong>
+
+                <span>
+                  Investimento total
+                </span>
+
+                <strong id="simulationInvestment">
+                  R$ 0,00
+                </strong>
+
               </div>
+
+
+              <div class="simulation-row">
+
+                <span>
+                  Faturamento estimado
+                </span>
+
+                <strong id="simulationRevenue">
+                  R$ 0,00
+                </strong>
+
+              </div>
+
 
               <div class="simulation-row profit-row">
-                <span>Lucro estimado</span>
-                <strong id="simulationProfit">R$ 0,00</strong>
+
+                <span>
+                  Lucro estimado
+                </span>
+
+                <strong id="simulationProfit">
+                  R$ 0,00
+                </strong>
+
               </div>
+
 
               <div class="simulation-row">
-                <span>Lucro por unidade</span>
-                <strong id="simulationUnitProfit">R$ 0,00</strong>
+
+                <span>
+                  Lucro por unidade
+                </span>
+
+                <strong id="simulationUnitProfit">
+                  R$ 0,00
+                </strong>
+
               </div>
+
             </div>
 
-            <div class="simulation-status" id="simulationStatus">
+
+            <div
+              class="simulation-status"
+              id="simulationStatus"
+            >
               Preencha os custos e o preço de venda para visualizar a projeção.
             </div>
 
+
+            <!-- DATA -->
             <div class="field date-field">
-              <label for="dateInput">Data de referência *</label>
-              <input id="dateInput" type="date" required aria-describedby="dateError">
-              <span class="field-error" id="dateError"></span>
+
+              <label for="dateInput">
+                Data de referência *
+              </label>
+
+              <input
+                id="dateInput"
+                type="date"
+                required
+                aria-describedby="dateError"
+              >
+
+              <span
+                class="field-error"
+                id="dateError"
+              ></span>
+
             </div>
+
           </aside>
 
-          <div class="form-message" id="formMessage" role="alert" aria-live="polite"></div>
+
+          <div
+            class="form-message"
+            id="formMessage"
+            role="alert"
+            aria-live="polite"
+          ></div>
+
         </div>
 
+
+        <!-- RODAPÉ DO MODAL -->
         <footer class="modal-footer">
-          <button class="btn btn-secondary" id="cancelModalBtn" type="button">Cancelar</button>
-          <button class="btn btn-primary" type="submit">
-            <i class="bx bx-check"></i>
-            Salvar produto
+
+          <button
+            class="btn btn-secondary"
+            id="cancelModalBtn"
+            type="button"
+          >
+            Cancelar
           </button>
+
+
+          <button
+            class="btn btn-primary"
+            type="submit"
+          >
+
+            <i class="bx bx-check"></i>
+
+            Salvar produto
+
+          </button>
+
         </footer>
+
       </form>
+
     </section>
+
   </div>
 
-  <div class="confirm-overlay" id="confirmOverlay" aria-hidden="true">
-    <section class="confirm-box" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
-      <span class="confirm-icon"><i class="bx bx-trash"></i></span>
-      <h2 id="confirmTitle">Excluir produto?</h2>
-      <p id="confirmText">Essa ação remove o produto também dos dados usados no gráfico.</p>
+
+  <!-- =========================================
+       CONFIRMAÇÃO DE EXCLUSÃO
+  ========================================= -->
+
+  <div
+    class="confirm-overlay"
+    id="confirmOverlay"
+    aria-hidden="true"
+  >
+
+    <section
+      class="confirm-box"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="confirmTitle"
+    >
+
+      <span class="confirm-icon">
+        <i class="bx bx-trash"></i>
+      </span>
+
+
+      <h2 id="confirmTitle">
+        Excluir produto?
+      </h2>
+
+
+      <p id="confirmText">
+        Essa ação remove o produto também dos dados usados no gráfico.
+      </p>
+
+
       <div class="confirm-actions">
-        <button class="btn btn-secondary" id="cancelDeleteBtn" type="button">Cancelar</button>
-        <button class="btn btn-danger" id="confirmDeleteBtn" type="button">Excluir</button>
+
+        <button
+          class="btn btn-secondary"
+          id="cancelDeleteBtn"
+          type="button"
+        >
+          Cancelar
+        </button>
+
+
+        <button
+          class="btn btn-danger"
+          id="confirmDeleteBtn"
+          type="button"
+        >
+          Excluir
+        </button>
+
       </div>
+
     </section>
+
   </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <!-- TOAST -->
+  <div
+    class="toast"
+    id="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+
+  <!-- JAVASCRIPT -->
   <script src="produtos.js"></script>
   <script src="../shared/site.js"></script>
+
 </body>
+
 </html>

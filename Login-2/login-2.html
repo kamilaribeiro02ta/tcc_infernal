@@ -2,22 +2,22 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>ZUZ | Login</title>
+  <title>ZUZ | Login</title>
 
-    <!-- Fontes -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Qwigley&display=swap"
-        rel="stylesheet"
-    >
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Qwigley&display=swap"
+    rel="stylesheet"
+  >
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="./login-2.css">
+  <!-- CSS -->
+  <link rel="stylesheet" href="./login-2.css">
   <link rel="stylesheet" href="../shared/sidebar.css">
   <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
   <link rel="stylesheet" href="../shared/design-system.css">
@@ -25,57 +25,57 @@
 
 <body>
 
-    <main class="page">
+  <main class="page">
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-      <a href="../index.html" class="site-brand-header" aria-label="ZUZ - Página inicial">
-        <img src="../imagens/logo-zuz-header.png" alt="ZUZ" class="site-brand-header-logo">
-      </a>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
 
-      
+      <!-- LOGIN -->
+      <div class="login-block">
 
-            <div class="login-block">
+        <div class="avatar">
 
-                <div class="avatar">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
 
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <circle
-                            cx="12"
-                            cy="8"
-                            r="4"
-                            fill="white"
-                        />
+            <circle
+              cx="12"
+              cy="8"
+              r="4"
+              fill="white"
+            />
 
-                        <path
-                            d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
-                            fill="white"
-                        />
-                    </svg>
+            <path
+              d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
+              fill="white"
+            />
 
-                </div>
+          </svg>
 
-                <div class="login-text">
-
-                    <div class="login-title">
-                        Login
-                    </div>
-
-                    <div class="login-subtitle">
-                        Minha Conta
-                    </div>
-
-                </div>
-
-            </div>
+        </div>
 
 
-            <!-- MENU -->
-            <nav class="nav-menu">
+        <div class="login-text">
+
+          <div class="login-title">
+            Login
+          </div>
+
+          <div class="login-subtitle">
+            Minha Conta
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- MENU -->
+      <nav class="nav-menu">
+
         <a href="../index.html" class="nav-item">
           <span class="nav-dot"></span>
           <span>Início</span>
@@ -106,209 +106,282 @@
           <span>Referências</span>
         </a>
 
-        
       </nav>
 
 
-            <!-- MODO CLARO / ESCURO -->
-            <button
-                class="theme-toggle"
-                id="themeToggle"
-                type="button"
-                aria-pressed="false"
+      <!-- MODO CLARO / ESCURO -->
+      <button
+        class="theme-toggle"
+        id="themeToggle"
+        type="button"
+        aria-pressed="false"
+      >
+
+        <span
+          class="theme-toggle-label"
+          id="themeLabel"
+        >
+          Modo Claro
+        </span>
+
+
+        <span class="theme-toggle-knob">
+
+          <!-- SOL -->
+          <svg
+            id="iconSun"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+
+            <circle cx="12" cy="12" r="4"></circle>
+
+            <line x1="12" y1="2" x2="12" y2="4"></line>
+            <line x1="12" y1="20" x2="12" y2="22"></line>
+            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
+            <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
+            <line x1="2" y1="12" x2="4" y2="12"></line>
+            <line x1="20" y1="12" x2="22" y2="12"></line>
+            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
+            <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
+
+          </svg>
+
+
+          <!-- LUA -->
+          <svg
+            id="iconMoon"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="display: none;"
+          >
+
+            <path
+              d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"
+            ></path>
+
+            <line
+              x1="18"
+              y1="3"
+              x2="18"
+              y2="6"
+            ></line>
+
+            <line
+              x1="16.5"
+              y1="4.5"
+              x2="19.5"
+              y2="4.5"
+            ></line>
+
+          </svg>
+
+        </span>
+
+      </button>
+
+    </aside>
+
+
+    <!-- LADO ESQUERDO -->
+    <section
+      class="hero"
+      aria-label="Boas-vindas ao ZUZ"
+    >
+
+      <div class="hero-copy">
+
+        <div
+          class="hero-heading"
+          aria-label="Bem-vindo de volta ao ZUZ"
+        >
+
+          <div class="hero-line hero-line-1">
+
+            <span class="hero-script">
+              Bem-vindo(a)
+            </span>
+
+            <span class="hero-bold hero-business">
+              de volta!
+            </span>
+
+          </div>
+
+
+          <div class="hero-bold hero-line-2">
+            Que bom ter você aqui.
+          </div>
+
+
+          <div class="hero-brand">
+            ZUZ
+          </div>
+
+        </div>
+
+
+        <p class="hero-description">
+          Acesse sua conta e continue tomando decisões mais inteligentes<br>
+          para o seu negócio, com mais clareza, estratégia e controle.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- LADO DIREITO -->
+    <section
+      class="signup"
+      aria-label="Fazer login"
+    >
+
+      <form
+        class="signup-form"
+        id="signupForm"
+        novalidate
+      >
+
+        <header class="form-header">
+
+          <span class="form-eyebrow">
+            Área da conta
+          </span>
+
+          <h1>
+            Acesse sua conta
+          </h1>
+
+          <p>
+            Use seu email e sua senha para continuar.
+          </p>
+
+        </header>
+
+
+        <div class="divider"></div>
+
+
+        <!-- EMAIL -->
+        <label class="field field-wide email-field">
+
+          <span>
+            Email *
+          </span>
+
+          <input
+            id="loginEmail"
+            type="email"
+            name="email"
+            placeholder="seuemail@exemplo.com"
+            autocomplete="email"
+            required
+            aria-describedby="loginEmailError"
+          >
+
+          <small
+            class="field-error"
+            id="loginEmailError"
+          ></small>
+
+        </label>
+
+
+        <!-- SENHA -->
+        <label class="field field-wide password-field">
+
+          <span>
+            Senha *
+          </span>
+
+          <div class="password-wrap">
+
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Digite sua senha"
+              minlength="8"
+              autocomplete="current-password"
+              required
+              aria-describedby="loginPasswordHelp loginPasswordError"
             >
 
-                <span
-                    class="theme-toggle-label"
-                    id="themeLabel"
-                >
-                    Modo Claro
-                </span>
 
-
-                <span class="theme-toggle-knob">
-
-                    <!-- SOL -->
-                    <svg
-                        id="iconSun"
-                        class="theme-icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-
-                        <circle cx="12" cy="12" r="4"></circle>
-
-                        <line x1="12" y1="2" x2="12" y2="4"></line>
-                        <line x1="12" y1="20" x2="12" y2="22"></line>
-                        <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
-                        <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
-                        <line x1="2" y1="12" x2="4" y2="12"></line>
-                        <line x1="20" y1="12" x2="22" y2="12"></line>
-                        <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
-                        <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
-
-                    </svg>
-
-
-                    <!-- LUA -->
-                    <svg
-                        id="iconMoon"
-                        class="theme-icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        style="display: none;"
-                    >
-
-                        <path
-                            d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"
-                        ></path>
-
-                        <line x1="18" y1="3" x2="18" y2="6"></line>
-                        <line x1="16.5" y1="4.5" x2="19.5" y2="4.5"></line>
-
-                    </svg>
-
-                </span>
-
+            <button
+              class="password-dot"
+              type="button"
+              aria-label="Mostrar senha"
+            >
+              <span>
+                Mostrar
+              </span>
             </button>
 
-        </aside>
+          </div>
 
 
+          <small id="loginPasswordHelp">
+            Use pelo menos 8 caracteres.
+          </small>
 
-        <!-- LADO ESQUERDO -->
-        <section
-            class="hero"
-            aria-label="Boas-vindas ao ZUZ"
+          <small
+            class="field-error"
+            id="loginPasswordError"
+          ></small>
+
+        </label>
+
+
+        <!-- BOTÃO ENTRAR -->
+        <button
+          class="submit-button"
+          type="submit"
         >
-
-            <div class="hero-copy">
-
-                <div
-                    class="hero-heading"
-                    aria-label="Bem-vindo de volta ao ZUZ"
-                >
-
-                    <div class="hero-line hero-line-1">
-
-                        <span class="hero-script">
-                            Bem-vindo(a)
-                        </span>
-
-                        <span class="hero-bold hero-business">
-                            de volta!
-                        </span>
-
-                    </div>
+          Entrar
+        </button>
 
 
-                    <div class="hero-bold hero-line-2">
-                        Que bom ter você aqui.
-                    </div>
+        <div
+          class="form-status"
+          id="loginStatus"
+          role="status"
+          aria-live="polite"
+        ></div>
 
 
-                    <div class="hero-brand">
-                        ZUZ
-                    </div>
+        <p class="form-switch">
 
-                </div>
+          Ainda não tem uma conta?
 
+          <a href="../Login/login.html">
+            Criar conta
+          </a>
 
-                <p class="hero-description">
-                    Acesse sua conta e continue tomando decisões mais inteligentes<br>
-                    para o seu negócio, com mais clareza, estratégia e controle.
-                </p>
+        </p>
 
-            </div>
+      </form>
 
-        </section>
+    </section>
 
-
-
-        <!-- LADO DIREITO -->
-        <section
-            class="signup"
-            aria-label="Fazer login"
-        >
-
-            <form
-                class="signup-form"
-                id="signupForm"
-                novalidate
-            >
-                <header class="form-header">
-                    <span class="form-eyebrow">Área da conta</span>
-                    <h1>Acesse sua conta</h1>
-                    <p>Use seu email e sua senha para continuar.</p>
-                </header>
-
-                <div class="divider"></div>
-
-                <label class="field field-wide email-field">
-                    <span>Email *</span>
-                    <input
-                        id="loginEmail"
-                        type="email"
-                        name="email"
-                        placeholder="seuemail@exemplo.com"
-                        autocomplete="email"
-                        required
-                        aria-describedby="loginEmailError"
-                    >
-                    <small class="field-error" id="loginEmailError"></small>
-                </label>
-
-                <label class="field field-wide password-field">
-                    <span>Senha *</span>
-
-                    <div class="password-wrap">
-                        <input
-                            id="password"
-                            type="password"
-                            name="password"
-                            placeholder="Digite sua senha"
-                            minlength="8"
-                            autocomplete="current-password"
-                            required
-                            aria-describedby="loginPasswordHelp loginPasswordError"
-                        >
-
-                        <button class="password-dot" type="button" aria-label="Mostrar senha"><span>Mostrar</span></button>
-                    </div>
-
-                    <small id="loginPasswordHelp">Use pelo menos 8 caracteres.</small>
-                    <small class="field-error" id="loginPasswordError"></small>
-                </label>
-
-                <button class="submit-button" type="submit">
-                    Entrar
-                </button>
-
-                <div class="form-status" id="loginStatus" role="status" aria-live="polite"></div>
-
-                <p class="form-switch">
-                    Ainda não tem uma conta?
-                    <a href="../Login/login.html">Criar conta</a>
-                </p>
-            </form>
-
-        </section>
-
-    </main>
+  </main>
 
 
-    <!-- JAVASCRIPT -->
-    <script src="./login-2.js"></script>
-
+  <!-- JAVASCRIPT -->
+  <script src="./login-2.js"></script>
   <script src="../shared/site.js"></script>
+
 </body>
 
 </html>
