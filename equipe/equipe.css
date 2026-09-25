@@ -1,0 +1,899 @@
+/* =========================================
+   CONFIGURAÇÃO GERAL
+========================================= */
+
+:root {
+  --sidebar-width: 220px;
+
+  --purple: #7047ff;
+
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #e7e4ec;
+
+  --text-main: #18141e;
+  --text-muted: #90899b;
+
+  --nav-text: #898197;
+  --nav-active-bg: #f2efff;
+
+  --toggle-bg: #f0edf7;
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  width: 100%;
+  height: 100%;
+
+  font-family: "Poppins", sans-serif;
+}
+
+
+body {
+  overflow: hidden;
+}
+
+
+a {
+  color: inherit;
+}
+
+
+/* =========================================
+   PÁGINA
+========================================= */
+
+.page {
+  width: 100%;
+  height: 100vh;
+
+  display: flex;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+
+  height: 100vh;
+
+  padding: 0 20px 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--sidebar-bg);
+
+  border-right: 1px solid var(--sidebar-border);
+
+  overflow: hidden;
+
+  z-index: 100;
+}
+
+
+/* =========================================
+   LOGO
+========================================= */
+
+.site-brand-header {
+  width: 100%;
+  height: 107px;
+
+  padding: 20px 8px;
+
+  display: flex;
+  align-items: center;
+
+  border-bottom:
+    1px solid var(--sidebar-border);
+
+  text-decoration: none;
+}
+
+
+.site-brand-header-logo {
+  width: 48px;
+  height: 48px;
+
+  display: block;
+
+  object-fit: contain;
+}
+
+
+/* =========================================
+   LOGIN
+========================================= */
+
+.login-block {
+  width: 100%;
+  height: 90px;
+
+  padding: 18px 8px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  border-bottom:
+    1px solid var(--sidebar-border);
+}
+
+
+.avatar {
+  width: 44px;
+  height: 44px;
+
+  flex: 0 0 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: var(--purple);
+}
+
+
+.avatar svg {
+  width: 20px;
+  height: 20px;
+}
+
+
+.login-text {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.login-text a {
+  text-decoration: none;
+}
+
+
+.login-title {
+  color: var(--text-main);
+
+  font-size: 15px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+
+.login-subtitle {
+  margin-top: 4px;
+
+  color: var(--text-muted);
+
+  font-size: 12px;
+}
+
+
+/* =========================================
+   MENU
+========================================= */
+
+.nav-menu {
+  width: 100%;
+
+  padding-top: 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+
+.nav-item {
+  position: relative;
+
+  width: 100%;
+  height: 44px;
+
+  padding: 0 14px;
+
+  display: flex;
+  align-items: center;
+
+  border-radius: 9px;
+
+  color: var(--nav-text);
+
+  font-size: 14px;
+  font-weight: 500;
+
+  text-decoration: none;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.nav-item:hover {
+  color: var(--purple);
+
+  background: #f7f5ff;
+}
+
+
+.nav-item.active {
+  color: var(--purple);
+
+  background: var(--nav-active-bg);
+
+  font-weight: 700;
+}
+
+
+.nav-item.active::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  bottom: 0;
+  left: 0;
+
+  width: 3px;
+
+  border-radius: 0 4px 4px 0;
+
+  background: var(--purple);
+}
+
+
+/* =========================================
+   BOTÃO DE TEMA
+========================================= */
+
+.theme-toggle {
+  width: 100%;
+  height: 48px;
+
+  margin-top: auto;
+
+  padding: 5px 5px 5px 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: none;
+  outline: none;
+
+  border-radius: 25px;
+
+  background: var(--toggle-bg);
+
+  cursor: pointer;
+
+  box-shadow: none;
+
+  font-family: "Poppins", sans-serif;
+}
+
+
+.theme-toggle-label {
+  order: 1;
+
+  color: #645f6d;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.2px;
+
+  white-space: nowrap;
+}
+
+
+.theme-toggle-knob {
+  order: 2;
+
+  width: 38px;
+  height: 38px;
+
+  flex: 0 0 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  color: var(--purple);
+
+  box-shadow:
+    0 3px 9px rgba(33, 21, 71, 0.13);
+}
+
+
+.theme-icon {
+  width: 19px;
+  height: 19px;
+}
+
+
+.theme-toggle:focus,
+.theme-toggle:focus-visible,
+.theme-toggle:active {
+  border: none;
+  outline: none;
+
+  box-shadow: none;
+}
+
+
+/* =========================================
+   CONTEÚDO
+========================================= */
+
+.main-content {
+  width:
+    calc(
+      100% - var(--sidebar-width)
+    );
+
+  height: 100vh;
+}
+
+
+/* =========================================
+   EQUIPE
+========================================= */
+
+.team-page {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 76% 45%,
+      rgba(88, 66, 207, 0.18),
+      transparent 45%
+    ),
+    linear-gradient(
+      135deg,
+      #0d0921,
+      #100b29,
+      #0d0922
+    );
+}
+
+
+/* =========================================
+   FORMAS DO FUNDO
+========================================= */
+
+.team-page::before {
+  content: "";
+
+  position: absolute;
+
+  width: 850px;
+  height: 290px;
+
+  left: 45%;
+  top: 49%;
+
+  transform:
+    translate(-50%, -50%)
+    rotate(-27deg);
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(78, 59, 185, 0.04),
+      rgba(88, 67, 209, 0.22),
+      rgba(97, 72, 218, 0.1)
+    );
+
+  pointer-events: none;
+}
+
+
+.team-page::after {
+  content: "";
+
+  position: absolute;
+
+  width: 720px;
+  height: 210px;
+
+  right: -170px;
+  bottom: 65px;
+
+  transform:
+    rotate(12deg);
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(93, 72, 210, 0.02),
+      rgba(93, 72, 210, 0.1)
+    );
+
+  pointer-events: none;
+}
+
+
+/* =========================================
+   CARROSSEL
+========================================= */
+
+.team-carousel {
+  position: relative;
+
+  z-index: 5;
+
+  width: 100%;
+  max-width: 1000px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 30px;
+}
+
+
+.team-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 42px;
+
+  max-width: 760px;
+
+  padding: 20px 10px;
+
+  overflow-x: auto;
+
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+
+  scrollbar-width: none;
+}
+
+
+.team-track::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* =========================================
+   CARD
+========================================= */
+
+.member-card {
+  position: relative;
+
+  width: 190px;
+  height: 275px;
+
+  flex: 0 0 190px;
+
+  padding: 18px 15px 15px;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border-radius: 15px;
+
+  border:
+    1px solid
+    rgba(137, 119, 230, 0.16);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(28, 23, 68, 0.88),
+      rgba(17, 13, 45, 0.92)
+    );
+
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.28);
+
+  scroll-snap-align: center;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+
+.member-card:hover {
+  transform: translateY(-5px);
+
+  border-color:
+    rgba(137, 119, 230, 0.35);
+}
+
+
+.member-card::before {
+  content: "";
+
+  position: absolute;
+
+  width: 260px;
+  height: 100px;
+
+  left: -65px;
+  bottom: 5px;
+
+  transform:
+    rotate(-17deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(101, 78, 215, 0.12),
+      transparent
+    );
+}
+
+
+/* =========================================
+   AVATAR
+========================================= */
+
+.member-avatar {
+  position: relative;
+
+  z-index: 2;
+
+  width: 128px;
+  height: 128px;
+
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #302b72,
+      #292560
+    );
+
+  color: #9e96f5;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   INFORMAÇÕES
+========================================= */
+
+.member-info {
+  position: relative;
+
+  z-index: 2;
+
+  margin-top: auto;
+}
+
+
+.member-info h3 {
+  margin: 0 0 4px;
+
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+.member-info p {
+  margin: 0;
+
+  color: #716b91;
+
+  font-size: 9px;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================
+   SETAS
+========================================= */
+
+.team-arrow {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.13);
+
+  background:
+    rgba(35, 31, 60, 0.85);
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.team-arrow i {
+  font-size: 20px;
+}
+
+
+.team-arrow:hover {
+  transform: scale(1.07);
+
+  background: #7047ff;
+}
+
+
+/* =========================================
+   MODO CLARO
+========================================= */
+
+body:not(.dark) .team-page {
+  background:
+    radial-gradient(
+      circle at 76% 45%,
+      rgba(106, 77, 240, 0.15),
+      transparent 44%
+    ),
+    #f8f7fc;
+}
+
+
+body:not(.dark) .team-page::before {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(106, 77, 240, 0.03),
+      rgba(106, 77, 240, 0.12),
+      rgba(106, 77, 240, 0.03)
+    );
+}
+
+
+body:not(.dark) .team-page::after {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(106, 77, 240, 0.02),
+      rgba(106, 77, 240, 0.07)
+    );
+}
+
+
+body:not(.dark) .member-card {
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #f8f6ff
+    );
+
+  border-color:
+    rgba(106, 77, 240, 0.14);
+
+  box-shadow:
+    0 16px 38px
+    rgba(67, 45, 140, 0.12);
+}
+
+
+body:not(.dark) .member-avatar {
+  background:
+    linear-gradient(
+      145deg,
+      #e7e2ff,
+      #ddd6ff
+    );
+
+  color: #6346d9;
+}
+
+
+body:not(.dark) .member-info h3 {
+  color: #171421;
+}
+
+
+body:not(.dark) .member-info p {
+  color: #858095;
+}
+
+
+body:not(.dark) .team-arrow {
+  background: #ffffff;
+
+  color: #302952;
+
+  border-color:
+    rgba(71, 54, 130, 0.15);
+
+  box-shadow:
+    0 8px 22px
+    rgba(52, 35, 110, 0.12);
+}
+
+
+/* =========================================
+   MODO ESCURO
+========================================= */
+
+body.dark {
+  --sidebar-bg: #130e1e;
+  --sidebar-border:
+    rgba(255, 255, 255, 0.09);
+
+  --text-main: #ffffff;
+  --text-muted: #aa9cbf;
+
+  --nav-text: #aa9dbd;
+
+  --nav-active-bg: #2b2146;
+
+  --toggle-bg: #211937;
+}
+
+
+body.dark .nav-item:hover {
+  color: #a984ff;
+
+  background:
+    rgba(139, 104, 255, 0.08);
+}
+
+
+body.dark .nav-item.active {
+  color: #9b73ff;
+}
+
+
+body.dark .theme-toggle {
+  padding:
+    5px
+    16px
+    5px
+    5px;
+}
+
+
+body.dark .theme-toggle-knob {
+  order: 1;
+
+  background: #35245e;
+
+  color: #ad8cff;
+}
+
+
+body.dark .theme-toggle-label {
+  order: 2;
+
+  color: #ffffff;
+}
+
+
+/* =========================================
+   RESPONSIVO
+========================================= */
+
+@media (max-width: 1000px) {
+
+  :root {
+    --sidebar-width: 200px;
+  }
+
+
+  .team-track {
+    gap: 24px;
+  }
+
+
+  .member-card {
+    width: 175px;
+
+    flex-basis: 175px;
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  body {
+    overflow: auto;
+  }
+
+
+  .sidebar {
+    width: 180px;
+    min-width: 180px;
+  }
+
+
+  .main-content {
+    width:
+      calc(
+        100% - 180px
+      );
+  }
+
+
+  .team-page {
+    padding: 20px;
+  }
+
+
+  .team-track {
+    justify-content: flex-start;
+  }
+
+
+  .team-arrow {
+    display: none;
+  }
+
+}

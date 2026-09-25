@@ -1,126 +1,818 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>ZUZ | Equipe</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Fonte Poppins -->
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
 
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../shared/placeholder-page.css">
-  <link rel="stylesheet" href="../shared/sidebar.css">
-  <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
-  <link rel="stylesheet" href="../shared/design-system.css">
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Boxicons -->
+  <link
+    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  >
+
+  <!-- CSS -->
+  <link
+    rel="stylesheet"
+    href="./equipe.css"
+  >
+
+  <!-- Favicon -->
+  <link
+    rel="icon"
+    type="image/png"
+    href="../imagens/logo-zuz-header.png"
+  >
+
 </head>
 
 <body>
+
   <div class="page">
 
+    <!-- ========================================
+         SIDEBAR
+    ========================================= -->
+
     <aside class="sidebar">
-      <a href="../index.html" class="site-brand-header" aria-label="ZUZ - Página inicial">
-        <img src="../imagens/logo-zuz-header.png" alt="ZUZ" class="site-brand-header-logo">
+
+      <!-- LOGO -->
+      <a
+        href="../index.html"
+        class="site-brand-header"
+        aria-label="Página inicial ZUZ"
+      >
+
+        <img
+          src="../imagens/logo-zuz-header.png"
+          alt="ZUZ"
+          class="site-brand-header-logo"
+        >
+
       </a>
 
-      
+
+      <!-- LOGIN -->
       <div class="login-block">
+
         <div class="avatar">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="8" r="4" fill="white"/>
-            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"/>
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+
+            <circle
+              cx="12"
+              cy="8"
+              r="4"
+              fill="white"
+            />
+
+            <path
+              d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
+              fill="white"
+            />
+
           </svg>
+
         </div>
 
+
         <div class="login-text">
+
           <a href="../Login-2/login-2.html">
-            <div class="login-title">Login</div>
+
+            <div class="login-title">
+              Login
+            </div>
+
           </a>
-          <div class="login-subtitle">Minha Conta</div>
+
+          <div class="login-subtitle">
+            Minha Conta
+          </div>
+
         </div>
+
       </div>
+
+
+      <!-- ========================================
+           MENU
+      ========================================= -->
 
       <nav class="nav-menu">
 
-        <a href="../index.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Início</span>
+        <a
+          href="../index.html"
+          class="nav-item"
+        >
+          Início
         </a>
 
-        <a href="../introducao/intro.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Instruções</span>
+
+        <a
+          href="../introducao/intro.html"
+          class="nav-item"
+        >
+          Instruções
         </a>
 
-        <a href="../produtos/produtos.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Produtos</span>
+
+        <a
+          href="../produtos/produtos.html"
+          class="nav-item"
+        >
+          Produtos
         </a>
 
-        <a href="../garfico/grafico.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Gráfico</span>
+
+        <a
+          href="../garfico/grafico.html"
+          class="nav-item"
+        >
+          Gráfico
         </a>
 
-        <a href="../equipe/equipe.html" class="nav-item active">
-          <span class="nav-dot"></span>
-          <span>Equipe</span>
+
+        <a
+          href="../equipe/equipe.html"
+          class="nav-item active"
+        >
+          Equipe
         </a>
 
-        <a href="../referencias/refe.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Referências</span>
+
+        <a
+          href="../referencias/refe.html"
+          class="nav-item"
+        >
+          Referências
         </a>
 
-        
       </nav>
 
-      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">
-        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
+
+      <!-- ========================================
+           TEMA
+      ========================================= -->
+
+      <button
+        class="theme-toggle"
+        id="themeToggle"
+        type="button"
+        aria-pressed="false"
+      >
+
+        <span
+          class="theme-toggle-label"
+          id="themeLabel"
+        >
+          MODO CLARO
+        </span>
+
 
         <span class="theme-toggle-knob">
-          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="4"></circle>
-            <line x1="12" y1="2" x2="12" y2="4"></line>
-            <line x1="12" y1="20" x2="12" y2="22"></line>
-            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
-            <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
-            <line x1="2" y1="12" x2="4" y2="12"></line>
-            <line x1="20" y1="12" x2="22" y2="12"></line>
-            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
-            <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
+
+          <!-- SOL -->
+          <svg
+            id="iconSun"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+
+            <circle
+              cx="12"
+              cy="12"
+              r="4"
+            ></circle>
+
+            <line
+              x1="12"
+              y1="2"
+              x2="12"
+              y2="4"
+            ></line>
+
+            <line
+              x1="12"
+              y1="20"
+              x2="12"
+              y2="22"
+            ></line>
+
+            <line
+              x1="4.93"
+              y1="4.93"
+              x2="6.34"
+              y2="6.34"
+            ></line>
+
+            <line
+              x1="17.66"
+              y1="17.66"
+              x2="19.07"
+              y2="19.07"
+            ></line>
+
+            <line
+              x1="2"
+              y1="12"
+              x2="4"
+              y2="12"
+            ></line>
+
+            <line
+              x1="20"
+              y1="12"
+              x2="22"
+              y2="12"
+            ></line>
+
+            <line
+              x1="4.93"
+              y1="19.07"
+              x2="6.34"
+              y2="17.66"
+            ></line>
+
+            <line
+              x1="17.66"
+              y1="6.34"
+              x2="19.07"
+              y2="4.93"
+            ></line>
+
           </svg>
 
-          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-            <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
-            <line x1="18" y1="3" x2="18" y2="6"></line>
-            <line x1="16.5" y1="4.5" x2="19.5" y2="4.5"></line>
+
+          <!-- LUA -->
+          <svg
+            id="iconMoon"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="display: none;"
+          >
+
+            <path
+              d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"
+            ></path>
+
+            <line
+              x1="18"
+              y1="3"
+              x2="18"
+              y2="6"
+            ></line>
+
+            <line
+              x1="16.5"
+              y1="4.5"
+              x2="19.5"
+              y2="4.5"
+            ></line>
+
           </svg>
+
         </span>
+
       </button>
+
     </aside>
 
+
+    <!-- ========================================
+         CONTEÚDO PRINCIPAL
+    ========================================= -->
+
     <main class="main-content">
-      <section class="empty-page-state" aria-labelledby="pageTitle">
-        <div class="empty-icon" aria-hidden="true">
-          <i class="bx bx-group"></i>
+
+      <section
+        class="team-page"
+        aria-label="Equipe do projeto ZUZ"
+      >
+
+        <div class="team-carousel">
+
+          <!-- SETA ESQUERDA -->
+          <button
+            class="team-arrow"
+            id="teamPrev"
+            type="button"
+            aria-label="Integrante anterior"
+          >
+
+            <i class="bx bx-chevron-left"></i>
+
+          </button>
+
+
+          <!-- ========================================
+               CARDS
+          ========================================= -->
+
+          <div
+            class="team-track"
+            id="teamTrack"
+          >
+
+            <!-- KAMILLA -->
+            <article class="member-card">
+
+              <div class="member-avatar">
+                KS
+              </div>
+
+              <div class="member-info">
+
+                <h3>
+                  Kamilla Silva
+                </h3>
+
+                <p>
+                  32 ATI
+                </p>
+
+              </div>
+
+            </article>
+
+
+            <!-- MELISSA -->
+            <article class="member-card">
+
+              <div class="member-avatar">
+                MA
+              </div>
+
+              <div class="member-info">
+
+                <h3>
+                  Melissa Aquino
+                </h3>
+
+                <p>
+                  32 ATI
+                </p>
+
+              </div>
+
+            </article>
+
+
+            <!-- GABRIEL -->
+            <article class="member-card">
+
+              <div class="member-avatar">
+                GB
+              </div>
+
+              <div class="member-info">
+
+                <h3>
+                  Gabriel Bonfim
+                </h3>
+
+                <p>
+                  32 ATI
+                </p>
+
+              </div>
+
+            </article>
+
+          </div>
+
+
+          <!-- SETA DIREITA -->
+          <button
+            class="team-arrow"
+            id="teamNext"
+            type="button"
+            aria-label="Próximo integrante"
+          >
+
+            <i class="bx bx-chevron-right"></i>
+
+          </button>
+
         </div>
 
-        <span class="page-eyebrow">Projeto ZUZ</span>
-        <h1 id="pageTitle">Equipe</h1>
-        <p>Esta área será usada para apresentar os integrantes do projeto e suas responsabilidades. Enquanto o conteúdo da equipe é finalizado, você pode continuar explorando como o sistema funciona.</p>
-
-        <div class="empty-page-actions">
-          <a class="ui-button-primary" href="../introducao/intro.html">Entender o ZUZ</a>
-          <a class="ui-button-secondary" href="../produtos/produtos.html">Ir para Produtos</a>
-        </div>
       </section>
+
     </main>
 
   </div>
 
-  <script src="../index.js"></script>
-  <script src="../shared/site.js"></script>
+
+  <!-- ========================================
+       JAVASCRIPT
+  ========================================= -->
+
+  <script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+      /* ========================================
+         MODO CLARO / ESCURO
+      ========================================= */
+
+      const themeToggle =
+        document.getElementById("themeToggle");
+
+      const themeLabel =
+        document.getElementById("themeLabel");
+
+      const iconSun =
+        document.getElementById("iconSun");
+
+      const iconMoon =
+        document.getElementById("iconMoon");
+
+
+      function applyTheme(theme) {
+
+        const isDark =
+          theme === "dark";
+
+
+        document.body.classList.toggle(
+          "dark",
+          isDark
+        );
+
+
+        if (themeToggle) {
+
+          themeToggle.setAttribute(
+            "aria-pressed",
+            String(isDark)
+          );
+
+        }
+
+
+        if (themeLabel) {
+
+          themeLabel.textContent =
+            isDark
+              ? "MODO ESCURO"
+              : "MODO CLARO";
+
+        }
+
+
+        if (iconSun) {
+
+          iconSun.style.display =
+            isDark
+              ? "none"
+              : "block";
+
+        }
+
+
+        if (iconMoon) {
+
+          iconMoon.style.display =
+            isDark
+              ? "block"
+              : "none";
+
+        }
+
+      }
+
+
+      const savedTheme =
+        localStorage.getItem("zuz-theme") ||
+        "light";
+
+
+      applyTheme(savedTheme);
+
+
+      if (themeToggle) {
+
+        themeToggle.addEventListener(
+          "click",
+          () => {
+
+            const isDark =
+              document.body.classList.contains(
+                "dark"
+              );
+
+
+            const newTheme =
+              isDark
+                ? "light"
+                : "dark";
+
+
+            localStorage.setItem(
+              "zuz-theme",
+              newTheme
+            );
+
+
+            applyTheme(newTheme);
+
+          }
+        );
+
+      }
+
+
+      /* ========================================
+         MENU ATIVO
+      ========================================= */
+
+      const navItems =
+        document.querySelectorAll(
+          ".nav-item"
+        );
+
+
+      const currentPath =
+        window.location.pathname;
+
+
+      navItems.forEach((item) => {
+
+        const href =
+          item.getAttribute("href");
+
+
+        if (!href) {
+          return;
+        }
+
+
+        const link =
+          new URL(
+            href,
+            window.location.href
+          );
+
+
+        item.classList.toggle(
+          "active",
+          link.pathname === currentPath
+        );
+
+      });
+
+
+      /* ========================================
+         CARROSSEL
+      ========================================= */
+
+      const teamTrack =
+        document.getElementById("teamTrack");
+
+      const teamPrev =
+        document.getElementById("teamPrev");
+
+      const teamNext =
+        document.getElementById("teamNext");
+
+
+      let moving = false;
+
+
+      function moveCarousel(direction) {
+
+        if (!teamTrack || moving) {
+          return;
+        }
+
+
+        moving = true;
+
+
+        const cards =
+          teamTrack.querySelectorAll(
+            ".member-card"
+          );
+
+
+        /* ANIMAÇÃO DE SAÍDA */
+
+        cards.forEach((card) => {
+
+          card.animate(
+            [
+              {
+                opacity: 1,
+                transform:
+                  "translateX(0)"
+              },
+
+              {
+                opacity: 0.35,
+
+                transform:
+                  direction === "next"
+                    ? "translateX(-28px)"
+                    : "translateX(28px)"
+              }
+            ],
+
+            {
+              duration: 180,
+              easing: "ease"
+            }
+          );
+
+        });
+
+
+        setTimeout(() => {
+
+          /* DIREITA */
+
+          if (direction === "next") {
+
+            const firstCard =
+              teamTrack.firstElementChild;
+
+
+            if (firstCard) {
+
+              teamTrack.appendChild(
+                firstCard
+              );
+
+            }
+
+          }
+
+
+          /* ESQUERDA */
+
+          if (direction === "prev") {
+
+            const lastCard =
+              teamTrack.lastElementChild;
+
+
+            if (lastCard) {
+
+              teamTrack.prepend(
+                lastCard
+              );
+
+            }
+
+          }
+
+
+          /* ANIMAÇÃO DE ENTRADA */
+
+          const newCards =
+            teamTrack.querySelectorAll(
+              ".member-card"
+            );
+
+
+          newCards.forEach((card) => {
+
+            card.animate(
+              [
+                {
+                  opacity: 0.35,
+
+                  transform:
+                    direction === "next"
+                      ? "translateX(28px)"
+                      : "translateX(-28px)"
+                },
+
+                {
+                  opacity: 1,
+                  transform:
+                    "translateX(0)"
+                }
+              ],
+
+              {
+                duration: 220,
+                easing:
+                  "cubic-bezier(0.22, 1, 0.36, 1)"
+              }
+            );
+
+          });
+
+
+          setTimeout(() => {
+
+            moving = false;
+
+          }, 220);
+
+
+        }, 170);
+
+      }
+
+
+      /* SETA DIREITA */
+
+      if (teamNext) {
+
+        teamNext.addEventListener(
+          "click",
+          () => {
+
+            moveCarousel("next");
+
+          }
+        );
+
+      }
+
+
+      /* SETA ESQUERDA */
+
+      if (teamPrev) {
+
+        teamPrev.addEventListener(
+          "click",
+          () => {
+
+            moveCarousel("prev");
+
+          }
+        );
+
+      }
+
+
+      /* ========================================
+         SETAS DO TECLADO
+      ========================================= */
+
+      document.addEventListener(
+        "keydown",
+        (event) => {
+
+          if (event.key === "ArrowRight") {
+
+            moveCarousel("next");
+
+          }
+
+
+          if (event.key === "ArrowLeft") {
+
+            moveCarousel("prev");
+
+          }
+
+        }
+      );
+
+    });
+
+  </script>
+
 </body>
+
 </html>
