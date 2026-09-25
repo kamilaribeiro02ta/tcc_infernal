@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Perfil do usuário ZUZ"
+  >
+
+  <title>ZUZ | Meu Perfil</title>
+
+
+  <!-- FONTES -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+
+  <!-- ÍCONES -->
+
+  <link
+    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  >
+
+
+  <!-- CSS -->
+
+  <link
+    rel="stylesheet"
+    href="../shared/sidebar.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-system.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./perfil.css"
+  >
+
+
+  <!-- ÍCONE -->
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="../imagens/logo-zuz-header.png"
+  >
+
+</head>
+
+
+<body>
+
+
+  <div class="page">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+
+      <!-- CONTA -->
+
+      <a
+        href="./perfil.html"
+        class="login-block profile-account-link"
+        id="accountLink"
+        aria-label="Abrir meu perfil"
+      >
+
+
+        <div class="avatar profile-sidebar-avatar">
+
+
+          <img
+            id="sidebarProfileImage"
+            src=""
+            alt="Foto de perfil"
+            hidden
+          >
+
+
+          <svg
+            id="sidebarDefaultAvatar"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+
+            <circle
+              cx="12"
+              cy="8"
+              r="4"
+              fill="white"
+            ></circle>
+
+            <path
+              d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
+              fill="white"
+            ></path>
+
+          </svg>
+
+
+        </div>
+
+
+        <div class="login-text">
+
+
+          <div
+            class="login-title"
+            id="sidebarUserName"
+          >
+            Minha Conta
+          </div>
+
+
+          <div
+            class="login-subtitle"
+            id="sidebarUserSubtitle"
+          >
+            Meu perfil
+          </div>
+
+
+        </div>
+
+
+      </a>
+
+
+
+      <!-- =====================================================
+           MENU
+      ====================================================== -->
+
+      <nav
+        class="nav-menu"
+        aria-label="Navegação principal"
+      >
+
+
+        <a
+          href="../index.html"
+          class="nav-item"
+        >
+
+          <span class="nav-dot"></span>
+
+          <span>
+            Início
+          </span>
+
+        </a>
+
+
+        <a
+          href="../introducao/intro.html"
+          class="nav-item"
+        >
+
+          <span class="nav-dot"></span>
+
+          <span>
+            Instruções
+          </span>
+
+        </a>
+
+
+        <a
+          href="../produtos/produtos.html"
+          class="nav-item"
+        >
+
+          <span class="nav-dot"></span>
+
+          <span>
+            Produtos
+          </span>
+
+        </a>
+
+
+        <a
+          href="../garfico/grafico.html"
+          class="nav-item"
+        >
+
+          <span class="nav-dot"></span>
+
+          <span>
+            Gráfico
+          </span>
+
+        </a>
+
+
+        <a
+          href="../equipe/equipe.html"
+          class="nav-item"
+        >
+
+          <span class="nav-dot"></span>
+
+          <span>
+            Equipe
+          </span>
+
+        </a>
+
+
+        <a
+          href="../referencias/refe.html"
+          class="nav-item"
+        >
+
+          <span class="nav-dot"></span>
+
+          <span>
+            Referências
+          </span>
+
+        </a>
+
+
+      </nav>
+
+
+
+      <!-- =====================================================
+           TEMA
+      ====================================================== -->
+
+      <button
+        class="theme-toggle"
+        id="themeToggle"
+        type="button"
+        aria-pressed="false"
+        aria-label="Alternar tema"
+      >
+
+
+        <span
+          class="theme-toggle-label"
+          id="themeLabel"
+        >
+          MODO CLARO
+        </span>
+
+
+        <span
+          class="theme-toggle-knob"
+          aria-hidden="true"
+        >
+
+
+          <!-- SOL -->
+
+          <svg
+            id="iconSun"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+
+            <circle
+              cx="12"
+              cy="12"
+              r="4"
+            ></circle>
+
+            <line
+              x1="12"
+              y1="2"
+              x2="12"
+              y2="4"
+            ></line>
+
+            <line
+              x1="12"
+              y1="20"
+              x2="12"
+              y2="22"
+            ></line>
+
+            <line
+              x1="2"
+              y1="12"
+              x2="4"
+              y2="12"
+            ></line>
+
+            <line
+              x1="20"
+              y1="12"
+              x2="22"
+              y2="12"
+            ></line>
+
+          </svg>
+
+
+          <!-- LUA -->
+
+          <svg
+            id="iconMoon"
+            class="theme-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="display: none;"
+          >
+
+            <path
+              d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"
+            ></path>
+
+          </svg>
+
+
+        </span>
+
+
+      </button>
+
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         CONTEÚDO
+    ====================================================== -->
+
+    <main class="profile-page">
+
+
+      <!-- FORMAS DE FUNDO -->
+
+      <div
+        class="background-shape shape-one"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        class="background-shape shape-two"
+        aria-hidden="true"
+      ></div>
+
+
+
+      <!-- =====================================================
+           CABEÇALHO
+      ====================================================== -->
+
+      <header class="profile-top">
+
+
+        <div>
+
+
+          <span class="profile-kicker">
+            SUA CONTA ZUZ
+          </span>
+
+
+          <h1>
+            Meu Perfil
+          </h1>
+
+
+          <p>
+            Personalize sua conta e acompanhe as principais informações do seu negócio.
+          </p>
+
+
+        </div>
+
+
+
+        <button
+          class="edit-profile-button"
+          id="editProfileBtn"
+          type="button"
+        >
+
+          <i
+            class="bx bx-edit-alt"
+            aria-hidden="true"
+          ></i>
+
+          <span>
+            Editar perfil
+          </span>
+
+        </button>
+
+
+      </header>
+
+
+
+      <!-- =====================================================
+           PERFIL PRINCIPAL
+      ====================================================== -->
+
+      <section
+        class="profile-hero"
+        aria-label="Resumo do perfil"
+      >
+
+
+        <!-- BANNER -->
+
+        <div
+          class="profile-banner"
+          id="profileBanner"
+        >
+
+
+          <img
+            id="bannerImage"
+            src=""
+            alt="Banner do perfil"
+            hidden
+          >
+
+
+          <input
+            id="bannerInput"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            hidden
+          >
+
+
+          <button
+            class="banner-button"
+            id="changeBannerBtn"
+            type="button"
+          >
+
+            <i
+              class="bx bx-image-add"
+              aria-hidden="true"
+            ></i>
+
+            <span>
+              Alterar banner
+            </span>
+
+          </button>
+
+
+        </div>
+
+
+
+        <!-- ===================================================
+             USUÁRIO
+        ==================================================== -->
+
+        <div class="profile-user-row">
+
+
+          <!-- FOTO -->
+
+          <div class="profile-photo-area">
+
+
+            <div class="profile-photo">
+
+
+              <!--
+                SOMENTE A FOTO.
+                O símbolo que aparecia por cima foi removido.
+              -->
+
+              <img
+                id="profileImage"
+                src=""
+                alt="Foto de perfil"
+                hidden
+              >
+
+
+            </div>
+
+
+
+            <!-- INPUT DA FOTO -->
+
+            <input
+              id="profilePhotoInput"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              hidden
+            >
+
+
+
+            <!-- CÂMERA -->
+
+            <button
+              class="photo-button"
+              id="changePhotoBtn"
+              type="button"
+              aria-label="Alterar foto de perfil"
+            >
+
+              <i
+                class="bx bx-camera"
+                aria-hidden="true"
+              ></i>
+
+            </button>
+
+
+          </div>
+
+
+
+          <!-- NOME -->
+
+          <div class="profile-user-info">
+
+
+            <span class="user-badge">
+              PERFIL ZUZ
+            </span>
+
+
+            <h2 id="profileName">
+              Usuário ZUZ
+            </h2>
+
+
+            <p id="profileEmail">
+              email@exemplo.com
+            </p>
+
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+
+      <!-- =====================================================
+           CARDS PRINCIPAIS
+      ====================================================== -->
+
+      <section class="profile-content-grid">
+
+
+        <!-- ===================================================
+             INFORMAÇÕES DA CONTA
+        ==================================================== -->
+
+        <article class="profile-card account-card">
+
+
+          <div class="card-heading">
+
+
+            <div>
+
+
+              <span class="card-kicker">
+                CONTA
+              </span>
+
+
+              <h2>
+                Informações do perfil
+              </h2>
+
+
+            </div>
+
+
+
+            <div
+              class="card-heading-icon"
+              aria-hidden="true"
+            >
+
+              <i class="bx bx-user"></i>
+
+            </div>
+
+
+          </div>
+
+
+
+          <div class="profile-data-list">
+
+
+            <div class="profile-data">
+
+              <span>
+                Nome oficial
+              </span>
+
+              <strong id="accountName">
+                Usuário ZUZ
+              </strong>
+
+            </div>
+
+
+
+            <div class="profile-data">
+
+              <span>
+                Email
+              </span>
+
+              <strong id="accountEmail">
+                email@exemplo.com
+              </strong>
+
+            </div>
+
+
+
+            <div class="profile-data">
+
+              <span>
+                Conta criada em
+              </span>
+
+              <strong id="accountCreatedAt">
+                --
+              </strong>
+
+            </div>
+
+
+          </div>
+
+
+        </article>
+
+
+
+        <!-- ===================================================
+             VISÃO GERAL
+        ==================================================== -->
+
+        <article class="profile-card summary-card">
+
+
+          <div class="card-heading">
+
+
+            <div>
+
+
+              <span class="card-kicker">
+                SEU NEGÓCIO
+              </span>
+
+
+              <h2>
+                Visão geral
+              </h2>
+
+
+            </div>
+
+
+
+            <a
+              href="../garfico/grafico.html"
+              class="chart-link"
+            >
+
+              Ver gráfico
+
+              <i
+                class="bx bx-right-arrow-alt"
+                aria-hidden="true"
+              ></i>
+
+            </a>
+
+
+          </div>
+
+
+
+          <div class="business-grid">
+
+
+            <!-- PRODUTOS -->
+
+            <div class="business-item">
+
+
+              <div
+                class="business-icon"
+                aria-hidden="true"
+              >
+
+                <i class="bx bx-package"></i>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  Produtos
+                </span>
+
+                <strong id="profileProducts">
+                  0
+                </strong>
+
+              </div>
+
+
+            </div>
+
+
+
+            <!-- CATEGORIAS -->
+
+            <div class="business-item">
+
+
+              <div
+                class="business-icon"
+                aria-hidden="true"
+              >
+
+                <i class="bx bx-category"></i>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  Categorias
+                </span>
+
+                <strong id="profileCategories">
+                  0
+                </strong>
+
+              </div>
+
+
+            </div>
+
+
+
+            <!-- MARGEM -->
+
+            <div class="business-item">
+
+
+              <div
+                class="business-icon"
+                aria-hidden="true"
+              >
+
+                <i class="bx bx-trending-up"></i>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  Margem média
+                </span>
+
+                <strong id="profileAverageMargin">
+                  0.0%
+                </strong>
+
+              </div>
+
+
+            </div>
+
+
+
+            <!-- FATURAMENTO -->
+
+            <div class="business-item">
+
+
+              <div
+                class="business-icon"
+                aria-hidden="true"
+              >
+
+                <i class="bx bx-wallet"></i>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  Faturamento
+                </span>
+
+                <strong id="profileRevenue">
+                  R$ 0,00
+                </strong>
+
+              </div>
+
+
+            </div>
+
+
+          </div>
+
+
+        </article>
+
+
+      </section>
+
+
+
+      <!-- =====================================================
+           ACESSO RÁPIDO
+      ====================================================== -->
+
+      <section class="profile-card quick-card">
+
+
+        <div class="card-heading">
+
+
+          <div>
+
+
+            <span class="card-kicker">
+              ACESSO RÁPIDO
+            </span>
+
+
+            <h2>
+              Continue no ZUZ
+            </h2>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <div class="quick-grid">
+
+
+          <!-- PRODUTOS -->
+
+          <a
+            href="../produtos/produtos.html"
+            class="quick-item"
+          >
+
+
+            <div
+              class="quick-icon"
+              aria-hidden="true"
+            >
+
+              <i class="bx bx-package"></i>
+
+            </div>
+
+
+            <div>
+
+              <strong>
+                Produtos
+              </strong>
+
+              <span>
+                Cadastre e gerencie seus produtos.
+              </span>
+
+            </div>
+
+
+            <i
+              class="bx bx-chevron-right"
+              aria-hidden="true"
+            ></i>
+
+
+          </a>
+
+
+
+          <!-- GRÁFICO -->
+
+          <a
+            href="../garfico/grafico.html"
+            class="quick-item"
+          >
+
+
+            <div
+              class="quick-icon"
+              aria-hidden="true"
+            >
+
+              <i class="bx bx-line-chart"></i>
+
+            </div>
+
+
+            <div>
+
+              <strong>
+                Gráfico
+              </strong>
+
+              <span>
+                Veja o desempenho do negócio.
+              </span>
+
+            </div>
+
+
+            <i
+              class="bx bx-chevron-right"
+              aria-hidden="true"
+            ></i>
+
+
+          </a>
+
+
+        </div>
+
+
+      </section>
+
+
+    </main>
+
+
+  </div>
+
+
+
+  <!-- =====================================================
+       MODAL EDITAR PERFIL
+  ====================================================== -->
+
+  <div
+    class="modal-overlay"
+    id="profileModal"
+    aria-hidden="true"
+  >
+
+
+    <section
+      class="modal-card profile-edit-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="profileModalTitle"
+    >
+
+
+      <header class="modal-header">
+
+
+        <div>
+
+
+          <span class="card-kicker">
+            PERFIL
+          </span>
+
+
+          <h2 id="profileModalTitle">
+            Editar perfil
+          </h2>
+
+
+          <p>
+            Altere o nome exibido na sua conta.
+          </p>
+
+
+        </div>
+
+
+
+        <button
+          class="modal-close"
+          id="closeProfileModal"
+          type="button"
+          aria-label="Fechar"
+        >
+
+          <i class="bx bx-x"></i>
+
+        </button>
+
+
+      </header>
+
+
+
+      <form
+        class="profile-form"
+        id="profileForm"
+      >
+
+
+        <label class="profile-field">
+
+
+          <span>
+            Nome oficial
+          </span>
+
+
+          <input
+            id="officialNameInput"
+            type="text"
+            maxlength="60"
+            autocomplete="name"
+            required
+          >
+
+
+        </label>
+
+
+
+        <div class="modal-actions">
+
+
+          <button
+            class="secondary-button"
+            id="cancelProfileBtn"
+            type="button"
+          >
+
+            Cancelar
+
+          </button>
+
+
+          <button
+            class="primary-button"
+            type="submit"
+          >
+
+            Salvar alterações
+
+          </button>
+
+
+        </div>
+
+
+      </form>
+
+
+    </section>
+
+
+  </div>
+
+
+
+  <!-- =====================================================
+       JAVASCRIPT
+  ====================================================== -->
+
+  <script src="./perfil.js"></script>
+
+
+</body>
+
+</html>

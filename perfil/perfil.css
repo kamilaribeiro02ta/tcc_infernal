@@ -1,0 +1,2010 @@
+/* =========================================================
+   ZUZ | PERFIL
+========================================================= */
+
+:root {
+  --sidebar-width: 220px;
+
+  --purple: #754bff;
+  --purple-hover: #835eff;
+  --purple-soft: #a38cff;
+
+  --page-bg: #f8f7fc;
+  --card-bg: #ffffff;
+  --card-soft: #f7f5ff;
+
+  --text-main: #17131f;
+  --text-secondary: #696274;
+  --text-muted: #8f879d;
+
+  --border: rgba(80, 58, 145, 0.12);
+
+  --shadow:
+    0 18px 46px rgba(55, 35, 105, 0.09);
+
+  --radius: 16px;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  width: 100%;
+  min-height: 100%;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  overflow-x: hidden;
+
+  background: var(--page-bg);
+  color: var(--text-main);
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+
+/* =========================================================
+   ESTRUTURA
+========================================================= */
+
+.page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+
+  height: 100vh;
+
+  flex: 0 0 var(--sidebar-width);
+
+  position: sticky;
+  top: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  padding-bottom: 20px;
+}
+
+
+/* =========================================================
+   PERFIL DA SIDEBAR
+========================================================= */
+
+.profile-account-link,
+#accountLink {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  text-decoration: none !important;
+}
+
+.profile-account-link *,
+#accountLink * {
+  text-decoration: none !important;
+}
+
+.sidebar .login-text {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.sidebar .login-title,
+.sidebar .login-subtitle {
+  max-width: 125px;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar .login-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.sidebar .login-subtitle {
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   FOTO DA SIDEBAR
+========================================================= */
+
+.sidebar .avatar {
+  width: 44px;
+  height: 44px;
+
+  min-width: 44px;
+
+  flex: 0 0 44px;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #805cff,
+      #643df0
+    );
+}
+
+.sidebar .avatar svg {
+  width: 20px;
+  height: 20px;
+}
+
+#sidebarProfileImage {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: inherit;
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+.sidebar .nav-menu {
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   BOTÃO MODO CLARO / ESCURO
+========================================================= */
+
+.sidebar .theme-toggle {
+  width: 100%;
+  height: 48px;
+
+  margin-top: auto;
+  margin-bottom: 0;
+
+  padding:
+    5px
+    5px
+    5px
+    15px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 0;
+  outline: none;
+
+  border-radius: 25px;
+
+  background: #f0edf7;
+
+  box-shadow: none;
+
+  overflow: hidden;
+
+  transition:
+    background 0.2s ease;
+}
+
+.sidebar .theme-toggle-label {
+  order: 1;
+
+  color: #625c6d;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.02em;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+.sidebar .theme-toggle-knob {
+  order: 2;
+
+  width: 38px;
+  height: 38px;
+
+  min-width: 38px;
+
+  flex: 0 0 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  color: #7047ff;
+
+  box-shadow:
+    0 3px 10px rgba(30, 20, 70, 0.15);
+}
+
+.sidebar .theme-icon {
+  width: 18px;
+  height: 18px;
+}
+
+
+/* =========================================================
+   CONTEÚDO PRINCIPAL
+========================================================= */
+
+.profile-page {
+  position: relative;
+
+  flex: 1;
+
+  width: auto;
+  min-width: 0;
+  min-height: 100vh;
+
+  margin: 0;
+
+  padding:
+    38px
+    44px
+    60px
+    56px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 85% 2%,
+      rgba(117, 75, 255, 0.16),
+      transparent 30%
+    ),
+    var(--page-bg);
+}
+
+
+/* =========================================================
+   FORMAS DO FUNDO
+========================================================= */
+
+.background-shape {
+  position: absolute;
+
+  pointer-events: none;
+}
+
+.shape-one {
+  width: 760px;
+  height: 280px;
+
+  top: -150px;
+  right: -80px;
+
+  border-radius: 50%;
+
+  transform:
+    rotate(-20deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(117, 75, 255, 0.03),
+      rgba(117, 75, 255, 0.16)
+    );
+}
+
+.shape-two {
+  width: 700px;
+  height: 230px;
+
+  left: 15%;
+  bottom: -150px;
+
+  border-radius: 50%;
+
+  transform:
+    rotate(-23deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(117, 75, 255, 0.08),
+      transparent
+    );
+}
+
+
+/* =========================================================
+   LARGURA DOS BLOCOS
+========================================================= */
+
+.profile-top,
+.profile-hero,
+.profile-content-grid,
+.quick-card {
+  width: 100%;
+  max-width: none;
+
+  margin-left: 0;
+  margin-right: 0;
+}
+
+
+/* =========================================================
+   TOPO
+========================================================= */
+
+.profile-top {
+  position: relative;
+
+  z-index: 2;
+
+  margin-bottom: 22px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 24px;
+}
+
+.profile-kicker,
+.card-kicker {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: var(--purple);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.profile-top h1 {
+  margin: 0;
+
+  color: var(--text-main);
+
+  font-size:
+    clamp(
+      32px,
+      3vw,
+      42px
+    );
+
+  font-weight: 700;
+
+  line-height: 1.05;
+}
+
+.profile-top p {
+  max-width: 650px;
+
+  margin:
+    8px
+    0
+    0;
+
+  color: var(--text-secondary);
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   EDITAR PERFIL
+========================================================= */
+
+.edit-profile-button {
+  height: 42px;
+  min-height: 42px;
+
+  padding:
+    0
+    16px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  border-radius: 10px;
+
+  background: #7550ff;
+
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  box-shadow:
+    0 8px 22px
+    rgba(111, 72, 255, 0.24);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.edit-profile-button i {
+  font-size: 16px;
+}
+
+.edit-profile-button:hover {
+  transform:
+    translateY(-2px);
+
+  background:
+    #835fff;
+
+  box-shadow:
+    0 11px 27px
+    rgba(111, 72, 255, 0.3);
+}
+
+
+/* =========================================================
+   CARD PRINCIPAL DO PERFIL
+========================================================= */
+
+.profile-hero {
+  position: relative;
+
+  z-index: 2;
+
+  margin-bottom: 18px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    var(--radius);
+
+  background:
+    var(--card-bg);
+
+  box-shadow:
+    var(--shadow);
+}
+
+
+/* =========================================================
+   BANNER
+========================================================= */
+
+.profile-banner {
+  position: relative;
+
+  z-index: 1;
+
+  width: 100%;
+  height: 145px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 78% 35%,
+      rgba(255, 255, 255, 0.25),
+      transparent 23%
+    ),
+    linear-gradient(
+      115deg,
+      #251651 0%,
+      #5835ca 48%,
+      #8a66ff 100%
+    );
+}
+
+.profile-banner::before {
+  content: "";
+
+  position: absolute;
+
+  width: 700px;
+  height: 220px;
+
+  top: -110px;
+  left: 20%;
+
+  border-radius: 50%;
+
+  transform:
+    rotate(-17deg);
+
+  background:
+    rgba(255, 255, 255, 0.09);
+
+  pointer-events: none;
+}
+
+.profile-banner::after {
+  content: "";
+
+  position: absolute;
+
+  width: 500px;
+  height: 150px;
+
+  right: -80px;
+  bottom: -90px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 255, 255, 0.07);
+
+  pointer-events: none;
+}
+
+#bannerImage {
+  position: absolute;
+
+  z-index: 1;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+
+/* =========================================================
+   BOTÃO ALTERAR BANNER
+========================================================= */
+
+.banner-button {
+  position: absolute;
+
+  z-index: 3;
+
+  top: 14px;
+  right: 14px;
+
+  height: 40px;
+  min-height: 40px;
+
+  padding:
+    0
+    14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.13);
+
+  border-radius: 10px;
+
+  background:
+    rgba(54, 49, 70, 0.88);
+
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  backdrop-filter:
+    blur(10px);
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.13);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.banner-button i {
+  font-size: 16px;
+}
+
+.banner-button:hover {
+  transform:
+    translateY(-2px);
+
+  background:
+    rgba(71, 64, 92, 0.98);
+}
+
+
+/* =========================================================
+   LINHA DO USUÁRIO
+========================================================= */
+
+.profile-user-row {
+  position: relative;
+
+  z-index: 4;
+
+  min-height: 110px;
+
+  padding:
+    20px
+    30px
+    20px
+    155px;
+
+  display: flex;
+  align-items: center;
+
+  overflow: visible;
+}
+
+
+/* =========================================================
+   FOTO PRINCIPAL
+========================================================= */
+
+.profile-photo-area {
+  position: absolute;
+
+  z-index: 20;
+
+  left: 28px;
+  top: -50px;
+
+  width: 105px;
+  height: 105px;
+
+  overflow: visible;
+}
+
+.profile-photo,
+.profile-photo-trigger {
+  position: relative;
+
+  width: 105px;
+  height: 105px;
+
+  min-width: 105px;
+  min-height: 105px;
+
+  padding: 0;
+  margin: 0;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    4px solid
+    var(--card-bg);
+
+  border-radius: 50%;
+
+  background:
+    #24184e;
+
+  box-shadow:
+    0 8px 24px
+    rgba(0, 0, 0, 0.25);
+
+  outline: none;
+}
+
+
+/* =========================================================
+   IMAGEM DO PERFIL
+========================================================= */
+
+#profileImage {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 50%;
+
+  padding: 0;
+  margin: 0;
+}
+
+
+/* =========================================================
+   PLACEHOLDER
+========================================================= */
+
+#profilePlaceholder,
+.profile-photo-placeholder {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: var(--purple-soft);
+
+  font-size: 44px;
+}
+
+
+/* NÃO USA O HOVER DO EDITOR NOVO */
+
+.profile-photo-hover {
+  display: none !important;
+}
+
+
+/* =========================================================
+   BOTÃO CÂMERA
+========================================================= */
+
+.photo-button,
+#changePhotoBtn {
+  position: absolute;
+
+  z-index: 30;
+
+  right: -3px;
+  bottom: -3px;
+
+  width: 34px;
+  height: 34px;
+
+  min-width: 34px;
+  min-height: 34px;
+
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    3px solid
+    var(--card-bg);
+
+  border-radius: 50%;
+
+  background:
+    #7047ff;
+
+  color:
+    #ffffff;
+
+  box-shadow:
+    0 5px 15px
+    rgba(0, 0, 0, 0.25);
+
+  outline: none;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.photo-button i,
+#changePhotoBtn i {
+  margin: 0;
+  padding: 0;
+
+  font-size: 16px;
+
+  line-height: 1;
+}
+
+.photo-button:hover,
+#changePhotoBtn:hover {
+  transform:
+    scale(1.06);
+
+  background:
+    #835fff;
+}
+
+
+/* =========================================================
+   NOME E EMAIL
+========================================================= */
+
+.profile-user-info {
+  min-width: 0;
+}
+
+.user-badge {
+  display: inline-flex;
+
+  margin-bottom: 6px;
+
+  padding:
+    4px
+    9px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(117, 75, 255, 0.1);
+
+  color:
+    var(--purple);
+
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.profile-user-info h2 {
+  margin: 0;
+
+  color:
+    var(--text-main);
+
+  font-size: 22px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+.profile-user-info p {
+  margin:
+    4px
+    0
+    0;
+
+  color:
+    var(--text-muted);
+
+  font-size: 11px;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   GRID PRINCIPAL
+========================================================= */
+
+.profile-content-grid {
+  position: relative;
+
+  z-index: 2;
+
+  margin-bottom: 18px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(320px, 0.85fr)
+    minmax(520px, 1.45fr);
+
+  gap: 18px;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.profile-card {
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    var(--radius);
+
+  background:
+    var(--card-bg);
+
+  box-shadow:
+    var(--shadow);
+}
+
+.account-card,
+.summary-card,
+.quick-card {
+  padding: 22px;
+}
+
+.account-card,
+.summary-card {
+  min-height: 270px;
+}
+
+
+/* =========================================================
+   TÍTULO DOS CARDS
+========================================================= */
+
+.card-heading {
+  margin-bottom: 20px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+.card-heading h2 {
+  margin: 0;
+
+  color:
+    var(--text-main);
+
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.card-heading-icon {
+  width: 38px;
+  height: 38px;
+
+  flex:
+    0
+    0
+    38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background:
+    rgba(117, 75, 255, 0.08);
+
+  color:
+    var(--purple);
+
+  border:
+    1px solid
+    rgba(117, 75, 255, 0.1);
+}
+
+.card-heading-icon i {
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   INFORMAÇÕES DO PERFIL
+========================================================= */
+
+.profile-data-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-data {
+  padding:
+    14px
+    0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  border-bottom:
+    1px solid
+    var(--border);
+}
+
+.profile-data:first-child {
+  padding-top: 2px;
+}
+
+.profile-data:last-child {
+  padding-bottom: 0;
+
+  border-bottom: 0;
+}
+
+.profile-data span {
+  color:
+    var(--text-muted);
+
+  font-size: 9px;
+}
+
+.profile-data strong {
+  color:
+    var(--text-main);
+
+  font-size: 11px;
+  font-weight: 600;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   VISÃO GERAL
+========================================================= */
+
+.business-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 12px;
+}
+
+.business-item {
+  min-height: 88px;
+
+  padding: 15px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 12px;
+
+  background:
+    var(--card-soft);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.business-item:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    rgba(117, 75, 255, 0.24);
+
+  box-shadow:
+    0 8px 22px
+    rgba(55, 34, 115, 0.06);
+}
+
+.business-icon {
+  width: 40px;
+  height: 40px;
+
+  flex:
+    0
+    0
+    40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background:
+    rgba(117, 75, 255, 0.1);
+
+  color:
+    var(--purple);
+}
+
+.business-icon i {
+  font-size: 19px;
+}
+
+.business-item > div:last-child {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.business-item span {
+  color:
+    var(--text-muted);
+
+  font-size: 9px;
+}
+
+.business-item strong {
+  margin-top: 2px;
+
+  color:
+    var(--text-main);
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   VER GRÁFICO
+========================================================= */
+
+.chart-link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 3px;
+
+  color:
+    var(--purple);
+
+  font-size: 10px;
+  font-weight: 600;
+
+  text-decoration: none;
+}
+
+.chart-link i {
+  font-size: 16px;
+
+  transition:
+    transform 0.2s ease;
+}
+
+.chart-link:hover i {
+  transform:
+    translateX(3px);
+}
+
+
+/* =========================================================
+   ACESSO RÁPIDO
+========================================================= */
+
+.quick-card {
+  position: relative;
+
+  z-index: 2;
+}
+
+.quick-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 12px;
+}
+
+.quick-item {
+  min-height: 76px;
+
+  padding:
+    14px
+    16px;
+
+  display: grid;
+
+  grid-template-columns:
+    auto
+    1fr
+    auto;
+
+  align-items: center;
+
+  gap: 12px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 12px;
+
+  background:
+    var(--card-soft);
+
+  color:
+    inherit;
+
+  text-decoration: none;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.quick-item:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    rgba(117, 75, 255, 0.24);
+
+  background:
+    rgba(117, 75, 255, 0.045);
+}
+
+.quick-icon {
+  width: 40px;
+  height: 40px;
+
+  flex:
+    0
+    0
+    40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background:
+    rgba(117, 75, 255, 0.1);
+
+  color:
+    var(--purple);
+}
+
+.quick-icon i {
+  font-size: 19px;
+}
+
+.quick-item > div:nth-child(2) {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.quick-item strong {
+  color:
+    var(--text-main);
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.quick-item span {
+  margin-top: 2px;
+
+  color:
+    var(--text-muted);
+
+  font-size: 9px;
+}
+
+.quick-item > i {
+  color:
+    var(--text-muted);
+
+  font-size: 19px;
+
+  transition:
+    transform 0.2s ease;
+}
+
+.quick-item:hover > i {
+  transform:
+    translateX(3px);
+
+  color:
+    var(--purple);
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal-overlay,
+.profile-modal-overlay {
+  position: fixed;
+
+  z-index: 999;
+
+  inset: 0;
+
+  padding: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(8, 5, 18, 0.64);
+
+  backdrop-filter:
+    blur(6px);
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.modal-overlay.active,
+.modal-overlay[aria-hidden="false"],
+.profile-modal-overlay.active,
+.profile-modal-overlay[aria-hidden="false"] {
+  opacity: 1;
+  visibility: visible;
+
+  pointer-events: auto;
+}
+
+.modal-card,
+.profile-modal {
+  width:
+    min(
+      460px,
+      100%
+    );
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 16px;
+
+  background:
+    var(--card-bg);
+
+  color:
+    var(--text-main);
+
+  box-shadow:
+    0 30px 80px
+    rgba(13, 8, 32, 0.3);
+}
+
+
+/* =========================================================
+   HEADER MODAL
+========================================================= */
+
+.modal-header,
+.profile-modal-header {
+  padding: 23px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  border-bottom:
+    1px solid
+    var(--border);
+}
+
+.modal-header h2,
+.profile-modal-header h2 {
+  margin: 0;
+
+  color:
+    var(--text-main);
+
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.modal-header p,
+.profile-modal-header p {
+  margin:
+    5px
+    0
+    0;
+
+  color:
+    var(--text-secondary);
+
+  font-size: 10px;
+}
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+
+  flex:
+    0
+    0
+    36px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 9px;
+
+  background:
+    transparent;
+
+  color:
+    var(--text-secondary);
+}
+
+.modal-close:hover {
+  color:
+    var(--purple);
+
+  background:
+    rgba(117, 75, 255, 0.06);
+}
+
+.modal-close i {
+  font-size: 20px;
+}
+
+
+/* =========================================================
+   FORMULÁRIO MODAL
+========================================================= */
+
+.profile-form {
+  padding: 23px;
+}
+
+.profile-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.profile-field > span {
+  color:
+    var(--text-main);
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.profile-field input {
+  width: 100%;
+  height: 46px;
+
+  padding:
+    0
+    13px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 10px;
+
+  outline: none;
+
+  background:
+    var(--page-bg);
+
+  color:
+    var(--text-main);
+
+  font-size: 11px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.profile-field input:focus {
+  border-color:
+    rgba(117, 75, 255, 0.7);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(117, 75, 255, 0.09);
+}
+
+
+/* =========================================================
+   BOTÕES MODAL
+========================================================= */
+
+.modal-actions {
+  margin-top: 22px;
+
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 9px;
+}
+
+.primary-button,
+.secondary-button {
+  min-height: 41px;
+
+  padding:
+    0
+    15px;
+
+  border-radius: 9px;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  transition:
+    0.2s ease;
+}
+
+.primary-button {
+  border: 0;
+
+  background:
+    var(--purple);
+
+  color:
+    #ffffff;
+}
+
+.primary-button:hover {
+  background:
+    var(--purple-hover);
+}
+
+.secondary-button {
+  border:
+    1px solid
+    var(--border);
+
+  background:
+    transparent;
+
+  color:
+    var(--text-secondary);
+}
+
+.secondary-button:hover {
+  background:
+    var(--page-bg);
+
+  color:
+    var(--text-main);
+}
+
+
+/* =========================================================
+   MODO ESCURO
+========================================================= */
+
+body.dark {
+  --purple: #8c69ff;
+  --purple-hover: #9a7aff;
+
+  --page-bg: #0d091e;
+
+  --card-bg:
+    rgba(26, 19, 58, 0.94);
+
+  --card-soft:
+    rgba(42, 31, 85, 0.52);
+
+  --text-main:
+    #ffffff;
+
+  --text-secondary:
+    #c0b7d4;
+
+  --text-muted:
+    #9187aa;
+
+  --border:
+    rgba(148, 113, 255, 0.15);
+
+  --shadow:
+    0 18px 48px
+    rgba(0, 0, 0, 0.22);
+}
+
+body.dark .profile-page {
+  background:
+    radial-gradient(
+      circle at 84% 3%,
+      rgba(117, 75, 255, 0.38),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 16% 90%,
+      rgba(94, 57, 208, 0.18),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #100b29 0%,
+      #0d091e 52%,
+      #0c081c 100%
+    );
+}
+
+body.dark .shape-one {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(126, 88, 255, 0.02),
+      rgba(126, 88, 255, 0.34)
+    );
+}
+
+body.dark .shape-two {
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(113, 76, 236, 0.15),
+      transparent
+    );
+}
+
+body.dark .profile-photo,
+body.dark .profile-photo-trigger {
+  border-color:
+    #17102f;
+
+  background:
+    #24184e;
+}
+
+body.dark .photo-button,
+body.dark #changePhotoBtn {
+  border-color:
+    #17102f;
+}
+
+body.dark .profile-field input {
+  background:
+    #110c25;
+}
+
+
+/* BOTÃO DO TEMA NO DARK */
+
+body.dark .sidebar .theme-toggle {
+  padding:
+    5px
+    15px
+    5px
+    5px;
+
+  background:
+    #211937;
+}
+
+body.dark .sidebar .theme-toggle-knob {
+  order: 1;
+
+  background:
+    #35245e;
+
+  color:
+    #ad8cff;
+}
+
+body.dark .sidebar .theme-toggle-label {
+  order: 2;
+
+  color:
+    #ffffff;
+}
+
+
+/* =========================================================
+   MODO CLARO
+========================================================= */
+
+body:not(.dark) .sidebar .theme-toggle {
+  padding:
+    5px
+    5px
+    5px
+    15px;
+
+  background:
+    #f0edf7;
+}
+
+body:not(.dark) .sidebar .theme-toggle-knob {
+  order: 2;
+
+  background:
+    #ffffff;
+
+  color:
+    #7047ff;
+}
+
+body:not(.dark) .sidebar .theme-toggle-label {
+  order: 1;
+
+  color:
+    #625c6d;
+}
+
+body:not(.dark) .profile-photo,
+body:not(.dark) .profile-photo-trigger {
+  border-color:
+    #ffffff;
+
+  background:
+    #eeeaff;
+}
+
+body:not(.dark) .photo-button,
+body:not(.dark) #changePhotoBtn {
+  border-color:
+    #ffffff;
+}
+
+
+/* =========================================================
+   FOCO
+========================================================= */
+
+.edit-profile-button:focus-visible,
+.banner-button:focus-visible,
+.photo-button:focus-visible,
+.profile-photo:focus-visible,
+.theme-toggle:focus-visible,
+.modal-close:focus-visible,
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.quick-item:focus-visible,
+.chart-link:focus-visible {
+  outline:
+    2px solid
+    #a48cff;
+
+  outline-offset:
+    3px;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .profile-page {
+    padding:
+      34px
+      30px
+      50px;
+  }
+
+  .profile-content-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+}
+
+
+@media (max-width: 800px) {
+
+  :root {
+    --sidebar-width: 190px;
+  }
+
+  .profile-page {
+    padding:
+      28px
+      22px
+      40px;
+  }
+
+  .profile-top {
+    flex-direction:
+      column;
+
+    align-items:
+      flex-start;
+  }
+
+  .business-grid,
+  .quick-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .profile-banner {
+    height:
+      125px;
+  }
+
+  .profile-user-row {
+    min-height:
+      130px;
+
+    padding:
+      62px
+      20px
+      20px;
+  }
+
+  .profile-photo-area {
+    left:
+      20px;
+
+    top:
+      -42px;
+
+    width:
+      90px;
+
+    height:
+      90px;
+  }
+
+  .profile-photo,
+  .profile-photo-trigger {
+    width:
+      90px;
+
+    height:
+      90px;
+
+    min-width:
+      90px;
+
+    min-height:
+      90px;
+
+    border-radius:
+      50%;
+  }
+
+  #profileImage {
+    border-radius:
+      50%;
+  }
+
+  .profile-user-info h2 {
+    font-size:
+      18px;
+  }
+
+  .banner-button {
+    width:
+      40px;
+
+    padding:
+      0;
+
+    font-size:
+      0;
+  }
+
+  .banner-button i {
+    font-size:
+      18px;
+  }
+
+  .account-card,
+  .summary-card,
+  .quick-card {
+    padding:
+      19px;
+  }
+
+  .modal-actions {
+    flex-direction:
+      column-reverse;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width:
+      100%;
+  }
+
+}

@@ -1,161 +1,181 @@
-// ============ TOGGLE MODO ESCURO ============
-(function () {
-  const toggleBtn = document.getElementById('themeToggle');
-  const label = document.getElementById('themeLabel');
-  const iconSun = document.getElementById('iconSun');
-  const iconMoon = document.getElementById('iconMoon');
- 
-  function applyTheme(isDark) {
-    document.body.classList.toggle('dark', isDark);
-    toggleBtn?.setAttribute('aria-pressed', String(isDark));
-    if (label) label.textContent = isDark ? 'Modo Escuro' : 'Modo Claro';
-    if (iconSun) iconSun.style.display = isDark ? 'none' : 'block';
-    if (iconMoon) iconMoon.style.display = isDark ? 'block' : 'none';
-  }
- 
-  // Lê preferência salva, ou usa a preferência do sistema como padrão
-  const saved = localStorage.getItem('zuz-theme');
-  applyTheme(saved === 'dark');
- 
-  toggleBtn?.addEventListener('click', function () {
-    const isDark = !document.body.classList.contains('dark');
-    applyTheme(isDark);
-    localStorage.setItem('zuz-theme', isDark ? 'dark' : 'light');
-  });
-})();
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
-  const navItems = document.querySelectorAll(".nav-item");
 
-  const paginaAtual = window.location.pathname;
-
-  navItems.forEach(item => {
-    const link = item.getAttribute("href");
-
-    if (
-      link === "index.html" &&
-      (paginaAtual.endsWith("/") || paginaAtual.endsWith("index.html"))
-    ) {
-      item.classList.add("active");
-    }
-
-    if (
-      link !== "index.html" &&
-      paginaAtual.endsWith(link)
-    ) {
-      item.classList.add("active");
-    }
-  });
-});
-
-/* ============ SENHA E VALIDAÇÃO DO CADASTRO ============ */
-
-document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("signupForm");
+
   const firstName = document.getElementById("firstName");
   const lastName = document.getElementById("lastName");
   const email = document.getElementById("signupEmail");
   const password = document.getElementById("password");
-  const passwordButton = document.querySelector(".password-dot");
 
-  const errors = {
-    firstName: document.getElementById("firstNameError"),
-    lastName: document.getElementById("lastNameError"),
-    email: document.getElementById("signupEmailError"),
-    password: document.getElementById("signupPasswordError")
-  };
+  const firstNameError = document.getElementById("firstNameError");
+  const lastNameError = document.getElementById("lastNameError");
+  const emailError = document.getElementById("signupEmailError");
+  const passwordError = document.getElementById("signupPasswordError");
 
   const status = document.getElementById("signupStatus");
 
-  function clearField(input, error) {
-    input?.removeAttribute("aria-invalid");
-    if (error) error.textContent = "";
-  }
+  const showPasswordButton =
+    document.querySelector(".password-dot");
 
-  function setError(input, error, message) {
-    input?.setAttribute("aria-invalid", "true");
-    if (error) error.textContent = message;
-  }
 
-  [
-    [firstName, errors.firstName],
-    [lastName, errors.lastName],
-    [email, errors.email],
-    [password, errors.password]
-  ].forEach(([input, error]) => {
-    input?.addEventListener("input", () => clearField(input, error));
-  });
+  /* ==============================
+     MOSTRAR SENHA
+  ============================== */
 
-  passwordButton?.addEventListener("click", () => {
-    if (!password) return;
+  showPasswordButton?.addEventListener("click", () => {
 
-    const shouldShow = password.type === "password";
-    password.type = shouldShow ? "text" : "password";
-    passwordButton.setAttribute(
-      "aria-label",
-      shouldShow ? "Ocultar senha" : "Mostrar senha"
-    );
+    const isPassword =
+      password.type === "password";
 
-    const label = passwordButton.querySelector("span");
-    if (label) {
-      label.textContent = shouldShow ? "Ocultar" : "Mostrar";
+    password.type =
+      isPassword ? "text" : "password";
+
+    const text =
+      showPasswordButton.querySelector("span");
+
+    if (text) {
+      text.textContent =
+        isPassword ? "Ocultar" : "Mostrar";
     }
+
   });
 
-  form?.addEventListener("submit", event => {
+
+  /* ==============================
+     CRIAR CONTA
+  ============================== */
+
+  form?.addEventListener("submit", (event) => {
+
     event.preventDefault();
 
-    [
-      [firstName, errors.firstName],
-      [lastName, errors.lastName],
-      [email, errors.email],
-      [password, errors.password]
-    ].forEach(([input, error]) => clearField(input, error));
+    let valid = true;
 
-    if (status) {
-      status.textContent = "";
-      status.className = "form-status";
+
+    firstNameError.textContent = "";
+    lastNameError.textContent = "";
+    emailError.textContent = "";
+    passwordError.textContent = "";
+
+    status.textContent = "";
+
+
+    /* NOME */
+
+    if (!firstName.value.trim()) {
+
+      firstNameError.textContent =
+        "Digite seu primeiro nome.";
+
+      valid = false;
+
     }
 
-    let firstInvalid = null;
 
-    if (!firstName?.value.trim()) {
-      setError(firstName, errors.firstName, "Informe seu primeiro nome.");
-      firstInvalid = firstName;
+    /* SOBRENOME */
+
+    if (!lastName.value.trim()) {
+
+      lastNameError.textContent =
+        "Digite seu sobrenome.";
+
+      valid = false;
+
     }
 
-    if (!lastName?.value.trim()) {
-      setError(lastName, errors.lastName, "Informe seu sobrenome.");
-      firstInvalid ??= lastName;
-    }
 
-    if (!email?.value.trim()) {
-      setError(email, errors.email, "Informe seu email.");
-      firstInvalid ??= email;
+    /* EMAIL */
+
+    if (!email.value.trim()) {
+
+      emailError.textContent =
+        "Digite seu email.";
+
+      valid = false;
+
     } else if (!email.validity.valid) {
-      setError(email, errors.email, "Digite um email válido.");
-      firstInvalid ??= email;
+
+      emailError.textContent =
+        "Digite um email válido.";
+
+      valid = false;
+
     }
 
-    if (!password?.value) {
-      setError(password, errors.password, "Crie uma senha.");
-      firstInvalid ??= password;
+
+    /* SENHA */
+
+    if (!password.value) {
+
+      passwordError.textContent =
+        "Digite uma senha.";
+
+      valid = false;
+
     } else if (password.value.length < 8) {
-      setError(password, errors.password, "A senha precisa ter pelo menos 8 caracteres.");
-      firstInvalid ??= password;
+
+      passwordError.textContent =
+        "A senha precisa ter pelo menos 8 caracteres.";
+
+      valid = false;
+
     }
 
-    if (firstInvalid) {
-      firstInvalid.focus();
+
+    if (!valid) {
       return;
     }
 
-    if (status) {
-      status.textContent =
-        "Dados validados. O cadastro ainda precisa ser conectado ao backend.";
-      status.classList.add("is-success");
-    }
+
+    /* ==============================
+       CRIA O PERFIL
+    ============================== */
+
+    const profileData = {
+
+      name:
+        `${firstName.value.trim()} ${lastName.value.trim()}`,
+
+      email:
+        email.value.trim(),
+
+      createdAt:
+        new Date().toISOString(),
+
+      photo: "",
+
+      banner: ""
+
+    };
+
+
+    localStorage.setItem(
+      "zuz-profile",
+      JSON.stringify(profileData)
+    );
+
+
+    /* MARCA USUÁRIO COMO LOGADO */
+
+    localStorage.setItem(
+      "zuz-logged-in",
+      "true"
+    );
+
+
+    status.textContent =
+      "Conta criada com sucesso!";
+
+
+    /* VAI PARA O PERFIL */
+
+    setTimeout(() => {
+
+      window.location.href =
+        "../perfil/perfil.html";
+
+    }, 500);
+
   });
+
 });
