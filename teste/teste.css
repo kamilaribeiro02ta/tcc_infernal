@@ -1281,3 +1281,201 @@ body.dark .chart-trend path {
     min-height: 210px;
   }
 }
+
+
+/* =========================================================
+   LIGHT MODE POLISH
+   Ajustes exclusivos do modo claro da página Teste
+========================================================= */
+
+body:not(.dark) {
+  --page-bg: #f7f6fb;
+  --surface: rgba(255,255,255,.72);
+  --surface-soft: #f1eef8;
+  --text: #17131f;
+  --muted: #746d80;
+  --line: rgba(65,49,91,.10);
+}
+
+body:not(.dark) .experimental-home {
+  background:
+    radial-gradient(circle at 76% 14%, rgba(129,94,255,.08), transparent 24%),
+    radial-gradient(circle at 18% 52%, rgba(110,77,235,.045), transparent 28%),
+    #f7f6fb;
+}
+
+body:not(.dark) .metric-card,
+body:not(.dark) .solution-card,
+body:not(.dark) .message-content {
+  border-color: rgba(255,255,255,.92);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.86), rgba(255,255,255,.58)),
+    rgba(255,255,255,.60);
+  box-shadow:
+    0 18px 48px rgba(67,49,103,.09),
+    0 2px 8px rgba(67,49,103,.035),
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(125,96,190,.05);
+}
+
+body:not(.dark) .metric-card::before,
+body:not(.dark) .solution-card::before,
+body:not(.dark) .message-content::before {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.78) 0%,
+      rgba(255,255,255,.18) 38%,
+      transparent 66%
+    );
+  opacity: .78;
+}
+
+body:not(.dark) .metric-card:hover,
+body:not(.dark) .solution-card:hover {
+  border-color: rgba(255,255,255,1);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.94), rgba(255,255,255,.68)),
+    rgba(255,255,255,.70);
+  box-shadow:
+    0 24px 58px rgba(67,49,103,.13),
+    0 4px 12px rgba(67,49,103,.045),
+    inset 0 1px 0 #fff;
+}
+
+body:not(.dark) .metric-dark,
+body:not(.dark) .metric-accent {
+  color: var(--text);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.88), rgba(248,245,255,.64)),
+    rgba(255,255,255,.62);
+}
+
+body:not(.dark) .metric-dark p,
+body:not(.dark) .metric-dark .metric-top,
+body:not(.dark) .metric-accent p,
+body:not(.dark) .metric-accent .metric-top {
+  color: var(--muted);
+}
+
+body:not(.dark) .metric-top i {
+  color: #6840e8;
+  border-color: rgba(104,64,232,.13);
+  background: linear-gradient(145deg, rgba(119,78,239,.11), rgba(119,78,239,.05));
+}
+
+body:not(.dark) .dark-feature {
+  color: #1b1624;
+  border-color: rgba(255,255,255,.96);
+  background:
+    radial-gradient(circle at 88% 10%, rgba(132,94,255,.13), transparent 28%),
+    linear-gradient(145deg, rgba(255,255,255,.88), rgba(247,243,255,.62)),
+    rgba(255,255,255,.62);
+  box-shadow:
+    0 24px 64px rgba(66,47,103,.10),
+    inset 0 1px 0 #fff,
+    inset 0 -1px 0 rgba(104,64,232,.05);
+}
+
+body:not(.dark) .dark-feature::before {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(255,255,255,.92), transparent 24%),
+    linear-gradient(135deg, rgba(255,255,255,.35), transparent 48%);
+}
+
+body:not(.dark) .dark-feature .section-label.light {
+  color: #7a7187;
+}
+
+body:not(.dark) .dark-feature-head h2,
+body:not(.dark) .dark-feature .process-grid h3 {
+  color: #17131f;
+}
+
+body:not(.dark) .dark-feature-head p,
+body:not(.dark) .dark-feature .process-grid p {
+  color: #746d80;
+}
+
+body:not(.dark) .dark-feature .process-grid {
+  border-top-color: rgba(74,56,105,.10);
+}
+
+body:not(.dark) .dark-feature .process-grid article {
+  border-right-color: rgba(74,56,105,.10);
+}
+
+body:not(.dark) .dark-feature .process-grid span {
+  color: rgba(88,70,116,.46);
+}
+
+body:not(.dark) .mini-chart-ui {
+  border-color: rgba(255,255,255,.98);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(120,82,244,.10), transparent 28%),
+    linear-gradient(145deg, rgba(255,255,255,.92), rgba(248,245,255,.68)),
+    rgba(255,255,255,.70);
+  box-shadow:
+    0 16px 38px rgba(70,49,108,.09),
+    inset 0 1px 0 #fff,
+    inset 0 -1px 0 rgba(104,64,232,.045);
+}
+
+body:not(.dark) .mini-chart-meta strong {
+  color: #1c1725;
+}
+
+body:not(.dark) .mini-chart-meta span,
+body:not(.dark) .mini-chart-axis {
+  color: #81798c;
+}
+
+body:not(.dark) .mini-chart-plot {
+  border-bottom-color: rgba(74,56,105,.10);
+}
+
+body:not(.dark) .chart-line {
+  background: rgba(74,56,105,.075);
+}
+
+body:not(.dark) .chart-bars span {
+  background:
+    linear-gradient(180deg, rgba(121,82,239,.78), rgba(121,82,239,.24));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.38),
+    0 6px 16px rgba(101,63,220,.08);
+}
+
+body:not(.dark) .chart-trend path {
+  stroke: #6840e8;
+  filter: drop-shadow(0 4px 8px rgba(104,64,232,.16));
+}
+
+body:not(.dark) .closing-band {
+  color: #21192d;
+  border: 1px solid rgba(255,255,255,.92);
+  background:
+    radial-gradient(circle at 82% 18%, rgba(125,88,244,.16), transparent 30%),
+    linear-gradient(145deg, rgba(255,255,255,.82), rgba(243,239,252,.68));
+  box-shadow:
+    0 22px 54px rgba(67,49,103,.09),
+    inset 0 1px 0 #fff;
+}
+
+body:not(.dark) .closing-band .section-label.light {
+  color: #7b7288;
+}
+
+body:not(.dark) .closing-band a {
+  color: #2b2237;
+  border-color: rgba(72,53,101,.16);
+  background: rgba(255,255,255,.58);
+}
+
+body:not(.dark) .message-content {
+  color: #17131f;
+}
+
+body:not(.dark) .message-content p {
+  color: #292330;
+}
