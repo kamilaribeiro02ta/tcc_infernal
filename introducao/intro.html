@@ -18,11 +18,7 @@
 <body>
   <div class="page">
     <aside class="sidebar">
-      <a class="site-brand-header" href="../index.html" aria-label="Ir para a página inicial">
-        <img class="site-brand-header-logo" src="../imagens/logo-zuz-header.png" alt="ZUZ">
-      </a>
-
-      <a href="../Login-2/login-2.html" class="login-block">
+<a href="../Login-2/login-2.html" class="login-block">
         <div class="avatar">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="8" r="4" fill="white"/>
@@ -96,21 +92,53 @@
           </div>
         </div>
 
-        <div class="project-panel">
+        <div class="project-panel prototype-panel">
           <div class="project-panel-top">
             <span class="panel-label">TCC ZUZ</span>
-            <span class="status-pill"><span></span> Sistema integrado</span>
+            <span class="status-pill"><span></span> Protótipo interativo</span>
           </div>
 
-          <div class="mascot-preview">
-            <div class="mascot-screen" aria-hidden="true">
-              <span class="eye"></span>
-              <span class="eye"></span>
-              <span class="mouth"></span>
-            </div>
-            <div>
-              <span class="mini-label">Agente de IA</span>
-              <h2>Um assistente que conversa com o usuário e ajuda na precificação.</h2>
+          <div class="prototype-view" aria-label="Protótipo 3D do assistente ZUZ">
+            <div class="prototype-3d">
+              <div class="proto-shadow"></div>
+
+              <div class="proto-core">
+                <div class="proto-screen">
+                  <div class="face-eye"></div>
+                  <div class="face-eye"></div>
+                  <div class="face-mouth"></div>
+                </div>
+
+                <div class="proto-side proto-left"></div>
+                <div class="proto-side proto-right"></div>
+                <div class="proto-top"></div>
+                <div class="proto-base"></div>
+              </div>
+
+              <div class="proto-part part-screen">
+                <strong>Tela</strong>
+                <span>Exibe o rosto do mascote e as respostas da IA.</span>
+              </div>
+
+              <div class="proto-part part-esp32">
+                <strong>ESP32</strong>
+                <span>Controla a comunicação e integra o hardware com o sistema.</span>
+              </div>
+
+              <div class="proto-part part-speaker">
+                <strong>Saída de áudio</strong>
+                <span>Pode reproduzir respostas e interações do assistente.</span>
+              </div>
+
+              <div class="proto-part part-power">
+                <strong>Alimentação</strong>
+                <span>Responsável por manter o protótipo funcionando.</span>
+              </div>
+
+              <div class="proto-part part-structure">
+                <strong>Estrutura 3D</strong>
+                <span>Carcaça impressa em 3D com visual simples e viável.</span>
+              </div>
             </div>
           </div>
 
