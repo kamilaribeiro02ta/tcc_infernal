@@ -41,6 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const profileName =
     document.getElementById("profileName");
 
+  const profileGreetingName =
+    document.getElementById("profileGreetingName");
+
   const profileEmail =
     document.getElementById("profileEmail");
 
@@ -310,10 +313,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     if (profileName) {
-
       profileName.textContent =
         profile.name;
+    }
 
+    if (profileGreetingName) {
+      profileGreetingName.textContent =
+        firstName(profile.name);
     }
 
 
