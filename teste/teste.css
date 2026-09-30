@@ -1,5 +1,5 @@
 :root {
-  --page-bg: #f5f4f2;
+  --page-bg: #08070e;
   --surface: #ffffff;
   --surface-soft: #f0eeeb;
   --text: #111014;
@@ -26,7 +26,7 @@
 }
 
 body.dark {
-  --page-bg: #0d0b10;
+  --page-bg: #08070e;
   --surface: #151218;
   --surface-soft: #1c1820;
   --text: #f5f2f8;
@@ -66,7 +66,7 @@ body {
   min-height: 100vh;
   font-family: "Poppins", sans-serif;
   color: var(--text);
-  background: var(--page-bg);
+  background: #08070e;
 }
 
 a {
@@ -83,7 +83,7 @@ a {
   min-width: 0;
   padding: 22px;
   overflow: hidden;
-  background: var(--page-bg);
+  background: #08070e;
 }
 
 .hero-shell,
