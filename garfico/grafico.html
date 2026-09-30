@@ -202,20 +202,15 @@
 
         <div class="header-actions">
 
-          <div class="month-select">
+          <div class="month-picker" aria-label="Selecionar mês">
+            <div class="month-picker-head">
+              <i class="bx bx-calendar"></i>
+              <span>Período</span>
+            </div>
 
-            <label
-              class="sr-only"
-              for="monthFilter"
-            >
-              Mês
-            </label>
+            <div class="month-chips" id="monthChips" role="listbox" aria-label="Meses do ano"></div>
 
-            <select
-              id="monthFilter"
-              class="month-input"
-            ></select>
-
+            <select id="monthFilter" class="sr-only" aria-label="Mês"></select>
           </div>
 
 
