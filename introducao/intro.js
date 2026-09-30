@@ -432,11 +432,17 @@ prototypeReal?.addEventListener("keydown", (event) => {
       labels?.classList.toggle("visible", value);
     }
 
+    let prototypeHoverTimer;
+
     wrap.addEventListener("pointerenter", (event) => {
-      if (event.pointerType === "mouse" && !pinned) setExploded(true);
+      if (event.pointerType === "mouse" && !pinned) {
+        clearTimeout(prototypeHoverTimer);
+        prototypeHoverTimer = setTimeout(() => setExploded(true), 180);
+      }
     });
 
     wrap.addEventListener("pointerleave", (event) => {
+      clearTimeout(prototypeHoverTimer);
       if (event.pointerType === "mouse" && !pinned) setExploded(false);
       if (tooltip) tooltip.style.display = "none";
     });
