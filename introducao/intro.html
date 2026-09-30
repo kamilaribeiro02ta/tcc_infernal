@@ -3,52 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZUZ | Sobre</title>
+  <meta name="description" content="Conheça o trabalho ZUZ, um sistema de precificação inteligente para pequenos negócios com apoio de inteligência artificial.">
+  <title>ZUZ | Sobre o Trabalho</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <link rel="stylesheet" href="../shared/sidebar.css">
   <link rel="stylesheet" href="../shared/design-system.css">
-  <link rel="stylesheet" href="intro.css">
+  <link rel="stylesheet" href="../teste/teste.css?v=20260930-2359">
+  <link rel="stylesheet" href="./intro.css?v=20260930-1645">
   <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
 </head>
 
 <body>
   <div class="page">
     <aside class="sidebar">
-
       <div class="login-block">
-
         <div class="avatar" aria-hidden="true">
-
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-            <circle cx="12" cy="8" r="4" fill="white"/>
-
-            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"/>
-
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" fill="white"></circle>
+            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"></path>
           </svg>
-
         </div>
 
         <div class="login-text">
-
           <a href="../Login-2/login-2.html">
-
-            <div class="login-title">
-              Login
-            </div>
-
+            <div class="login-title">Login</div>
           </a>
-
-          <div class="login-subtitle">
-            Minha Conta
-          </div>
-
+          <div class="login-subtitle">Minha Conta</div>
         </div>
-
       </div>
 
       <nav class="nav-menu" aria-label="Navegação principal">
@@ -57,7 +43,7 @@
           <span>Início</span>
         </a>
 
-        <a href="../introducao/intro.html" class="nav-item active" aria-current="page">
+        <a href="./intro.html" class="nav-item active" aria-current="page">
           <span class="nav-dot"></span>
           <span>Sobre</span>
         </a>
@@ -78,43 +64,192 @@
         </a>
       </nav>
 
-      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">
-
-        <span class="theme-toggle-label" id="themeLabel">
-          Modo Claro
-        </span>
-
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Alternar tema">
+        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
         <span class="theme-toggle-knob" aria-hidden="true">
-
-          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-
+          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="4"></circle>
-
             <line x1="12" y1="2" x2="12" y2="4"></line>
             <line x1="12" y1="20" x2="12" y2="22"></line>
-            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
-            <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
             <line x1="2" y1="12" x2="4" y2="12"></line>
             <line x1="20" y1="12" x2="22" y2="12"></line>
-            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
-            <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
-
           </svg>
-
-          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-
+          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
             <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
-
           </svg>
-
         </span>
-
       </button>
-
     </aside>
 
-    <main class="about-page"></main>
+    <main class="experimental-home about-work-page">
+      <section class="about-hero reveal-on-scroll">
+        <div class="about-hero-copy">
+          <span class="section-label">SOBRE O TRABALHO</span>
+          <h1>Precificação mais simples para quem precisa decidir todos os dias.</h1>
+          <p>
+            A ZUZ é um trabalho de conclusão de curso desenvolvido para apoiar pequenos negócios
+            na organização de custos e na definição de preços com mais clareza.
+          </p>
+
+          <div class="hero-actions">
+            <a href="../produtos/produtos.html" class="hero-button hero-button-primary">
+              Conhecer o sistema
+              <i class="bx bx-right-arrow-alt"></i>
+            </a>
+            <a href="#como-funciona" class="hero-button hero-button-ghost">
+              Ver como funciona
+            </a>
+          </div>
+        </div>
+
+        <div class="about-hero-visual" aria-hidden="true">
+          <div class="about-orb about-orb-one"></div>
+          <div class="about-orb about-orb-two"></div>
+          <div class="about-dashboard">
+            <div class="about-dashboard-top">
+              <span>Visão do projeto</span>
+              <i class="bx bx-trending-up"></i>
+            </div>
+            <strong>ZUZ</strong>
+            <div class="about-mini-bars">
+              <span style="--h:38%"></span>
+              <span style="--h:54%"></span>
+              <span style="--h:46%"></span>
+              <span style="--h:72%"></span>
+              <span style="--h:64%"></span>
+              <span style="--h:86%"></span>
+            </div>
+            <div class="about-dashboard-bottom">
+              <span>Custos</span>
+              <span>Preço</span>
+              <span>Margem</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-statement reveal-on-scroll">
+        <span class="section-label">01 / O PROBLEMA</span>
+        <div>
+          <p>
+            Muitos pequenos negócios ainda definem preços com base em comparação,
+            tentativa ou percepção. O problema aparece quando custos ficam escondidos
+            e a margem real deixa de ser percebida.
+          </p>
+        </div>
+      </section>
+
+      <section class="about-cards reveal-on-scroll reveal-stagger" aria-label="Pilares do trabalho">
+        <article class="about-card">
+          <div class="about-card-icon"><i class="bx bx-calculator"></i></div>
+          <span>01</span>
+          <h2>Custos organizados</h2>
+          <p>O sistema reúne os valores que compõem o produto para criar uma base de cálculo mais clara.</p>
+        </article>
+
+        <article class="about-card">
+          <div class="about-card-icon"><i class="bx bx-line-chart"></i></div>
+          <span>02</span>
+          <h2>Decisão visual</h2>
+          <p>Gráficos e indicadores ajudam o usuário a enxergar custo, margem e resultado sem depender de planilhas complexas.</p>
+        </article>
+
+        <article class="about-card">
+          <div class="about-card-icon"><i class="bx bx-bot"></i></div>
+          <span>03</span>
+          <h2>Agente de IA</h2>
+          <p>A interface conversa com o usuário, coleta informações e auxilia no processo de precificação.</p>
+        </article>
+      </section>
+
+      <section class="about-flow reveal-on-scroll" id="como-funciona">
+        <div class="about-flow-heading">
+          <span class="section-label light">02 / COMO FUNCIONA</span>
+          <h2>Do produto cadastrado até uma sugestão de preço.</h2>
+          <p>O fluxo foi desenhado para reduzir etapas e apresentar cada decisão de forma compreensível.</p>
+        </div>
+
+        <div class="about-flow-grid">
+          <article>
+            <span>01</span>
+            <i class="bx bx-package"></i>
+            <h3>Cadastrar</h3>
+            <p>O usuário informa o produto, insumos, custos e quantidade estimada.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <i class="bx bx-conversation"></i>
+            <h3>Conversar</h3>
+            <p>O agente de IA faz perguntas e ajuda a completar informações necessárias.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <i class="bx bx-calculator"></i>
+            <h3>Calcular</h3>
+            <p>O sistema consolida os custos e apresenta os valores calculados.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <i class="bx bx-check-circle"></i>
+            <h3>Decidir</h3>
+            <p>O usuário compara os resultados e escolhe o preço mais adequado para sua realidade.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="about-ai reveal-on-scroll">
+        <div class="about-ai-copy">
+          <span class="section-label">03 / AGENTE DE IA</span>
+          <h2>Uma interface que não apenas mostra dados. Ela conversa com o usuário.</h2>
+          <p>
+            A proposta da ZUZ integra o software a um agente de inteligência artificial.
+            Ele pode orientar o cadastro, interpretar respostas e apresentar informações
+            de precificação de forma mais natural.
+          </p>
+        </div>
+
+        <div class="about-ai-demo">
+          <div class="ai-message ai-message-system">
+            <span>ZUZ</span>
+            <p>Qual produto você quer precificar hoje?</p>
+          </div>
+          <div class="ai-message ai-message-user">
+            <span>Você</span>
+            <p>Quero calcular o preço de um bolo.</p>
+          </div>
+          <div class="ai-message ai-message-system">
+            <span>ZUZ</span>
+            <p>Vamos começar pelos ingredientes e custos usados na produção.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-objective reveal-on-scroll">
+        <span class="section-label">04 / OBJETIVO</span>
+        <div class="about-objective-copy">
+          <h2>Transformar precificação em uma experiência mais clara, acessível e prática.</h2>
+          <p>
+            O trabalho busca unir organização financeira, experiência de usuário,
+            visualização de dados e inteligência artificial em uma solução voltada
+            à realidade de micro e pequenos negócios.
+          </p>
+        </div>
+      </section>
+
+      <section class="closing-band reveal-on-scroll">
+        <div>
+          <span class="section-label light">ZUZ / TCC</span>
+          <h2>Uma solução criada para transformar números em decisões mais compreensíveis.</h2>
+        </div>
+        <a href="../produtos/produtos.html">
+          Explorar o sistema
+          <i class="bx bx-up-arrow-alt"></i>
+        </a>
+      </section>
+    </main>
   </div>
-<script src="../shared/site.js?v=20260930-2040"></script>
+
+  <script src="../teste/teste-reveal.js?v=20260930-2359"></script>
+  <script src="../shared/site.js?v=20260930-2040"></script>
 </body>
 </html>
