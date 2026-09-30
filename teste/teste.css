@@ -131,17 +131,18 @@ a {
 
 .message-note {
   display: grid;
-  grid-template-columns: 34px minmax(0,1fr);
-  gap: 10px;
+  grid-template-columns: auto minmax(0,1fr);
+  gap: 6px;
   align-items: end;
 }
 
 .message-content {
   max-width: 360px;
   padding: 11px 13px;
-  border: 1px solid var(--line);
+  border: 0;
   border-radius: 14px 14px 14px 5px;
-  background: var(--surface-soft);
+  background: #d7d7dc;
+  box-shadow: none;
 }
 
 .message-head {
@@ -169,8 +170,8 @@ a {
 }
 
 body.dark .message-content {
-  background: #242128;
-  border-color: rgba(255,255,255,.07);
+  background: #3a373f;
+  border: 0;
 }
 
 .hero-visual {
@@ -790,7 +791,7 @@ body.dark .metric-accent {
 .message-avatars span {
   width: 32px;
   height: 32px;
-  margin-left: -8px;
+  margin-left: -12px;
   border: 2px solid var(--page-bg);
   border-radius: 50%;
   display: grid;
