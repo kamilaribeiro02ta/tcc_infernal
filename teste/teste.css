@@ -187,43 +187,8 @@ body.dark .message-content {
   border-radius: 18px;
   isolation: isolate;
   background:
-    radial-gradient(circle at 73% 26%, rgba(255,255,255,.55), transparent 16%),
-    radial-gradient(circle at 18% 72%, rgba(141,102,255,.36), transparent 25%),
-    linear-gradient(155deg, #ece7f7 0%, #cdc2f0 27%, #7562bb 55%, #34245d 100%);
-}
-
-.hero-visual::before,
-.hero-visual::after {
-  content: "";
-  position: absolute;
-  inset: auto;
-  z-index: -3;
-  border-radius: 48% 52% 46% 54% / 56% 46% 54% 44%;
-}
-
-.hero-visual::before {
-  width: 78%;
-  height: 56%;
-  left: -8%;
-  bottom: -14%;
-  transform: rotate(-8deg);
-  background:
-    radial-gradient(circle at 42% 32%, rgba(225,211,255,.72), transparent 18%),
-    linear-gradient(120deg,#33204f,#6a3df0 45%,#a98cff);
-  box-shadow:
-    130px -90px 0 -8px rgba(83,48,149,.40),
-    320px -58px 0 -2px rgba(110,74,178,.25);
-}
-
-.hero-visual::after {
-  width: 72%;
-  height: 52%;
-  right: -22%;
-  bottom: -10%;
-  transform: rotate(11deg);
-  background:
-    linear-gradient(135deg,#251735,#503377 42%,#8a68c7 100%);
-  box-shadow: -240px -115px 0 -18px rgba(98,68,155,.26);
+    linear-gradient(90deg, rgba(14,10,24,.74) 0%, rgba(14,10,24,.40) 38%, rgba(14,10,24,.10) 72%),
+    url("../imagens/hero-zuz-wave.webp") center center / cover no-repeat;
 }
 
 .hero-overlay {
@@ -231,8 +196,7 @@ body.dark .message-content {
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(90deg,rgba(14,10,24,.78) 0%,rgba(14,10,24,.35) 42%,rgba(14,10,24,.02) 72%),
-    linear-gradient(0deg,rgba(14,10,24,.22),transparent 38%);
+    linear-gradient(90deg, rgba(10,8,18,.70) 0%, rgba(10,8,18,.32) 36%, rgba(10,8,18,.05) 72%);
 }
 
 .hero-copy {
