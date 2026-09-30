@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZUZ | Teste</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../shared/sidebar.css">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <link rel="stylesheet" href="./teste.css">
+  <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
+</head>
+
+<body>
+  <div class="page">
+    <aside class="sidebar">
+      <div class="login-block">
+        <div class="avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" fill="white"></circle>
+            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"></path>
+          </svg>
+        </div>
+
+        <div class="login-text">
+          <a href="../Login-2/login-2.html">
+            <div class="login-title">Login</div>
+          </a>
+          <div class="login-subtitle">Minha Conta</div>
+        </div>
+      </div>
+
+      <nav class="nav-menu" aria-label="Navegação principal">
+        <a href="../index.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Início</span>
+        </a>
+
+        <a href="../introducao/intro.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Sobre</span>
+        </a>
+
+        <a href="../produtos/produtos.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Produtos</span>
+        </a>
+
+        <a href="../garfico/grafico.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Gráfico</span>
+        </a>
+
+        <a href="../teste/teste.html" class="nav-item active" aria-current="page">
+          <span class="nav-dot"></span>
+          <span>Teste</span>
+        </a>
+
+        <a href="../referencias/refe.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Referências</span>
+        </a>
+      </nav>
+
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Alternar tema">
+        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
+        <span class="theme-toggle-knob" aria-hidden="true">
+          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"></circle>
+            <line x1="12" y1="2" x2="12" y2="4"></line>
+            <line x1="12" y1="20" x2="12" y2="22"></line>
+            <line x1="2" y1="12" x2="4" y2="12"></line>
+            <line x1="20" y1="12" x2="22" y2="12"></line>
+          </svg>
+          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+            <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
+          </svg>
+        </span>
+      </button>
+    </aside>
+
+    <main class="test-page">
+      <section class="test-panel">
+        <span class="test-kicker">AMBIENTE DE TESTE</span>
+        <h1>Laboratório ZUZ</h1>
+        <p>
+          Esta página foi criada para testar ideias, componentes e novas versões
+          antes de aplicar qualquer alteração nas páginas oficiais.
+        </p>
+
+        <div class="test-status">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Página isolada para experimentos</span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../shared/site.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const button = document.getElementById("themeToggle");
+      const label = document.getElementById("themeLabel");
+      const sun = document.getElementById("iconSun");
+      const moon = document.getElementById("iconMoon");
+
+      function renderTheme() {
+        const dark = document.body.classList.contains("dark");
+        if (label) label.textContent = dark ? "Modo Escuro" : "Modo Claro";
+        if (sun) sun.style.display = dark ? "none" : "block";
+        if (moon) moon.style.display = dark ? "block" : "none";
+        button?.setAttribute("aria-pressed", String(dark));
+      }
+
+      renderTheme();
+
+      button?.addEventListener("click", () => {
+        const dark = !document.body.classList.contains("dark");
+        document.body.classList.toggle("dark", dark);
+        localStorage.setItem("zuz-theme", dark ? "dark" : "light");
+        renderTheme();
+      });
+    });
+  </script>
+</body>
+</html>
