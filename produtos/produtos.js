@@ -2,14 +2,7 @@
   "use strict";
 
   const STORAGE_KEY = "zuz-pricing-products-v2";
-  const THEME_KEY = "zuz-theme";
-
   const els = {
-    themeToggle: document.getElementById("themeToggle"),
-    themeLabel: document.getElementById("themeLabel"),
-    iconSun: document.getElementById("iconSun"),
-    iconMoon: document.getElementById("iconMoon"),
-
     summaryProducts: document.getElementById("summaryProducts"),
     summaryCategories: document.getElementById("summaryCategories"),
     summaryMargin: document.getElementById("summaryMargin"),
@@ -559,27 +552,6 @@
   function renderAll() {
     renderSummary();
     renderCatalog();
-  }
-
-  function initTheme() {
-    const saved = localStorage.getItem(THEME_KEY);
-    const isDark = saved === "dark";
-
-    applyTheme(isDark);
-
-    els.themeToggle.addEventListener("click", () => {
-      const nextDark = !document.body.classList.contains("dark");
-      applyTheme(nextDark);
-      localStorage.setItem(THEME_KEY, nextDark ? "dark" : "light");
-    });
-  }
-
-  function applyTheme(isDark) {
-    document.body.classList.toggle("dark", isDark);
-    els.themeToggle.setAttribute("aria-pressed", String(isDark));
-    els.themeLabel.textContent = isDark ? "Modo Escuro" : "Modo Claro";
-    els.iconSun.style.display = isDark ? "none" : "block";
-    els.iconMoon.style.display = isDark ? "block" : "none";
   }
 
   function openModal() {
@@ -1227,6 +1199,5 @@
     }
   });
 
-  initTheme();
   renderAll();
 })();
