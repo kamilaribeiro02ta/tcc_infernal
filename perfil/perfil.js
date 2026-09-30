@@ -2,58 +2,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const PROFILE_KEY =
     "zuz-profile";
+  const SESSION_KEY =
+    "zuz-session";
 
   const logoutBtn =
     document.getElementById("logoutBtn");
 
-  async function requireBackendSession() {
+  function hasLocalSession() {
     try {
-      const response = await fetch("/api/auth/me", {
-        credentials: "same-origin"
-      });
+      const session =
+        JSON.parse(
+          localStorage.getItem(
+            SESSION_KEY
+          )
+        );
 
-      if (!response.ok) {
-        window.location.replace("../Login-2/login-2.html");
-        return null;
-      }
-
-      const data = await response.json();
-
-      if (data.user) {
-        const saved = getProfile();
-
-        saveProfile({
-          ...saved,
-          ...data.user,
-          photo: saved.photo || "",
-          banner: saved.banner || ""
-        });
-      }
-
-      return data.user || null;
-    } catch (error) {
-      console.error("Erro ao validar sessão:", error);
-      return null;
+      return Boolean(
+        session?.email
+      );
+    }
+    catch {
+      return false;
     }
   }
 
-  logoutBtn?.addEventListener("click", async () => {
-    logoutBtn.disabled = true;
+  if (!hasLocalSession()) {
+    window.location.replace(
+      "../Login-2/login-2.html"
+    );
 
-    try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "same-origin"
-      });
-    } catch (error) {
-      console.error("Erro ao sair:", error);
+    return;
+  }
+
+  logoutBtn?.addEventListener(
+    "click",
+    () => {
+      localStorage.removeItem(
+        SESSION_KEY
+      );
+
+      localStorage.removeItem(
+        "zuz-logged-in"
+      );
+
+      window.location.replace(
+        "../Login-2/login-2.html"
+      );
     }
-
-    localStorage.removeItem("zuz-profile");
-    localStorage.removeItem("zuz-logged-in");
-
-    window.location.replace("../Login-2/login-2.html");
-  });
+  );
 
   const profileThemeToggle = document.getElementById("themeToggle");
   const profileThemeLabel = document.getElementById("themeLabel");
@@ -1438,12 +1434,8 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =========================================================
      INICIALIZAÇÃO
   ========================================================= */
+  renderProfile();
 
-  requireBackendSession().then(user => {
-    if (user) {
-      renderProfile();
-      renderSummary();
-    }
-  });
+  renderSummary();
 
 });
