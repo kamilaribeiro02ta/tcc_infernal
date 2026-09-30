@@ -132,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     localStorage.setItem("zuz-logged-in", "true");
+    localStorage.removeItem("zuz-explicit-logout");
 
     status.textContent = "Conta criada com sucesso!";
 
