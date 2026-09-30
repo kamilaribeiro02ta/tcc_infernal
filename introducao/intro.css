@@ -1292,3 +1292,185 @@ body.dark .prototype-real {
     font-size: 8px;
   }
 }
+
+
+/* =========================================================
+   Modelo 3D WebGL do protótipo ZUZ
+========================================================= */
+
+.prototype-real,
+.prototype-view,
+.prototype-3d {
+  display: none !important;
+}
+
+.prototype-webgl {
+  margin-top: 18px;
+}
+
+.prototype-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: clamp(360px, 43vw, 520px);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(124, 92, 255, 0.09), transparent 38%),
+    rgba(255, 255, 255, 0.7);
+  cursor: grab;
+  touch-action: none;
+}
+
+body.dark .prototype-canvas-wrap {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(140, 107, 255, 0.12), transparent 40%),
+    rgba(18, 13, 28, 0.84);
+}
+
+.prototype-canvas-wrap:active {
+  cursor: grabbing;
+}
+
+#prototypeCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.prototype-overlay {
+  position: absolute;
+  inset: 14px 14px auto 14px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.prototype-instruction,
+.prototype-explode-btn {
+  min-height: 36px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 9.5px;
+  font-weight: 700;
+  backdrop-filter: blur(8px);
+}
+
+.prototype-instruction {
+  padding: 0 12px;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  border: 1px solid var(--border);
+}
+
+.prototype-instruction i {
+  color: var(--purple);
+  font-size: 16px;
+}
+
+.prototype-explode-btn {
+  padding: 0 13px;
+  border: 1px solid color-mix(in srgb, var(--purple) 28%, var(--border));
+  color: var(--purple);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.prototype-explode-btn:hover,
+.prototype-explode-btn[aria-pressed="true"] {
+  color: #ffffff;
+  background: var(--purple);
+  border-color: var(--purple);
+}
+
+.prototype-explode-btn i {
+  font-size: 16px;
+}
+
+.prototype-component-labels {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  z-index: 4;
+  width: calc(100% - 28px);
+  transform: translate(-50%, 10px);
+  opacity: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  pointer-events: none;
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.prototype-component-labels.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.prototype-component-labels span {
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter: blur(8px);
+  font-size: 8.5px;
+  font-weight: 700;
+}
+
+.prototype-tooltip {
+  position: absolute;
+  z-index: 6;
+  display: none;
+  max-width: 190px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  color: #ffffff;
+  background: rgba(20, 15, 30, 0.88);
+  font-size: 9px;
+  line-height: 1.45;
+  pointer-events: none;
+  transform: translate(12px, 12px);
+}
+
+.prototype-help {
+  margin: 10px 2px 0;
+  color: var(--text-muted);
+  font-size: 9.5px;
+  line-height: 1.55;
+}
+
+@media (max-width: 520px) {
+  .prototype-canvas-wrap {
+    height: 390px;
+  }
+
+  .prototype-overlay {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .prototype-instruction span {
+    font-size: 0;
+  }
+
+  .prototype-instruction span::after {
+    content: "Arraste para girar";
+    font-size: 9px;
+  }
+
+  .prototype-explode-btn {
+    align-self: flex-end;
+  }
+
+  .prototype-component-labels {
+    bottom: 12px;
+  }
+}
