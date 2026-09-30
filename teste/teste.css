@@ -1683,3 +1683,109 @@ body:not(.dark) .closing-band a {
     transition: none !important;
   }
 }
+
+
+/* MESSAGE ARRIVAL ANIMATION */
+.hero-intro.message-note {
+  overflow: visible;
+}
+
+.hero-intro .message-avatars span {
+  opacity: 0;
+  transform: translateY(10px) scale(.82);
+  animation: messageAvatarIn .42s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+.hero-intro .message-avatars span:nth-child(1) {
+  animation-delay: .18s;
+}
+
+.hero-intro .message-avatars span:nth-child(2) {
+  animation-delay: .32s;
+}
+
+.hero-intro .message-content {
+  opacity: 0;
+  transform: translateX(22px) translateY(8px) scale(.96);
+  transform-origin: left bottom;
+  animation: messageBubbleIn .58s cubic-bezier(.18,.82,.22,1) .46s forwards;
+}
+
+.hero-intro .message-head {
+  opacity: 0;
+  transform: translateY(4px);
+  animation: messageMetaIn .32s ease .82s forwards;
+}
+
+.hero-intro .message-content p {
+  opacity: 0;
+  transform: translateY(5px);
+  animation: messageTextIn .42s ease .96s forwards;
+}
+
+.hero-intro .message-content::after {
+  content: "";
+  position: absolute;
+  left: -7px;
+  bottom: 8px;
+  width: 14px;
+  height: 14px;
+  background: inherit;
+  transform: rotate(45deg) scale(0);
+  border-radius: 2px;
+  animation: messageTailIn .28s ease .72s forwards;
+}
+
+@keyframes messageAvatarIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes messageBubbleIn {
+  0% {
+    opacity: 0;
+    transform: translateX(22px) translateY(8px) scale(.96);
+  }
+  72% {
+    opacity: 1;
+    transform: translateX(-2px) translateY(0) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1);
+  }
+}
+
+@keyframes messageMetaIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes messageTextIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes messageTailIn {
+  to {
+    transform: rotate(45deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-intro .message-avatars span,
+  .hero-intro .message-content,
+  .hero-intro .message-head,
+  .hero-intro .message-content p,
+  .hero-intro .message-content::after {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
