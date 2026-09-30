@@ -785,3 +785,183 @@ body.dark .metric-accent {
 .message-avatars span:last-child {
   background: #241a33;
 }
+
+
+/* =========================================================
+   GLASS CARDS
+   Linguagem visual inspirada em vidro translúcido moderno
+========================================================= */
+
+.metric-card,
+.solution-card,
+.message-content {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.42);
+  background: rgba(255,255,255,.58);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+  backdrop-filter: blur(22px) saturate(145%);
+  box-shadow:
+    0 18px 45px rgba(27,20,47,.10),
+    inset 0 1px 0 rgba(255,255,255,.72),
+    inset 0 -1px 0 rgba(255,255,255,.16);
+  transition:
+    transform .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease,
+    background .22s ease;
+}
+
+.metric-card::before,
+.solution-card::before,
+.message-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.34) 0%,
+      rgba(255,255,255,.10) 34%,
+      transparent 62%
+    );
+  opacity: .82;
+}
+
+.metric-card > *,
+.solution-card > *,
+.message-content > * {
+  position: relative;
+  z-index: 1;
+}
+
+.metric-card,
+.solution-card {
+  border-radius: 22px;
+}
+
+.metric-card {
+  min-height: 184px;
+  padding: 19px;
+}
+
+.solution-card {
+  padding: 22px;
+}
+
+.metric-card:hover,
+.solution-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,.68);
+  background: rgba(255,255,255,.68);
+  box-shadow:
+    0 24px 56px rgba(27,20,47,.15),
+    inset 0 1px 0 rgba(255,255,255,.88),
+    inset 0 -1px 0 rgba(255,255,255,.20);
+}
+
+.metric-top i {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(106,61,240,.16);
+  border-radius: 11px;
+  background: rgba(106,61,240,.08);
+}
+
+.metric-dark,
+.metric-accent {
+  color: var(--text);
+  background: rgba(255,255,255,.58);
+}
+
+.metric-dark p,
+.metric-dark .metric-top,
+.metric-accent p,
+.metric-accent .metric-top {
+  color: var(--muted);
+}
+
+body.dark .metric-card,
+body.dark .solution-card,
+body.dark .message-content {
+  border-color: rgba(255,255,255,.11);
+  background: rgba(255,255,255,.065);
+  box-shadow:
+    0 22px 52px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 -1px 0 rgba(255,255,255,.03);
+}
+
+body.dark .metric-card::before,
+body.dark .solution-card::before,
+body.dark .message-content::before {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.10) 0%,
+      rgba(255,255,255,.025) 38%,
+      transparent 64%
+    );
+}
+
+body.dark .metric-card:hover,
+body.dark .solution-card:hover {
+  border-color: rgba(170,145,255,.24);
+  background: rgba(255,255,255,.085);
+  box-shadow:
+    0 26px 64px rgba(0,0,0,.34),
+    0 0 0 1px rgba(146,117,255,.05),
+    inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+body.dark .metric-dark,
+body.dark .metric-accent {
+  color: var(--text);
+  background: rgba(255,255,255,.065);
+}
+
+body.dark .metric-dark p,
+body.dark .metric-dark .metric-top,
+body.dark .metric-accent p,
+body.dark .metric-accent .metric-top {
+  color: var(--muted);
+}
+
+body.dark .metric-top i {
+  border-color: rgba(146,117,255,.18);
+  background: rgba(146,117,255,.10);
+}
+
+.mini-price-ui {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.035)),
+    rgba(20,15,31,.72);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  backdrop-filter: blur(18px) saturate(135%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    0 14px 34px rgba(0,0,0,.20);
+}
+
+.message-content {
+  border-radius: 18px 18px 18px 7px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-card,
+  .solution-card {
+    transition: none;
+  }
+
+  .metric-card:hover,
+  .solution-card:hover {
+    transform: none;
+  }
+}
