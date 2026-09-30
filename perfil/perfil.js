@@ -17,9 +17,48 @@ document.addEventListener("DOMContentLoaded", () => {
           )
         );
 
-      return Boolean(
-        session?.email
-      );
+      if (session?.email) {
+        return true;
+      }
+
+      const explicitLogout =
+        localStorage.getItem(
+          "zuz-explicit-logout"
+        ) === "true";
+
+      const savedProfile =
+        JSON.parse(
+          localStorage.getItem(
+            PROFILE_KEY
+          )
+        );
+
+      if (
+        !explicitLogout &&
+        savedProfile?.email
+      ) {
+        localStorage.setItem(
+          SESSION_KEY,
+          JSON.stringify({
+            userId:
+              savedProfile.id ||
+              "legacy-user",
+            email:
+              savedProfile.email,
+            loggedInAt:
+              new Date().toISOString()
+          })
+        );
+
+        localStorage.setItem(
+          "zuz-logged-in",
+          "true"
+        );
+
+        return true;
+      }
+
+      return false;
     }
     catch {
       return false;
@@ -43,6 +82,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       localStorage.removeItem(
         "zuz-logged-in"
+      );
+
+      localStorage.setItem(
+        "zuz-explicit-logout",
+        "true"
       );
 
       window.location.replace(
