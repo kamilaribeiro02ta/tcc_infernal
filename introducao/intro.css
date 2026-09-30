@@ -1965,7 +1965,7 @@ body:not(.dark) .about-card-inspired p {
 
 /* THICK CARD BORDER */
 .about-cards-side .about-card.about-card-inspired {
-  border: 8px solid #0b0910;
+  border: 2px solid #0b0910;
   box-sizing: border-box;
 }
 
