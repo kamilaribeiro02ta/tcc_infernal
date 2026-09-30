@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const USERS_KEY = "zuz-users";
+  const SESSION_KEY = "zuz-session";
+  const PROFILE_KEY = "zuz-profile";
+
   const form = document.getElementById("signupForm");
   const firstName = document.getElementById("firstName");
   const lastName = document.getElementById("lastName");
@@ -11,6 +15,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordError = document.getElementById("signupPasswordError");
   const status = document.getElementById("signupStatus");
   const showPasswordButton = document.querySelector(".password-dot");
+
+  function getUsers() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(USERS_KEY));
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveUsers(users) {
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  }
+
+  async function hashPassword(value) {
+    if (!window.crypto?.subtle) {
+      return value;
+    }
+
+    const data = new TextEncoder().encode(value);
+    const digest = await crypto.subtle.digest("SHA-256", data);
+
+    return Array.from(new Uint8Array(digest))
+      .map(byte => byte.toString(16).padStart(2, "0"))
+      .join("");
+  }
 
   showPasswordButton?.addEventListener("click", () => {
     const isPassword = password.type === "password";
@@ -61,49 +91,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!valid) return;
 
+    const normalizedEmail = email.value.trim().toLowerCase();
+    const users = getUsers();
+
+    if (users.some(user => user.email === normalizedEmail)) {
+      emailError.textContent = "Já existe uma conta com este email.";
+      return;
+    }
+
     status.textContent = "Criando sua conta...";
 
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "same-origin",
-        body: JSON.stringify({
-          firstName: firstName.value.trim(),
-          lastName: lastName.value.trim(),
-          email: email.value.trim(),
-          password: password.value
-        })
-      });
+    const profile = {
+      id: "usr_" + Date.now().toString(36),
+      name: `${firstName.value.trim()} ${lastName.value.trim()}`,
+      email: normalizedEmail,
+      createdAt: new Date().toISOString(),
+      photo: "",
+      banner: ""
+    };
 
-      const data = await response.json();
+    const passwordHash = await hashPassword(password.value);
 
-      if (!response.ok) {
-        status.textContent = data.message || "Não foi possível criar a conta.";
-        return;
-      }
+    users.push({
+      id: profile.id,
+      name: profile.name,
+      email: profile.email,
+      createdAt: profile.createdAt,
+      passwordHash
+    });
 
-      localStorage.setItem(
-        "zuz-profile",
-        JSON.stringify({
-          ...data.user,
-          photo: "",
-          banner: ""
-        })
-      );
+    saveUsers(users);
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+    localStorage.setItem(
+      SESSION_KEY,
+      JSON.stringify({
+        userId: profile.id,
+        email: profile.email,
+        loggedInAt: new Date().toISOString()
+      })
+    );
 
-      localStorage.removeItem("zuz-logged-in");
+    localStorage.setItem("zuz-logged-in", "true");
 
-      status.textContent = "Conta criada com sucesso!";
+    status.textContent = "Conta criada com sucesso!";
 
-      window.setTimeout(() => {
-        window.location.href = "../perfil/perfil.html";
-      }, 350);
-    } catch (error) {
-      console.error(error);
-      status.textContent = "Não foi possível conectar ao servidor.";
-    }
+    window.setTimeout(() => {
+      window.location.href = "../perfil/perfil.html";
+    }, 250);
   });
 });
