@@ -1,4 +1,5 @@
 :root {
+  --bg-image: url("../imagens/P2 · Instruções · Light · Desktop.png");
   --purple: #6a3df0;
   --purple-dark: #5b31df;
   --purple-soft: #f1edff;
@@ -24,6 +25,7 @@
 }
 
 body.dark {
+  --bg-image: url("../imagens/P2 · Instruções · Dark · Desktop.png");
   --purple: #8c6bff;
   --purple-dark: #7b59ef;
   --purple-soft: #2a2144;
@@ -62,8 +64,13 @@ body {
   min-height: 100vh;
   font-family: "Poppins", sans-serif;
   color: var(--text-primary);
-  background: var(--page-bg);
-  transition: background 0.2s ease, color 0.2s ease;
+  background-color: var(--page-bg);
+  background-image: var(--bg-image);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a {
@@ -243,11 +250,10 @@ select {
 .project-panel {
   padding: 20px;
   border: 1px solid var(--border);
-  border-radius: 24px;
-  background:
-    radial-gradient(circle at 82% 12%, color-mix(in srgb, var(--purple) 16%, transparent), transparent 38%),
-    var(--surface);
-  box-shadow: var(--shadow);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: 0 10px 28px rgba(58, 40, 105, 0.07);
+  backdrop-filter: blur(4px);
 }
 
 .project-panel-top {
@@ -404,9 +410,10 @@ select {
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--surface);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
   transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  backdrop-filter: blur(3px);
 }
 
 .about-card:hover {
@@ -730,5 +737,131 @@ select {
     width: 34px;
     height: 34px;
     min-width: 34px;
+  }
+}
+
+/* =========================================================
+   Movimento sutil
+========================================================= */
+
+@keyframes aboutFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes panelEnter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes mascotBlink {
+  0%, 44%, 48%, 100% {
+    transform: scaleY(1);
+  }
+  46% {
+    transform: scaleY(0.12);
+  }
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(0.88);
+  }
+}
+
+.about-copy > * {
+  opacity: 0;
+  animation: aboutFadeUp 0.55s ease forwards;
+}
+
+.about-copy > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.about-copy > *:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.about-copy > *:nth-child(3) {
+  animation-delay: 0.19s;
+}
+
+.about-copy > *:nth-child(4) {
+  animation-delay: 0.26s;
+}
+
+.about-copy > *:nth-child(5) {
+  animation-delay: 0.33s;
+}
+
+.project-panel {
+  opacity: 0;
+  animation: panelEnter 0.65s 0.18s ease forwards;
+}
+
+.about-section {
+  opacity: 0;
+  animation: aboutFadeUp 0.6s 0.38s ease forwards;
+}
+
+.about-card {
+  animation: aboutFadeUp 0.45s ease both;
+}
+
+.about-card:nth-child(1) { animation-delay: 0.46s; }
+.about-card:nth-child(2) { animation-delay: 0.52s; }
+.about-card:nth-child(3) { animation-delay: 0.58s; }
+.about-card:nth-child(4) { animation-delay: 0.64s; }
+.about-card:nth-child(5) { animation-delay: 0.70s; }
+.about-card:nth-child(6) { animation-delay: 0.76s; }
+
+.mascot-screen .eye {
+  transform-origin: center;
+  animation: mascotBlink 4.8s ease-in-out infinite;
+}
+
+.status-pill > span {
+  animation: statusPulse 2.4s ease-in-out infinite;
+}
+
+.about-card:hover {
+  transform: translateY(-2px);
+}
+
+.card-trigger:active {
+  transform: scale(0.995);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body {
+    background-attachment: scroll;
   }
 }
