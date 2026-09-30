@@ -326,16 +326,60 @@
   }
 
   function initMonthFilter() {
+    const monthChips = document.getElementById("monthChips");
+
     els.monthFilter.innerHTML = monthNames
       .map((name, index) => `<option value="${index}">${name}</option>`)
       .join("");
 
     els.monthFilter.value = String(selectedMonth);
 
+    const renderMonthChips = () => {
+      if (!monthChips) return;
+
+      monthChips.innerHTML = monthNames
+        .map((name, index) => {
+          const shortName = name.slice(0, 3);
+          const selected = index === selectedMonth;
+
+          return `
+            <button
+              type="button"
+              class="month-chip"
+              data-month="${index}"
+              role="option"
+              aria-selected="${selected}"
+              title="${name}"
+            >
+              ${shortName}
+            </button>
+          `;
+        })
+        .join("");
+
+      monthChips.querySelectorAll(".month-chip").forEach(button => {
+        button.addEventListener("click", () => {
+          selectedMonth = clamp(Number(button.dataset.month), 0, 11);
+          els.monthFilter.value = String(selectedMonth);
+          renderMonthChips();
+          renderAll();
+
+          button.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center"
+          });
+        });
+      });
+    };
+
     els.monthFilter.addEventListener("change", () => {
       selectedMonth = clamp(Number(els.monthFilter.value), 0, 11);
+      renderMonthChips();
       renderAll();
     });
+
+    renderMonthChips();
   }
 
   function statCard(label, value, icon, helper) {
@@ -442,6 +486,11 @@
       const selectMonth = () => {
         selectedMonth = index;
         els.monthFilter.value = String(index);
+
+        document.querySelectorAll(".month-chip").forEach((chip, chipIndex) => {
+          chip.setAttribute("aria-selected", String(chipIndex === selectedMonth));
+        });
+
         renderAll();
       };
 
