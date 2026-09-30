@@ -1048,3 +1048,18 @@ body:not(.dark) .team-photo-avatar {
     width: 100%;
   }
 }
+
+
+/* AI BRAND TEXT */
+.ai-brand-logo {
+  display: none !important;
+}
+
+.ai-brand-text {
+  display: block;
+  margin-bottom: 6px;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
