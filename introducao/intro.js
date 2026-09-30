@@ -24,34 +24,20 @@
   });
 })();
 
-// Cards expansíveis
-document.querySelectorAll(".about-card").forEach((card) => {
-  const trigger = card.querySelector(".card-trigger");
-
-  trigger?.addEventListener("click", () => {
-    const willOpen = !card.classList.contains("open");
-
-    document.querySelectorAll(".about-card.open").forEach((openCard) => {
-      if (openCard !== card) {
-        openCard.classList.remove("open");
-        openCard.querySelector(".card-trigger")?.setAttribute("aria-expanded", "false");
+// Entrada suave das seções
+const revealObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        revealObserver.unobserve(entry.target);
       }
     });
+  },
+  { threshold: 0.12 }
+);
 
-    card.classList.toggle("open", willOpen);
-    trigger.setAttribute("aria-expanded", String(willOpen));
-  });
-});
-
-
-
-prototypeReal?.addEventListener("keydown", (event) => {
-  if (event.key === "Enter" || event.key === " ") {
-    event.preventDefault();
-    prototypeReal.classList.toggle("is-open");
-  }
-});
-
+document.querySelectorAll(".reveal").forEach((section) => revealObserver.observe(section));
 
 /* Modelo 3D interativo do protótipo ZUZ */
 (async function initPrototype3D() {
@@ -69,8 +55,8 @@ prototypeReal?.addEventListener("keydown", (event) => {
 
     const scene = new THREE.Scene();
 
-    const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
-    camera.position.set(7.8, 5.4, 9.2);
+    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+    camera.position.set(7.8, 5.2, 9.4);
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -85,23 +71,22 @@ prototypeReal?.addEventListener("keydown", (event) => {
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.06;
+    controls.dampingFactor = 0.055;
     controls.enablePan = false;
     controls.minDistance = 6;
     controls.maxDistance = 16;
     controls.minPolarAngle = Math.PI * 0.18;
     controls.maxPolarAngle = Math.PI * 0.82;
-    controls.target.set(0, 0.2, 0);
+    controls.target.set(0, 0.1, 0);
 
-    const hemi = new THREE.HemisphereLight(0xffffff, 0x35244a, 2.1);
-    scene.add(hemi);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x35244a, 2.15));
 
     const key = new THREE.DirectionalLight(0xffffff, 3.4);
     key.position.set(6, 8, 7);
     key.castShadow = true;
     scene.add(key);
 
-    const fill = new THREE.DirectionalLight(0x9d7bff, 1.8);
+    const fill = new THREE.DirectionalLight(0x9d7bff, 1.7);
     fill.position.set(-7, 2, 5);
     scene.add(fill);
 
@@ -227,6 +212,7 @@ prototypeReal?.addEventListener("keydown", (event) => {
       object.position.set(...closed);
       object.userData.componentName = name;
       object.userData.componentDescription = description;
+
       object.traverse((child) => {
         if (child.isMesh) {
           child.userData.componentName = name;
@@ -234,20 +220,22 @@ prototypeReal?.addEventListener("keydown", (event) => {
           interactiveMeshes.push(child);
         }
       });
+
       model.add(object);
       pieces.push({
         object,
         closed: new THREE.Vector3(...closed),
         exploded: new THREE.Vector3(...exploded)
       });
-      return object;
     }
 
     const rear = new THREE.Group();
     rear.add(roundedBox(4.1, 4.35, 1.55, 0.52, purpleDark));
+
     const rearInset = roundedBox(3.55, 3.75, 1.1, 0.4, purple);
     rearInset.position.z = 0.15;
     rear.add(rearInset);
+
     addPiece(
       "Carcaça traseira",
       "Estrutura impressa em 3D que protege e organiza os componentes internos.",
@@ -257,16 +245,18 @@ prototypeReal?.addEventListener("keydown", (event) => {
     );
 
     const speaker = new THREE.Group();
-    const speakerFrame = box(1.65, 1.65, 0.3, black);
-    speaker.add(speakerFrame);
+    speaker.add(box(1.65, 1.65, 0.3, black));
+
     const cone = cylinder(0.62, 0.28, speakerMat, 48);
     cone.rotation.x = Math.PI / 2;
     cone.position.z = 0.25;
     speaker.add(cone);
+
     const coneInner = cylinder(0.28, 0.31, black, 48);
     coneInner.rotation.x = Math.PI / 2;
     coneInner.position.z = 0.4;
     speaker.add(coneInner);
+
     addPiece(
       "Alto-falante",
       "Responsável pela saída de áudio do assistente físico.",
@@ -276,12 +266,13 @@ prototypeReal?.addEventListener("keydown", (event) => {
     );
 
     const mic = new THREE.Group();
-    const micBoard = box(0.68, 0.45, 0.16, pcb);
-    mic.add(micBoard);
+    mic.add(box(0.68, 0.45, 0.16, pcb));
+
     const micCapsule = cylinder(0.18, 0.18, silver, 24);
     micCapsule.rotation.x = Math.PI / 2;
     micCapsule.position.z = 0.16;
     mic.add(micCapsule);
+
     addPiece(
       "Microfone",
       "Capta a voz do usuário para a interação com o agente de IA.",
@@ -292,20 +283,25 @@ prototypeReal?.addEventListener("keydown", (event) => {
 
     const esp = new THREE.Group();
     esp.add(box(1.45, 2.35, 0.22, pcb));
+
     const module = box(0.85, 0.85, 0.15, silver);
     module.position.set(0, 0.45, 0.18);
     esp.add(module);
+
     const usb = box(0.55, 0.22, 0.24, silver);
     usb.position.set(0, -1.12, 0.18);
     esp.add(usb);
+
     for (let i = -3; i <= 3; i++) {
       const pinL = box(0.08, 0.13, 0.08, metal);
       pinL.position.set(-0.66, i * 0.3, 0.18);
       esp.add(pinL);
+
       const pinR = pinL.clone();
       pinR.position.x = 0.66;
       esp.add(pinR);
     }
+
     addPiece(
       "ESP32",
       "Controlador principal que conecta o hardware ao software da ZUZ.",
@@ -315,18 +311,23 @@ prototypeReal?.addEventListener("keydown", (event) => {
     );
 
     const frame = new THREE.Group();
+
     const frameTop = box(3.15, 0.22, 0.28, black);
     frameTop.position.y = 1.55;
     frame.add(frameTop);
+
     const frameBottom = frameTop.clone();
     frameBottom.position.y = -1.55;
     frame.add(frameBottom);
+
     const frameLeft = box(0.22, 3.1, 0.28, black);
     frameLeft.position.x = -1.47;
     frame.add(frameLeft);
+
     const frameRight = frameLeft.clone();
     frameRight.position.x = 1.47;
     frame.add(frameRight);
+
     addPiece(
       "Suporte do display",
       "Mantém o display alinhado e fixo dentro da carcaça.",
@@ -337,6 +338,7 @@ prototypeReal?.addEventListener("keydown", (event) => {
 
     const display = new THREE.Group();
     display.add(roundedBox(3.05, 2.55, 0.3, 0.22, black));
+
     const screen = roundedBox(2.62, 2.08, 0.08, 0.15, screenMat);
     screen.position.z = 0.18;
     display.add(screen);
@@ -367,14 +369,14 @@ prototypeReal?.addEventListener("keydown", (event) => {
     );
 
     const front = new THREE.Group();
-    const shell = roundedBox(4.55, 4.65, 0.62, 0.62, purple);
-    front.add(shell);
+    front.add(roundedBox(4.55, 4.65, 0.62, 0.62, purple));
 
     const blackPanel = roundedBox(3.72, 3.18, 0.18, 0.4, black);
     blackPanel.position.set(0, 0.4, 0.37);
     front.add(blackPanel);
 
     const speakerVent = new THREE.Group();
+
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 5; col++) {
         const hole = cylinder(0.075, 0.08, black, 18);
@@ -383,6 +385,7 @@ prototypeReal?.addEventListener("keydown", (event) => {
         speakerVent.add(hole);
       }
     }
+
     front.add(speakerVent);
 
     const micHole = cylinder(0.09, 0.08, black, 18);
@@ -411,10 +414,11 @@ prototypeReal?.addEventListener("keydown", (event) => {
       new THREE.MeshStandardMaterial({
         color: 0xffffff,
         transparent: true,
-        opacity: 0.08,
+        opacity: 0.07,
         roughness: 1
       })
     );
+
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -2.55;
     floor.receiveShadow = true;
@@ -422,35 +426,50 @@ prototypeReal?.addEventListener("keydown", (event) => {
 
     let exploded = false;
     let pinned = false;
+    let hoverTimer;
 
     function setExploded(value) {
       exploded = value;
+
       explodeButton?.setAttribute("aria-pressed", String(value));
+
       if (explodeButton) {
-        explodeButton.querySelector("span").textContent = value ? "Fechar componentes" : "Abrir componentes";
+        explodeButton.querySelector("span").textContent =
+          value ? "Fechar componentes" : "Abrir componentes";
       }
+
       labels?.classList.toggle("visible", value);
     }
 
-    let prototypeHoverTimer;
-
     wrap.addEventListener("pointerenter", (event) => {
       if (event.pointerType === "mouse" && !pinned) {
-        clearTimeout(prototypeHoverTimer);
-        prototypeHoverTimer = setTimeout(() => setExploded(true), 180);
+        clearTimeout(hoverTimer);
+        hoverTimer = setTimeout(() => setExploded(true), 220);
       }
     });
 
     wrap.addEventListener("pointerleave", (event) => {
-      clearTimeout(prototypeHoverTimer);
-      if (event.pointerType === "mouse" && !pinned) setExploded(false);
-      if (tooltip) tooltip.style.display = "none";
+      clearTimeout(hoverTimer);
+
+      if (event.pointerType === "mouse" && !pinned) {
+        setExploded(false);
+      }
+
+      if (tooltip) {
+        tooltip.style.display = "none";
+      }
     });
 
     explodeButton?.addEventListener("click", (event) => {
       event.stopPropagation();
-      pinned = !exploded || !pinned;
-      setExploded(!exploded);
+
+      if (exploded && pinned) {
+        pinned = false;
+        setExploded(false);
+      } else {
+        pinned = true;
+        setExploded(true);
+      }
     });
 
     const raycaster = new THREE.Raycaster();
@@ -458,18 +477,23 @@ prototypeReal?.addEventListener("keydown", (event) => {
 
     wrap.addEventListener("pointermove", (event) => {
       const rect = canvas.getBoundingClientRect();
+
       pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
       raycaster.setFromCamera(pointer, camera);
+
       const hit = raycaster.intersectObjects(interactiveMeshes, false)[0];
 
       if (hit && tooltip) {
         tooltip.innerHTML =
-          "<strong>" + hit.object.userData.componentName + "</strong><br>" +
+          "<strong>" +
+          hit.object.userData.componentName +
+          "</strong><br>" +
           hit.object.userData.componentDescription;
-        tooltip.style.left = (event.clientX - rect.left) + "px";
-        tooltip.style.top = (event.clientY - rect.top) + "px";
+
+        tooltip.style.left = event.clientX - rect.left + "px";
+        tooltip.style.top = event.clientY - rect.top + "px";
         tooltip.style.display = "block";
       } else if (tooltip) {
         tooltip.style.display = "none";
@@ -479,6 +503,7 @@ prototypeReal?.addEventListener("keydown", (event) => {
     function resize() {
       const width = wrap.clientWidth;
       const height = wrap.clientHeight;
+
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
@@ -492,6 +517,7 @@ prototypeReal?.addEventListener("keydown", (event) => {
 
     function animate() {
       requestAnimationFrame(animate);
+
       const delta = Math.min(clock.getDelta(), 0.04);
       const speed = 1 - Math.pow(0.001, delta);
 
@@ -507,7 +533,9 @@ prototypeReal?.addEventListener("keydown", (event) => {
     animate();
   } catch (error) {
     console.error("Não foi possível carregar o modelo 3D da ZUZ:", error);
+
     wrap.classList.add("prototype-3d-error");
-    wrap.innerHTML = '<p style="padding:24px;color:var(--text-secondary);font-size:12px;">Não foi possível carregar o visualizador 3D neste navegador.</p>';
+    wrap.innerHTML =
+      '<p style="padding:24px;color:var(--text-secondary);font-size:13px;">Não foi possível carregar o visualizador 3D neste navegador.</p>';
   }
 })();
