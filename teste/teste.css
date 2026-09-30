@@ -981,3 +981,126 @@ body.dark .metric-top i {
     margin-bottom: 26px;
   }
 }
+
+
+/* =========================================================
+   GLASS DARK FEATURE
+   Card 02 / COMO A ZUZ PENSA
+========================================================= */
+
+.dark-feature {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(30px, 4vw, 54px);
+  border: 1px solid rgba(255,255,255,.42);
+  border-radius: 24px;
+  color: #1a1622;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,255,255,.36)),
+    rgba(255,255,255,.34);
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+  backdrop-filter: blur(26px) saturate(150%);
+  box-shadow:
+    0 24px 60px rgba(32,24,54,.12),
+    inset 0 1px 0 rgba(255,255,255,.82),
+    inset 0 -1px 0 rgba(255,255,255,.16);
+}
+
+.dark-feature::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 16% 10%, rgba(255,255,255,.58), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(122,88,255,.16), transparent 30%),
+    linear-gradient(135deg, rgba(255,255,255,.28), transparent 42%);
+}
+
+.dark-feature > * {
+  position: relative;
+  z-index: 1;
+}
+
+.dark-feature .section-label.light {
+  color: rgba(54,45,70,.58);
+}
+
+.dark-feature-head h2 {
+  color: #17131f;
+}
+
+.dark-feature-head p {
+  color: rgba(45,39,56,.62);
+}
+
+.dark-feature .process-grid {
+  border-top-color: rgba(39,31,52,.12);
+}
+
+.dark-feature .process-grid article {
+  border-right-color: rgba(39,31,52,.12);
+}
+
+.dark-feature .process-grid span {
+  color: rgba(64,53,82,.42);
+}
+
+.dark-feature .process-grid h3 {
+  color: #1b1722;
+}
+
+.dark-feature .process-grid p {
+  color: rgba(52,45,65,.58);
+}
+
+body.dark .dark-feature {
+  color: #f6f2ff;
+  border-color: rgba(255,255,255,.11);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.085), rgba(255,255,255,.035)),
+    rgba(18,14,28,.44);
+  box-shadow:
+    0 28px 70px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -1px 0 rgba(255,255,255,.03);
+}
+
+body.dark .dark-feature::before {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(255,255,255,.09), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(145,112,255,.18), transparent 32%),
+    linear-gradient(135deg, rgba(255,255,255,.05), transparent 46%);
+}
+
+body.dark .dark-feature .section-label.light {
+  color: rgba(235,226,255,.46);
+}
+
+body.dark .dark-feature-head h2 {
+  color: #f6f2ff;
+}
+
+body.dark .dark-feature-head p {
+  color: rgba(238,232,247,.58);
+}
+
+body.dark .dark-feature .process-grid {
+  border-top-color: rgba(255,255,255,.10);
+}
+
+body.dark .dark-feature .process-grid article {
+  border-right-color: rgba(255,255,255,.10);
+}
+
+body.dark .dark-feature .process-grid span {
+  color: rgba(255,255,255,.34);
+}
+
+body.dark .dark-feature .process-grid h3 {
+  color: #ffffff;
+}
+
+body.dark .dark-feature .process-grid p {
+  color: rgba(255,255,255,.50);
+}
