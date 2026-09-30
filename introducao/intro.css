@@ -1126,3 +1126,169 @@ select {
 .sidebar .site-brand-header {
   display: none !important;
 }
+
+
+/* =========================================================
+   Protótipo real por imagem
+========================================================= */
+
+.prototype-real {
+  position: relative;
+  margin-top: 18px;
+  padding: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  outline: none;
+}
+
+body.dark .prototype-real {
+  background: rgba(20, 15, 31, 0.76);
+}
+
+.prototype-images {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 13px;
+  background: #f4f3f6;
+}
+
+.prototype-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition:
+    opacity 0.5s ease,
+    transform 0.65s cubic-bezier(.2,.8,.2,1),
+    filter 0.4s ease;
+}
+
+.prototype-closed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.prototype-open {
+  opacity: 0;
+  transform: scale(0.94);
+  filter: blur(3px);
+}
+
+.prototype-real:hover .prototype-closed,
+.prototype-real:focus-visible .prototype-closed,
+.prototype-real.is-open .prototype-closed {
+  opacity: 0;
+  transform: scale(1.07);
+  filter: blur(2px);
+}
+
+.prototype-real:hover .prototype-open,
+.prototype-real:focus-visible .prototype-open,
+.prototype-real.is-open .prototype-open {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+.prototype-hint {
+  position: absolute;
+  left: 26px;
+  bottom: 26px;
+  z-index: 3;
+  min-height: 34px;
+  padding: 0 11px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #ffffff;
+  background: rgba(24, 18, 34, 0.76);
+  backdrop-filter: blur(7px);
+  font-size: 10px;
+  font-weight: 700;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.prototype-hint i {
+  font-size: 15px;
+}
+
+.prototype-real:hover .prototype-hint,
+.prototype-real:focus-visible .prototype-hint,
+.prototype-real.is-open .prototype-hint {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.component-pills {
+  position: absolute;
+  inset: auto 22px 20px 22px;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.35s ease 0.16s, transform 0.35s ease 0.16s;
+  pointer-events: none;
+}
+
+.component-pills span {
+  padding: 6px 9px;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(34, 24, 48, 0.78);
+  backdrop-filter: blur(7px);
+  font-size: 8.5px;
+  font-weight: 700;
+}
+
+.prototype-real:hover .component-pills,
+.prototype-real:focus-visible .component-pills,
+.prototype-real.is-open .component-pills {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.prototype-real:focus-visible {
+  box-shadow: 0 0 0 3px var(--purple-soft);
+  border-color: var(--purple);
+}
+
+@media (hover: none) {
+  .prototype-hint span {
+    font-size: 0;
+  }
+
+  .prototype-hint span::after {
+    content: "Toque para abrir";
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 520px) {
+  .prototype-real {
+    padding: 10px;
+  }
+
+  .prototype-hint {
+    left: 18px;
+    bottom: 18px;
+  }
+
+  .component-pills {
+    inset: auto 14px 14px 14px;
+  }
+
+  .component-pills span {
+    font-size: 8px;
+  }
+}
