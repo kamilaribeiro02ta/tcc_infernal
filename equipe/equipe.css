@@ -1143,3 +1143,60 @@ body.dark .theme-toggle-label {
     flex-basis: 82vw;
   }
 }
+/* =========================================================
+   Sidebar global sólida e independente da página
+========================================================= */
+
+@media (min-width: 993px) {
+  .page {
+    align-items: flex-start;
+  }
+
+  .sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    align-self: flex-start !important;
+
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    background: var(--sidebar-bg, #ffffff) !important;
+    background-color: var(--sidebar-bg, #ffffff) !important;
+    background-image: none !important;
+
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+
+    border-right: 1px solid var(--sidebar-border, #e7e4ec) !important;
+    box-shadow: none !important;
+  }
+
+  .sidebar::before,
+  .sidebar::after {
+    display: none !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    position: static !important;
+    top: auto !important;
+
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+
+    overflow: visible !important;
+
+    background: var(--sidebar-bg, #ffffff) !important;
+    background-color: var(--sidebar-bg, #ffffff) !important;
+    background-image: none !important;
+
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
