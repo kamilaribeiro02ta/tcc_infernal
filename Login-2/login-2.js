@@ -1,192 +1,114 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("signupForm");
+  const email = document.getElementById("loginEmail");
+  const password = document.getElementById("password");
 
-  const form =
-    document.getElementById("signupForm");
+  const emailError = document.getElementById("loginEmailError");
+  const passwordError = document.getElementById("loginPasswordError");
+  const loginStatus = document.getElementById("loginStatus");
+  const showPasswordButton = document.querySelector(".password-dot");
 
-  const email =
-    document.getElementById("loginEmail");
+  async function redirectIfAlreadyLoggedIn() {
+    try {
+      const response = await fetch("/api/auth/me", {
+        credentials: "same-origin"
+      });
 
-  const password =
-    document.getElementById("password");
-
-  const emailError =
-    document.getElementById("loginEmailError");
-
-  const passwordError =
-    document.getElementById("loginPasswordError");
-
-  const loginStatus =
-    document.getElementById("loginStatus");
-
-  const showPasswordButton =
-    document.querySelector(".password-dot");
-
-
-  /* ==============================
-     MOSTRAR SENHA
-  ============================== */
-
-  showPasswordButton?.addEventListener(
-    "click",
-    () => {
-
-      const showing =
-        password.type === "text";
-
-
-      password.type =
-        showing
-          ? "password"
-          : "text";
-
-
-      const span =
-        showPasswordButton.querySelector("span");
-
-
-      if (span) {
-
-        span.textContent =
-          showing
-            ? "Mostrar"
-            : "Ocultar";
-
+      if (response.ok) {
+        window.location.replace("../perfil/perfil.html");
       }
+    } catch (_) {}
+  }
 
+  redirectIfAlreadyLoggedIn();
+
+  showPasswordButton?.addEventListener("click", () => {
+    const showing = password.type === "text";
+    password.type = showing ? "password" : "text";
+
+    const span = showPasswordButton.querySelector("span");
+    if (span) {
+      span.textContent = showing ? "Mostrar" : "Ocultar";
     }
-  );
+  });
 
+  form?.addEventListener("submit", async event => {
+    event.preventDefault();
 
-  /* ==============================
-     LOGIN
-  ============================== */
+    emailError.textContent = "";
+    passwordError.textContent = "";
+    loginStatus.textContent = "";
 
-  form?.addEventListener(
-    "submit",
-    (event) => {
+    let valid = true;
 
-      event.preventDefault();
+    if (!email.value.trim()) {
+      emailError.textContent = "Digite seu email.";
+      valid = false;
+    } else if (!email.validity.valid) {
+      emailError.textContent = "Digite um email válido.";
+      valid = false;
+    }
 
+    if (!password.value) {
+      passwordError.textContent = "Digite sua senha.";
+      valid = false;
+    } else if (password.value.length < 8) {
+      passwordError.textContent = "A senha precisa ter pelo menos 8 caracteres.";
+      valid = false;
+    }
 
-      emailError.textContent = "";
-      passwordError.textContent = "";
-      loginStatus.textContent = "";
+    if (!valid) return;
 
+    loginStatus.textContent = "Entrando...";
 
-      let valid = true;
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "same-origin",
+        body: JSON.stringify({
+          email: email.value.trim(),
+          password: password.value
+        })
+      });
 
+      const data = await response.json();
 
-      if (!email.value.trim()) {
-
-        emailError.textContent =
-          "Digite seu email.";
-
-        valid = false;
-
-      } else if (!email.validity.valid) {
-
-        emailError.textContent =
-          "Digite um email válido.";
-
-        valid = false;
-
-      }
-
-
-      if (!password.value) {
-
-        passwordError.textContent =
-          "Digite sua senha.";
-
-        valid = false;
-
-      } else if (password.value.length < 8) {
-
-        passwordError.textContent =
-          "A senha precisa ter pelo menos 8 caracteres.";
-
-        valid = false;
-
-      }
-
-
-      if (!valid) {
+      if (!response.ok) {
+        loginStatus.textContent = data.message || "Não foi possível entrar.";
         return;
       }
 
-
-      /* PROCURA PERFIL EXISTENTE */
-
-      let profile = null;
-
-
-      try {
-
-        profile =
-          JSON.parse(
-            localStorage.getItem(
-              "zuz-profile"
-            )
-          );
-
-      } catch (error) {
-
-        profile = null;
-
-      }
-
-
-      /*
-        Enquanto não existe backend,
-        se não houver perfil ainda,
-        cria um perfil básico.
-      */
-
-      if (!profile) {
-
-        profile = {
-
-          name: "Usuário ZUZ",
-
-          email:
-            email.value.trim(),
-
-          createdAt:
-            new Date().toISOString(),
-
-          photo: "",
-
-          banner: ""
-
-        };
-
-
-        localStorage.setItem(
-          "zuz-profile",
-          JSON.stringify(profile)
-        );
-
-      }
-
+      const previousProfile = (() => {
+        try {
+          return JSON.parse(localStorage.getItem("zuz-profile")) || {};
+        } catch (_) {
+          return {};
+        }
+      })();
 
       localStorage.setItem(
-        "zuz-logged-in",
-        "true"
+        "zuz-profile",
+        JSON.stringify({
+          ...previousProfile,
+          ...data.user,
+          photo: previousProfile.photo || "",
+          banner: previousProfile.banner || ""
+        })
       );
 
+      localStorage.removeItem("zuz-logged-in");
 
-      loginStatus.textContent =
-        "Login realizado com sucesso!";
+      loginStatus.textContent = "Login realizado com sucesso!";
 
-
-      setTimeout(() => {
-
-        window.location.href =
-          "../perfil/perfil.html";
-
-      }, 400);
-
+      window.setTimeout(() => {
+        window.location.href = "../perfil/perfil.html";
+      }, 300);
+    } catch (error) {
+      console.error(error);
+      loginStatus.textContent = "Não foi possível conectar ao servidor.";
     }
-  );
-
+  });
 });
