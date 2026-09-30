@@ -3,6 +3,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const PROFILE_KEY =
     "zuz-profile";
 
+  const profileThemeToggle = document.getElementById("themeToggle");
+  const profileThemeLabel = document.getElementById("themeLabel");
+  const profileIconSun = document.getElementById("iconSun");
+  const profileIconMoon = document.getElementById("iconMoon");
+
+  function renderThemeState(isDark) {
+    document.body.classList.toggle("dark", isDark);
+    profileThemeToggle?.setAttribute("aria-pressed", String(isDark));
+
+    if (profileThemeLabel) {
+      profileThemeLabel.textContent = isDark ? "Modo Escuro" : "Modo Claro";
+    }
+
+    if (profileIconSun) {
+      profileIconSun.style.display = isDark ? "none" : "block";
+    }
+
+    if (profileIconMoon) {
+      profileIconMoon.style.display = isDark ? "block" : "none";
+    }
+  }
+
+  renderThemeState(localStorage.getItem("zuz-theme") === "dark");
+
+  profileThemeToggle?.addEventListener("click", () => {
+    const isDark = !document.body.classList.contains("dark");
+    localStorage.setItem("zuz-theme", isDark ? "dark" : "light");
+    renderThemeState(isDark);
+  });
+
 
   /* =========================================================
      ELEMENTOS
@@ -90,108 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const profileRevenue =
     document.getElementById("profileRevenue");
-
-
-  const themeToggle =
-    document.getElementById("themeToggle");
-
-  const themeLabel =
-    document.getElementById("themeLabel");
-
-  const iconSun =
-    document.getElementById("iconSun");
-
-  const iconMoon =
-    document.getElementById("iconMoon");
-
-
-  /* =========================================================
-     TEMA
-  ========================================================= */
-
-  function applyTheme(isDark) {
-
-    document.body.classList.toggle(
-      "dark",
-      isDark
-    );
-
-
-    themeToggle?.setAttribute(
-      "aria-pressed",
-      String(isDark)
-    );
-
-
-    if (themeLabel) {
-
-      themeLabel.textContent =
-        isDark
-          ? "MODO ESCURO"
-          : "MODO CLARO";
-
-    }
-
-
-    if (iconSun) {
-
-      iconSun.style.display =
-        isDark
-          ? "none"
-          : "block";
-
-    }
-
-
-    if (iconMoon) {
-
-      iconMoon.style.display =
-        isDark
-          ? "block"
-          : "none";
-
-    }
-
-  }
-
-
-  const savedTheme =
-    localStorage.getItem(
-      "zuz-theme"
-    );
-
-
-  applyTheme(
-    savedTheme === "dark"
-  );
-
-
-  themeToggle?.addEventListener(
-    "click",
-    () => {
-
-      const isDark =
-        !document.body.classList.contains(
-          "dark"
-        );
-
-
-      localStorage.setItem(
-        "zuz-theme",
-        isDark
-          ? "dark"
-          : "light"
-      );
-
-
-      applyTheme(
-        isDark
-      );
-
-    }
-  );
-
-
   /* =========================================================
      PERFIL PADRÃO
   ========================================================= */
