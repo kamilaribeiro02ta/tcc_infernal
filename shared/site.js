@@ -1,6 +1,21 @@
 (() => {
   "use strict";
 
+  const SESSION_KEY = "zuz-session";
+  const PROFILE_KEY = "zuz-profile";
+
+  const scriptUrl = document.currentScript?.src
+    ? new URL(document.currentScript.src, window.location.href)
+    : null;
+
+  const projectRoot = scriptUrl
+    ? new URL("../", scriptUrl)
+    : new URL("../", window.location.href);
+
+  function projectUrl(relativePath) {
+    return new URL(relativePath, projectRoot).href;
+  }
+
   function normalizePath(pathname) {
     let path = decodeURIComponent(pathname || "/");
 
@@ -15,12 +30,31 @@
     return path;
   }
 
+  function getSession() {
+    try {
+      return JSON.parse(localStorage.getItem(SESSION_KEY));
+    } catch {
+      return null;
+    }
+  }
+
+  function getProfile() {
+    try {
+      return JSON.parse(localStorage.getItem(PROFILE_KEY));
+    } catch {
+      return null;
+    }
+  }
+
   function syncActiveNavigation() {
     const current = normalizePath(window.location.pathname);
     const items = document.querySelectorAll(".nav-item[href]");
 
     items.forEach(item => {
-      const target = normalizePath(new URL(item.getAttribute("href"), window.location.href).pathname);
+      const target = normalizePath(
+        new URL(item.getAttribute("href"), window.location.href).pathname
+      );
+
       const isActive = target === current;
 
       item.classList.toggle("active", isActive);
@@ -43,7 +77,10 @@
     const themeToggle = document.getElementById("themeToggle");
 
     if (themeToggle && !themeToggle.hasAttribute("aria-label")) {
-      themeToggle.setAttribute("aria-label", "Alternar entre modo claro e modo escuro");
+      themeToggle.setAttribute(
+        "aria-label",
+        "Alternar entre modo claro e modo escuro"
+      );
     }
 
     document.querySelectorAll('a[target="_blank"]').forEach(link => {
@@ -65,43 +102,47 @@
     document.body.classList.toggle("dark", saved === "dark");
   }
 
-  async function syncAuthenticationState() {
-    try {
-      const response = await fetch("/api/auth/me", {
-        credentials: "same-origin"
-      });
+  function syncAuthenticationState() {
+    const session = getSession();
+    const profile = getProfile();
+    const loggedIn = Boolean(session?.email);
 
-      const data = await response.json();
+    document.querySelectorAll(".login-block").forEach(block => {
+      const title = block.querySelector(".login-title");
+      const subtitle = block.querySelector(".login-subtitle");
+      const nestedLink = block.querySelector("a[href]");
 
-      document.querySelectorAll(".login-block").forEach(block => {
-        const title = block.querySelector(".login-title");
-        const subtitle = block.querySelector(".login-subtitle");
+      const destination = loggedIn
+        ? projectUrl("perfil/perfil.html")
+        : projectUrl("Login-2/login-2.html");
 
-        if (response.ok && data.authenticated) {
-          block.setAttribute("href", "/perfil/perfil.html");
+      if (block.tagName === "A") {
+        block.href = destination;
+      }
 
-          if (title) {
-            title.textContent = data.user.name.split(/\s+/)[0] || "Minha Conta";
-          }
+      if (nestedLink) {
+        nestedLink.href = destination;
+      }
 
-          if (subtitle) {
-            subtitle.textContent = "Meu perfil";
-          }
-        } else if (!block.classList.contains("profile-account-link")) {
-          block.setAttribute("href", "/Login-2/login-2.html");
-
-          if (title) {
-            title.textContent = "Login";
-          }
-
-          if (subtitle) {
-            subtitle.textContent = "Minha Conta";
-          }
+      if (loggedIn) {
+        if (title) {
+          title.textContent =
+            String(profile?.name || "Minha Conta").trim().split(/\s+/)[0];
         }
-      });
-    } catch (_) {
-      // O site continua utilizável mesmo se o backend estiver offline.
-    }
+
+        if (subtitle) {
+          subtitle.textContent = "Meu perfil";
+        }
+      } else if (!block.classList.contains("profile-account-link")) {
+        if (title) {
+          title.textContent = "Login";
+        }
+
+        if (subtitle) {
+          subtitle.textContent = "Minha Conta";
+        }
+      }
+    });
   }
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -114,6 +155,10 @@
   window.addEventListener("storage", event => {
     if (event.key === "zuz-theme") {
       syncThemeFromStorage();
+    }
+
+    if (event.key === SESSION_KEY || event.key === PROFILE_KEY) {
+      syncAuthenticationState();
     }
   });
 })();
