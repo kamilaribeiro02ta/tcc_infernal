@@ -42,3 +42,18 @@ document.querySelectorAll(".about-card").forEach((card) => {
     trigger.setAttribute("aria-expanded", String(willOpen));
   });
 });
+
+
+const protoCore = document.querySelector(".proto-core");
+
+if (protoCore) {
+  let angle = -18;
+
+  setInterval(() => {
+    const hovered = document.querySelector(".prototype-view:hover");
+    if (!hovered) {
+      angle = angle === -18 ? -12 : -18;
+      protoCore.style.transform = `rotateX(12deg) rotateY(${angle}deg)`;
+    }
+  }, 2200);
+}
