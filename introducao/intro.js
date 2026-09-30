@@ -1,60 +1,44 @@
-// ============ TOGGLE MODO ESCURO ============
+// Tema
 (function () {
-    const toggleBtn = document.getElementById('themeToggle');
-    const label = document.getElementById('themeLabel');
-    const iconSun = document.getElementById('iconSun');
-    const iconMoon = document.getElementById('iconMoon');
-   
-    function applyTheme(isDark) {
-      document.body.classList.toggle('dark', isDark);
-      toggleBtn?.setAttribute('aria-pressed', String(isDark));
-      if (label) label.textContent = isDark ? 'Modo Escuro' : 'Modo Claro';
-      if (iconSun) iconSun.style.display = isDark ? 'none' : 'block';
-      if (iconMoon) iconMoon.style.display = isDark ? 'block' : 'none';
-    }
-   
-    // Lê preferência salva, ou usa a preferência do sistema como padrão
-    const saved = localStorage.getItem('zuz-theme');
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(saved ? saved === 'dark' : prefersDark);
-   
-    toggleBtn?.addEventListener('click', function () {
-      const isDark = !document.body.classList.contains('dark');
-      applyTheme(isDark);
-      localStorage.setItem('zuz-theme', isDark ? 'dark' : 'light');
-    });
-  })();
+  const toggleBtn = document.getElementById("themeToggle");
+  const label = document.getElementById("themeLabel");
+  const iconSun = document.getElementById("iconSun");
+  const iconMoon = document.getElementById("iconMoon");
 
-document.addEventListener("DOMContentLoaded", () => {
-
-  const navItems = document.querySelectorAll(".nav-item");
-
-  function normalizarCaminho(caminho) {
-    return caminho
-      .replace(/\/index\.html$/, "")
-      .replace(/\/$/, "");
+  function applyTheme(isDark) {
+    document.body.classList.toggle("dark", isDark);
+    toggleBtn?.setAttribute("aria-pressed", String(isDark));
+    if (label) label.textContent = isDark ? "Modo Escuro" : "Modo Claro";
+    if (iconSun) iconSun.style.display = isDark ? "none" : "block";
+    if (iconMoon) iconMoon.style.display = isDark ? "block" : "none";
   }
 
-  const paginaAtual = normalizarCaminho(window.location.pathname);
+  const saved = localStorage.getItem("zuz-theme");
+  const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+  applyTheme(saved ? saved === "dark" : prefersDark);
 
-  navItems.forEach((item) => {
-
-    const href = item.getAttribute("href");
-
-    // Ignora links internos como #produtos
-    if (!href || href.startsWith("#")) {
-      return;
-    }
-
-    // Converte ../ e ./ para o endereço real
-    const urlDoLink = new URL(href, window.location.href);
-
-    const caminhoDoLink = normalizarCaminho(urlDoLink.pathname);
-
-    if (paginaAtual === caminhoDoLink) {
-      item.classList.add("active");
-    }
-
+  toggleBtn?.addEventListener("click", () => {
+    const isDark = !document.body.classList.contains("dark");
+    applyTheme(isDark);
+    localStorage.setItem("zuz-theme", isDark ? "dark" : "light");
   });
+})();
 
+// Cards expansíveis
+document.querySelectorAll(".about-card").forEach((card) => {
+  const trigger = card.querySelector(".card-trigger");
+
+  trigger?.addEventListener("click", () => {
+    const willOpen = !card.classList.contains("open");
+
+    document.querySelectorAll(".about-card.open").forEach((openCard) => {
+      if (openCard !== card) {
+        openCard.classList.remove("open");
+        openCard.querySelector(".card-trigger")?.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    card.classList.toggle("open", willOpen);
+    trigger.setAttribute("aria-expanded", String(willOpen));
+  });
 });
