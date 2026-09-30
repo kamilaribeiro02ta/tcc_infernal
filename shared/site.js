@@ -96,10 +96,15 @@
     const iconSun = document.getElementById("iconSun");
     const iconMoon = document.getElementById("iconMoon");
 
+    document.documentElement.dataset.theme = isDark ? "dark" : "light";
     document.body.classList.toggle("dark", isDark);
 
     if (themeToggle) {
       themeToggle.setAttribute("aria-pressed", String(isDark));
+      themeToggle.setAttribute(
+        "aria-label",
+        isDark ? "Ativar modo claro" : "Ativar modo escuro"
+      );
     }
 
     if (themeLabel) {
@@ -113,6 +118,12 @@
     if (iconMoon) {
       iconMoon.style.display = isDark ? "block" : "none";
     }
+
+    window.dispatchEvent(
+      new CustomEvent("zuz:themechange", {
+        detail: { theme: isDark ? "dark" : "light" }
+      })
+    );
   }
 
   function syncThemeFromStorage() {
@@ -136,9 +147,11 @@
     themeToggle.dataset.zuzThemeBound = "true";
 
     themeToggle.addEventListener("click", () => {
-      const nextTheme = document.body.classList.contains("dark")
-        ? "light"
-        : "dark";
+      const currentTheme = document.body.classList.contains("dark")
+        ? "dark"
+        : "light";
+
+      const nextTheme = currentTheme === "dark" ? "light" : "dark";
 
       localStorage.setItem("zuz-theme", nextTheme);
       renderThemeControls(nextTheme === "dark");
