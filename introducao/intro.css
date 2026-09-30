@@ -1433,3 +1433,190 @@ body:not(.dark) .about-statement.about-statement-3d::before {
   filter: blur(28px);
   opacity: .8;
 }
+
+
+/* INSPIRED CARDS */
+.about-cards {
+  gap: 16px;
+}
+
+.about-card.about-card-inspired {
+  min-height: 410px;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,.09);
+  background: #17151d;
+  box-shadow:
+    0 24px 52px rgba(0,0,0,.18),
+    inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.about-card-visual {
+  height: 148px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 29px 29px 0 0;
+  background:
+    radial-gradient(circle at 22% 28%, rgba(255,255,255,.34), transparent 18%),
+    radial-gradient(circle at 72% 36%, rgba(175,125,255,.52), transparent 24%),
+    linear-gradient(125deg, #35154d 0%, #6f2ee8 42%, #bd79ff 72%, #542087 100%);
+}
+
+.about-card-visual::before,
+.about-card-visual::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(12px);
+  opacity: .72;
+}
+
+.about-card-visual::before {
+  width: 220px;
+  height: 56px;
+  left: -30px;
+  top: 26px;
+  background: linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,157,246,.55));
+  transform: rotate(-18deg);
+}
+
+.about-card-visual::after {
+  width: 180px;
+  height: 42px;
+  right: -20px;
+  bottom: 20px;
+  background: linear-gradient(90deg, rgba(137,76,255,.16), rgba(255,188,255,.36));
+  transform: rotate(13deg);
+}
+
+.about-card-visual-costs {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,.28), transparent 20%),
+    linear-gradient(120deg, #251133 0%, #6a30d5 48%, #bb78ff 100%);
+}
+
+.about-card-visual-visual {
+  background:
+    radial-gradient(circle at 72% 20%, rgba(255,255,255,.24), transparent 18%),
+    linear-gradient(135deg, #181028 0%, #4d2aa6 42%, #8e5ef5 72%, #bf85ff 100%);
+}
+
+.about-card-visual-ai {
+  background:
+    radial-gradient(circle at 28% 26%, rgba(255,255,255,.30), transparent 17%),
+    linear-gradient(120deg, #2a1038 0%, #5b24b8 40%, #8f45e9 72%, #d58cff 100%);
+}
+
+.about-card-visual .about-card-icon {
+  position: absolute;
+  z-index: 2;
+  left: 22px;
+  top: 22px;
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  color: #fff;
+  background: rgba(16,11,23,.40);
+  border: 1px solid rgba(255,255,255,.14);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 26px rgba(0,0,0,.18);
+}
+
+.about-card-content {
+  min-height: 262px;
+  margin-top: -22px;
+  padding: 34px 24px 24px;
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  background: #1a181f;
+  clip-path: polygon(
+    0 0,
+    38% 0,
+    46% 18px,
+    100% 18px,
+    100% 100%,
+    0 100%
+  );
+}
+
+.about-card-kicker {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  color: rgba(255,255,255,.42);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+}
+
+.about-card-kicker .about-card-number {
+  margin: 0;
+  color: #ffffff;
+  font-size: 34px;
+  line-height: .9;
+  font-weight: 500;
+  letter-spacing: -.04em;
+}
+
+.about-card-inspired h2 {
+  margin: auto 0 10px;
+  color: #fff;
+  font-size: 27px;
+  line-height: 1.02;
+  letter-spacing: -.04em;
+  font-weight: 600;
+}
+
+.about-card-inspired p {
+  margin: 0;
+  max-width: 92%;
+  color: rgba(255,255,255,.54);
+  font-size: 9.5px;
+  line-height: 1.7;
+}
+
+body:not(.dark) .about-card.about-card-inspired {
+  border-color: #d8d4df;
+  background: #ece9ef;
+  box-shadow: 0 22px 44px rgba(63,45,92,.10);
+}
+
+body:not(.dark) .about-card-content {
+  background: #242128;
+}
+
+body:not(.dark) .about-card-kicker,
+body:not(.dark) .about-card-inspired p {
+  color: rgba(255,255,255,.58);
+}
+
+@media (max-width: 1100px) {
+  .about-card.about-card-inspired {
+    min-height: 390px;
+  }
+}
+
+@media (max-width: 620px) {
+  .about-card.about-card-inspired {
+    min-height: 360px;
+  }
+
+  .about-card-visual {
+    height: 132px;
+  }
+
+  .about-card-content {
+    min-height: 228px;
+    padding: 30px 20px 22px;
+  }
+
+  .about-card-kicker .about-card-number {
+    font-size: 30px;
+  }
+}
