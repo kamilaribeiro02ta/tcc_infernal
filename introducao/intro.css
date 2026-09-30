@@ -916,3 +916,27 @@ body:not(.dark) .team-photo-avatar {
     margin-bottom: 24px;
   }
 }
+
+
+/* TEAM GRID CENTERED */
+.team-grid-two {
+  width: min(100%, 930px);
+  margin: 0 auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.team-note {
+  width: min(100%, 930px);
+  margin: 12px auto 0;
+}
+
+@media (max-width: 680px) {
+  .team-grid-two {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .team-note {
+    width: 100%;
+  }
+}
