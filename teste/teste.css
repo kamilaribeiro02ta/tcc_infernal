@@ -327,7 +327,8 @@ body.dark .message-content {
 }
 
 .metrics-grid {
-  margin-bottom: 48px;
+  margin-top: 28px;
+  margin-bottom: 72px;
   display: grid;
   grid-template-columns: repeat(4,minmax(0,1fr));
   gap: 10px;
@@ -494,6 +495,8 @@ body.dark .metric-accent {
 }
 
 .solution-grid {
+  margin-top: 34px;
+  margin-bottom: 34px;
   display: grid;
   grid-template-columns: 1.4fr .8fr .8fr;
   gap: 10px;
@@ -963,5 +966,18 @@ body.dark .metric-top i {
   .metric-card:hover,
   .solution-card:hover {
     transform: none;
+  }
+}
+
+
+@media (max-width: 720px) {
+  .metrics-grid {
+    margin-top: 22px;
+    margin-bottom: 52px;
+  }
+
+  .solution-grid {
+    margin-top: 26px;
+    margin-bottom: 26px;
   }
 }
