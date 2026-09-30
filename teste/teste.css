@@ -98,38 +98,19 @@ a {
 }
 
 .hero-shell {
-  padding: 8px 0 0;
+  padding: 0;
 }
 
-.hero-topline {
-  min-height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  border-bottom: 1px solid var(--line);
-}
-
-.prototype-label,
-.hero-meta,
 .section-label {
+  color: var(--muted);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: .11em;
   text-transform: uppercase;
 }
 
-.prototype-label {
-  color: var(--purple);
-}
-
-.hero-meta,
-.section-label {
-  color: var(--muted);
-}
-
 .hero-brand-row {
-  padding: 26px 0 22px;
+  padding: 18px 0 22px;
   display: grid;
   grid-template-columns: minmax(0,1.45fr) minmax(280px,.55fr);
   align-items: end;
@@ -304,26 +285,6 @@ a {
   border: 1px solid rgba(255,255,255,.34);
   background: rgba(255,255,255,.07);
   backdrop-filter: blur(8px);
-}
-
-.hero-floating-card {
-  position: absolute;
-  right: clamp(18px,3vw,40px);
-  bottom: clamp(18px,3vw,36px);
-  width: 184px;
-  padding: 14px;
-  border: 1px solid rgba(255,255,255,.36);
-  border-radius: 13px;
-  color: #151016;
-  background: rgba(255,255,255,.86);
-  backdrop-filter: blur(14px);
-  box-shadow: 0 18px 42px rgba(22,14,37,.18);
-}
-
-.hero-floating-card span,
-.hero-floating-card strong,
-.hero-floating-card small {
-  display: block;
 }
 
 .hero-floating-card span {
@@ -739,11 +700,7 @@ body.dark .metric-accent {
 }
 
 @media (max-width: 720px) {
-  .hero-meta {
-    display: none;
-  }
-
-  .hero-brand-row h1 {
+.hero-brand-row h1 {
     font-size: clamp(68px,24vw,120px);
   }
 
@@ -754,14 +711,7 @@ body.dark .metric-accent {
   .hero-copy {
     width: calc(100% - 44px);
   }
-
-  .hero-floating-card {
-    top: 18px;
-    right: 18px;
-    bottom: auto;
-  }
-
-  .metrics-grid,
+.metrics-grid,
   .process-grid,
   .solution-grid {
     grid-template-columns: 1fr;
@@ -811,12 +761,7 @@ body.dark .metric-accent {
   .hero-copy h2 {
     font-size: 36px;
   }
-
-  .hero-floating-card {
-    width: 160px;
-  }
-
-  .manifesto-section {
+.manifesto-section {
     padding-top: 38px;
   }
 
