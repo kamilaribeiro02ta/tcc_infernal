@@ -1,0 +1,130 @@
+:root {
+  --page-bg: #f7f6fb;
+  --panel-bg: #ffffff;
+  --text-primary: #17131f;
+  --text-secondary: #6c6575;
+  --border: rgba(68, 48, 100, 0.10);
+  --purple: #6a3df0;
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #ece9f1;
+  --nav-inactive: #807988;
+  --nav-hover-bg: #f5f2ff;
+  --login-title: #17131f;
+  --login-subtitle: #928b9d;
+  --toggle-track: #eeeaf8;
+  --toggle-text: #666072;
+  --toggle-knob-bg: #ffffff;
+  --toggle-icon: #6a3df0;
+}
+
+body.dark {
+  --page-bg: #0d0915;
+  --panel-bg: #181226;
+  --text-primary: #f5f2fb;
+  --text-secondary: #b9afc7;
+  --border: rgba(255,255,255,.08);
+  --sidebar-bg: #130e1e;
+  --sidebar-border: rgba(255,255,255,.08);
+  --nav-inactive: #a69bb8;
+  --nav-hover-bg: #241b38;
+  --login-title: #f5f2fb;
+  --login-subtitle: #9f94af;
+  --toggle-track: #241a37;
+  --toggle-text: #eee9f8;
+  --toggle-knob-bg: #3b285c;
+  --toggle-icon: #ae91ff;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  color: var(--text-primary);
+  background: var(--page-bg);
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+}
+
+.test-page {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  padding: 48px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 80% 10%, rgba(106,61,240,.09), transparent 28%),
+    var(--page-bg);
+}
+
+.test-panel {
+  width: min(760px, 100%);
+  padding: 48px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--panel-bg);
+  box-shadow: 0 18px 50px rgba(38, 25, 61, .08);
+}
+
+.test-kicker {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--purple);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.test-panel h1 {
+  margin: 0;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1;
+  letter-spacing: -.045em;
+}
+
+.test-panel p {
+  max-width: 610px;
+  margin: 18px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.test-status {
+  width: fit-content;
+  margin-top: 28px;
+  padding: 10px 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--purple);
+  box-shadow: 0 0 0 4px rgba(106,61,240,.10);
+}
+
+@media (max-width: 992px) {
+  .page { flex-direction: column; }
+  .test-page { padding: 28px 18px 48px; }
+}
+
+@media (max-width: 560px) {
+  .test-panel { padding: 28px 22px; border-radius: 18px; }
+}
