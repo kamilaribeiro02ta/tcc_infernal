@@ -1961,3 +1961,14 @@ body:not(.dark) .about-card-inspired p {
     width: min(100%, 360px);
   }
 }
+
+
+/* THICK CARD BORDER */
+.about-cards-side .about-card.about-card-inspired {
+  border: 8px solid #0b0910;
+  box-sizing: border-box;
+}
+
+body:not(.dark) .about-cards-side .about-card.about-card-inspired {
+  border-color: #111014;
+}
