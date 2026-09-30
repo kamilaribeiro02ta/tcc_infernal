@@ -186,17 +186,17 @@ body.dark .message-content {
   overflow: hidden;
   border-radius: 18px;
   isolation: isolate;
-  background:
-    linear-gradient(90deg, rgba(14,10,24,.74) 0%, rgba(14,10,24,.40) 38%, rgba(14,10,24,.10) 72%),
-    url("../imagens/hero-zuz-wave.webp") center center / cover no-repeat;
+  background-image: url("../imagens/hero-zuz-wave.webp");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background:
-    linear-gradient(90deg, rgba(10,8,18,.70) 0%, rgba(10,8,18,.32) 36%, rgba(10,8,18,.05) 72%);
+  background: linear-gradient(90deg, rgba(10,8,18,.58) 0%, rgba(10,8,18,.20) 42%, rgba(10,8,18,0) 78%);
 }
 
 .hero-copy {
@@ -284,9 +284,7 @@ body.dark .message-content {
 }
 
 .hero-network {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+  display: none;
 }
 
 .hero-network .line {
