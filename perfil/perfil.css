@@ -1,12 +1,13 @@
 /* =========================================================
    ZUZ | MEU PERFIL
-   Página específica. A navegação é controlada por shared/sidebar.css
+   Estrutura de dashboard inspirada na referência enviada.
+   Identidade visual mantida da ZUZ.
 ========================================================= */
 
 :root {
   --purple: #6a3df0;
-  --purple-hover: #7b55f5;
-  --purple-soft: #eee9ff;
+  --purple-hover: #7a55f3;
+  --purple-soft: #eee8ff;
 
   --page-bg: #f7f6fb;
   --card-bg: #ffffff;
@@ -16,15 +17,11 @@
   --text-secondary: #655f6f;
   --text-muted: #918a9c;
 
-  --border: rgba(53, 39, 80, 0.10);
-  --border-strong: rgba(106, 61, 240, 0.22);
+  --border: rgba(53,39,80,.10);
+  --border-strong: rgba(106,61,240,.22);
 
-  --shadow-sm: 0 8px 24px rgba(41, 29, 67, 0.06);
-  --shadow-md: 0 18px 50px rgba(41, 29, 67, 0.09);
-
-  --radius-sm: 12px;
-  --radius-md: 16px;
-  --radius-lg: 20px;
+  --shadow-sm: 0 8px 24px rgba(41,29,67,.06);
+  --shadow-md: 0 18px 48px rgba(41,29,67,.08);
 
   --sidebar-bg: #ffffff;
   --sidebar-border: #ece9f1;
@@ -47,14 +44,14 @@ body.dark {
   --text-secondary: #c5bdd2;
   --text-muted: #91889f;
 
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(140, 107, 255, 0.26);
+  --border: rgba(255,255,255,.08);
+  --border-strong: rgba(140,107,255,.26);
 
-  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.18);
-  --shadow-md: 0 18px 50px rgba(0, 0, 0, 0.24);
+  --shadow-sm: 0 8px 24px rgba(0,0,0,.16);
+  --shadow-md: 0 18px 48px rgba(0,0,0,.22);
 
   --sidebar-bg: #130e1e;
-  --sidebar-border: rgba(255,255,255,0.08);
+  --sidebar-border: rgba(255,255,255,.08);
   --nav-inactive: #a69bb8;
   --nav-hover-bg: #241b38;
   --login-title: #f5f2fb;
@@ -90,35 +87,32 @@ body {
   background: var(--page-bg);
 }
 
-button {
-  cursor: pointer;
-}
-
 a {
   color: inherit;
 }
 
-/* =========================================================
-   PERFIL NO TOPO DA SIDEBAR
-========================================================= */
-
-.sidebar .profile-account-link,
-.sidebar #accountLink {
-  position: relative;
-  text-decoration: none !important;
+button {
+  cursor: pointer;
 }
+
+.page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* =========================================================
+   SIDEBAR: SOMENTE PARTICULARIDADES DA CONTA
+========================================================= */
 
 .sidebar .profile-account-link.active-profile {
   background: var(--nav-hover-bg) !important;
   border-radius: 12px !important;
   border-bottom-color: transparent !important;
   box-shadow: inset 3px 0 0 var(--purple);
-  padding: 10px 10px !important;
+  padding: 10px !important;
   margin-bottom: 14px !important;
-}
-
-.sidebar .profile-account-link.active-profile:hover {
-  background: var(--nav-hover-bg) !important;
+  text-decoration: none !important;
 }
 
 .sidebar .profile-sidebar-avatar {
@@ -130,7 +124,6 @@ a {
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: center;
   border-radius: inherit;
 }
 
@@ -147,74 +140,28 @@ a {
 }
 
 /* =========================================================
-   CONTEÚDO
+   LAYOUT PRINCIPAL
 ========================================================= */
 
-.page {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-}
-
 .profile-page {
-  position: relative;
   flex: 1;
   min-width: 0;
   min-height: 100vh;
-  padding: 44px clamp(24px, 3vw, 52px) 64px;
-  overflow: hidden;
+  padding: 36px clamp(24px,3vw,48px) 56px;
   background:
-    radial-gradient(circle at 94% -4%, rgba(106, 61, 240, 0.11), transparent 27%),
+    radial-gradient(circle at 92% 0%, rgba(106,61,240,.09), transparent 28%),
     var(--page-bg);
 }
 
-body.dark .profile-page {
-  background:
-    radial-gradient(circle at 94% -4%, rgba(105, 71, 196, 0.18), transparent 27%),
-    var(--page-bg);
+.profile-dashboard {
+  width: min(100%, 1320px);
+  margin: 0 auto;
 }
 
-.background-shape {
-  position: absolute;
-  pointer-events: none;
-  opacity: 0.65;
-}
-
-.shape-one {
-  width: 520px;
-  height: 160px;
-  top: -95px;
-  right: 5%;
-  border-radius: 50%;
-  transform: rotate(-17deg);
-  background: linear-gradient(90deg, transparent, rgba(106,61,240,.10));
-}
-
-.shape-two {
-  width: 500px;
-  height: 150px;
-  left: 42%;
-  bottom: -110px;
-  border-radius: 50%;
-  transform: rotate(-20deg);
-  background: linear-gradient(90deg, transparent, rgba(106,61,240,.06), transparent);
-}
-
-.profile-top,
-.profile-hero,
-.profile-content-grid,
-.quick-card {
-  width: min(100%, 1280px);
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.profile-top {
-  position: relative;
-  z-index: 2;
-  margin-bottom: 22px;
+.dashboard-header {
+  margin-bottom: 24px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
 }
@@ -222,264 +169,157 @@ body.dark .profile-page {
 .profile-kicker,
 .card-kicker {
   display: block;
-  margin-bottom: 7px;
+  margin-bottom: 6px;
   color: var(--purple);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: .08em;
 }
 
-.profile-top h1 {
+.dashboard-header h1 {
   margin: 0;
-  font-size: clamp(30px, 3vw, 40px);
-  line-height: 1.08;
-  letter-spacing: -0.035em;
+  font-size: clamp(30px,3vw,40px);
+  line-height: 1.1;
+  letter-spacing: -.035em;
 }
 
-.profile-top p {
+.dashboard-header h1 span {
+  color: var(--purple);
+}
+
+.dashboard-header p {
   max-width: 620px;
-  margin: 8px 0 0;
+  margin: 7px 0 0;
   color: var(--text-secondary);
   font-size: 12px;
-  line-height: 1.65;
+  line-height: 1.6;
+}
+
+.dashboard-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard-search-link {
+  min-width: 210px;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text-muted);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  font-size: 10.5px;
+}
+
+.dashboard-search-link i {
+  font-size: 17px;
 }
 
 .edit-profile-button {
   min-height: 42px;
-  padding: 0 16px;
-  border: 1px solid rgba(255,255,255,.12);
+  padding: 0 15px;
+  border: 1px solid var(--purple);
   border-radius: 10px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
   color: #fff;
   background: var(--purple);
+  font-size: 10.5px;
+  font-weight: 600;
   box-shadow: 0 8px 22px rgba(106,61,240,.18);
-  font-size: 11px;
-  font-weight: 600;
-  transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
-}
-
-.edit-profile-button:hover {
-  transform: translateY(-1px);
-  background: var(--purple-hover);
-  box-shadow: 0 10px 26px rgba(106,61,240,.24);
 }
 
 /* =========================================================
-   HERO DO PERFIL
+   INDICADORES
 ========================================================= */
 
-.profile-hero {
-  position: relative;
-  z-index: 2;
+.summary-grid {
   margin-bottom: 18px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--card-bg);
-  box-shadow: var(--shadow-md);
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 12px;
 }
 
-.profile-banner {
-  position: relative;
-  height: 170px;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 78% 30%, rgba(255,255,255,.18), transparent 22%),
-    linear-gradient(115deg, #2d1c60 0%, #5f3bd5 48%, #8d6dff 100%);
-}
-
-.profile-banner::before,
-.profile-banner::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.profile-banner::before {
-  width: 520px;
-  height: 180px;
-  top: -90px;
-  left: 24%;
-  transform: rotate(-16deg);
-  background: rgba(255,255,255,.08);
-}
-
-.profile-banner::after {
-  width: 400px;
-  height: 130px;
-  right: -40px;
-  bottom: -80px;
-  background: rgba(255,255,255,.06);
-}
-
-#bannerImage {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  object-position: center;
-}
-
-.banner-button {
-  position: absolute;
-  z-index: 3;
-  top: 14px;
-  right: 14px;
-  min-height: 38px;
-  padding: 0 13px;
-  border: 1px solid rgba(255,255,255,.15);
-  border-radius: 10px;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: #fff;
-  background: rgba(28,23,38,.74);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  font-size: 10px;
-  font-weight: 600;
-}
-
-.profile-user-row {
-  position: relative;
-  z-index: 4;
+.summary-tile {
   min-height: 112px;
-  padding: 22px 28px 22px 150px;
-  display: flex;
-  align-items: center;
-}
-
-.profile-photo-area {
-  position: absolute;
-  z-index: 20;
-  left: 26px;
-  top: -48px;
-  width: 104px;
-  height: 104px;
-}
-
-.profile-photo {
-  position: relative;
-  width: 104px;
-  height: 104px;
-  overflow: hidden;
-  border: 4px solid var(--card-bg);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: #26184f;
-  box-shadow: 0 8px 24px rgba(0,0,0,.22);
-}
-
-#profileImage {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 50%;
-}
-
-#profilePlaceholder,
-.profile-photo-placeholder {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: var(--purple-soft);
-  font-size: 42px;
-}
-
-.profile-photo-hover {
-  display: none !important;
-}
-
-.photo-button,
-#changePhotoBtn {
-  position: absolute;
-  z-index: 30;
-  right: -2px;
-  bottom: -2px;
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
-  min-height: 34px;
-  padding: 0;
-  border: 3px solid var(--card-bg);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  background: var(--purple);
-  box-shadow: 0 5px 15px rgba(0,0,0,.22);
-}
-
-.user-badge {
-  display: inline-flex;
-  margin-bottom: 6px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  color: var(--purple);
-  background: rgba(106,61,240,.10);
-  font-size: 8px;
-  font-weight: 700;
-}
-
-.profile-user-info {
-  min-width: 0;
-}
-
-.profile-user-info h2 {
-  margin: 0;
-  font-size: 21px;
-  line-height: 1.2;
-}
-
-.profile-user-info p {
-  margin: 4px 0 0;
-  color: var(--text-muted);
-  font-size: 11px;
-  overflow-wrap: anywhere;
-}
-
-/* =========================================================
-   CARDS
-========================================================= */
-
-.profile-content-grid {
-  position: relative;
-  z-index: 2;
-  margin-bottom: 18px;
-  display: grid;
-  grid-template-columns: minmax(320px, .85fr) minmax(0, 1.35fr);
-  gap: 18px;
-}
-
-.profile-card {
+  padding: 16px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 46px minmax(0,1fr);
+  align-items: center;
+  gap: 13px;
   background: var(--card-bg);
   box-shadow: var(--shadow-sm);
 }
 
-.account-card,
-.summary-card,
-.quick-card {
-  padding: 22px;
+.summary-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  color: var(--purple);
+  background: var(--purple-soft);
+  font-size: 21px;
 }
 
-.account-card,
-.summary-card {
-  min-height: 260px;
+body.dark .summary-icon {
+  background: rgba(140,107,255,.12);
+}
+
+.summary-tile span,
+.summary-tile strong,
+.summary-tile small {
+  display: block;
+}
+
+.summary-tile span {
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.summary-tile strong {
+  margin-top: 1px;
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.summary-tile small {
+  margin-top: 3px;
+  color: var(--text-muted);
+  font-size: 8.5px;
+}
+
+/* =========================================================
+   GRID CENTRAL
+========================================================= */
+
+.dashboard-main-grid {
+  margin-bottom: 18px;
+  display: grid;
+  grid-template-columns: minmax(0,1.55fr) minmax(290px,.65fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.profile-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.business-overview-card {
+  min-height: 500px;
+  padding: 22px;
 }
 
 .card-heading {
@@ -496,99 +336,6 @@ body.dark .profile-page {
   font-weight: 600;
 }
 
-.card-heading-icon {
-  width: 38px;
-  height: 38px;
-  flex: 0 0 38px;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  color: var(--purple);
-  background: rgba(106,61,240,.08);
-  border: 1px solid rgba(106,61,240,.10);
-}
-
-.profile-data-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-data {
-  padding: 13px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  border-bottom: 1px solid var(--border);
-}
-
-.profile-data:first-child {
-  padding-top: 0;
-}
-
-.profile-data:last-child {
-  padding-bottom: 0;
-  border-bottom: 0;
-}
-
-.profile-data span,
-.business-item span {
-  color: var(--text-muted);
-  font-size: 9.5px;
-}
-
-.profile-data strong {
-  font-size: 11px;
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
-
-.business-grid {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 12px;
-}
-
-.business-item {
-  min-height: 86px;
-  padding: 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--card-soft);
-  transition: border-color .18s ease, transform .18s ease;
-}
-
-.business-item:hover {
-  transform: translateY(-1px);
-  border-color: var(--border-strong);
-}
-
-.business-icon,
-.quick-icon {
-  width: 40px;
-  height: 40px;
-  flex: 0 0 40px;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  color: var(--purple);
-  background: rgba(106,61,240,.10);
-}
-
-.business-item > div:last-child {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.business-item strong {
-  margin-top: 2px;
-  font-size: 15px;
-  font-weight: 700;
-}
-
 .chart-link {
   display: inline-flex;
   align-items: center;
@@ -599,53 +346,340 @@ body.dark .profile-page {
   text-decoration: none;
 }
 
-.quick-card {
+.overview-chart {
+  height: 330px;
+  display: grid;
+  grid-template-columns: 30px minmax(0,1fr);
+  gap: 8px;
+}
+
+.chart-y-labels {
+  padding: 4px 0 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 8.5px;
+}
+
+.chart-stage {
   position: relative;
-  z-index: 2;
+  min-width: 0;
+  height: 100%;
+}
+
+.grid-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+.line-1 { top: 4%; }
+.line-2 { top: 24%; }
+.line-3 { top: 44%; }
+.line-4 { top: 64%; }
+.line-5 { top: 84%; }
+
+.overview-chart-svg {
+  position: absolute;
+  inset: 0 0 28px;
+  width: 100%;
+  height: calc(100% - 28px);
+  overflow: visible;
+  color: var(--purple);
+}
+
+.chart-area {
+  fill: url(#profileChartArea);
+}
+
+.chart-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.overview-chart-svg circle {
+  fill: var(--card-bg);
+  stroke: currentColor;
+  stroke-width: 4;
+}
+
+.chart-x-labels {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  color: var(--text-muted);
+  font-size: 8.5px;
+  text-align: center;
+}
+
+.overview-footer {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.overview-footer strong,
+.overview-footer span {
+  display: block;
+}
+
+.overview-footer strong {
+  font-size: 10.5px;
+}
+
+.overview-footer span {
+  margin-top: 3px;
+  color: var(--text-muted);
+  font-size: 8.5px;
+}
+
+.overview-footer a {
+  flex: 0 0 auto;
+  color: var(--purple);
+  font-size: 9.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* =========================================================
+   COLUNA LATERAL
+========================================================= */
+
+.dashboard-side-column {
+  display: grid;
+  gap: 18px;
+}
+
+.account-widget {
+  overflow: hidden;
+}
+
+.account-banner {
+  position: relative;
+  height: 116px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 30%, rgba(255,255,255,.20), transparent 22%),
+    linear-gradient(115deg,#2d1c60 0%,#5f3bd5 48%,#8d6dff 100%);
+}
+
+#bannerImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgba(22,17,31,.62);
+  backdrop-filter: blur(8px);
+}
+
+.account-widget-body {
+  position: relative;
+  min-height: 128px;
+  padding: 52px 18px 18px;
+}
+
+.profile-photo-area {
+  position: absolute;
+  left: 18px;
+  top: -42px;
+  width: 84px;
+  height: 84px;
+}
+
+.profile-photo {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  overflow: hidden;
+  border: 4px solid var(--card-bg);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #26184f;
+  box-shadow: 0 8px 24px rgba(0,0,0,.22);
+}
+
+#profileImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-photo-placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--purple-soft);
+  font-size: 32px;
+}
+
+.photo-button {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--card-bg);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--purple);
+}
+
+.user-badge {
+  display: inline-flex;
+  margin-bottom: 5px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: var(--purple);
+  background: rgba(106,61,240,.10);
+  font-size: 7.5px;
+  font-weight: 700;
+}
+
+.profile-user-info h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.profile-user-info p {
+  margin: 3px 0 0;
+  color: var(--text-muted);
+  font-size: 9px;
+  overflow-wrap: anywhere;
+}
+
+.account-details-card {
+  padding: 18px;
+}
+
+.card-heading-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--purple);
+  background: rgba(106,61,240,.08);
+}
+
+.profile-data-list {
+  display: grid;
+}
+
+.profile-data {
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-data:last-child {
+  border-bottom: 0;
+}
+
+.profile-data span,
+.profile-data strong {
+  display: block;
+}
+
+.profile-data span {
+  color: var(--text-muted);
+  font-size: 8.5px;
+}
+
+.profile-data strong {
+  margin-top: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   ACESSO RÁPIDO
+========================================================= */
+
+.quick-card {
+  padding: 20px;
 }
 
 .quick-grid {
   display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
+  grid-template-columns: repeat(3,minmax(0,1fr));
   gap: 12px;
 }
 
 .quick-item {
-  min-height: 74px;
-  padding: 13px 15px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 12px;
+  min-height: 78px;
+  padding: 13px 14px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: 38px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 11px;
   color: inherit;
   background: var(--card-soft);
   text-decoration: none;
-  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+  transition: transform .18s ease,border-color .18s ease;
 }
 
 .quick-item:hover {
   transform: translateY(-1px);
   border-color: var(--border-strong);
-  background: rgba(106,61,240,.045);
 }
 
-.quick-item > div:nth-child(2) {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
+.quick-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--purple);
+  background: rgba(106,61,240,.10);
+  font-size: 18px;
+}
+
+.quick-item strong,
+.quick-item span {
+  display: block;
 }
 
 .quick-item strong {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10.5px;
 }
 
 .quick-item span {
   margin-top: 2px;
   color: var(--text-muted);
-  font-size: 9px;
+  font-size: 8.5px;
 }
 
 .quick-item > i {
@@ -657,8 +691,7 @@ body.dark .profile-page {
    MODAL
 ========================================================= */
 
-.modal-overlay,
-.profile-modal-overlay {
+.modal-overlay {
   position: fixed;
   z-index: 999;
   inset: 0;
@@ -668,35 +701,30 @@ body.dark .profile-page {
   justify-content: center;
   background: rgba(8,5,18,.62);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity .18s ease, visibility .18s ease;
+  transition: opacity .18s ease,visibility .18s ease;
 }
 
 .modal-overlay.active,
-.modal-overlay[aria-hidden="false"],
-.profile-modal-overlay.active,
-.profile-modal-overlay[aria-hidden="false"] {
+.modal-overlay[aria-hidden="false"] {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
 }
 
-.modal-card,
-.profile-modal {
+.modal-card {
   width: min(460px,100%);
   overflow: hidden;
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: 16px;
   color: var(--text-main);
   background: var(--card-bg);
   box-shadow: 0 30px 80px rgba(13,8,32,.30);
 }
 
-.modal-header,
-.profile-modal-header {
+.modal-header {
   padding: 22px;
   display: flex;
   align-items: flex-start;
@@ -705,14 +733,12 @@ body.dark .profile-page {
   border-bottom: 1px solid var(--border);
 }
 
-.modal-header h2,
-.profile-modal-header h2 {
+.modal-header h2 {
   margin: 0;
   font-size: 18px;
 }
 
-.modal-header p,
-.profile-modal-header p {
+.modal-header p {
   margin: 5px 0 0;
   color: var(--text-secondary);
   font-size: 10px;
@@ -789,54 +815,20 @@ body.dark .profile-page {
 }
 
 /* =========================================================
-   DARK MODE
-========================================================= */
-
-body.dark .profile-hero,
-body.dark .profile-card,
-body.dark .modal-card {
-  background: var(--card-bg);
-}
-
-body.dark .business-item,
-body.dark .quick-item,
-body.dark .profile-field input {
-  background: var(--card-soft);
-}
-
-body.dark .banner-button {
-  background: rgba(13,9,20,.72);
-}
-
-/* =========================================================
-   ACESSIBILIDADE
-========================================================= */
-
-.edit-profile-button:focus-visible,
-.banner-button:focus-visible,
-.photo-button:focus-visible,
-.chart-link:focus-visible,
-.quick-item:focus-visible,
-.modal-close:focus-visible,
-.secondary-button:focus-visible,
-.primary-button:focus-visible,
-.sidebar .profile-account-link:focus-visible {
-  outline: 3px solid rgba(106,61,240,.34);
-  outline-offset: 3px;
-}
-
-/* =========================================================
    RESPONSIVO
 ========================================================= */
 
-@media (max-width: 1180px) {
-  .profile-content-grid {
+@media (max-width: 1160px) {
+  .summary-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+
+  .dashboard-main-grid {
     grid-template-columns: 1fr;
   }
 
-  .account-card,
-  .summary-card {
-    min-height: auto;
+  .dashboard-side-column {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -846,92 +838,82 @@ body.dark .banner-button {
   }
 
   .profile-page {
-    padding: 32px 20px 52px;
+    padding: 28px 18px 48px;
   }
 
   .sidebar .profile-account-link.active-profile {
     box-shadow: none;
-    border-radius: 10px !important;
-    background: var(--nav-hover-bg) !important;
-  }
-
-  .profile-top {
-    align-items: flex-start;
   }
 }
 
-@media (max-width: 680px) {
-  .profile-page {
-    padding-inline: 16px;
-  }
-
-  .profile-top {
+@media (max-width: 720px) {
+  .dashboard-header {
+    align-items: flex-start;
     flex-direction: column;
   }
 
-  .edit-profile-button {
+  .dashboard-actions {
     width: 100%;
   }
 
-  .profile-banner {
-    height: 130px;
+  .dashboard-search-link {
+    flex: 1;
   }
 
-  .profile-user-row {
-    min-height: 135px;
-    padding: 58px 18px 18px;
-    align-items: flex-end;
-  }
-
-  .profile-photo-area {
-    left: 18px;
-    top: -50px;
-  }
-
-  .profile-user-info {
-    width: 100%;
-  }
-
-  .business-grid,
+  .summary-grid,
+  .dashboard-side-column,
   .quick-grid {
     grid-template-columns: 1fr;
   }
 
-  .account-card,
-  .summary-card,
-  .quick-card {
-    padding: 18px;
+  .business-overview-card {
+    min-height: auto;
   }
 
-  .shape-one,
-  .shape-two {
-    display: none;
+  .overview-chart {
+    height: 280px;
   }
 }
 
-@media (max-width: 460px) {
-  .profile-banner {
-    height: 118px;
+@media (max-width: 520px) {
+  .dashboard-actions {
+    display: grid;
   }
 
-  .profile-photo-area,
-  .profile-photo {
-    width: 92px;
-    height: 92px;
+  .dashboard-search-link,
+  .edit-profile-button {
+    width: 100%;
   }
 
-  .profile-user-row {
-    padding-top: 52px;
+  .summary-grid {
+    gap: 10px;
+  }
+
+  .summary-tile {
+    min-height: 96px;
+  }
+
+  .business-overview-card,
+  .quick-card {
+    padding: 16px;
+  }
+
+  .overview-chart {
+    height: 230px;
+  }
+
+  .overview-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .account-widget-body {
+    padding-top: 48px;
   }
 
   .modal-actions {
     display: grid;
     grid-template-columns: 1fr;
-  }
-
-  .secondary-button,
-  .primary-button {
-    width: 100%;
   }
 }
 
@@ -939,7 +921,6 @@ body.dark .banner-button {
   *,
   *::before,
   *::after {
-    scroll-behavior: auto !important;
     transition-duration: .01ms !important;
     animation-duration: .01ms !important;
   }
