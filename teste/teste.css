@@ -136,19 +136,6 @@ a {
   align-items: end;
 }
 
-.message-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  background: linear-gradient(135deg,var(--purple),#3f2a78);
-  font-size: 10px;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(51,36,84,.16);
-}
-
 .message-content {
   max-width: 360px;
   padding: 11px 13px;
@@ -792,4 +779,33 @@ body.dark .metric-accent {
   .dark-feature {
     padding: 24px 18px;
   }
+}
+
+
+.message-avatars {
+  align-self: end;
+  padding-bottom: 2px;
+}
+
+.message-avatars span {
+  width: 32px;
+  height: 32px;
+  margin-left: -8px;
+  border: 2px solid var(--page-bg);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--purple);
+  font-size: 9px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(51,36,84,.14);
+}
+
+.message-avatars span:first-child {
+  margin-left: 0;
+}
+
+.message-avatars span:last-child {
+  background: #241a33;
 }
