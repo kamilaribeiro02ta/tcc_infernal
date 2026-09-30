@@ -302,628 +302,259 @@
     ====================================================== -->
 
     <main class="profile-page">
-
-
-      <!-- FORMAS DE FUNDO -->
-
-      <div
-        class="background-shape shape-one"
-        aria-hidden="true"
-      ></div>
-
-      <div
-        class="background-shape shape-two"
-        aria-hidden="true"
-      ></div>
-
-
-
-      <!-- =====================================================
-           CABEÇALHO
-      ====================================================== -->
-
-      <header class="profile-top">
-
-
-        <div>
-
-
-          <span class="profile-kicker">
-            SUA CONTA ZUZ
-          </span>
-
-
-          <h1>
-            Meu Perfil
-          </h1>
-
-
-          <p>
-            Personalize sua conta e acompanhe as principais informações do seu negócio.
-          </p>
-
-
-        </div>
-
-
-
-        <button
-          class="edit-profile-button"
-          id="editProfileBtn"
-          type="button"
-        >
-
-          <i
-            class="bx bx-edit-alt"
-            aria-hidden="true"
-          ></i>
-
-          <span>
-            Editar perfil
-          </span>
-
-        </button>
-
-
-      </header>
-
-
-
-      <!-- =====================================================
-           PERFIL PRINCIPAL
-      ====================================================== -->
-
-      <section
-        class="profile-hero"
-        aria-label="Resumo do perfil"
-      >
-
-
-        <!-- BANNER -->
-
-        <div
-          class="profile-banner"
-          id="profileBanner"
-        >
-
-
-          <img
-            id="bannerImage"
-            src=""
-            alt="Banner do perfil"
-            hidden
-          >
-
-
-          <input
-            id="bannerInput"
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            hidden
-          >
-
-
-          <button
-            class="banner-button"
-            id="changeBannerBtn"
-            type="button"
-          >
-
-            <i
-              class="bx bx-image-add"
-              aria-hidden="true"
-            ></i>
-
-            <span>
-              Alterar banner
-            </span>
-
-          </button>
-
-
-        </div>
-
-
-
-        <!-- ===================================================
-             USUÁRIO
-        ==================================================== -->
-
-        <div class="profile-user-row">
-
-
-          <!-- FOTO -->
-
-          <div class="profile-photo-area">
-
-
-            <div class="profile-photo">
-
-
-              <!--
-                SOMENTE A FOTO.
-                O símbolo que aparecia por cima foi removido.
-              -->
-
-              <img
-                id="profileImage"
-                src=""
-                alt="Foto de perfil"
-                hidden
-              >
-
-
-            </div>
-
-
-
-            <!-- INPUT DA FOTO -->
-
-            <input
-              id="profilePhotoInput"
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              hidden
-            >
-
-
-
-            <!-- CÂMERA -->
-
-            <button
-              class="photo-button"
-              id="changePhotoBtn"
-              type="button"
-              aria-label="Alterar foto de perfil"
-            >
-
-              <i
-                class="bx bx-camera"
-                aria-hidden="true"
-              ></i>
-
-            </button>
-
-
+      <div class="profile-dashboard">
+
+        <header class="dashboard-header">
+          <div>
+            <span class="profile-kicker">SUA CONTA ZUZ</span>
+            <h1>Olá, <span id="profileGreetingName">Usuário</span>.</h1>
+            <p>Acompanhe seus produtos, resultados e informações da conta em um só lugar.</p>
           </div>
 
-
-
-          <!-- NOME -->
-
-          <div class="profile-user-info">
-
-
-            <span class="user-badge">
-              PERFIL ZUZ
-            </span>
-
-
-            <h2 id="profileName">
-              Usuário ZUZ
-            </h2>
-
-
-            <p id="profileEmail">
-              email@exemplo.com
-            </p>
-
-
-          </div>
-
-
-        </div>
-
-
-      </section>
-
-
-
-      <!-- =====================================================
-           CARDS PRINCIPAIS
-      ====================================================== -->
-
-      <section class="profile-content-grid">
-
-
-        <!-- ===================================================
-             INFORMAÇÕES DA CONTA
-        ==================================================== -->
-
-        <article class="profile-card account-card">
-
-
-          <div class="card-heading">
-
-
-            <div>
-
-
-              <span class="card-kicker">
-                CONTA
-              </span>
-
-
-              <h2>
-                Informações do perfil
-              </h2>
-
-
-            </div>
-
-
-
-            <div
-              class="card-heading-icon"
-              aria-hidden="true"
-            >
-
-              <i class="bx bx-user"></i>
-
-            </div>
-
-
-          </div>
-
-
-
-          <div class="profile-data-list">
-
-
-            <div class="profile-data">
-
-              <span>
-                Nome oficial
-              </span>
-
-              <strong id="accountName">
-                Usuário ZUZ
-              </strong>
-
-            </div>
-
-
-
-            <div class="profile-data">
-
-              <span>
-                Email
-              </span>
-
-              <strong id="accountEmail">
-                email@exemplo.com
-              </strong>
-
-            </div>
-
-
-
-            <div class="profile-data">
-
-              <span>
-                Conta criada em
-              </span>
-
-              <strong id="accountCreatedAt">
-                --
-              </strong>
-
-            </div>
-
-
-          </div>
-
-
-        </article>
-
-
-
-        <!-- ===================================================
-             VISÃO GERAL
-        ==================================================== -->
-
-        <article class="profile-card summary-card">
-
-
-          <div class="card-heading">
-
-
-            <div>
-
-
-              <span class="card-kicker">
-                SEU NEGÓCIO
-              </span>
-
-
-              <h2>
-                Visão geral
-              </h2>
-
-
-            </div>
-
-
-
-            <a
-              href="../garfico/grafico.html"
-              class="chart-link"
-            >
-
-              Ver gráfico
-
-              <i
-                class="bx bx-right-arrow-alt"
-                aria-hidden="true"
-              ></i>
-
+          <div class="dashboard-actions">
+            <a href="../produtos/produtos.html" class="dashboard-search-link">
+              <i class="bx bx-search"></i>
+              <span>Buscar produtos</span>
             </a>
 
-
+            <button class="edit-profile-button" id="editProfileBtn" type="button">
+              <i class="bx bx-edit-alt" aria-hidden="true"></i>
+              <span>Editar perfil</span>
+            </button>
           </div>
-
-
-
-          <div class="business-grid">
-
-
-            <!-- PRODUTOS -->
-
-            <div class="business-item">
-
-
-              <div
-                class="business-icon"
-                aria-hidden="true"
-              >
-
-                <i class="bx bx-package"></i>
-
-              </div>
-
-
-              <div>
-
-                <span>
-                  Produtos
-                </span>
-
-                <strong id="profileProducts">
-                  0
-                </strong>
-
-              </div>
-
-
-            </div>
-
-
-
-            <!-- CATEGORIAS -->
-
-            <div class="business-item">
-
-
-              <div
-                class="business-icon"
-                aria-hidden="true"
-              >
-
-                <i class="bx bx-category"></i>
-
-              </div>
-
-
-              <div>
-
-                <span>
-                  Categorias
-                </span>
-
-                <strong id="profileCategories">
-                  0
-                </strong>
-
-              </div>
-
-
-            </div>
-
-
-
-            <!-- MARGEM -->
-
-            <div class="business-item">
-
-
-              <div
-                class="business-icon"
-                aria-hidden="true"
-              >
-
-                <i class="bx bx-trending-up"></i>
-
-              </div>
-
-
-              <div>
-
-                <span>
-                  Margem média
-                </span>
-
-                <strong id="profileAverageMargin">
-                  0.0%
-                </strong>
-
-              </div>
-
-
-            </div>
-
-
-
-            <!-- FATURAMENTO -->
-
-            <div class="business-item">
-
-
-              <div
-                class="business-icon"
-                aria-hidden="true"
-              >
-
-                <i class="bx bx-wallet"></i>
-
-              </div>
-
-
-              <div>
-
-                <span>
-                  Faturamento
-                </span>
-
-                <strong id="profileRevenue">
-                  R$ 0,00
-                </strong>
-
-              </div>
-
-
-            </div>
-
-
-          </div>
-
-
-        </article>
-
-
-      </section>
-
-
-
-      <!-- =====================================================
-           ACESSO RÁPIDO
-      ====================================================== -->
-
-      <section class="profile-card quick-card">
-
-
-        <div class="card-heading">
-
-
-          <div>
-
-
-            <span class="card-kicker">
-              ACESSO RÁPIDO
-            </span>
-
-
-            <h2>
-              Continue no ZUZ
-            </h2>
-
-
-          </div>
-
-
-        </div>
-
-
-
-        <div class="quick-grid">
-
-
-          <!-- PRODUTOS -->
-
-          <a
-            href="../produtos/produtos.html"
-            class="quick-item"
-          >
-
-
-            <div
-              class="quick-icon"
-              aria-hidden="true"
-            >
-
-              <i class="bx bx-package"></i>
-
-            </div>
-
-
+        </header>
+
+        <section class="summary-grid" aria-label="Resumo do negócio">
+          <article class="summary-tile">
+            <div class="summary-icon"><i class="bx bx-package"></i></div>
             <div>
-
-              <strong>
-                Produtos
-              </strong>
-
-              <span>
-                Cadastre e gerencie seus produtos.
-              </span>
-
+              <span>Produtos</span>
+              <strong id="profileProducts">0</strong>
+              <small>Cadastrados</small>
             </div>
+          </article>
 
-
-            <i
-              class="bx bx-chevron-right"
-              aria-hidden="true"
-            ></i>
-
-
-          </a>
-
-
-
-          <!-- GRÁFICO -->
-
-          <a
-            href="../garfico/grafico.html"
-            class="quick-item"
-          >
-
-
-            <div
-              class="quick-icon"
-              aria-hidden="true"
-            >
-
-              <i class="bx bx-line-chart"></i>
-
-            </div>
-
-
+          <article class="summary-tile">
+            <div class="summary-icon"><i class="bx bx-category"></i></div>
             <div>
+              <span>Categorias</span>
+              <strong id="profileCategories">0</strong>
+              <small>Organizadas</small>
+            </div>
+          </article>
 
-              <strong>
-                Gráfico
-              </strong>
+          <article class="summary-tile">
+            <div class="summary-icon"><i class="bx bx-trending-up"></i></div>
+            <div>
+              <span>Margem média</span>
+              <strong id="profileAverageMargin">0.0%</strong>
+              <small>Dos produtos</small>
+            </div>
+          </article>
 
-              <span>
-                Veja o desempenho do negócio.
-              </span>
+          <article class="summary-tile">
+            <div class="summary-icon"><i class="bx bx-wallet"></i></div>
+            <div>
+              <span>Faturamento</span>
+              <strong id="profileRevenue">R$ 0,00</strong>
+              <small>Estimado</small>
+            </div>
+          </article>
+        </section>
 
+        <section class="dashboard-main-grid">
+          <article class="profile-card business-overview-card">
+            <div class="card-heading dashboard-card-heading">
+              <div>
+                <span class="card-kicker">SEU NEGÓCIO</span>
+                <h2>Visão geral</h2>
+              </div>
+
+              <a href="../garfico/grafico.html" class="chart-link">
+                Ver gráfico
+                <i class="bx bx-right-arrow-alt"></i>
+              </a>
             </div>
 
+            <div class="overview-chart" aria-hidden="true">
+              <div class="chart-y-labels">
+                <span>100</span>
+                <span>75</span>
+                <span>50</span>
+                <span>25</span>
+                <span>0</span>
+              </div>
 
-            <i
-              class="bx bx-chevron-right"
-              aria-hidden="true"
-            ></i>
+              <div class="chart-stage">
+                <span class="grid-line line-1"></span>
+                <span class="grid-line line-2"></span>
+                <span class="grid-line line-3"></span>
+                <span class="grid-line line-4"></span>
+                <span class="grid-line line-5"></span>
 
+                <svg class="overview-chart-svg" viewBox="0 0 700 260" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="profileChartArea" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="currentColor" stop-opacity=".22"/>
+                      <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path class="chart-area" d="M10 210 L120 178 L230 126 L340 160 L450 98 L560 72 L690 82 L690 250 L10 250 Z"/>
+                  <path class="chart-line" d="M10 210 L120 178 L230 126 L340 160 L450 98 L560 72 L690 82"/>
+                  <circle cx="10" cy="210" r="5"/>
+                  <circle cx="120" cy="178" r="5"/>
+                  <circle cx="230" cy="126" r="5"/>
+                  <circle cx="340" cy="160" r="5"/>
+                  <circle cx="450" cy="98" r="5"/>
+                  <circle cx="560" cy="72" r="5"/>
+                  <circle cx="690" cy="82" r="5"/>
+                </svg>
 
-          </a>
+                <div class="chart-x-labels">
+                  <span>Seg</span>
+                  <span>Ter</span>
+                  <span>Qua</span>
+                  <span>Qui</span>
+                  <span>Sex</span>
+                  <span>Sáb</span>
+                  <span>Dom</span>
+                </div>
+              </div>
+            </div>
 
+            <div class="overview-footer">
+              <div>
+                <strong>Resumo visual</strong>
+                <span>Consulte o gráfico completo para acompanhar os dados reais do negócio.</span>
+              </div>
+              <a href="../garfico/grafico.html">Abrir análise</a>
+            </div>
+          </article>
 
-        </div>
+          <aside class="dashboard-side-column">
+            <section class="profile-card account-widget">
+              <div class="account-banner" id="profileBanner">
+                <img id="bannerImage" src="" alt="Banner do perfil" hidden>
 
+                <input
+                  id="bannerInput"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  hidden
+                >
 
-      </section>
+                <button
+                  class="banner-button"
+                  id="changeBannerBtn"
+                  type="button"
+                  aria-label="Alterar banner"
+                >
+                  <i class="bx bx-image-add"></i>
+                </button>
+              </div>
 
+              <div class="account-widget-body">
+                <div class="profile-photo-area">
+                  <div class="profile-photo">
+                    <img id="profileImage" src="" alt="Foto de perfil" hidden>
+                    <span id="profilePlaceholder" class="profile-photo-placeholder">
+                      <i class="bx bx-user"></i>
+                    </span>
+                  </div>
 
+                  <input
+                    id="profilePhotoInput"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    hidden
+                  >
+
+                  <button
+                    class="photo-button"
+                    id="changePhotoBtn"
+                    type="button"
+                    aria-label="Alterar foto de perfil"
+                  >
+                    <i class="bx bx-camera"></i>
+                  </button>
+                </div>
+
+                <div class="profile-user-info">
+                  <span class="user-badge">PERFIL ZUZ</span>
+                  <h2 id="profileName">Usuário ZUZ</h2>
+                  <p id="profileEmail">email@exemplo.com</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="profile-card account-details-card">
+              <div class="card-heading">
+                <div>
+                  <span class="card-kicker">CONTA</span>
+                  <h2>Informações do perfil</h2>
+                </div>
+                <div class="card-heading-icon"><i class="bx bx-user"></i></div>
+              </div>
+
+              <div class="profile-data-list">
+                <div class="profile-data">
+                  <span>Nome oficial</span>
+                  <strong id="accountName">Usuário ZUZ</strong>
+                </div>
+
+                <div class="profile-data">
+                  <span>Email</span>
+                  <strong id="accountEmail">email@exemplo.com</strong>
+                </div>
+
+                <div class="profile-data">
+                  <span>Conta criada em</span>
+                  <strong id="accountCreatedAt">--</strong>
+                </div>
+              </div>
+            </section>
+          </aside>
+        </section>
+
+        <section class="profile-card quick-card">
+          <div class="card-heading">
+            <div>
+              <span class="card-kicker">ACESSO RÁPIDO</span>
+              <h2>Continue no ZUZ</h2>
+            </div>
+          </div>
+
+          <div class="quick-grid">
+            <a href="../produtos/produtos.html" class="quick-item">
+              <div class="quick-icon"><i class="bx bx-package"></i></div>
+              <div>
+                <strong>Produtos</strong>
+                <span>Cadastre e gerencie seus produtos.</span>
+              </div>
+              <i class="bx bx-chevron-right"></i>
+            </a>
+
+            <a href="../garfico/grafico.html" class="quick-item">
+              <div class="quick-icon"><i class="bx bx-line-chart"></i></div>
+              <div>
+                <strong>Gráfico</strong>
+                <span>Veja o desempenho do negócio.</span>
+              </div>
+              <i class="bx bx-chevron-right"></i>
+            </a>
+
+            <a href="../introducao/intro.html" class="quick-item">
+              <div class="quick-icon"><i class="bx bx-info-circle"></i></div>
+              <div>
+                <strong>Sobre a ZUZ</strong>
+                <span>Entenda o sistema e seus recursos.</span>
+              </div>
+              <i class="bx bx-chevron-right"></i>
+            </a>
+          </div>
+        </section>
+
+      </div>
     </main>
 
 
