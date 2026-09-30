@@ -1104,3 +1104,180 @@ body.dark .dark-feature .process-grid h3 {
 body.dark .dark-feature .process-grid p {
   color: rgba(255,255,255,.50);
 }
+
+
+/* =========================================================
+   MINI GRAPH / CARD 01 PRECIFICAÇÃO
+========================================================= */
+
+.solution-chart-card {
+  grid-template-columns: minmax(170px,.48fr) minmax(0,1.52fr);
+  align-items: stretch;
+  gap: 28px;
+}
+
+.solution-chart-head {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 26px;
+}
+
+.solution-chart-head h3 {
+  margin: 0 0 9px;
+}
+
+.solution-chart-head p {
+  max-width: 250px;
+}
+
+.mini-chart-ui {
+  min-height: 220px;
+  padding: 18px 18px 14px;
+  border: 1px solid rgba(255,255,255,.46);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.60),rgba(255,255,255,.28)),
+    rgba(255,255,255,.28);
+  -webkit-backdrop-filter: blur(20px) saturate(145%);
+  backdrop-filter: blur(20px) saturate(145%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.72),
+    0 18px 40px rgba(33,22,63,.09);
+}
+
+.mini-chart-meta {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.mini-chart-meta span {
+  color: var(--muted);
+  font-size: 8px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.mini-chart-meta strong {
+  color: var(--text);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.mini-chart-plot {
+  position: relative;
+  flex: 1;
+  min-height: 140px;
+  margin-top: 16px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(88,72,112,.12);
+}
+
+.chart-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(88,72,112,.08);
+}
+
+.chart-line-a { top: 24%; }
+.chart-line-b { top: 50%; }
+.chart-line-c { top: 76%; }
+
+.chart-bars {
+  position: absolute;
+  inset: 0 10px 0 10px;
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  align-items: end;
+  gap: clamp(8px,1.3vw,18px);
+}
+
+.chart-bars span {
+  height: var(--bar-height);
+  min-height: 16px;
+  border-radius: 8px 8px 3px 3px;
+  background:
+    linear-gradient(180deg,rgba(133,99,255,.72),rgba(96,54,226,.28));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.30);
+}
+
+.chart-trend {
+  position: absolute;
+  inset: 12px 4px 8px;
+  width: calc(100% - 8px);
+  height: calc(100% - 20px);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.chart-trend path {
+  fill: none;
+  stroke: #6f46ef;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 4px 8px rgba(106,61,240,.22));
+}
+
+.mini-chart-axis {
+  padding: 9px 10px 0;
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  gap: clamp(8px,1.3vw,18px);
+  color: var(--muted);
+  font-size: 7px;
+  text-align: center;
+}
+
+body.dark .mini-chart-ui {
+  border-color: rgba(255,255,255,.10);
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025)),
+    rgba(18,14,28,.40);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 20px 46px rgba(0,0,0,.26);
+}
+
+body.dark .chart-line,
+body.dark .mini-chart-plot {
+  border-color: rgba(255,255,255,.08);
+}
+
+body.dark .chart-line {
+  background: rgba(255,255,255,.07);
+}
+
+body.dark .chart-bars span {
+  background:
+    linear-gradient(180deg,rgba(157,128,255,.82),rgba(109,69,235,.30));
+}
+
+body.dark .chart-trend path {
+  stroke: #a68cff;
+}
+
+@media (max-width: 720px) {
+  .solution-chart-card {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .solution-chart-head {
+    gap: 12px;
+  }
+
+  .solution-chart-head p {
+    max-width: 100%;
+  }
+
+  .mini-chart-ui {
+    min-height: 210px;
+  }
+}
