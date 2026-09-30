@@ -95,36 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
-  const profileThemeToggle = document.getElementById("themeToggle");
-  const profileThemeLabel = document.getElementById("themeLabel");
-  const profileIconSun = document.getElementById("iconSun");
-  const profileIconMoon = document.getElementById("iconMoon");
-
-  function renderThemeState(isDark) {
-    document.body.classList.toggle("dark", isDark);
-    profileThemeToggle?.setAttribute("aria-pressed", String(isDark));
-
-    if (profileThemeLabel) {
-      profileThemeLabel.textContent = isDark ? "Modo Escuro" : "Modo Claro";
-    }
-
-    if (profileIconSun) {
-      profileIconSun.style.display = isDark ? "none" : "block";
-    }
-
-    if (profileIconMoon) {
-      profileIconMoon.style.display = isDark ? "block" : "none";
-    }
-  }
-
-  renderThemeState(localStorage.getItem("zuz-theme") === "dark");
-
-  profileThemeToggle?.addEventListener("click", () => {
-    const isDark = !document.body.classList.contains("dark");
-    localStorage.setItem("zuz-theme", isDark ? "dark" : "light");
-    renderThemeState(isDark);
-  });
-
 
   /* =========================================================
      ELEMENTOS
