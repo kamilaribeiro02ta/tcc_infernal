@@ -1396,3 +1396,52 @@ body:not(.dark) .prototype-shadow {
     top: 194px;
   }
 }
+
+
+/* SOFT BLUR TRANSITION */
+.about-statement.about-statement-3d {
+  position: relative;
+  isolation: isolate;
+}
+
+.about-statement.about-statement-3d::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: -115px;
+  width: 118vw;
+  height: 190px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(55, 31, 92, .46) 0%,
+      rgba(38, 22, 64, .34) 28%,
+      rgba(20, 14, 31, .18) 62%,
+      rgba(8, 7, 14, 0) 100%
+    );
+  filter: blur(34px);
+  opacity: .95;
+}
+
+body:not(.dark) .about-statement.about-statement-3d::before {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(140, 111, 232, .18) 0%,
+      rgba(174, 153, 236, .12) 40%,
+      rgba(247, 246, 251, 0) 100%
+    );
+  filter: blur(30px);
+  opacity: .82;
+}
+
+@media (max-width: 680px) {
+  .about-statement.about-statement-3d::before {
+    top: -80px;
+    height: 140px;
+    filter: blur(24px);
+  }
+}
