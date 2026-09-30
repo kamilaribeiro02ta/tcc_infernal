@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <link rel="stylesheet" href="../shared/sidebar.css">
@@ -15,10 +15,11 @@
   <link rel="stylesheet" href="intro.css">
   <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
 </head>
+
 <body>
   <div class="page">
     <aside class="sidebar">
-<a href="../Login-2/login-2.html" class="login-block">
+      <a href="../Login-2/login-2.html" class="login-block">
         <div class="avatar">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="8" r="4" fill="white"/>
@@ -36,7 +37,7 @@
         <a href="../introducao/intro.html" class="nav-item active" aria-current="page">Sobre</a>
         <a href="../produtos/produtos.html" class="nav-item">Produtos</a>
         <a href="../garfico/grafico.html" class="nav-item">Gráfico</a>
-        <a href="../equipe/equipe.html" class="nav-item">Equipe</a>
+        <a href="#equipe" class="nav-item">Equipe</a>
         <a href="../referencias/refe.html" class="nav-item">Referências</a>
       </nav>
 
@@ -51,8 +52,6 @@
             <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
             <line x1="2" y1="12" x2="4" y2="12"></line>
             <line x1="20" y1="12" x2="22" y2="12"></line>
-            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
-            <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
           </svg>
 
           <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
@@ -63,186 +62,218 @@
     </aside>
 
     <main class="about-page">
-      <section class="about-hero">
-        <div class="about-copy">
-          <span class="eyebrow">Sobre o projeto</span>
-          <h1>Precificação mais simples para <span>pequenos negócios.</span></h1>
-          <p class="hero-text">
-            A ZUZ é um sistema de precificação inteligente criado para ajudar pequenos empreendedores a entender seus custos, organizar produtos e tomar decisões de preço com mais clareza.
-          </p>
+      <section class="hero-section reveal">
+        <span class="section-kicker">Sobre a ZUZ</span>
 
-          <div class="hero-actions">
-            <a href="../produtos/produtos.html" class="btn-primary">Testar o sistema <i class="bx bx-right-arrow-alt"></i></a>
-            <a href="../equipe/equipe.html" class="btn-secondary">Conhecer a equipe</a>
-          </div>
+        <h1>
+          Precificar não deveria ser
+          <span>adivinhação.</span>
+        </h1>
 
-          <div class="hero-summary" aria-label="Resumo do projeto">
-            <div>
-              <strong>01</strong>
-              <span>Produto cadastrado</span>
-            </div>
-            <div>
-              <strong>02</strong>
-              <span>Custos organizados</span>
-            </div>
-            <div>
-              <strong>03</strong>
-              <span>Preço analisado</span>
-            </div>
-          </div>
+        <p class="hero-lead">
+          A ZUZ transforma custos e informações do produto em referências de preço mais claras para pequenos negócios. O sistema une software, inteligência artificial e um assistente físico para tornar a precificação mais simples de entender e usar.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#prototipo" class="primary-action">
+            Explorar protótipo
+            <i class="bx bx-down-arrow-alt"></i>
+          </a>
+
+          <a href="#funcionamento" class="secondary-action">
+            Como funciona
+          </a>
         </div>
 
-        <div class="project-panel prototype-panel">
-          <div class="project-panel-top">
-            <span class="panel-label">TCC ZUZ</span>
-            <span class="status-pill"><span></span> Protótipo interativo</span>
+        <div class="hero-principles" aria-label="Principais características da ZUZ">
+          <div>
+            <span>01</span>
+            <strong>Simples</strong>
+            <p>Informação organizada sem exigir conhecimento técnico de precificação.</p>
           </div>
-
-          <div class="prototype-webgl" id="prototype3d">
-            <div class="prototype-canvas-wrap" id="prototypeCanvasWrap">
-              <canvas id="prototypeCanvas" aria-label="Modelo 3D interativo do protótipo ZUZ"></canvas>
-
-              <div class="prototype-overlay">
-                <div class="prototype-instruction">
-                  <i class="bx bx-mouse"></i>
-                  <span>Arraste para girar · role para aproximar</span>
-                </div>
-
-                <button class="prototype-explode-btn" id="explodePrototype" type="button" aria-pressed="false">
-                  <i class="bx bx-expand-horizontal"></i>
-                  <span>Abrir componentes</span>
-                </button>
-              </div>
-
-              <div class="prototype-component-labels" id="prototypeLabels" aria-hidden="true">
-                <span>Carcaça frontal</span>
-                <span>Display</span>
-                <span>Suporte</span>
-                <span>ESP32</span>
-                <span>Alto-falante</span>
-                <span>Microfone</span>
-                <span>Carcaça traseira</span>
-              </div>
-
-              <div class="prototype-tooltip" id="prototypeTooltip"></div>
-            </div>
-
-            <p class="prototype-help">
-              Explore o protótipo em 3D. Arraste para girar, aproxime para observar os detalhes e abra os componentes para entender a montagem.
-            </p>
+          <div>
+            <span>02</span>
+            <strong>Integrada</strong>
+            <p>Site e assistente físico trabalham como uma única experiência.</p>
           </div>
-
-          <div class="price-preview">
-            <div>
-              <span>Preço de custo</span>
-              <strong>Base calculada</strong>
-            </div>
-            <div>
-              <span>Sugestão</span>
-              <strong>Faixa orientativa</strong>
-            </div>
-            <div>
-              <span>Limite</span>
-              <strong>Referência de preço</strong>
-            </div>
+          <div>
+            <span>03</span>
+            <strong>Orientativa</strong>
+            <p>O usuário recebe referências para apoiar a própria decisão de preço.</p>
           </div>
         </div>
       </section>
 
-      <section class="about-section" aria-labelledby="como-funciona">
-        <div class="section-heading">
+      <section class="prototype-section reveal" id="prototipo">
+        <div class="section-intro">
           <div>
-            <span class="eyebrow">Conheça a ZUZ</span>
-            <h2 id="como-funciona">Clique nos cards para entender o TCC</h2>
+            <span class="section-kicker">Assistente físico</span>
+            <h2>Conheça o protótipo por dentro.</h2>
           </div>
-          <p>Os principais pontos do projeto ficam resumidos abaixo. Cada card abre uma explicação curta para não deixar a página carregada.</p>
+
+          <p>
+            O modelo abaixo é interativo. Gire livremente, aproxime para observar os detalhes e abra a estrutura para visualizar os principais componentes.
+          </p>
         </div>
 
-        <div class="about-grid">
-          <article class="about-card">
-            <button class="card-trigger" type="button" aria-expanded="false">
-              <span class="card-icon"><i class="bx bx-calculator"></i></span>
-              <span class="card-title-wrap">
-                <strong>Precificação inteligente</strong>
-                <small>O núcleo do sistema</small>
-              </span>
-              <i class="bx bx-plus card-toggle-icon" aria-hidden="true"></i>
+        <div class="prototype-shell">
+          <div class="prototype-toolbar">
+            <div class="prototype-status">
+              <span class="status-dot"></span>
+              Modelo interativo
+            </div>
+
+            <div class="prototype-help-text">
+              Arraste para girar
+              <span></span>
+              Role para aproximar
+            </div>
+          </div>
+
+          <div class="prototype-canvas-wrap" id="prototypeCanvasWrap">
+            <canvas id="prototypeCanvas" aria-label="Modelo 3D interativo do assistente físico da ZUZ"></canvas>
+
+            <button class="prototype-explode-btn" id="explodePrototype" type="button" aria-pressed="false">
+              <i class="bx bx-expand-horizontal"></i>
+              <span>Abrir componentes</span>
             </button>
-            <div class="card-content">
-              <p>A plataforma reúne os custos informados pelo usuário e transforma esses dados em referências de preço mais fáceis de interpretar durante a tomada de decisão.</p>
+
+            <div class="prototype-component-labels" id="prototypeLabels" aria-hidden="true">
+              <span>Carcaça frontal</span>
+              <span>Display</span>
+              <span>Suporte</span>
+              <span>ESP32</span>
+              <span>Alto-falante</span>
+              <span>Microfone</span>
+              <span>Carcaça traseira</span>
+            </div>
+
+            <div class="prototype-tooltip" id="prototypeTooltip"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="workflow-section reveal" id="funcionamento">
+        <div class="section-intro">
+          <div>
+            <span class="section-kicker">Como funciona</span>
+            <h2>Da conversa até a referência de preço.</h2>
+          </div>
+
+          <p>
+            A experiência é construída para reduzir etapas desnecessárias. O usuário informa o que produz, a ZUZ organiza os custos e apresenta os resultados de forma visual.
+          </p>
+        </div>
+
+        <div class="workflow-grid">
+          <article class="workflow-card">
+            <div class="workflow-number">01</div>
+            <div class="workflow-icon"><i class="bx bx-message-rounded-dots"></i></div>
+            <h3>Conte sobre o produto</h3>
+            <p>O agente faz perguntas objetivas para entender produto, custos, quantidade e contexto de venda.</p>
+          </article>
+
+          <article class="workflow-card">
+            <div class="workflow-number">02</div>
+            <div class="workflow-icon"><i class="bx bx-data"></i></div>
+            <h3>Organize os custos</h3>
+            <p>As informações são estruturadas no sistema para formar uma base clara de cálculo e acompanhamento.</p>
+          </article>
+
+          <article class="workflow-card">
+            <div class="workflow-number">03</div>
+            <div class="workflow-icon"><i class="bx bx-line-chart"></i></div>
+            <h3>Entenda o resultado</h3>
+            <p>O usuário visualiza custo, sugestão de preço e uma referência de limite para apoiar sua decisão.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="results-section reveal">
+        <div class="results-copy">
+          <span class="section-kicker">O que a ZUZ entrega</span>
+          <h2>Menos conta solta. Mais contexto.</h2>
+          <p>
+            O objetivo não é apenas mostrar um número, mas apresentar o raciocínio de forma compreensível e conectada ao produto cadastrado.
+          </p>
+        </div>
+
+        <div class="result-list">
+          <article>
+            <div class="result-icon"><i class="bx bx-receipt"></i></div>
+            <div>
+              <span>Preço de custo</span>
+              <strong>Quanto o produto realmente consome para ser produzido.</strong>
             </div>
           </article>
 
-          <article class="about-card">
-            <button class="card-trigger" type="button" aria-expanded="false">
-              <span class="card-icon"><i class="bx bx-bot"></i></span>
-              <span class="card-title-wrap">
-                <strong>Agente de IA</strong>
-                <small>O mascote da ZUZ</small>
-              </span>
-              <i class="bx bx-plus card-toggle-icon" aria-hidden="true"></i>
-            </button>
-            <div class="card-content">
-              <p>O mascote funciona como um agente de IA. Ele conversa com o usuário, faz perguntas sobre o produto e ajuda a reunir as informações necessárias para a precificação.</p>
+          <article>
+            <div class="result-icon"><i class="bx bx-bulb"></i></div>
+            <div>
+              <span>Sugestão de preço</span>
+              <strong>Uma referência calculada a partir das informações fornecidas.</strong>
             </div>
           </article>
 
-          <article class="about-card">
-            <button class="card-trigger" type="button" aria-expanded="false">
-              <span class="card-icon"><i class="bx bx-link-alt"></i></span>
-              <span class="card-title-wrap">
-                <strong>Integração física e digital</strong>
-                <small>Mascote conectado ao site</small>
-              </span>
-              <i class="bx bx-plus card-toggle-icon" aria-hidden="true"></i>
-            </button>
-            <div class="card-content">
-              <p>A proposta integra o assistente físico ao software. A interação feita pelo agente pode refletir no sistema e facilitar o preenchimento e a consulta das informações do usuário.</p>
-            </div>
-          </article>
-
-          <article class="about-card">
-            <button class="card-trigger" type="button" aria-expanded="false">
-              <span class="card-icon"><i class="bx bx-package"></i></span>
-              <span class="card-title-wrap">
-                <strong>Produtos e custos</strong>
-                <small>Organização antes do cálculo</small>
-              </span>
-              <i class="bx bx-plus card-toggle-icon" aria-hidden="true"></i>
-            </button>
-            <div class="card-content">
-              <p>O usuário cadastra produtos, categoria, quantidade estimada e os custos envolvidos. Isso cria uma base organizada para acompanhar a formação do preço.</p>
-            </div>
-          </article>
-
-          <article class="about-card">
-            <button class="card-trigger" type="button" aria-expanded="false">
-              <span class="card-icon"><i class="bx bx-bar-chart-alt-2"></i></span>
-              <span class="card-title-wrap">
-                <strong>Painel e gráficos</strong>
-                <small>Visão geral do negócio</small>
-              </span>
-              <i class="bx bx-plus card-toggle-icon" aria-hidden="true"></i>
-            </button>
-            <div class="card-content">
-              <p>O painel apresenta informações de desempenho e precificação de forma visual, ajudando o usuário a acompanhar custos, preços e resultados dos produtos cadastrados.</p>
-            </div>
-          </article>
-
-          <article class="about-card">
-            <button class="card-trigger" type="button" aria-expanded="false">
-              <span class="card-icon"><i class="bx bx-store-alt"></i></span>
-              <span class="card-title-wrap">
-                <strong>Pequenos negócios</strong>
-                <small>Para quem a ZUZ foi pensada</small>
-              </span>
-              <i class="bx bx-plus card-toggle-icon" aria-hidden="true"></i>
-            </button>
-            <div class="card-content">
-              <p>O projeto busca tornar a precificação mais acessível para pessoas que administram pequenos negócios e precisam de uma ferramenta simples para organizar custos e preços.</p>
+          <article>
+            <div class="result-icon"><i class="bx bx-slider-alt"></i></div>
+            <div>
+              <span>Faixa de referência</span>
+              <strong>Uma visão mais ampla para comparar possibilidades antes de decidir.</strong>
             </div>
           </article>
         </div>
+      </section>
+
+      <section class="team-section reveal" id="equipe">
+        <div class="section-intro team-heading">
+          <div>
+            <span class="section-kicker">Equipe</span>
+            <h2>Quem constrói a ZUZ.</h2>
+          </div>
+
+          <p>
+            Desenvolvimento de software, integração, robótica e montagem trabalham juntos para transformar a proposta em um sistema funcional.
+          </p>
+        </div>
+
+        <div class="team-grid">
+          <article class="team-card">
+            <div class="team-avatar">KS</div>
+            <div class="team-card-copy">
+              <h3>Kamilla Silva</h3>
+              <span>Software e integração</span>
+              <p>Desenvolvimento do site e testes de integração entre o sistema e o protótipo.</p>
+            </div>
+          </article>
+
+          <article class="team-card">
+            <div class="team-avatar">MA</div>
+            <div class="team-card-copy">
+              <h3>Melissa Aquino</h3>
+              <span>Robótica e integração</span>
+              <p>Robótica, montagem do protótipo e testes de integração com o backend.</p>
+            </div>
+          </article>
+
+          <article class="team-card">
+            <div class="team-avatar">GB</div>
+            <div class="team-card-copy">
+              <h3>Gabriel Bonfim</h3>
+              <span>Robótica e desenvolvimento</span>
+              <p>Robótica, montagem do protótipo e desenvolvimento das experiências interativas do projeto.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="closing-section reveal">
+        <span class="section-kicker">ZUZ</span>
+        <h2>Preço mais claro começa com informação melhor organizada.</h2>
+        <a href="../produtos/produtos.html" class="primary-action">
+          Testar o sistema
+          <i class="bx bx-right-arrow-alt"></i>
+        </a>
       </section>
     </main>
   </div>
