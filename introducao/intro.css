@@ -1063,3 +1063,336 @@ body:not(.dark) .team-photo-avatar {
   font-weight: 700;
   letter-spacing: .02em;
 }
+
+
+/* PROTOTYPE 3D SECTION */
+.about-statement.about-statement-3d {
+  width: min(100%, 1380px);
+  margin-left: auto;
+  margin-right: auto;
+  padding: clamp(78px, 9vw, 126px) 0;
+  display: grid !important;
+  grid-template-columns: minmax(0, .95fr) minmax(360px, .75fr) !important;
+  gap: clamp(44px, 7vw, 96px);
+  align-items: center;
+}
+
+.about-statement-3d .about-statement-copy {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.about-statement-3d .about-statement-copy p {
+  max-width: 860px;
+}
+
+.prototype-3d-wrap {
+  min-width: 0;
+}
+
+.prototype-3d-stage {
+  min-height: 470px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  perspective: 1100px;
+  isolation: isolate;
+}
+
+.prototype-3d-stage::before {
+  content: "";
+  position: absolute;
+  inset: 9% 2% 6%;
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(118, 76, 247, .16), transparent 42%),
+    linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012));
+  border: 1px solid rgba(255,255,255,.055);
+}
+
+.prototype-shadow {
+  position: absolute;
+  width: 58%;
+  height: 48px;
+  bottom: 38px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.46);
+  filter: blur(18px);
+  transform: rotate(-4deg);
+}
+
+.robot-3d {
+  position: relative;
+  z-index: 2;
+  width: 250px;
+  height: 282px;
+  transform-style: preserve-3d;
+  transform: rotateX(-7deg) rotateY(-18deg) rotateZ(1deg);
+  transition: transform .55s cubic-bezier(.2,.7,.2,1);
+}
+
+.prototype-3d-wrap:hover .robot-3d {
+  transform: rotateX(-4deg) rotateY(13deg) rotateZ(-1deg) translateY(-7px);
+}
+
+.robot-face {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: 30px;
+  background:
+    linear-gradient(145deg, #8b60ff 0%, #6d3ff2 52%, #4e27b9 100%);
+  border: 1px solid rgba(255,255,255,.20);
+  box-shadow:
+    0 34px 70px rgba(59,31,125,.42),
+    inset 0 1px 0 rgba(255,255,255,.24),
+    inset 0 -1px 0 rgba(35,16,77,.24);
+  transform: translateZ(26px);
+}
+
+.robot-side {
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  width: 54px;
+  border-radius: 18px;
+  background: linear-gradient(180deg,#4f299f,#321a69);
+  opacity: .95;
+}
+
+.robot-side-left {
+  left: -28px;
+  transform: rotateY(90deg) translateZ(2px);
+  transform-origin: right center;
+}
+
+.robot-side-right {
+  right: -28px;
+  transform: rotateY(90deg) translateZ(-2px);
+  transform-origin: left center;
+}
+
+.robot-top {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: -21px;
+  height: 54px;
+  border-radius: 18px;
+  background: linear-gradient(90deg,#9d7aff,#7246ec);
+  transform: rotateX(90deg);
+  transform-origin: bottom center;
+}
+
+.robot-screen {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 22px;
+  height: 154px;
+  border-radius: 22px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 26%, rgba(122,81,226,.14), transparent 42%),
+    linear-gradient(160deg,#0c0a12,#16111f);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow:
+    inset 0 0 28px rgba(0,0,0,.42),
+    0 10px 24px rgba(45,21,91,.22);
+}
+
+.robot-eye {
+  position: absolute;
+  top: 56px;
+  width: 54px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f5f5ff;
+  box-shadow: 0 0 14px rgba(255,255,255,.10);
+}
+
+.robot-eye span {
+  position: absolute;
+  width: 17px;
+  height: 20px;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  background: #0d0b12;
+  transform: translate(-50%,-50%);
+}
+
+.robot-eye span::after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  right: 2px;
+  top: 3px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.robot-eye-left { left: 40px; }
+.robot-eye-right { right: 40px; }
+
+.robot-brow {
+  position: absolute;
+  top: 37px;
+  width: 48px;
+  height: 6px;
+  border-radius: 999px;
+  background: #b476ff;
+  opacity: .88;
+}
+
+.robot-brow-left {
+  left: 43px;
+  transform: rotate(7deg);
+}
+
+.robot-brow-right {
+  right: 43px;
+  transform: rotate(-7deg);
+}
+
+.robot-mouth {
+  position: absolute;
+  left: 50%;
+  bottom: 25px;
+  width: 42px;
+  height: 17px;
+  border-bottom: 4px solid #b476ff;
+  border-radius: 0 0 40px 40px;
+  transform: translateX(-50%);
+}
+
+.robot-button {
+  position: absolute;
+  left: 50%;
+  top: 191px;
+  width: 70px;
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(180deg,#bc76ff,#8d4dff);
+  transform: translateX(-50%);
+  box-shadow:
+    0 5px 14px rgba(59,25,112,.32),
+    inset 0 1px 0 rgba(255,255,255,.30);
+}
+
+.robot-vents {
+  position: absolute;
+  left: 50%;
+  top: 225px;
+  width: 84px;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 7px;
+  transform: translateX(-50%);
+}
+
+.robot-vents span {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(29,13,62,.45);
+}
+
+.robot-foot {
+  position: absolute;
+  bottom: -20px;
+  width: 54px;
+  height: 34px;
+  z-index: 1;
+  border-radius: 8px 8px 14px 14px;
+  background: linear-gradient(180deg,#5e34c3,#3c227b);
+  transform: translateZ(6px);
+}
+
+.robot-foot-left { left: 36px; }
+.robot-foot-right { right: 36px; }
+
+.prototype-caption {
+  margin-top: 4px;
+  text-align: center;
+}
+
+.prototype-caption span,
+.prototype-caption strong {
+  display: block;
+}
+
+.prototype-caption span {
+  color: var(--muted);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .10em;
+}
+
+.prototype-caption strong {
+  margin-top: 4px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+body:not(.dark) .prototype-3d-stage::before {
+  border-color: #ddd9e5;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(106,61,240,.10), transparent 42%),
+    #ece9f0;
+}
+
+body:not(.dark) .prototype-shadow {
+  background: rgba(67,49,103,.18);
+}
+
+@media (max-width: 1000px) {
+  .about-statement.about-statement-3d {
+    grid-template-columns: 1fr !important;
+  }
+
+  .prototype-3d-stage {
+    min-height: 420px;
+  }
+}
+
+@media (max-width: 620px) {
+  .about-statement.about-statement-3d {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .prototype-3d-stage {
+    min-height: 360px;
+  }
+
+  .robot-3d {
+    width: 210px;
+    height: 238px;
+  }
+
+  .robot-screen {
+    height: 132px;
+  }
+
+  .robot-eye {
+    top: 49px;
+    width: 45px;
+    height: 34px;
+  }
+
+  .robot-eye-left { left: 33px; }
+  .robot-eye-right { right: 33px; }
+
+  .robot-brow-left { left: 35px; }
+  .robot-brow-right { right: 35px; }
+
+  .robot-button {
+    top: 162px;
+  }
+
+  .robot-vents {
+    top: 194px;
+  }
+}
