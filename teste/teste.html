@@ -13,7 +13,7 @@
 
   <link rel="stylesheet" href="../shared/sidebar.css">
   <link rel="stylesheet" href="../shared/design-system.css">
-  <link rel="stylesheet" href="./teste.css?v=20260930-2235">
+  <link rel="stylesheet" href="./teste.css?v=20260930-2305">
   <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
 </head>
 
@@ -230,21 +230,50 @@
         </div>
 
         <div class="solution-grid">
-          <article class="solution-card solution-main">
-            <div>
+          <article class="solution-card solution-main solution-chart-card">
+            <div class="solution-chart-head">
               <span class="solution-number">01</span>
-              <h3>Precificação</h3>
-              <p>
-                Cadastre produtos, registre custos e visualize a lógica
-                por trás do valor final.
-              </p>
+              <div>
+                <h3>Precificação</h3>
+                <p>Uma amostra visual da evolução entre custo, preço sugerido e resultado.</p>
+              </div>
             </div>
 
-            <div class="mini-price-ui" aria-hidden="true">
-              <span>Custo</span>
-              <strong>R$ 21,40</strong>
-              <span>Sugestão</span>
-              <strong>R$ 38,90</strong>
+            <div class="mini-chart-ui" aria-label="Amostra visual de gráfico de precificação">
+              <div class="mini-chart-meta">
+                <span>Visão geral</span>
+                <strong>Preço x custo</strong>
+              </div>
+
+              <div class="mini-chart-plot" aria-hidden="true">
+                <span class="chart-line chart-line-a"></span>
+                <span class="chart-line chart-line-b"></span>
+                <span class="chart-line chart-line-c"></span>
+
+                <div class="chart-bars">
+                  <span style="--bar-height: 34%"></span>
+                  <span style="--bar-height: 47%"></span>
+                  <span style="--bar-height: 42%"></span>
+                  <span style="--bar-height: 66%"></span>
+                  <span style="--bar-height: 58%"></span>
+                  <span style="--bar-height: 82%"></span>
+                  <span style="--bar-height: 74%"></span>
+                </div>
+
+                <svg class="chart-trend" viewBox="0 0 600 180" preserveAspectRatio="none">
+                  <path d="M12 142 C78 137, 105 114, 154 121 S242 85, 296 96 S388 52, 445 66 S532 27, 588 35"></path>
+                </svg>
+              </div>
+
+              <div class="mini-chart-axis" aria-hidden="true">
+                <span>Jan</span>
+                <span>Fev</span>
+                <span>Mar</span>
+                <span>Abr</span>
+                <span>Mai</span>
+                <span>Jun</span>
+                <span>Jul</span>
+              </div>
             </div>
           </article>
 
