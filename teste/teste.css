@@ -117,12 +117,18 @@ a {
   gap: 28px;
 }
 
-.hero-brand-row h1 {
-  margin: 0;
-  font-size: clamp(74px, 12vw, 180px);
-  line-height: .76;
-  letter-spacing: -.085em;
-  font-weight: 700;
+.hero-logo {
+  display: block;
+  width: min(100%, 620px);
+  height: auto;
+  max-height: 190px;
+  object-fit: contain;
+  object-position: left center;
+  filter: brightness(0);
+}
+
+body.dark .hero-logo {
+  filter: none;
 }
 
 .hero-intro {
@@ -708,8 +714,9 @@ body.dark .metric-accent {
 }
 
 @media (max-width: 720px) {
-.hero-brand-row h1 {
-    font-size: clamp(68px,24vw,120px);
+.hero-logo {
+    width: min(84vw, 520px);
+    max-height: 150px;
   }
 
   .hero-visual {
