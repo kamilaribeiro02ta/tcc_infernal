@@ -2,19 +2,12 @@
   "use strict";
 
   const STORAGE_KEY = "zuz-pricing-products-v2";
-  const THEME_KEY = "zuz-theme";
-
   const monthNames = [
     "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
     "Jul", "Ago", "Set", "Out", "Nov", "Dez"
   ];
 
   const els = {
-    themeToggle: document.getElementById("themeToggle"),
-    themeLabel: document.getElementById("themeLabel"),
-    iconSun: document.getElementById("iconSun"),
-    iconMoon: document.getElementById("iconMoon"),
-
     monthFilter: document.getElementById("monthFilter"),
     statsGrid: document.getElementById("statsGrid"),
     chartBars: document.getElementById("chartBars"),
@@ -303,26 +296,6 @@
   function changePercent(current, previous) {
     if (!Number.isFinite(previous) || previous === 0) return null;
     return ((current - previous) / Math.abs(previous)) * 100;
-  }
-
-  function initTheme() {
-    const stored = localStorage.getItem(THEME_KEY);
-    const isDark = stored === "dark";
-    applyTheme(isDark);
-
-    els.themeToggle.addEventListener("click", () => {
-      const nextDark = !document.body.classList.contains("dark");
-      applyTheme(nextDark);
-      localStorage.setItem(THEME_KEY, nextDark ? "dark" : "light");
-    });
-  }
-
-  function applyTheme(isDark) {
-    document.body.classList.toggle("dark", isDark);
-    els.themeToggle.setAttribute("aria-pressed", String(isDark));
-    els.themeLabel.textContent = isDark ? "Modo Escuro" : "Modo Claro";
-    els.iconSun.style.display = isDark ? "none" : "block";
-    els.iconMoon.style.display = isDark ? "block" : "none";
   }
 
   function initMonthFilter() {
@@ -967,7 +940,6 @@
     }
   });
 
-  initTheme();
   initMonthFilter();
   renderAll();
 })();
