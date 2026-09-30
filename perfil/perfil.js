@@ -3,6 +3,58 @@ document.addEventListener("DOMContentLoaded", () => {
   const PROFILE_KEY =
     "zuz-profile";
 
+  const logoutBtn =
+    document.getElementById("logoutBtn");
+
+  async function requireBackendSession() {
+    try {
+      const response = await fetch("/api/auth/me", {
+        credentials: "same-origin"
+      });
+
+      if (!response.ok) {
+        window.location.replace("../Login-2/login-2.html");
+        return null;
+      }
+
+      const data = await response.json();
+
+      if (data.user) {
+        const saved = getProfile();
+
+        saveProfile({
+          ...saved,
+          ...data.user,
+          photo: saved.photo || "",
+          banner: saved.banner || ""
+        });
+      }
+
+      return data.user || null;
+    } catch (error) {
+      console.error("Erro ao validar sessão:", error);
+      return null;
+    }
+  }
+
+  logoutBtn?.addEventListener("click", async () => {
+    logoutBtn.disabled = true;
+
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "same-origin"
+      });
+    } catch (error) {
+      console.error("Erro ao sair:", error);
+    }
+
+    localStorage.removeItem("zuz-profile");
+    localStorage.removeItem("zuz-logged-in");
+
+    window.location.replace("../Login-2/login-2.html");
+  });
+
   const profileThemeToggle = document.getElementById("themeToggle");
   const profileThemeLabel = document.getElementById("themeLabel");
   const profileIconSun = document.getElementById("iconSun");
@@ -1387,8 +1439,11 @@ document.addEventListener("DOMContentLoaded", () => {
      INICIALIZAÇÃO
   ========================================================= */
 
-  renderProfile();
-
-  renderSummary();
+  requireBackendSession().then(user => {
+    if (user) {
+      renderProfile();
+      renderSummary();
+    }
+  });
 
 });
