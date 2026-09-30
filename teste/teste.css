@@ -1632,3 +1632,54 @@ body:not(.dark) .closing-band a {
   border-color: #cbc6d1 !important;
   background: #f4f2f6 !important;
 }
+
+
+/* =========================================================
+   SCROLL REVEAL
+   Elementos surgem suavemente conforme o usuário desce
+========================================================= */
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(34px);
+  filter: blur(7px);
+  transition:
+    opacity .72s cubic-bezier(.22,.61,.36,1),
+    transform .72s cubic-bezier(.22,.61,.36,1),
+    filter .72s cubic-bezier(.22,.61,.36,1);
+  will-change: opacity, transform, filter;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity .62s cubic-bezier(.22,.61,.36,1),
+    transform .62s cubic-bezier(.22,.61,.36,1);
+}
+
+.reveal-stagger.is-visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-stagger.is-visible > *:nth-child(1) { transition-delay: .04s; }
+.reveal-stagger.is-visible > *:nth-child(2) { transition-delay: .11s; }
+.reveal-stagger.is-visible > *:nth-child(3) { transition-delay: .18s; }
+.reveal-stagger.is-visible > *:nth-child(4) { transition-delay: .25s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll,
+  .reveal-stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
