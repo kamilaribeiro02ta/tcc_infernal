@@ -1479,3 +1479,156 @@ body:not(.dark) .message-content {
 body:not(.dark) .message-content p {
   color: #292330;
 }
+
+
+/* =========================================================
+   LIGHT MODE GREY CARDS
+   No modo claro os cards deixam de ser glass e ficam cinza.
+   O modo escuro mantém o glass existente.
+========================================================= */
+
+body:not(.dark) .metric-card,
+body:not(.dark) .solution-card,
+body:not(.dark) .message-content,
+body:not(.dark) .dark-feature,
+body:not(.dark) .mini-chart-ui {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+body:not(.dark) .metric-card,
+body:not(.dark) .solution-card,
+body:not(.dark) .message-content {
+  border: 1px solid #dedbe4 !important;
+  background: #e9e7ec !important;
+  box-shadow:
+    0 10px 28px rgba(35,29,48,.07),
+    inset 0 1px 0 rgba(255,255,255,.62) !important;
+}
+
+body:not(.dark) .metric-card::before,
+body:not(.dark) .solution-card::before,
+body:not(.dark) .message-content::before {
+  display: none !important;
+}
+
+body:not(.dark) .metric-card:hover,
+body:not(.dark) .solution-card:hover {
+  transform: translateY(-3px);
+  border-color: #d5d1dc !important;
+  background: #e4e1e8 !important;
+  box-shadow:
+    0 16px 36px rgba(35,29,48,.10),
+    inset 0 1px 0 rgba(255,255,255,.68) !important;
+}
+
+body:not(.dark) .metric-dark,
+body:not(.dark) .metric-accent {
+  color: #19151f !important;
+  background: #e9e7ec !important;
+}
+
+body:not(.dark) .metric-card strong,
+body:not(.dark) .solution-card h3,
+body:not(.dark) .solution-chart-head h3,
+body:not(.dark) .mini-chart-meta strong {
+  color: #19151f !important;
+}
+
+body:not(.dark) .metric-card p,
+body:not(.dark) .metric-top,
+body:not(.dark) .metric-dark p,
+body:not(.dark) .metric-dark .metric-top,
+body:not(.dark) .metric-accent p,
+body:not(.dark) .metric-accent .metric-top,
+body:not(.dark) .solution-card p,
+body:not(.dark) .solution-number,
+body:not(.dark) .mini-chart-meta span,
+body:not(.dark) .mini-chart-axis {
+  color: #6f6978 !important;
+}
+
+body:not(.dark) .metric-top i {
+  color: #6a3df0 !important;
+  border: 1px solid #d4ccef !important;
+  background: #ded8ef !important;
+}
+
+body:not(.dark) .dark-feature {
+  color: #19151f !important;
+  border: 1px solid #d9d6df !important;
+  background: #e5e3e8 !important;
+  box-shadow:
+    0 14px 36px rgba(35,29,48,.08),
+    inset 0 1px 0 rgba(255,255,255,.58) !important;
+}
+
+body:not(.dark) .dark-feature::before {
+  display: none !important;
+}
+
+body:not(.dark) .dark-feature .section-label.light,
+body:not(.dark) .dark-feature-head p,
+body:not(.dark) .dark-feature .process-grid p,
+body:not(.dark) .dark-feature .process-grid span {
+  color: #6f6978 !important;
+}
+
+body:not(.dark) .dark-feature-head h2,
+body:not(.dark) .dark-feature .process-grid h3 {
+  color: #19151f !important;
+}
+
+body:not(.dark) .dark-feature .process-grid {
+  border-top-color: #cfccd4 !important;
+}
+
+body:not(.dark) .dark-feature .process-grid article {
+  border-right-color: #cfccd4 !important;
+}
+
+body:not(.dark) .mini-chart-ui {
+  border: 1px solid #d8d4df !important;
+  background: #dedbe3 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.62),
+    0 8px 24px rgba(35,29,48,.06) !important;
+}
+
+body:not(.dark) .chart-line {
+  background: rgba(68,58,82,.10) !important;
+}
+
+body:not(.dark) .mini-chart-plot {
+  border-bottom-color: rgba(68,58,82,.14) !important;
+}
+
+body:not(.dark) .chart-bars span {
+  background:
+    linear-gradient(180deg,#8b6ff2,#b6a7eb) !important;
+  box-shadow: none !important;
+}
+
+body:not(.dark) .chart-trend path {
+  stroke: #6a3df0 !important;
+  filter: none !important;
+}
+
+body:not(.dark) .closing-band {
+  color: #19151f !important;
+  border: 1px solid #d9d6df !important;
+  background: #e5e3e8 !important;
+  box-shadow:
+    0 14px 36px rgba(35,29,48,.08),
+    inset 0 1px 0 rgba(255,255,255,.58) !important;
+}
+
+body:not(.dark) .closing-band .section-label.light {
+  color: #6f6978 !important;
+}
+
+body:not(.dark) .closing-band a {
+  color: #211b29 !important;
+  border-color: #cbc6d1 !important;
+  background: #f4f2f6 !important;
+}
