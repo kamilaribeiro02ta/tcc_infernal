@@ -85,94 +85,101 @@
     </aside>
 
     <main class="about-page">
-      <section class="hero-section reveal">
-        <span class="section-kicker">Sobre a ZUZ</span>
+      <section class="about-showcase reveal" id="prototipo">
+        <div class="showcase-grid">
+          <article class="showcase-hero-card">
+            <span class="showcase-eyebrow">Sobre a ZUZ</span>
 
-        <h1>
-          Precificar não deveria ser
-          <span>adivinhação.</span>
-        </h1>
+            <h1>
+              Precificação inteligente,
+              <span>mais simples de entender.</span>
+            </h1>
 
-        <p class="hero-lead">
-          A ZUZ transforma custos e informações do produto em referências de preço mais claras para pequenos negócios. O sistema une software, inteligência artificial e um assistente físico para tornar a precificação mais simples de entender e usar.
-        </p>
+            <p>
+              A ZUZ conecta software, inteligência artificial e um assistente físico para ajudar pequenos negócios a organizar custos e visualizar referências de preço com mais clareza.
+            </p>
 
-        <div class="hero-actions">
-          <a href="#prototipo" class="primary-action">
-            Explorar protótipo
-            <i class="bx bx-down-arrow-alt"></i>
-          </a>
+            <div class="showcase-actions">
+              <a href="#funcionamento" class="showcase-primary">
+                Como funciona
+                <span class="showcase-arrow"><i class="bx bx-right-arrow-alt"></i></span>
+              </a>
 
-          <a href="#funcionamento" class="secondary-action">
-            Como funciona
-          </a>
-        </div>
-
-        <div class="hero-principles" aria-label="Principais características da ZUZ">
-          <div>
-            <span>01</span>
-            <strong>Simples</strong>
-            <p>Informação organizada sem exigir conhecimento técnico de precificação.</p>
-          </div>
-          <div>
-            <span>02</span>
-            <strong>Integrada</strong>
-            <p>Site e assistente físico trabalham como uma única experiência.</p>
-          </div>
-          <div>
-            <span>03</span>
-            <strong>Orientativa</strong>
-            <p>O usuário recebe referências para apoiar a própria decisão de preço.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="prototype-section reveal" id="prototipo">
-        <div class="section-intro">
-          <div>
-            <span class="section-kicker">Assistente físico</span>
-            <h2>Conheça o protótipo por dentro.</h2>
-          </div>
-
-          <p>
-            O modelo abaixo é interativo. Gire livremente, aproxime para observar os detalhes e abra a estrutura para visualizar os principais componentes.
-          </p>
-        </div>
-
-        <div class="prototype-shell">
-          <div class="prototype-toolbar">
-            <div class="prototype-status">
-              <span class="status-dot"></span>
-              Modelo interativo
+              <a href="#equipe" class="showcase-link">Conhecer a equipe</a>
             </div>
 
-            <div class="prototype-help-text">
-              Arraste para girar
-              <span></span>
-              Role para aproximar
+            <div class="showcase-mini-info">
+              <div>
+                <strong>3 etapas</strong>
+                <span>Produto, custos e resultado</span>
+              </div>
+              <div>
+                <strong>1 sistema</strong>
+                <span>Site + assistente físico</span>
+              </div>
             </div>
-          </div>
+          </article>
 
-          <div class="prototype-canvas-wrap" id="prototypeCanvasWrap">
-            <canvas id="prototypeCanvas" aria-label="Modelo 3D interativo do assistente físico da ZUZ"></canvas>
+          <article class="showcase-prototype-card">
+            <div class="showcase-prototype-top">
+              <div>
+                <span>Assistente físico</span>
+                <strong>Explore o protótipo em 3D</strong>
+              </div>
 
-            <button class="prototype-explode-btn" id="explodePrototype" type="button" aria-pressed="false">
-              <i class="bx bx-expand-horizontal"></i>
-              <span>Abrir componentes</span>
-            </button>
-
-            <div class="prototype-component-labels" id="prototypeLabels" aria-hidden="true">
-              <span>Carcaça frontal</span>
-              <span>Display</span>
-              <span>Suporte</span>
-              <span>ESP32</span>
-              <span>Alto-falante</span>
-              <span>Microfone</span>
-              <span>Carcaça traseira</span>
+              <div class="prototype-status">
+                <span class="status-dot"></span>
+                Interativo
+              </div>
             </div>
 
-            <div class="prototype-tooltip" id="prototypeTooltip"></div>
-          </div>
+            <div class="prototype-canvas-wrap" id="prototypeCanvasWrap">
+              <canvas id="prototypeCanvas" aria-label="Modelo 3D interativo do assistente físico da ZUZ"></canvas>
+
+              <button class="prototype-explode-btn" id="explodePrototype" type="button" aria-pressed="false">
+                <i class="bx bx-expand-horizontal"></i>
+                <span>Abrir componentes</span>
+              </button>
+
+              <div class="prototype-component-labels" id="prototypeLabels" aria-hidden="true">
+                <span>Carcaça frontal</span>
+                <span>Display</span>
+                <span>Suporte</span>
+                <span>ESP32</span>
+                <span>Alto-falante</span>
+                <span>Microfone</span>
+                <span>Carcaça traseira</span>
+              </div>
+
+              <div class="prototype-tooltip" id="prototypeTooltip"></div>
+            </div>
+
+            <div class="showcase-prototype-bottom">
+              <span>Arraste para girar</span>
+              <span>Role para aproximar</span>
+              <span>Passe o mouse para abrir</span>
+            </div>
+          </article>
+
+          <article class="showcase-info-card showcase-info-soft">
+            <div class="showcase-info-icon"><i class="bx bx-bulb"></i></div>
+            <div>
+              <span>Objetivo</span>
+              <h3>Transformar cálculo em decisão compreensível.</h3>
+              <p>Menos fórmulas soltas e mais contexto para o usuário entender o que está acontecendo.</p>
+            </div>
+          </article>
+
+          <article class="showcase-info-card showcase-info-purple">
+            <div>
+              <span>Integração</span>
+              <h3>Uma experiência entre voz, tela e site.</h3>
+              <p>O assistente coleta informações, conversa com o usuário e conecta a interação ao sistema da ZUZ.</p>
+            </div>
+            <a href="#funcionamento" aria-label="Ir para como funciona">
+              <i class="bx bx-right-arrow-alt"></i>
+            </a>
+          </article>
         </div>
       </section>
 
