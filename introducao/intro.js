@@ -57,3 +57,17 @@ if (protoCore) {
     }
   }, 2200);
 }
+
+
+const prototypeReal = document.querySelector(".prototype-real");
+
+prototypeReal?.addEventListener("click", () => {
+  prototypeReal.classList.toggle("is-open");
+});
+
+prototypeReal?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    prototypeReal.classList.toggle("is-open");
+  }
+});
