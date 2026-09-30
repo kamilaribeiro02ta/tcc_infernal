@@ -81,8 +81,8 @@ a {
 .experimental-home {
   flex: 1;
   min-width: 0;
-  padding: clamp(14px, 1.8vw, 24px);
-  overflow-x: hidden;
+  padding: 22px;
+  overflow: hidden;
   background: var(--page-bg);
 }
 
@@ -110,19 +110,18 @@ a {
 }
 
 .hero-brand-row {
-  min-height: 108px;
-  padding: 6px 0 18px;
+  padding: 18px 0 22px;
   display: grid;
-  grid-template-columns: minmax(180px,1fr) minmax(280px,360px);
-  align-items: center;
-  gap: clamp(18px, 3vw, 42px);
+  grid-template-columns: minmax(0,1.45fr) minmax(280px,.55fr);
+  align-items: end;
+  gap: 28px;
 }
 
 .hero-logo {
   display: block;
-  width: clamp(180px, 20vw, 300px);
+  width: min(100%, 620px);
   height: auto;
-  max-height: 92px;
+  max-height: 190px;
   object-fit: contain;
   object-position: left center;
   filter: brightness(0);
@@ -144,13 +143,12 @@ body.dark .hero-logo {
 }
 
 .message-content {
-  width: 100%;
-  max-width: 340px;
-  padding: 12px 14px;
-  border: 1px solid rgba(255,255,255,.08);
+  max-width: 360px;
+  padding: 11px 13px;
+  border: 0;
   border-radius: 14px 14px 14px 5px;
   background: #d7d7dc;
-  box-shadow: 0 10px 28px rgba(0,0,0,.08);
+  box-shadow: none;
 }
 
 .message-head {
@@ -173,13 +171,13 @@ body.dark .hero-logo {
 .message-content p {
   margin: 0;
   color: var(--text);
-  font-size: 10.5px;
+  font-size: 10px;
   line-height: 1.55;
 }
 
 body.dark .message-content {
-  background: #343139;
-  border-color: rgba(255,255,255,.08);
+  background: #3a373f;
+  border: 0;
 }
 
 .hero-visual {
@@ -606,11 +604,11 @@ body.dark .metric-accent {
 
 @media (max-width: 1180px) {
   .hero-brand-row {
-    grid-template-columns: minmax(160px,1fr) minmax(260px,340px);
+    grid-template-columns: 1fr;
   }
 
   .hero-intro {
-    max-width: 340px;
+    max-width: 520px;
   }
 
   .metrics-grid {
@@ -632,24 +630,7 @@ body.dark .metric-accent {
   }
 
   .experimental-home {
-    padding: 16px;
-  }
-
-  .hero-brand-row {
-    min-height: auto;
-    grid-template-columns: 1fr;
-    align-items: start;
-    gap: 14px;
-    padding-bottom: 16px;
-  }
-
-  .hero-logo {
-    width: clamp(170px, 32vw, 250px);
-    max-height: 78px;
-  }
-
-  .hero-intro {
-    max-width: 460px;
+    padding: 18px;
   }
 
   .manifesto-section,
@@ -668,8 +649,8 @@ body.dark .metric-accent {
 
 @media (max-width: 720px) {
   .hero-logo {
-    width: min(58vw, 230px);
-    max-height: 72px;
+    width: min(84vw, 520px);
+    max-height: 150px;
   }
 
   .hero-visual {
