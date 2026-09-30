@@ -186,17 +186,16 @@ body.dark .message-content {
   overflow: hidden;
   border-radius: 18px;
   isolation: isolate;
-  background-image: url("../imagens/hero-zuz-wave.webp");
-  background-position: center center;
-  background-size: cover;
-  background-repeat: no-repeat;
+  background: #0b0910;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  z-index: -1;
-  background: linear-gradient(90deg, rgba(10,8,18,.58) 0%, rgba(10,8,18,.20) 42%, rgba(10,8,18,0) 78%);
+  z-index: -2;
+  background:
+    radial-gradient(circle at 72% 22%, rgba(112, 76, 214, .10), transparent 30%),
+    linear-gradient(180deg, rgba(14, 11, 22, .04), rgba(8, 7, 12, .34));
 }
 
 .hero-copy {
@@ -205,6 +204,38 @@ body.dark .message-content {
   bottom: clamp(28px,4vw,58px);
   width: min(620px, 60%);
   color: #fff;
+  z-index: 2;
+  isolation: isolate;
+}
+
+.hero-copy::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: clamp(-90px, -6vw, -42px);
+  top: 50%;
+  width: clamp(560px, 56vw, 900px);
+  height: clamp(330px, 34vw, 510px);
+  transform: translateY(-50%);
+  background: url("../imagens/hero-zuz-wave.webp") center center / cover no-repeat;
+  opacity: .88;
+  filter: saturate(1.16) contrast(1.03);
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 58%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 58%, transparent 100%);
+  pointer-events: none;
+}
+
+.hero-copy::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -28px;
+  top: -28px;
+  right: -10px;
+  bottom: -28px;
+  background: linear-gradient(90deg, rgba(10, 8, 18, .38), rgba(10, 8, 18, .10) 62%, transparent);
+  border-radius: 36px;
+  pointer-events: none;
 }
 
 .hero-eyebrow {
