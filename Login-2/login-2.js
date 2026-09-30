@@ -130,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     localStorage.setItem("zuz-logged-in", "true");
+    localStorage.removeItem("zuz-explicit-logout");
 
     loginStatus.textContent = "Login realizado com sucesso!";
 
