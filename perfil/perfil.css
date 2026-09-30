@@ -2007,4 +2007,252 @@ body:not(.dark) #changePhotoBtn {
       100%;
   }
 
+}/* =========================================================
+   CORREÇÃO FINAL DO MENU DO PERFIL
+   Mantém o perfil com o mesmo padrão global das outras páginas
+========================================================= */
+
+@media (min-width: 993px) {
+  .page {
+    align-items: flex-start !important;
+  }
+
+  .sidebar {
+    width: 240px !important;
+    min-width: 240px !important;
+    flex: 0 0 240px !important;
+
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+
+    position: sticky !important;
+    top: 0 !important;
+
+    padding: 22px 20px !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    background: var(--sidebar-bg, #ffffff) !important;
+    background-image: none !important;
+    border-right: 1px solid var(--sidebar-border, #eeeeee) !important;
+
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+}
+
+.sidebar .profile-account-link,
+.sidebar #accountLink {
+  width: 100% !important;
+  min-height: 68px !important;
+
+  margin: 0 0 12px !important;
+  padding: 8px 8px 20px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+
+  border: 0 !important;
+  border-bottom: 1px solid var(--sidebar-border, #eeeeee) !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
+.sidebar .profile-account-link:hover,
+.sidebar #accountLink:hover {
+  background: transparent !important;
+  transform: none !important;
+}
+
+.sidebar .login-text {
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
+.sidebar .login-title {
+  max-width: 135px !important;
+  color: var(--login-title, #111111) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+
+.sidebar .login-subtitle {
+  max-width: 135px !important;
+  margin-top: 3px !important;
+  color: var(--login-subtitle, #9a9a9a) !important;
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+}
+
+.sidebar .avatar,
+.sidebar .profile-sidebar-avatar {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  flex: 0 0 44px !important;
+
+  padding: 0 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+
+  background: linear-gradient(135deg, #805cff, #643df0) !important;
+}
+
+.sidebar .nav-menu {
+  width: 100% !important;
+  margin: 8px 0 0 !important;
+  padding: 0 !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+
+  flex-shrink: 0 !important;
+}
+
+.sidebar .nav-item {
+  width: 100% !important;
+  min-height: 44px !important;
+  padding: 10px 12px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+
+  border: 0 !important;
+  border-left: 3px solid transparent !important;
+  border-radius: 10px !important;
+
+  background: transparent !important;
+  color: var(--nav-inactive, #8a8a8a) !important;
+
+  font-size: 14.5px !important;
+  font-weight: 500 !important;
+
+  transform: none !important;
+}
+
+.sidebar .nav-item:hover {
+  color: var(--purple, #6a3df0) !important;
+  background: var(--nav-hover-bg, #f6f5ff) !important;
+}
+
+.sidebar .nav-item.active,
+.sidebar .nav-item[aria-current="page"] {
+  color: var(--purple, #6a3df0) !important;
+  background: var(--nav-hover-bg, #f6f5ff) !important;
+  border-left-color: var(--purple, #6a3df0) !important;
+  font-weight: 700 !important;
+}
+
+.sidebar .nav-dot {
+  display: none !important;
+}
+
+.sidebar .theme-toggle {
+  width: 100% !important;
+  height: 48px !important;
+  min-height: 48px !important;
+
+  margin: auto 0 0 !important;
+  padding: 4px !important;
+
+  flex-shrink: 0 !important;
+
+  border: 0 !important;
+  border-radius: 999px !important;
+
+  background: var(--toggle-track, #ece9f6) !important;
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex: none !important;
+
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+
+    position: static !important;
+
+    padding: 14px 18px !important;
+
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 12px !important;
+
+    overflow: visible !important;
+
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--sidebar-border, #eeeeee) !important;
+  }
+
+  .sidebar .profile-account-link,
+  .sidebar #accountLink {
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 160px !important;
+    min-height: 48px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border-bottom: 0 !important;
+  }
+
+  .sidebar .nav-menu {
+    order: 3 !important;
+    width: 100% !important;
+
+    flex-direction: row !important;
+    gap: 4px !important;
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    white-space: nowrap !important;
+    scrollbar-width: none !important;
+  }
+
+  .sidebar .nav-menu::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .sidebar .nav-item {
+    flex: 0 0 auto !important;
+    width: auto !important;
+
+    border-left: 0 !important;
+    border-bottom: 3px solid transparent !important;
+    border-radius: 9px 9px 0 0 !important;
+  }
+
+  .sidebar .theme-toggle {
+    flex: 0 0 165px !important;
+    width: 165px !important;
+    margin: 0 0 0 auto !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .sidebar .profile-account-link,
+  .sidebar #accountLink {
+    min-width: 135px !important;
+  }
+
+  .sidebar .theme-toggle {
+    flex-basis: 145px !important;
+    width: 145px !important;
+  }
 }
