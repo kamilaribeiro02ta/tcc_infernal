@@ -1813,3 +1813,75 @@ body:not(.dark) .about-card-inspired p {
     padding: 30px 20px 22px;
   }
 }
+
+
+/* SMALLER SIDE CARDS */
+.about-cards.about-cards-side {
+  width: min(100%, 460px);
+  gap: 14px;
+}
+
+.about-cards-side .about-card.about-card-inspired {
+  min-height: 320px;
+  border-radius: 26px;
+}
+
+.about-cards-side .about-card-visual {
+  height: 118px;
+  min-height: 118px;
+  border-radius: 25px 25px 0 0;
+}
+
+.about-cards-side .about-card-content {
+  min-height: 202px;
+  margin-top: -18px;
+  padding: 28px 22px 22px;
+}
+
+.about-cards-side .about-card-kicker .about-card-number {
+  font-size: 29px;
+}
+
+.about-cards-side .about-card-inspired h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.about-cards-side .about-card-inspired p {
+  font-size: 8.8px;
+  line-height: 1.6;
+}
+
+.about-cards-side .about-card-visual .about-card-icon {
+  width: 42px;
+  height: 42px;
+  left: 18px;
+  top: 18px;
+  border-radius: 13px;
+  font-size: 18px;
+}
+
+@media (max-width: 1120px) {
+  .about-cards.about-cards-side {
+    width: min(100%, 620px);
+  }
+}
+
+@media (max-width: 720px) {
+  .about-cards.about-cards-side {
+    width: 100%;
+  }
+
+  .about-cards-side .about-card.about-card-inspired {
+    min-height: 300px;
+  }
+
+  .about-cards-side .about-card-visual {
+    height: 108px;
+    min-height: 108px;
+  }
+
+  .about-cards-side .about-card-content {
+    min-height: 192px;
+  }
+}
