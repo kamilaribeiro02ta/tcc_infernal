@@ -4,6 +4,18 @@
 ========================================================= */
 
 :root {
+  --brand-primary: #6a3df0;
+  --brand-primary-dark: #572bd8;
+  --brand-primary-soft: #ece6ff;
+  --brand-violet: #8c6bff;
+  --brand-bg: #f7f6fb;
+  --brand-surface: #ffffff;
+  --brand-text: #17131f;
+  --brand-text-secondary: #686171;
+  --brand-dark-bg: #0d0915;
+  --brand-dark-surface: #181225;
+  --brand-peach: #f2a78f;
+
   --space-1: 8px;
   --space-2: 16px;
   --space-3: 24px;
