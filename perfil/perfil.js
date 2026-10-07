@@ -118,12 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const profileEmail =
     document.getElementById("profileEmail");
 
-  const accountName =
-    document.getElementById("accountName");
-
-  const accountEmail =
-    document.getElementById("accountEmail");
-
   const accountCreatedAt =
     document.getElementById("accountCreatedAt");
 
@@ -166,9 +160,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const profileModal =
     document.getElementById("profileModal");
-
-  const editProfileBtn =
-    document.getElementById("editProfileBtn");
 
   const editProfileBtnAccount =
     document.getElementById("editProfileBtnAccount");
@@ -397,25 +388,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    if (accountName) {
-
-      accountName.textContent =
-        profile.name;
-
-    }
-
-
     if (profileEmail) {
 
       profileEmail.textContent =
-        profile.email;
-
-    }
-
-
-    if (accountEmail) {
-
-      accountEmail.textContent =
         profile.email;
 
     }
@@ -937,11 +912,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-
-  editProfileBtn?.addEventListener(
-    "click",
-    openProfileModal
-  );
 
   editProfileBtnAccount?.addEventListener(
     "click",
