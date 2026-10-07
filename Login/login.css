@@ -183,12 +183,12 @@ body.dark .auth-logo {
 #loginPanel .auth-header .login-title-serif {
   display: inline-block;
   font-family: "Times New Roman", Times, serif;
-  font-size: 1em;
+  font-size: 1.18em;
   font-style: italic;
   font-weight: 700;
-  line-height: inherit;
-  letter-spacing: -.075em;
-  margin-right: .035em;
+  line-height: .82;
+  letter-spacing: -.085em;
+  margin-right: .025em;
 }
 
 .auth-header p {
