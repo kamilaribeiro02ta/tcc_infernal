@@ -1954,3 +1954,64 @@ body.dark .business-alert.success .business-alert-icon {
     margin-top: 22px;
   }
 }
+
+
+/* =========================================================
+   PROFILE COMPACT ACCOUNT SPACING
+   Sobe o perfil, compacta os dados e protege o calendário
+========================================================= */
+
+.account-surface {
+  margin-top: 16px;
+  align-items: start;
+}
+
+.account-widget {
+  align-self: start;
+}
+
+.account-details {
+  align-self: start;
+  border-top: 1px solid var(--line);
+}
+
+.account-detail-row {
+  min-height: 58px;
+  padding: 11px 0;
+  grid-template-columns: minmax(130px, .48fr) minmax(0, 1.52fr);
+  gap: 18px;
+}
+
+.account-detail-row span {
+  font-size: 7.5px;
+}
+
+.account-detail-row strong {
+  font-size: 9.5px;
+}
+
+/* espaço de segurança antes do calendário */
+.account-section + .business-hub {
+  margin-top: 52px;
+}
+
+@media (max-width: 992px) {
+  .account-surface {
+    margin-top: 14px;
+  }
+
+  .account-section + .business-hub {
+    margin-top: 42px;
+  }
+}
+
+@media (max-width: 760px) {
+  .account-detail-row {
+    min-height: 54px;
+    padding: 10px 0;
+  }
+
+  .account-section + .business-hub {
+    margin-top: 34px;
+  }
+}
