@@ -1617,3 +1617,16 @@ body.dark .business-alert.success .business-alert-icon {
     animation-iteration-count: 1 !important;
   }
 }
+
+
+.card-heading-icon {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--purple);
+  background: var(--purple-pale);
+  font-size: 15px;
+}
