@@ -3150,3 +3150,17 @@ body.dark .calendar-event-chip:hover {
     justify-content: center;
   }
 }
+
+
+.calendar-legend-swatch {
+  width: 9px;
+  height: 9px;
+  display: inline-block;
+  border-radius: 3px;
+  background: var(--task-color);
+}
+
+.calendar-legend i.bx {
+  color: var(--purple);
+  font-size: 12px;
+}
