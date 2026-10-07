@@ -131,8 +131,8 @@ a {
 }
 
 .auth-logo {
-  width: 176px;
-  height: 86px;
+  width: 224px;
+  height: 104px;
   display: block;
   object-fit: contain;
   object-position: left center;
@@ -181,9 +181,14 @@ body.dark .auth-logo {
 }
 
 #loginPanel .auth-header .login-title-serif {
+  display: inline-block;
   font-family: "Times New Roman", Times, serif;
+  font-size: 1em;
+  font-style: italic;
   font-weight: 700;
-  letter-spacing: -.035em;
+  line-height: inherit;
+  letter-spacing: -.075em;
+  margin-right: .035em;
 }
 
 .auth-header p {
@@ -604,8 +609,8 @@ body.dark .visual-content h2 {
   }
 
   .auth-logo {
-    width: 138px;
-    height: 68px;
+    width: 164px;
+    height: 78px;
   }
 
   .auth-header h1 {
