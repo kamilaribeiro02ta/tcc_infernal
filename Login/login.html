@@ -1,426 +1,218 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Entre ou crie sua conta ZUZ.">
+  <title>ZUZ | Entrar</title>
 
-  <title>ZUZ | Criar Conta</title>
-
-  <!-- Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Qwigley&display=swap"
-    rel="stylesheet"
-  >
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="./login.css">
   <link rel="stylesheet" href="../shared/sidebar.css">
-  <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
   <link rel="stylesheet" href="../shared/design-system.css">
+  <link rel="stylesheet" href="./login.css">
+  <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
 </head>
-
 <body>
-
-  <main class="page">
-
-    <!-- SIDEBAR -->
+  <div class="page auth-page">
     <aside class="sidebar">
-
-      <!-- LOGIN -->
-      <div class="login-block">
-
-        <div class="avatar">
-
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-
-            <circle
-              cx="12"
-              cy="8"
-              r="4"
-              fill="white"
-            />
-
-            <path
-              d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
-              fill="white"
-            />
-
+      <a class="login-block auth-account-link" href="./login.html" aria-label="Entrar ou criar conta">
+        <div class="avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" fill="white"></circle>
+            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"></path>
           </svg>
-
         </div>
-
         <div class="login-text">
-
-          <div class="login-title">
-            Login
-          </div>
-
-          <div class="login-subtitle">
-            Minha Conta
-          </div>
-
+          <div class="login-title">Login</div>
+          <div class="login-subtitle">Minha Conta</div>
         </div>
+      </a>
 
-      </div>
-
-
-      <!-- MENU -->
       <nav class="nav-menu" aria-label="Navegação principal">
-        <a href="../index.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Início</span>
-        </a>
-
-        <a href="../introducao/intro.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Sobre</span>
-        </a>
-
-        <a href="../produtos/produtos.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Produtos</span>
-        </a>
-
-        <a href="../garfico/grafico.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Gráfico</span>
-        </a>
-
-        
+        <a href="../index.html" class="nav-item"><span class="nav-dot"></span><span>Início</span></a>
+        <a href="../introducao/intro.html" class="nav-item"><span class="nav-dot"></span><span>Sobre</span></a>
+        <a href="../produtos/produtos.html" class="nav-item"><span class="nav-dot"></span><span>Produtos</span></a>
+        <a href="../garfico/grafico.html" class="nav-item"><span class="nav-dot"></span><span>Gráfico</span></a>
       </nav>
 
-
-      <!-- TEMA -->
-      <button
-        class="theme-toggle"
-        id="themeToggle"
-        type="button"
-        aria-pressed="false"
-      >
-
-        <span
-          class="theme-toggle-label"
-          id="themeLabel"
-        >
-          Modo Claro
-        </span>
-
-        <span class="theme-toggle-knob">
-
-          <!-- SOL -->
-          <svg
-            id="iconSun"
-            class="theme-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Alternar tema">
+        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
+        <span class="theme-toggle-knob" aria-hidden="true">
+          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="4"></circle>
-
             <line x1="12" y1="2" x2="12" y2="4"></line>
             <line x1="12" y1="20" x2="12" y2="22"></line>
-            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
-            <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
             <line x1="2" y1="12" x2="4" y2="12"></line>
             <line x1="20" y1="12" x2="22" y2="12"></line>
-            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
-            <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
-
           </svg>
-
-
-          <!-- LUA -->
-          <svg
-            id="iconMoon"
-            class="theme-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="display: none"
-          >
-
-            <path
-              d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"
-            ></path>
-
-            <line x1="18" y1="3" x2="18" y2="6"></line>
-
-            <line
-              x1="16.5"
-              y1="4.5"
-              x2="19.5"
-              y2="4.5"
-            ></line>
-
+          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+            <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
           </svg>
-
         </span>
-
       </button>
-
     </aside>
 
+    <main class="auth-workspace">
+      <section class="auth-shell" aria-label="Acesso à ZUZ">
+        <div class="auth-form-panel">
+          <div class="auth-form-wrap">
+            <a href="../index.html" class="auth-brand" aria-label="Voltar para a página inicial">
+              <img src="../imagens/logo-zuz-header.png" alt="" aria-hidden="true">
+              <span>ZUZ</span>
+            </a>
 
-    <!-- LADO ESQUERDO -->
-    <section
-      class="hero"
-      aria-label="Apresentação ZUZ"
-    >
+            <div class="auth-mode" role="tablist" aria-label="Escolha entre entrar ou criar conta">
+              <button class="auth-mode-btn active" id="loginTab" type="button" role="tab" aria-selected="true" aria-controls="loginPanel">
+                Entrar
+              </button>
+              <button class="auth-mode-btn" id="signupTab" type="button" role="tab" aria-selected="false" aria-controls="signupPanel">
+                Criar conta
+              </button>
+            </div>
 
-      <div class="hero-copy">
+            <section class="auth-panel active" id="loginPanel" role="tabpanel" aria-labelledby="loginTab">
+              <header class="auth-header">
+                <span class="auth-eyebrow">Bem vindo de volta</span>
+                <h1>Entre na sua conta.</h1>
+                <p>Acesse seus produtos, preços e resultados em um só lugar.</p>
+              </header>
 
-        <div
-          class="hero-heading"
-          aria-label="Leve seu negócio mais longe com a ZUZ"
-        >
+              <form class="auth-form" id="loginForm" novalidate>
+                <label class="field">
+                  <span>Email</span>
+                  <div class="input-wrap">
+                    <i class="bx bx-envelope" aria-hidden="true"></i>
+                    <input id="loginEmail" type="email" name="email" autocomplete="email" placeholder="seuemail@exemplo.com" required aria-describedby="loginEmailError">
+                  </div>
+                  <small class="field-error" id="loginEmailError"></small>
+                </label>
 
-          <div class="hero-line hero-line-1">
+                <label class="field">
+                  <span>Senha</span>
+                  <div class="input-wrap">
+                    <i class="bx bx-lock-alt" aria-hidden="true"></i>
+                    <input id="loginPassword" type="password" name="password" minlength="8" autocomplete="current-password" placeholder="Digite sua senha" required aria-describedby="loginPasswordError">
+                    <button class="password-toggle" type="button" data-password-target="loginPassword" aria-label="Mostrar senha">
+                      <i class="bx bx-show" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <small class="field-error" id="loginPasswordError"></small>
+                </label>
 
-            <span class="hero-script">
-              Leve
-            </span>
+                <button class="primary-auth-btn" type="submit">
+                  Entrar
+                  <i class="bx bx-right-arrow-alt" aria-hidden="true"></i>
+                </button>
 
-            <span class="hero-bold hero-business">
-              seu negócio
-            </span>
+                <div class="form-status" id="loginStatus" role="status" aria-live="polite"></div>
 
+                <p class="auth-switch">
+                  Ainda não tem uma conta?
+                  <button type="button" data-switch-mode="signup">Criar conta</button>
+                </p>
+              </form>
+            </section>
+
+            <section class="auth-panel" id="signupPanel" role="tabpanel" aria-labelledby="signupTab" hidden>
+              <header class="auth-header">
+                <span class="auth-eyebrow">Comece pela sua conta</span>
+                <h1>Crie sua conta ZUZ.</h1>
+                <p>São poucos dados. Depois você já pode cadastrar seus produtos.</p>
+              </header>
+
+              <form class="auth-form" id="signupForm" novalidate>
+                <div class="name-grid">
+                  <label class="field">
+                    <span>Nome</span>
+                    <div class="input-wrap">
+                      <i class="bx bx-user" aria-hidden="true"></i>
+                      <input id="firstName" type="text" name="firstName" autocomplete="given-name" placeholder="Kamila" required aria-describedby="firstNameError">
+                    </div>
+                    <small class="field-error" id="firstNameError"></small>
+                  </label>
+
+                  <label class="field">
+                    <span>Sobrenome</span>
+                    <div class="input-wrap">
+                      <i class="bx bx-user" aria-hidden="true"></i>
+                      <input id="lastName" type="text" name="lastName" autocomplete="family-name" placeholder="Ribeiro" required aria-describedby="lastNameError">
+                    </div>
+                    <small class="field-error" id="lastNameError"></small>
+                  </label>
+                </div>
+
+                <label class="field">
+                  <span>Email</span>
+                  <div class="input-wrap">
+                    <i class="bx bx-envelope" aria-hidden="true"></i>
+                    <input id="signupEmail" type="email" name="email" autocomplete="email" placeholder="seuemail@exemplo.com" required aria-describedby="signupEmailError">
+                  </div>
+                  <small class="field-error" id="signupEmailError"></small>
+                </label>
+
+                <label class="field">
+                  <span>Senha</span>
+                  <div class="input-wrap">
+                    <i class="bx bx-lock-alt" aria-hidden="true"></i>
+                    <input id="signupPassword" type="password" name="password" minlength="8" autocomplete="new-password" placeholder="Mínimo de 8 caracteres" required aria-describedby="signupPasswordError">
+                    <button class="password-toggle" type="button" data-password-target="signupPassword" aria-label="Mostrar senha">
+                      <i class="bx bx-show" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <small class="field-error" id="signupPasswordError"></small>
+                </label>
+
+                <button class="primary-auth-btn" type="submit">
+                  Criar conta
+                  <i class="bx bx-right-arrow-alt" aria-hidden="true"></i>
+                </button>
+
+                <div class="form-status" id="signupStatus" role="status" aria-live="polite"></div>
+
+                <p class="auth-switch">
+                  Já possui uma conta?
+                  <button type="button" data-switch-mode="login">Entrar</button>
+                </p>
+              </form>
+            </section>
+
+            <p class="auth-privacy">Seus dados ficam neste dispositivo enquanto o protótipo estiver em modo local.</p>
           </div>
-
-
-          <div class="hero-bold hero-line-2">
-            mais longe com a
-          </div>
-
-
-          <div class="hero-brand">
-            ZUZ
-          </div>
-
         </div>
 
+        <div class="auth-visual" aria-hidden="true">
+          <div class="visual-noise"></div>
+          <div class="visual-orb visual-orb-one"></div>
+          <div class="visual-orb visual-orb-two"></div>
+          <div class="visual-ring visual-ring-one"></div>
+          <div class="visual-ring visual-ring-two"></div>
 
-        <p class="hero-description">
-
-          Mais do que uma plataforma, somos uma solução criada<br>
-          para transformar a maneira como você organiza, gerencia e<br>
-          impulsiona o seu negócio no dia a dia.
-
-        </p>
-
-      </div>
-
-    </section>
-
-
-    <!-- LADO DIREITO -->
-    <section
-      class="signup"
-      aria-label="Criar conta"
-    >
-
-      <form
-        class="signup-form"
-        id="signupForm"
-        novalidate
-      >
-
-        <header class="form-header">
-
-          <span class="form-eyebrow">
-            Comece pela sua conta
-          </span>
-
-          <h1>
-            Criar conta
-          </h1>
-
-          <p>
-            Preencha apenas os dados necessários para começar.
-          </p>
-
-        </header>
-
-
-        <div class="divider"></div>
-
-
-        <!-- NOME -->
-        <div class="name-row">
-
-          <label class="field first-name">
-
-            <span>
-              Primeiro nome *
-            </span>
-
-            <input
-              id="firstName"
-              type="text"
-              name="firstName"
-              placeholder="Ex: Kamila"
-              autocomplete="given-name"
-              required
-              aria-describedby="firstNameError"
-            >
-
-            <small
-              class="field-error"
-              id="firstNameError"
-            ></small>
-
-          </label>
-
-
-          <label class="field last-name">
-
-            <span>
-              Sobrenome *
-            </span>
-
-            <input
-              id="lastName"
-              type="text"
-              name="lastName"
-              placeholder="Ex: Ribeiro"
-              autocomplete="family-name"
-              required
-              aria-describedby="lastNameError"
-            >
-
-            <small
-              class="field-error"
-              id="lastNameError"
-            ></small>
-
-          </label>
-
-        </div>
-
-
-        <!-- EMAIL -->
-        <label class="field field-wide email-field">
-
-          <span>
-            Email *
-          </span>
-
-          <input
-            id="signupEmail"
-            type="email"
-            name="email"
-            placeholder="seuemail@exemplo.com"
-            autocomplete="email"
-            required
-            aria-describedby="signupEmailError"
-          >
-
-          <small
-            class="field-error"
-            id="signupEmailError"
-          ></small>
-
-        </label>
-
-
-        <!-- SENHA -->
-        <label class="field field-wide password-field">
-
-          <span>
-            Senha *
-          </span>
-
-          <div class="password-wrap">
-
-            <input
-              id="password"
-              type="password"
-              name="password"
-              placeholder="Crie uma senha"
-              minlength="8"
-              autocomplete="new-password"
-              required
-              aria-describedby="signupPasswordHelp signupPasswordError"
-            >
-
-
-            <button
-              class="password-dot"
-              type="button"
-              aria-label="Mostrar senha"
-            >
-              <span>
-                Mostrar
-              </span>
-            </button>
-
+          <div class="visual-content">
+            <span class="visual-kicker">PRECIFICAÇÃO INTELIGENTE</span>
+            <h2>Decisões mais claras para o seu negócio.</h2>
+            <p>Custos, margem e preço organizados em uma experiência simples.</p>
           </div>
 
+          <div class="visual-card visual-card-price">
+            <span>Preço sugerido</span>
+            <strong>R$ 42,90</strong>
+            <small>baseado nos seus custos</small>
+          </div>
 
-          <small id="signupPasswordHelp">
-            Use pelo menos 8 caracteres.
-          </small>
+          <div class="visual-card visual-card-margin">
+            <span>Margem</span>
+            <strong>31,4%</strong>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
 
-          <small
-            class="field-error"
-            id="signupPasswordError"
-          ></small>
-
-        </label>
-
-
-        <!-- BOTÃO -->
-        <button
-          class="submit-button"
-          type="submit"
-        >
-          Criar conta
-        </button>
-
-
-        <div
-          class="form-status"
-          id="signupStatus"
-          role="status"
-          aria-live="polite"
-        ></div>
-
-
-        <p class="form-switch">
-
-          Já tem uma conta?
-
-          <a href="../Login-2/login-2.html">
-            Fazer login
-          </a>
-
-        </p>
-
-      </form>
-
-    </section>
-
-  </main>
-
-
-  <!-- JAVASCRIPT -->
   <script src="./login.js"></script>
-  <script src="../shared/site.js?v=20260930-2040"></script>
-
+  <script src="../shared/site.js?v=20261007-auth"></script>
 </body>
-
 </html>
