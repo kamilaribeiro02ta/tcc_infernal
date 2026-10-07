@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "zuz-company-notes";
   const TEAM_KEY =
     "zuz-company-team";
+  const BUSINESS_OWNER_KEY =
+    "zuz-company-owner";
 
   let calendarCursor =
     new Date();
@@ -948,6 +950,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
 
         closeProfileModalFunction();
+        closeTaskModal();
 
       }
 
@@ -1781,7 +1784,25 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  function getTaskPeople() {
+  function getCompanyOwner() {
+    try {
+      const saved =
+        JSON.parse(
+          localStorage.getItem(
+            BUSINESS_OWNER_KEY
+          )
+        );
+
+      if (
+        saved?.email
+      ) {
+        return saved;
+      }
+    }
+    catch {
+      /* usa o perfil atual */
+    }
+
     const profile =
       getProfile();
 
@@ -1799,6 +1820,20 @@ document.addEventListener("DOMContentLoaded", () => {
       role:
         "Proprietário"
     };
+
+    localStorage.setItem(
+      BUSINESS_OWNER_KEY,
+      JSON.stringify(
+        owner
+      )
+    );
+
+    return owner;
+  }
+
+  function getTaskPeople() {
+    const owner =
+      getCompanyOwner();
 
     const members =
       readArray(
@@ -1822,10 +1857,24 @@ document.addEventListener("DOMContentLoaded", () => {
           })
         );
 
+    const actor =
+      getCurrentActor();
+
+    const currentPerson = {
+      id:
+        actor.id,
+      name:
+        actor.name,
+      email:
+        actor.email,
+      role:
+        "Equipe"
+    };
+
     const map =
       new Map();
 
-    [owner, ...members]
+    [owner, ...members, currentPerson]
       .forEach(
         person => {
           const key =
@@ -3756,9 +3805,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const profile =
-      getProfile();
-
     const members =
       readArray(
         TEAM_KEY
@@ -3767,11 +3813,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const registered =
       getRegisteredEmails();
 
+    const companyOwner =
+      getCompanyOwner();
+
     const owner = {
-      id: "owner",
-      name: profile.name,
-      email: profile.email,
-      role: "Proprietário",
+      ...companyOwner,
       owner: true
     };
 
@@ -3825,6 +3871,9 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         )
         .join("");
+
+    populateTaskPeopleOptions();
+    renderTaskList();
   }
 
   function initializeTeam() {
