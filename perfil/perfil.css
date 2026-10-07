@@ -1676,3 +1676,62 @@ body.dark .business-alert.success .business-alert-icon {
     margin-top: 18px;
   }
 }
+
+
+/* =========================================================
+   PERFIL SEM HERO
+========================================================= */
+
+.profile-dashboard > .account-section:first-child {
+  margin-top: 0;
+  padding-top: 8px;
+  border-top: 0;
+}
+
+.account-section-actions {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-logout-action {
+  min-height: 42px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: transparent;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.account-logout-action:hover {
+  color: #b93b3b;
+  background: rgba(185,59,59,.06);
+}
+
+@media (max-width: 992px) {
+  .account-section-actions {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 520px) {
+  .profile-dashboard > .account-section:first-child {
+    padding-top: 4px;
+  }
+
+  .account-section-actions {
+    width: 100%;
+  }
+
+  .account-section-actions .section-secondary-action,
+  .account-section-actions .account-logout-action {
+    flex: 1;
+  }
+}
