@@ -4044,6 +4044,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
 
         closeProfileModalFunction();
+        closeTaskModal();
 
       }
 
