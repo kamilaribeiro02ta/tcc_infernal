@@ -311,7 +311,7 @@
             <div class="account-heading-management">
               <span class="section-label">GESTÃO DIÁRIA</span>
               <h2>Organize o que precisa acontecer.</h2>
-              <p>Agenda, notas e avisos ficam juntos porque fazem parte do mesmo fluxo de trabalho.</p>
+              <p>Agenda, tarefas e notas ficam juntas porque fazem parte do mesmo fluxo de trabalho.</p>
             </div>
 
             <div class="account-section-actions">
@@ -539,17 +539,7 @@
             ></textarea>
           </article>
 
-          <article class="alerts-card">
-            <div class="card-heading">
-              <div>
-                <span class="card-kicker">AVISOS</span>
-                <h2>O que pede atenção</h2>
-              </div>
-              <div class="card-heading-icon"><i class="bx bx-bell"></i></div>
-            </div>
 
-            <div class="business-alerts" id="businessAlerts" aria-live="polite"></div>
-          </article>
         </section>
 
         <section class="business-section" aria-labelledby="businessOverviewTitle">
@@ -730,15 +720,57 @@
           </label>
 
           <label class="task-field">
-            <span>Categoria</span>
+            <span>Categoria ou etiqueta</span>
             <input id="taskCategory" type="text" maxlength="40" placeholder="Ex.: Financeiro">
+          </label>
+
+          <label class="task-field">
+            <span>Horário inicial</span>
+            <input id="taskStartTime" type="time">
+          </label>
+
+          <label class="task-field">
+            <span>Horário final</span>
+            <input id="taskEndTime" type="time">
+          </label>
+
+          <label class="task-field task-color-field">
+            <span>Cor da tarefa</span>
+            <select id="taskColor">
+              <option value="purple">Roxo ZUZ</option>
+              <option value="blue">Azul</option>
+              <option value="green">Verde</option>
+              <option value="amber">Amarelo</option>
+              <option value="coral">Coral</option>
+              <option value="gray">Cinza</option>
+            </select>
           </label>
         </div>
 
         <label class="task-field task-field-wide">
           <span>Descrição</span>
-          <textarea id="taskDescription" maxlength="800" placeholder="Detalhes, checklist ou observações importantes..."></textarea>
+          <textarea id="taskDescription" maxlength="1200" placeholder="Contexto, instruções, links ou observações importantes..."></textarea>
         </label>
+
+        <section class="task-checklist-editor" aria-labelledby="taskChecklistTitle">
+          <div class="task-checklist-heading">
+            <div>
+              <span class="task-checklist-kicker">CHECKLIST</span>
+              <strong id="taskChecklistTitle">Etapas da tarefa</strong>
+            </div>
+            <span id="taskChecklistProgress">0/0 concluídas</span>
+          </div>
+
+          <div class="task-checklist-items" id="taskChecklistItems"></div>
+
+          <div class="task-checklist-add">
+            <input id="taskChecklistNew" type="text" maxlength="90" placeholder="Adicionar uma etapa">
+            <button id="addChecklistItemBtn" type="button">
+              <i class="bx bx-plus"></i>
+              Adicionar
+            </button>
+          </div>
+        </section>
 
         <section class="task-audit" id="taskAudit" hidden>
           <div class="task-audit-summary" id="taskAuditSummary"></div>
