@@ -170,6 +170,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const editProfileBtn =
     document.getElementById("editProfileBtn");
 
+  const editProfileBtnAccount =
+    document.getElementById("editProfileBtnAccount");
+
   const closeProfileModal =
     document.getElementById("closeProfileModal");
 
@@ -936,6 +939,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   editProfileBtn?.addEventListener(
+    "click",
+    openProfileModal
+  );
+
+  editProfileBtnAccount?.addEventListener(
     "click",
     openProfileModal
   );
