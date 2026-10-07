@@ -9,33 +9,69 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/sidebar.css">
   <link rel="stylesheet" href="../shared/design-system.css">
   <link rel="stylesheet" href="./login.css">
   <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
 </head>
 <body>
-  <main class="auth-page">
+  <div class="page auth-layout">
+    <aside class="sidebar">
+      <a href="./login.html" class="login-block auth-sidebar-account" aria-label="Entrar na minha conta">
+        <div class="avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" fill="white"></circle>
+            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"></path>
+          </svg>
+        </div>
+        <div class="login-text">
+          <div class="login-title">Login</div>
+          <div class="login-subtitle">Minha Conta</div>
+        </div>
+      </a>
+
+      <nav class="nav-menu" aria-label="Navegação principal">
+        <a href="../index.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Início</span>
+        </a>
+        <a href="../introducao/intro.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Sobre</span>
+        </a>
+        <a href="../produtos/produtos.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Produtos</span>
+        </a>
+        <a href="../garfico/grafico.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Gráfico</span>
+        </a>
+      </nav>
+
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Alternar tema">
+        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
+        <span class="theme-toggle-knob" aria-hidden="true">
+          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"></circle>
+            <line x1="12" y1="2" x2="12" y2="4"></line>
+            <line x1="12" y1="20" x2="12" y2="22"></line>
+            <line x1="2" y1="12" x2="4" y2="12"></line>
+            <line x1="20" y1="12" x2="22" y2="12"></line>
+          </svg>
+          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+            <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
+          </svg>
+        </span>
+      </button>
+    </aside>
+
+    <main class="auth-page">
     <section class="auth-form-side" aria-label="Acesso à ZUZ">
       <div class="auth-topbar">
         <a class="auth-logo-link" href="../index.html" aria-label="ZUZ, voltar ao início">
           <img class="auth-logo" src="data:image/png;base64,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" alt="ZUZ">
         </a>
-
-        <button class="theme-toggle auth-theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Alternar tema">
-          <span class="theme-toggle-label sr-only" id="themeLabel">Modo Claro</span>
-          <span class="theme-toggle-knob" aria-hidden="true">
-            <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="4"></circle>
-              <line x1="12" y1="2" x2="12" y2="4"></line>
-              <line x1="12" y1="20" x2="12" y2="22"></line>
-              <line x1="2" y1="12" x2="4" y2="12"></line>
-              <line x1="20" y1="12" x2="22" y2="12"></line>
-            </svg>
-            <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
-              <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
-            </svg>
-          </span>
-        </button>
       </div>
 
       <div class="auth-form-container">
@@ -74,10 +110,9 @@
 
             <div class="form-status" id="loginStatus" role="status" aria-live="polite"></div>
 
-            <p class="auth-switch">
-              Ainda não tem uma conta?
-              <button type="button" data-switch-mode="signup">Criar conta</button>
-            </p>
+            <button class="secondary-auth-btn" type="button" data-switch-mode="signup">
+              Criar conta
+            </button>
           </form>
         </section>
 
@@ -136,10 +171,9 @@
 
             <div class="form-status" id="signupStatus" role="status" aria-live="polite"></div>
 
-            <p class="auth-switch">
-              Já possui uma conta?
-              <button type="button" data-switch-mode="login">Entrar</button>
-            </p>
+            <button class="secondary-auth-btn" type="button" data-switch-mode="login">
+              Já tenho uma conta
+            </button>
           </form>
         </section>
 
@@ -160,7 +194,8 @@
         <p>Custos, margem e preço organizados em uma experiência simples.</p>
       </div>
     </section>
-  </main>
+    </main>
+  </div>
 
   <script src="./login.js"></script>
   <script src="../shared/site.js?v=20261007-auth-full"></script>
