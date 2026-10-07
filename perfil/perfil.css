@@ -1889,3 +1889,600 @@ body.dark .business-alert.success .business-alert-icon {
     align-self: flex-start;
   }
 }
+
+
+/* =========================================================
+   APPLE CLEAN PROFILE PASS
+   Mais respiro, menos ruído, hierarquia mais forte
+========================================================= */
+
+:root {
+  --profile-max: 1320px;
+  --profile-section-gap: 34px;
+  --profile-card-radius: 28px;
+  --profile-card-border: rgba(23, 19, 31, .07);
+}
+
+body.dark {
+  --profile-card-border: rgba(255,255,255,.07);
+}
+
+.profile-page {
+  padding: 42px clamp(28px, 4vw, 64px) 72px;
+}
+
+.profile-dashboard {
+  width: min(100%, var(--profile-max));
+  gap: var(--profile-section-gap);
+}
+
+/* HERO mais editorial e menos carregado */
+
+.dashboard-header {
+  min-height: 330px;
+  padding: clamp(46px, 5vw, 72px);
+  align-items: center;
+  border-radius: 36px;
+  box-shadow: none;
+  background:
+    radial-gradient(110% 150% at 2% 100%, rgba(203,172,255,.55) 0%, rgba(129,81,223,.28) 30%, transparent 60%),
+    linear-gradient(145deg, #2a174a 0%, #1b1031 56%, #120922 100%);
+}
+
+.dashboard-header::before {
+  opacity: .58;
+  filter: blur(30px);
+}
+
+.dashboard-header::after {
+  opacity: .42;
+  filter: blur(24px);
+}
+
+.dashboard-header > div:first-child {
+  max-width: 760px;
+}
+
+.dashboard-header h1 {
+  margin-top: 14px;
+  font-size: clamp(48px, 5.2vw, 74px);
+  line-height: .97;
+  letter-spacing: -.055em;
+}
+
+.dashboard-header p {
+  max-width: 660px;
+  margin-top: 22px;
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.dashboard-actions {
+  max-width: 330px;
+  gap: 10px;
+}
+
+.dashboard-actions a,
+.dashboard-actions button {
+  min-height: 46px;
+  padding-inline: 18px;
+  font-size: 11px;
+}
+
+/* MÉTRICAS com menos cara de "card dentro de card" */
+
+.summary-grid {
+  gap: 18px;
+}
+
+.summary-tile {
+  min-height: 148px;
+  padding: 26px 24px;
+  gap: 18px;
+  border: 1px solid var(--profile-card-border);
+  border-radius: 24px;
+  box-shadow: none;
+  background: var(--surface);
+}
+
+.summary-tile:hover {
+  transform: none;
+  border-color: var(--border-purple);
+  box-shadow: none;
+}
+
+.summary-icon {
+  width: 50px;
+  height: 50px;
+  flex-basis: 50px;
+  border-radius: 16px;
+}
+
+.summary-tile span {
+  font-size: 11px;
+}
+
+.summary-tile strong {
+  margin-top: 7px;
+  font-size: clamp(26px, 2.2vw, 34px);
+}
+
+.summary-tile small {
+  margin-top: 7px;
+  font-size: 10px;
+}
+
+/* GRID PRINCIPAL mais espaçado */
+
+.dashboard-main-grid {
+  grid-template-columns: minmax(0, 1.48fr) minmax(320px, .72fr);
+  gap: 24px;
+}
+
+.profile-card {
+  border: 1px solid var(--profile-card-border);
+  border-radius: var(--profile-card-radius);
+  box-shadow: none;
+}
+
+.business-overview-card {
+  padding: 32px;
+}
+
+.card-heading,
+.dashboard-card-heading {
+  gap: 24px;
+}
+
+.card-heading h2 {
+  margin-top: 7px;
+  font-size: 24px;
+}
+
+.card-kicker {
+  letter-spacing: .14em;
+}
+
+.overview-chart {
+  height: 350px;
+  margin-top: 30px;
+}
+
+.chart-stage {
+  border-radius: 22px;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface-soft) 78%, transparent),
+      color-mix(in srgb, var(--surface-purple) 36%, var(--surface))
+    );
+}
+
+.grid-line {
+  opacity: .62;
+}
+
+.overview-footer {
+  margin-top: 24px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: transparent;
+  border: 1px solid var(--profile-card-border);
+}
+
+.overview-footer span {
+  margin-top: 5px;
+  line-height: 1.65;
+}
+
+/* PERFIL lateral com mais respiro */
+
+.dashboard-side-column {
+  gap: 24px;
+}
+
+.account-banner {
+  height: 188px;
+}
+
+.account-widget-body {
+  padding: 0 26px 30px;
+}
+
+.profile-photo-area {
+  margin-top: -48px;
+}
+
+.profile-photo {
+  width: 96px;
+  height: 96px;
+  border-width: 6px;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(26,15,52,.11);
+}
+
+.profile-user-info {
+  margin-top: 18px;
+}
+
+.profile-user-info h2 {
+  margin-top: 12px;
+  font-size: 24px;
+}
+
+.profile-user-info p {
+  margin-top: 7px;
+}
+
+.account-details-card {
+  padding: 28px;
+}
+
+.profile-data-list {
+  margin-top: 22px;
+  gap: 10px;
+}
+
+.profile-data {
+  padding: 15px 16px;
+  border-radius: 16px;
+  background: transparent;
+  border: 1px solid var(--profile-card-border);
+}
+
+/* CENTRAL DA EMPRESA: menos densidade, duas colunas */
+
+.business-hub {
+  grid-template-columns: minmax(0, 1.3fr) minmax(320px, .7fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.calendar-card {
+  grid-row: span 2;
+  min-height: 520px;
+}
+
+.calendar-card,
+.notes-card,
+.alerts-card,
+.team-card {
+  padding: 30px;
+}
+
+.notes-card {
+  min-height: 248px;
+}
+
+.alerts-card {
+  min-height: 248px;
+}
+
+.calendar-layout {
+  margin-top: 24px;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, .7fr);
+  gap: 24px;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  gap: 8px;
+}
+
+.calendar-day {
+  min-height: 42px;
+  border-radius: 13px;
+}
+
+.agenda-column {
+  gap: 16px;
+}
+
+.agenda-create {
+  padding: 17px;
+  gap: 12px;
+  border-radius: 18px;
+}
+
+.event-item {
+  padding: 12px;
+  border-radius: 16px;
+}
+
+.notes-card .hub-description {
+  margin-top: 14px;
+  margin-bottom: 18px;
+}
+
+.notes-card textarea {
+  min-height: 250px;
+  padding: 18px;
+  border-radius: 19px;
+  line-height: 1.8;
+}
+
+.business-alerts {
+  margin-top: 22px;
+  gap: 12px;
+}
+
+.business-alert {
+  padding: 15px;
+  gap: 13px;
+  border-radius: 17px;
+  background: transparent;
+  border: 1px solid var(--profile-card-border);
+}
+
+.team-card {
+  padding: 32px;
+}
+
+.team-layout {
+  margin-top: 26px;
+  grid-template-columns: minmax(280px, .58fr) minmax(0, 1.42fr);
+  gap: 26px;
+}
+
+.team-add-form {
+  padding: 18px;
+  gap: 12px;
+  border-radius: 20px;
+  background: var(--surface-soft);
+}
+
+.team-members {
+  gap: 10px;
+}
+
+.team-member {
+  padding: 13px 14px;
+  border-radius: 18px;
+}
+
+/* ACESSO RÁPIDO com mais whitespace */
+
+.quick-card {
+  padding: 30px;
+}
+
+.quick-grid {
+  margin-top: 22px;
+  gap: 16px;
+}
+
+.quick-item {
+  min-height: 104px;
+  padding: 18px;
+  gap: 14px;
+  border-radius: 20px;
+  background: transparent;
+}
+
+.quick-item:hover {
+  transform: none;
+  background: var(--surface-soft);
+}
+
+.quick-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+}
+
+/* Botões e pills mais discretos */
+
+.chart-link,
+.overview-footer a,
+.compact-badge,
+.team-count,
+.save-status {
+  min-height: 34px;
+  padding-inline: 13px;
+}
+
+.hub-primary-button {
+  min-height: 44px;
+  padding-inline: 16px;
+}
+
+/* Modal */
+
+.modal-card {
+  padding: 30px;
+  border-radius: 30px;
+  box-shadow: 0 28px 80px rgba(15,8,29,.18);
+}
+
+/* DARK mais limpo */
+
+body.dark .summary-tile,
+body.dark .profile-card {
+  background: var(--surface);
+}
+
+body.dark .profile-data,
+body.dark .business-alert,
+body.dark .quick-item {
+  background: transparent;
+}
+
+/* RESPONSIVIDADE com respiro preservado */
+
+@media (max-width: 1280px) {
+  .profile-page {
+    padding: 34px 28px 60px;
+  }
+
+  .profile-dashboard {
+    gap: 28px;
+  }
+
+  .business-hub {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .calendar-card {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .alerts-card {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 1100px) {
+  .dashboard-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-side-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .team-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 992px) {
+  .profile-page {
+    padding: 28px 22px 54px;
+  }
+
+  .dashboard-header {
+    min-height: 300px;
+    padding: 42px 34px;
+  }
+
+  .business-hub {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-side-column {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .calendar-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .notes-card textarea {
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 760px) {
+  .profile-page {
+    padding: 18px 14px 44px;
+  }
+
+  .profile-dashboard {
+    gap: 22px;
+  }
+
+  .dashboard-header {
+    min-height: 330px;
+    padding: 34px 24px;
+    border-radius: 28px;
+  }
+
+  .dashboard-header h1 {
+    font-size: clamp(40px, 12vw, 54px);
+  }
+
+  .dashboard-actions {
+    margin-top: 4px;
+  }
+
+  .summary-grid {
+    gap: 12px;
+  }
+
+  .summary-tile {
+    min-height: 116px;
+    padding: 20px;
+  }
+
+  .dashboard-side-column {
+    grid-template-columns: 1fr;
+  }
+
+  .business-overview-card,
+  .calendar-card,
+  .notes-card,
+  .alerts-card,
+  .team-card,
+  .quick-card,
+  .account-details-card {
+    padding: 22px;
+  }
+
+  .business-overview-card,
+  .profile-card {
+    border-radius: 22px;
+  }
+
+  .overview-chart {
+    height: 285px;
+    margin-top: 22px;
+  }
+
+  .quick-grid {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .profile-page {
+    padding: 12px 10px 36px;
+  }
+
+  .profile-dashboard {
+    gap: 18px;
+  }
+
+  .dashboard-header {
+    min-height: 350px;
+    padding: 30px 20px;
+    border-radius: 24px;
+  }
+
+  .dashboard-header p {
+    margin-top: 16px;
+  }
+
+  .business-overview-card,
+  .calendar-card,
+  .notes-card,
+  .alerts-card,
+  .team-card,
+  .quick-card,
+  .account-details-card {
+    padding: 18px;
+  }
+
+  .summary-tile {
+    border-radius: 20px;
+  }
+
+  .account-banner {
+    height: 150px;
+  }
+
+  .calendar-weekdays,
+  .calendar-grid {
+    gap: 4px;
+  }
+
+  .calendar-day {
+    min-height: 34px;
+  }
+
+  .quick-item {
+    min-height: 90px;
+    padding: 15px;
+  }
+}
