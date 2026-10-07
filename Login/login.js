@@ -5,8 +5,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const SESSION_KEY = "zuz-session";
   const PROFILE_KEY = "zuz-profile";
 
+  const authPage = document.querySelector(".auth-page");
   const loginPanel = document.getElementById("loginPanel");
   const signupPanel = document.getElementById("signupPanel");
+  const desktopSwapQuery = window.matchMedia("(min-width: 841px)");
+  const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let isModeSwitching = false;
 
   const loginForm = document.getElementById("loginForm");
   const loginEmail = document.getElementById("loginEmail");
@@ -80,26 +84,67 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus(signupStatus);
   }
 
-  function showMode(mode, updateUrl = true) {
-    const isLogin = mode !== "signup";
-
+  function syncPanelVisibility(isLogin) {
     loginPanel.hidden = !isLogin;
     signupPanel.hidden = isLogin;
+    loginPanel.setAttribute("aria-hidden", String(!isLogin));
+    signupPanel.setAttribute("aria-hidden", String(isLogin));
+  }
+
+  function updateModeUrl(isLogin) {
+    const url = new URL(window.location.href);
+    if (isLogin) {
+      url.searchParams.delete("mode");
+    } else {
+      url.searchParams.set("mode", "signup");
+    }
+    window.history.replaceState({}, "", url);
+  }
+
+  function showMode(mode, updateUrl = true, animate = true) {
+    const isLogin = mode !== "signup";
+    const wantsSignup = !isLogin;
+    const alreadySignup = authPage?.classList.contains("is-signup-mode");
+
+    if (isModeSwitching || (animate && alreadySignup === wantsSignup)) {
+      return;
+    }
+
     document.title = isLogin ? "ZUZ | Entrar" : "ZUZ | Criar conta";
 
     if (updateUrl) {
-      const url = new URL(window.location.href);
-      if (isLogin) {
-        url.searchParams.delete("mode");
-      } else {
-        url.searchParams.set("mode", "signup");
-      }
-      window.history.replaceState({}, "", url);
+      updateModeUrl(isLogin);
     }
 
-    requestAnimationFrame(() => {
+    const shouldAnimate =
+      animate &&
+      desktopSwapQuery.matches &&
+      !reducedMotionQuery.matches &&
+      authPage;
+
+    if (!shouldAnimate) {
+      authPage?.classList.toggle("is-signup-mode", wantsSignup);
+      syncPanelVisibility(isLogin);
+
+      requestAnimationFrame(() => {
+        (isLogin ? loginEmail : firstName)?.focus();
+      });
+      return;
+    }
+
+    isModeSwitching = true;
+    authPage.classList.add("is-transitioning");
+    authPage.classList.toggle("is-signup-mode", wantsSignup);
+
+    window.setTimeout(() => {
+      syncPanelVisibility(isLogin);
+    }, 300);
+
+    window.setTimeout(() => {
+      authPage.classList.remove("is-transitioning");
+      isModeSwitching = false;
       (isLogin ? loginEmail : firstName)?.focus();
-    });
+    }, 720);
   }
 
   function saveAuthenticatedProfile(user) {
@@ -283,5 +328,5 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const requestedMode = new URLSearchParams(window.location.search).get("mode");
-  showMode(requestedMode === "signup" ? "signup" : "login", false);
+  showMode(requestedMode === "signup" ? "signup" : "login", false, false);
 });
