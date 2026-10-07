@@ -33,8 +33,8 @@ body.dark {
   --auth-muted: #958b9f;
   --auth-border: rgba(255, 255, 255, 0.08);
   --auth-field: #21192f;
-  --auth-purple: #9478ff;
-  --auth-purple-dark: #7e60ef;
+  --auth-purple: #8c6bff;
+  --auth-purple-dark: #7c5cff;
   --auth-purple-soft: rgba(148, 120, 255, 0.16);
   --auth-peach: #d98c7f;
 
@@ -42,14 +42,14 @@ body.dark {
   --sidebar-border: rgba(255,255,255,.08);
   --nav-inactive: #a69bb8;
   --nav-hover-bg: #241b38;
-  --purple: #9478ff;
-  --purple-dark: #7e60ef;
+  --purple: #8c6bff;
+  --purple-dark: #7c5cff;
   --login-title: #f5f2fb;
   --login-subtitle: #9f94af;
   --toggle-track: #241a37;
   --toggle-text: #eee9f8;
   --toggle-knob-bg: #3b285c;
-  --toggle-icon: #b69fff;
+  --toggle-icon: #c4b0ff;
 }
 
 * {
