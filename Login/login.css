@@ -1866,3 +1866,193 @@ body {
   letter-spacing: -.085em;
   margin-right: .025em;
 }
+
+
+/* =========================================================
+   AUTH PANEL SWAP ANIMATION
+   Visual panel crosses left, form panel crosses right
+========================================================= */
+
+.account-mode-switch {
+  position: relative;
+  width: 126px;
+  min-width: 126px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0 38px 0 13px;
+  overflow: hidden;
+  justify-content: flex-start;
+  border-radius: 999px;
+  isolation: isolate;
+}
+
+.account-mode-switch[data-switch-mode="login"] {
+  padding: 0 13px 0 38px;
+  justify-content: flex-end;
+}
+
+.account-mode-knob {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 30px;
+  height: 30px;
+  transition:
+    transform .28s cubic-bezier(.2,.8,.2,1),
+    background .2s ease,
+    box-shadow .2s ease;
+}
+
+.account-mode-switch[data-switch-mode="login"] .account-mode-knob {
+  right: auto;
+  left: 4px;
+}
+
+.account-mode-switch:hover .account-mode-knob {
+  transform: translateX(-3px);
+  box-shadow: 0 5px 14px rgba(106,61,240,.22);
+}
+
+.account-mode-switch[data-switch-mode="login"]:hover .account-mode-knob {
+  transform: translateX(3px);
+}
+
+.account-mode-switch:active .account-mode-knob {
+  transform: scale(.94);
+}
+
+.account-mode-label {
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 841px) {
+  .auth-page {
+    position: relative;
+    display: block;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .auth-form-side,
+  .auth-visual {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+    will-change: left, transform;
+    transition:
+      left .68s cubic-bezier(.77,0,.18,1),
+      width .68s cubic-bezier(.77,0,.18,1),
+      border-radius .35s ease,
+      box-shadow .35s ease;
+  }
+
+  .auth-form-side {
+    left: 0;
+    width: 46%;
+    z-index: 3;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .auth-visual {
+    top: 16px;
+    bottom: 16px;
+    left: 46%;
+    width: calc(54% - 16px);
+    min-height: 0 !important;
+    height: auto;
+    z-index: 2;
+    border-radius: 40px !important;
+  }
+
+  .auth-page.is-signup-mode .auth-form-side {
+    left: 54%;
+  }
+
+  .auth-page.is-signup-mode .auth-visual {
+    left: 16px;
+  }
+
+  .auth-panel {
+    transition:
+      opacity .24s ease,
+      transform .24s ease;
+  }
+
+  .auth-page.is-transitioning .auth-form-side {
+    box-shadow: 0 18px 48px rgba(30,18,54,.08);
+  }
+
+  .auth-page.is-transitioning .auth-visual {
+    box-shadow: 0 22px 56px rgba(30,12,66,.18);
+  }
+
+  .auth-page.is-transitioning .auth-panel:not([hidden]) {
+    opacity: .72;
+    transform: translateY(4px);
+  }
+
+  .auth-page.is-signup-mode .auth-logo-link {
+    margin-left: auto;
+  }
+
+  .auth-page.is-signup-mode .auth-logo {
+    object-position: right center;
+  }
+}
+
+@media (min-width: 993px) and (max-width: 1180px) {
+  .auth-form-side {
+    width: 52%;
+  }
+
+  .auth-visual {
+    left: 52%;
+    width: calc(48% - 12px);
+    top: 12px;
+    bottom: 12px;
+    border-radius: 32px !important;
+  }
+
+  .auth-page.is-signup-mode .auth-form-side {
+    left: 48%;
+  }
+
+  .auth-page.is-signup-mode .auth-visual {
+    left: 12px;
+  }
+}
+
+@media (max-width: 840px) {
+  .auth-page {
+    position: static;
+    display: flex;
+    overflow: visible;
+  }
+
+  .auth-form-side,
+  .auth-visual {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: auto !important;
+    width: auto;
+    transition: none;
+  }
+
+  .auth-page.is-signup-mode .auth-logo-link {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-form-side,
+  .auth-visual,
+  .auth-panel,
+  .account-mode-knob {
+    transition: none !important;
+  }
+}
