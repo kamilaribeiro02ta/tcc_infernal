@@ -2046,3 +2046,44 @@ body {
     transition: none !important;
   }
 }
+
+
+/* =========================================================
+   FIX AUTH INTERNAL SCROLLBAR
+   Keep the only vertical scrollbar on the browser edge
+========================================================= */
+
+html,
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (min-width: 841px) {
+  .auth-page {
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
+  .auth-form-side {
+    bottom: auto;
+    min-height: 100%;
+    overflow: visible;
+  }
+
+  .auth-form-container {
+    overflow: visible;
+  }
+
+  .auth-visual {
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 840px) {
+  .auth-page,
+  .auth-form-side,
+  .auth-form-container {
+    overflow: visible;
+  }
+}
