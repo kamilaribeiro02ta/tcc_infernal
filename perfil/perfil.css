@@ -2015,3 +2015,47 @@ body.dark .business-alert.success .business-alert-icon {
     margin-top: 34px;
   }
 }
+
+
+/* =========================================================
+   FINAL PROFILE ALIGNMENT
+   Reposiciona sem alterar o tamanho
+========================================================= */
+
+@media (min-width: 1181px) {
+  .account-widget {
+    position: relative;
+    top: -34px;
+  }
+
+  .account-details {
+    position: relative;
+    top: 0;
+  }
+
+  .account-section + .business-hub {
+    margin-top: 84px;
+  }
+}
+
+@media (min-width: 821px) and (max-width: 1180px) {
+  .account-widget {
+    position: relative;
+    top: -20px;
+  }
+
+  .account-section + .business-hub {
+    margin-top: 68px;
+  }
+}
+
+@media (max-width: 820px) {
+  .account-widget {
+    position: relative;
+    top: 0;
+  }
+
+  .account-section + .business-hub {
+    margin-top: 44px;
+  }
+}
