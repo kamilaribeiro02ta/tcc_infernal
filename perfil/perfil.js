@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let editingTaskId =
     "";
 
+  let taskChecklistDraft =
+    [];
+
   const logoutBtn =
     document.getElementById("logoutBtn");
 
@@ -1750,6 +1753,15 @@ document.addEventListener("DOMContentLoaded", () => {
     low: 1
   };
 
+  const TASK_COLOR = {
+    purple: "Roxo",
+    blue: "Azul",
+    green: "Verde",
+    amber: "Amarelo",
+    coral: "Coral",
+    gray: "Cinza"
+  };
+
   function getCurrentActor() {
     const profile =
       getProfile();
@@ -1936,6 +1948,22 @@ document.addEventListener("DOMContentLoaded", () => {
         localDateKey(
           new Date()
         ),
+      startTime:
+        String(
+          task?.startTime ||
+          ""
+        ),
+      endTime:
+        String(
+          task?.endTime ||
+          ""
+        ),
+      color:
+        TASK_COLOR[
+          task?.color
+        ]
+          ? task.color
+          : "purple",
       priority:
         TASK_PRIORITY[
           task?.priority
@@ -1963,6 +1991,27 @@ document.addEventListener("DOMContentLoaded", () => {
           task?.description ||
           ""
         ),
+      checklist:
+        Array.isArray(
+          task?.checklist
+        )
+          ? task.checklist.map(
+              item => ({
+                id:
+                  item?.id ||
+                  `check_${Date.now().toString(36)}`,
+                text:
+                  String(
+                    item?.text ||
+                    ""
+                  ),
+                done:
+                  Boolean(
+                    item?.done
+                  )
+              })
+            )
+          : [],
       createdAt:
         task?.createdAt ||
         new Date().toISOString(),
@@ -2161,6 +2210,115 @@ document.addEventListener("DOMContentLoaded", () => {
     ).format(
       amount
     );
+  }
+
+  function taskTimeLabel(task) {
+    const start =
+      String(
+        task?.startTime ||
+        ""
+      );
+
+    const end =
+      String(
+        task?.endTime ||
+        ""
+      );
+
+    if (
+      start &&
+      end
+    ) {
+      return `${start}–${end}`;
+    }
+
+    return (
+      start ||
+      end ||
+      ""
+    );
+  }
+
+  function checklistProgress(task) {
+    const items =
+      Array.isArray(
+        task?.checklist
+      )
+        ? task.checklist
+        : [];
+
+    const done =
+      items.filter(
+        item =>
+          item.done
+      ).length;
+
+    return {
+      done,
+      total:
+        items.length,
+      percent:
+        items.length
+          ? Math.round(
+              done /
+              items.length *
+              100
+            )
+          : 0
+    };
+  }
+
+  function renderChecklistDraft() {
+    const container =
+      document.getElementById(
+        "taskChecklistItems"
+      );
+
+    const progress =
+      document.getElementById(
+        "taskChecklistProgress"
+      );
+
+    if (
+      !container ||
+      !progress
+    ) {
+      return;
+    }
+
+    const done =
+      taskChecklistDraft.filter(
+        item =>
+          item.done
+      ).length;
+
+    progress.textContent =
+      `${done}/${taskChecklistDraft.length} concluídas`;
+
+    if (
+      !taskChecklistDraft.length
+    ) {
+      container.innerHTML =
+        '<div class="task-checklist-empty">Nenhuma etapa adicionada.</div>';
+      return;
+    }
+
+    container.innerHTML =
+      taskChecklistDraft
+        .map(
+          item => `
+            <div class="task-checklist-row" data-checklist-id="${escapeHtml(item.id)}">
+              <label>
+                <input type="checkbox" data-checklist-toggle="${escapeHtml(item.id)}" ${item.done ? "checked" : ""}>
+                <span>${escapeHtml(item.text)}</span>
+              </label>
+              <button type="button" data-checklist-remove="${escapeHtml(item.id)}" aria-label="Remover etapa">
+                <i class="bx bx-x"></i>
+              </button>
+            </div>
+          `
+        )
+        .join("");
   }
 
   function populateTaskPeopleOptions() {
@@ -2450,21 +2608,41 @@ document.addEventListener("DOMContentLoaded", () => {
               task.updatedBy?.name ||
               "Usuário";
 
+            const progress =
+              checklistProgress(
+                task
+              );
+
+            const time =
+              taskTimeLabel(
+                task
+              );
+
             return `
-              <article class="task-item priority-${escapeHtml(task.priority)}" data-task-id="${escapeHtml(task.id)}">
+              <article class="task-item color-${escapeHtml(task.color)} priority-${escapeHtml(task.priority)} status-${escapeHtml(task.status)}" data-task-id="${escapeHtml(task.id)}">
                 <button class="task-item-main" type="button" data-edit-task="${escapeHtml(task.id)}">
                   <div class="task-item-topline">
+                    <span class="task-color-chip color-${escapeHtml(task.color)}"></span>
                     <span class="task-priority-pill priority-${escapeHtml(task.priority)}">${escapeHtml(TASK_PRIORITY[task.priority])}</span>
-                    <span class="task-due">${escapeHtml(formatTaskDate(task.dueDate))}</span>
+                    <span class="task-due">${escapeHtml(formatTaskDate(task.dueDate))}${time ? ` · ${escapeHtml(time)}` : ""}</span>
                   </div>
 
                   <strong class="task-item-title">${escapeHtml(task.title)}</strong>
+
+                  ${task.description ? `<p class="task-item-description">${escapeHtml(task.description)}</p>` : ""}
 
                   <div class="task-item-meta">
                     <span><i class="bx bx-user"></i>${escapeHtml(task.assigneeName || "Sem responsável")}</span>
                     ${cost ? `<span><i class="bx bx-wallet"></i>${escapeHtml(cost)}</span>` : ""}
                     ${task.category ? `<span><i class="bx bx-tag"></i>${escapeHtml(task.category)}</span>` : ""}
+                    ${progress.total ? `<span><i class="bx bx-check-square"></i>${progress.done}/${progress.total}</span>` : ""}
                   </div>
+
+                  ${progress.total ? `
+                    <div class="task-progress-track" aria-label="${progress.percent}% do checklist concluído">
+                      <span style="width:${progress.percent}%"></span>
+                    </div>
+                  ` : ""}
 
                   <small>Editado por ${escapeHtml(updatedName)} · ${escapeHtml(formatTaskDateTime(task.updatedAt))}</small>
                 </button>
@@ -2637,25 +2815,36 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       }
 
-      const dots =
+      const events =
         tasks
-          .slice(0, 3)
+          .slice(0, 2)
           .map(
-            task =>
-              `<i class="priority-dot priority-${escapeHtml(task.priority)}"></i>`
+            task => {
+              const time =
+                task.startTime
+                  ? `${escapeHtml(task.startTime)} `
+                  : "";
+
+              return `
+                <span class="calendar-event-chip color-${escapeHtml(task.color)} status-${escapeHtml(task.status)}" data-task-chip-id="${escapeHtml(task.id)}" title="${escapeHtml(task.title)}">
+                  <span class="calendar-event-dot"></span>
+                  <span class="calendar-event-title">${time}${escapeHtml(task.title)}</span>
+                </span>
+              `;
+            }
           )
           .join("");
 
       const extra =
-        tasks.length > 3
-          ? `<span class="calendar-more">+${tasks.length - 3}</span>`
+        tasks.length > 2
+          ? `<span class="calendar-more">+${tasks.length - 2} tarefa(s)</span>`
           : "";
 
       cells.push(
         `
           <button class="${classes.join(" ")}" type="button" data-calendar-date="${key}" aria-label="${day}, ${tasks.length} tarefa(s)">
             <span class="calendar-day-number">${day}</span>
-            <span class="calendar-task-dots">${dots}${extra}</span>
+            <span class="calendar-events">${events}${extra}</span>
           </button>
         `
       );
@@ -2852,10 +3041,41 @@ document.addEventListener("DOMContentLoaded", () => {
       "";
 
     document.getElementById(
+      "taskStartTime"
+    ).value =
+      task?.startTime ||
+      "";
+
+    document.getElementById(
+      "taskEndTime"
+    ).value =
+      task?.endTime ||
+      "";
+
+    document.getElementById(
+      "taskColor"
+    ).value =
+      task?.color ||
+      "purple";
+
+    document.getElementById(
       "taskDescription"
     ).value =
       task?.description ||
       "";
+
+    taskChecklistDraft =
+      Array.isArray(
+        task?.checklist
+      )
+        ? task.checklist.map(
+            item => ({
+              ...item
+            })
+          )
+        : [];
+
+    renderChecklistDraft();
 
     const assignee =
       document.getElementById(
@@ -2963,6 +3183,9 @@ document.addEventListener("DOMContentLoaded", () => {
     editingTaskId =
       "";
 
+    taskChecklistDraft =
+      [];
+
     document.body.style.overflow =
       "";
   }
@@ -3062,6 +3285,21 @@ document.addEventListener("DOMContentLoaded", () => {
         "taskForm"
       );
 
+    const checklistContainer =
+      document.getElementById(
+        "taskChecklistItems"
+      );
+
+    const checklistNew =
+      document.getElementById(
+        "taskChecklistNew"
+      );
+
+    const addChecklistButton =
+      document.getElementById(
+        "addChecklistItemBtn"
+      );
+
     populateTaskPeopleOptions();
 
     previousButton?.addEventListener(
@@ -3138,6 +3376,22 @@ document.addEventListener("DOMContentLoaded", () => {
     calendar?.addEventListener(
       "click",
       event => {
+        const taskChip =
+          event.target.closest(
+            "[data-task-chip-id]"
+          );
+
+        if (taskChip) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          openTaskModal(
+            taskChip.dataset.taskChipId
+          );
+
+          return;
+        }
+
         const day =
           event.target.closest(
             "[data-calendar-date]"
@@ -3252,6 +3506,100 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     );
 
+    addChecklistButton?.addEventListener(
+      "click",
+      () => {
+        const text =
+          checklistNew
+            ?.value
+            .trim();
+
+        if (!text) {
+          checklistNew?.focus();
+          return;
+        }
+
+        taskChecklistDraft.push({
+          id:
+            `check_${Date.now().toString(36)}`,
+          text,
+          done:
+            false
+        });
+
+        if (checklistNew) {
+          checklistNew.value =
+            "";
+        }
+
+        renderChecklistDraft();
+        checklistNew?.focus();
+      }
+    );
+
+    checklistNew?.addEventListener(
+      "keydown",
+      event => {
+        if (
+          event.key ===
+          "Enter"
+        ) {
+          event.preventDefault();
+          addChecklistButton?.click();
+        }
+      }
+    );
+
+    checklistContainer?.addEventListener(
+      "change",
+      event => {
+        const checkbox =
+          event.target.closest(
+            "[data-checklist-toggle]"
+          );
+
+        if (!checkbox) {
+          return;
+        }
+
+        const item =
+          taskChecklistDraft.find(
+            entry =>
+              entry.id ===
+              checkbox.dataset.checklistToggle
+          );
+
+        if (item) {
+          item.done =
+            checkbox.checked;
+          renderChecklistDraft();
+        }
+      }
+    );
+
+    checklistContainer?.addEventListener(
+      "click",
+      event => {
+        const removeButton =
+          event.target.closest(
+            "[data-checklist-remove]"
+          );
+
+        if (!removeButton) {
+          return;
+        }
+
+        taskChecklistDraft =
+          taskChecklistDraft.filter(
+            item =>
+              item.id !==
+              removeButton.dataset.checklistRemove
+          );
+
+        renderChecklistDraft();
+      }
+    );
+
     filters.forEach(
       filter =>
         filter?.addEventListener(
@@ -3319,6 +3667,34 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
+        const startTime =
+          document.getElementById(
+            "taskStartTime"
+          )?.value || "";
+
+        const endTime =
+          document.getElementById(
+            "taskEndTime"
+          )?.value || "";
+
+        if (
+          startTime &&
+          endTime &&
+          endTime <=
+            startTime
+        ) {
+          if (feedback) {
+            feedback.textContent =
+              "O horário final precisa ser depois do horário inicial.";
+          }
+
+          document.getElementById(
+            "taskEndTime"
+          )?.focus();
+
+          return;
+        }
+
         const people =
           getTaskPeople();
 
@@ -3376,6 +3752,18 @@ document.addEventListener("DOMContentLoaded", () => {
             assigneeEmail:
               person.email,
             dueDate,
+            startTime:
+              document.getElementById(
+                "taskStartTime"
+              ).value,
+            endTime:
+              document.getElementById(
+                "taskEndTime"
+              ).value,
+            color:
+              document.getElementById(
+                "taskColor"
+              ).value,
             priority:
               document.getElementById(
                 "taskPriority"
@@ -3399,6 +3787,12 @@ document.addEventListener("DOMContentLoaded", () => {
               document.getElementById(
                 "taskDescription"
               ).value.trim(),
+            checklist:
+              taskChecklistDraft.map(
+                item => ({
+                  ...item
+                })
+              ),
             updatedAt:
               now,
             updatedBy:
@@ -3437,6 +3831,18 @@ document.addEventListener("DOMContentLoaded", () => {
             assigneeEmail:
               person.email,
             dueDate,
+            startTime:
+              document.getElementById(
+                "taskStartTime"
+              ).value,
+            endTime:
+              document.getElementById(
+                "taskEndTime"
+              ).value,
+            color:
+              document.getElementById(
+                "taskColor"
+              ).value,
             priority:
               document.getElementById(
                 "taskPriority"
@@ -3460,6 +3866,12 @@ document.addEventListener("DOMContentLoaded", () => {
               document.getElementById(
                 "taskDescription"
               ).value.trim(),
+            checklist:
+              taskChecklistDraft.map(
+                item => ({
+                  ...item
+                })
+              ),
             createdAt:
               now,
             createdBy:
@@ -3620,127 +4032,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
     );
-  }
-
-  /* =========================================================
-     AVISOS INTELIGENTES
-  ========================================================= */
-
-  function renderBusinessAlerts() {
-    const container =
-      document.getElementById(
-        "businessAlerts"
-      );
-
-    if (!container) {
-      return;
-    }
-
-    const products =
-      getProducts();
-
-    const alerts =
-      [];
-
-    if (!products.length) {
-      alerts.push({
-        type: "attention",
-        icon: "bx-package",
-        title: "Cadastre seu primeiro produto",
-        text: "Sem produtos cadastrados, a ZUZ ainda não consegue analisar sua empresa."
-      });
-    }
-    else {
-      const lowMargin =
-        products.filter(
-          product =>
-            getMargin(product) <
-            20
-        ).length;
-
-      const noCategory =
-        products.filter(
-          product =>
-            !(
-              product.category ||
-              product.categoria
-            )
-        ).length;
-
-      const riskyPrice =
-        products.filter(
-          product => {
-            const price =
-              getPrice(product);
-
-            const cost =
-              getCost(product);
-
-            return (
-              price > 0 &&
-              cost >= price
-            );
-          }
-        ).length;
-
-      if (riskyPrice) {
-        alerts.push({
-          type: "danger",
-          icon: "bx-error-circle",
-          title:
-            `${riskyPrice} ${riskyPrice === 1 ? "produto precisa" : "produtos precisam"} de revisão`,
-          text: "O custo está igual ou acima do preço de venda."
-        });
-      }
-
-      if (lowMargin) {
-        alerts.push({
-          type: "attention",
-          icon: "bx-trending-down",
-          title:
-            `${lowMargin} ${lowMargin === 1 ? "produto está" : "produtos estão"} com margem abaixo de 20%`,
-          text: "Vale revisar custo, preço ou quantidade vendida."
-        });
-      }
-
-      if (noCategory) {
-        alerts.push({
-          type: "neutral",
-          icon: "bx-category",
-          title:
-            `${noCategory} ${noCategory === 1 ? "produto está" : "produtos estão"} sem categoria`,
-          text: "Organizar categorias melhora filtros e análises."
-        });
-      }
-
-      if (!alerts.length) {
-        alerts.push({
-          type: "success",
-          icon: "bx-check-circle",
-          title: "Indicadores organizados",
-          text: "Não encontramos alertas básicos nos produtos cadastrados."
-        });
-      }
-    }
-
-    container.innerHTML =
-      alerts
-        .slice(
-          0,
-          4
-        )
-        .map(
-          alert => `
-            <div class="business-alert ${alert.type}">
-              <div class="business-alert-icon"><i class="bx ${alert.icon}"></i></div>
-              <div>
-                <strong>${escapeHtml(alert.title)}</strong>
-                <span>${escapeHtml(alert.text)}</span>
-              </div>
-            </div>
-          `
-        )
-        .join("");
   }
 
   /* =========================================================
@@ -4059,7 +4350,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderSummary();
   renderBusinessChart();
-  renderBusinessAlerts();
   initializeCalendar();
   initializeNotes();
   initializeTeam();
