@@ -1118,3 +1118,9 @@ body.dark .visual-content p {
     bottom: -20%;
   }
 }
+
+
+/* remove spherical shadow */
+.auth-visual::after {
+  display: none;
+}
