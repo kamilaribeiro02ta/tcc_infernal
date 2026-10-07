@@ -6,13 +6,23 @@ document.addEventListener("DOMContentLoaded", () => {
     "zuz-session";
   const EVENTS_KEY =
     "zuz-company-events";
+  const TASKS_KEY =
+    "zuz-company-tasks";
   const NOTES_KEY =
     "zuz-company-notes";
   const TEAM_KEY =
     "zuz-company-team";
+  const BUSINESS_OWNER_KEY =
+    "zuz-company-owner";
 
   let calendarCursor =
     new Date();
+
+  let selectedTaskDate =
+    "";
+
+  let editingTaskId =
+    "";
 
   const logoutBtn =
     document.getElementById("logoutBtn");
@@ -940,6 +950,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
 
         closeProfileModalFunction();
+        closeTaskModal();
 
       }
 
@@ -1715,13 +1726,759 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =========================================================
-     CALENDÁRIO
+     CALENDÁRIO + GERENCIADOR DE TAREFAS
   ========================================================= */
 
-  function getCompanyEvents() {
-    return readArray(
-      EVENTS_KEY
+  const TASK_STATUS = {
+    todo: "A fazer",
+    doing: "Em andamento",
+    blocked: "Bloqueada",
+    done: "Concluída"
+  };
+
+  const TASK_PRIORITY = {
+    low: "Baixa",
+    medium: "Média",
+    high: "Alta",
+    urgent: "Urgente"
+  };
+
+  const PRIORITY_WEIGHT = {
+    urgent: 4,
+    high: 3,
+    medium: 2,
+    low: 1
+  };
+
+  function getCurrentActor() {
+    const profile =
+      getProfile();
+
+    let session = {};
+
+    try {
+      session =
+        JSON.parse(
+          localStorage.getItem(
+            SESSION_KEY
+          )
+        ) || {};
+    }
+    catch {
+      session = {};
+    }
+
+    return {
+      id:
+        session.userId ||
+        profile.id ||
+        profile.email ||
+        "local-user",
+      name:
+        profile.name ||
+        "Usuário ZUZ",
+      email:
+        profile.email ||
+        session.email ||
+        ""
+    };
+  }
+
+  function getCompanyOwner() {
+    try {
+      const saved =
+        JSON.parse(
+          localStorage.getItem(
+            BUSINESS_OWNER_KEY
+          )
+        );
+
+      if (
+        saved?.email
+      ) {
+        return saved;
+      }
+    }
+    catch {
+      /* usa o perfil atual */
+    }
+
+    const profile =
+      getProfile();
+
+    const owner = {
+      id:
+        profile.id ||
+        profile.email ||
+        "owner",
+      name:
+        profile.name ||
+        "Usuário ZUZ",
+      email:
+        profile.email ||
+        "",
+      role:
+        "Proprietário"
+    };
+
+    localStorage.setItem(
+      BUSINESS_OWNER_KEY,
+      JSON.stringify(
+        owner
+      )
     );
+
+    return owner;
+  }
+
+  function getTaskPeople() {
+    const owner =
+      getCompanyOwner();
+
+    const members =
+      readArray(
+        TEAM_KEY
+      )
+        .map(
+          member => ({
+            id:
+              member.id ||
+              member.email,
+            name:
+              member.name ||
+              member.email ||
+              "Membro",
+            email:
+              member.email ||
+              "",
+            role:
+              member.role ||
+              "Equipe"
+          })
+        );
+
+    const actor =
+      getCurrentActor();
+
+    const currentPerson = {
+      id:
+        actor.id,
+      name:
+        actor.name,
+      email:
+        actor.email,
+      role:
+        "Equipe"
+    };
+
+    const map =
+      new Map();
+
+    [owner, ...members, currentPerson]
+      .forEach(
+        person => {
+          const key =
+            String(
+              person.email ||
+              person.id
+            )
+              .toLowerCase();
+
+          if (
+            key &&
+            !map.has(key)
+          ) {
+            map.set(
+              key,
+              person
+            );
+          }
+        }
+      );
+
+    return [
+      ...map.values()
+    ];
+  }
+
+  function taskPersonKey(person) {
+    return String(
+      person?.email ||
+      person?.id ||
+      ""
+    )
+      .toLowerCase();
+  }
+
+  function normalizeTask(task) {
+    return {
+      id:
+        task?.id ||
+        `task_${Date.now().toString(36)}`,
+      title:
+        String(
+          task?.title ||
+          "Tarefa"
+        ),
+      assigneeId:
+        task?.assigneeId ||
+        task?.assigneeEmail ||
+        "",
+      assigneeName:
+        task?.assigneeName ||
+        "Sem responsável",
+      assigneeEmail:
+        task?.assigneeEmail ||
+        "",
+      dueDate:
+        task?.dueDate ||
+        task?.date ||
+        localDateKey(
+          new Date()
+        ),
+      priority:
+        TASK_PRIORITY[
+          task?.priority
+        ]
+          ? task.priority
+          : "medium",
+      status:
+        TASK_STATUS[
+          task?.status
+        ]
+          ? task.status
+          : "todo",
+      cost:
+        Number(
+          task?.cost ||
+          0
+        ),
+      category:
+        String(
+          task?.category ||
+          ""
+        ),
+      description:
+        String(
+          task?.description ||
+          ""
+        ),
+      createdAt:
+        task?.createdAt ||
+        new Date().toISOString(),
+      createdBy:
+        task?.createdBy ||
+        {
+          id: "",
+          name: "Sistema",
+          email: ""
+        },
+      updatedAt:
+        task?.updatedAt ||
+        task?.createdAt ||
+        new Date().toISOString(),
+      updatedBy:
+        task?.updatedBy ||
+        task?.createdBy ||
+        {
+          id: "",
+          name: "Sistema",
+          email: ""
+        },
+      history:
+        Array.isArray(
+          task?.history
+        )
+          ? task.history
+          : []
+    };
+  }
+
+  function getCompanyTasks() {
+    const saved =
+      localStorage.getItem(
+        TASKS_KEY
+      );
+
+    if (saved !== null) {
+      try {
+        const tasks =
+          JSON.parse(
+            saved
+          );
+
+        return Array.isArray(tasks)
+          ? tasks.map(
+              normalizeTask
+            )
+          : [];
+      }
+      catch {
+        return [];
+      }
+    }
+
+    const legacyEvents =
+      readArray(
+        EVENTS_KEY
+      );
+
+    if (!legacyEvents.length) {
+      return [];
+    }
+
+    const actor =
+      getCurrentActor();
+
+    const migrated =
+      legacyEvents.map(
+        event => normalizeTask({
+          id:
+            event.id ||
+            `task_${Date.now().toString(36)}`,
+          title:
+            event.title ||
+            "Compromisso",
+          dueDate:
+            event.date,
+          priority:
+            "medium",
+          status:
+            "todo",
+          assigneeId:
+            actor.id,
+          assigneeName:
+            actor.name,
+          assigneeEmail:
+            actor.email,
+          createdAt:
+            new Date().toISOString(),
+          createdBy:
+            actor,
+          updatedAt:
+            new Date().toISOString(),
+          updatedBy:
+            actor,
+          history: [
+            {
+              action:
+                "Compromisso antigo convertido em tarefa",
+              actorName:
+                actor.name,
+              actorEmail:
+                actor.email,
+              at:
+                new Date().toISOString()
+            }
+          ]
+        })
+      );
+
+    saveArray(
+      TASKS_KEY,
+      migrated
+    );
+
+    return migrated;
+  }
+
+  function saveCompanyTasks(tasks) {
+    saveArray(
+      TASKS_KEY,
+      tasks.map(
+        normalizeTask
+      )
+    );
+  }
+
+  function formatTaskDate(value) {
+    const date =
+      parseLocalDate(
+        value
+      );
+
+    if (!date) {
+      return "--";
+    }
+
+    return new Intl.DateTimeFormat(
+      "pt-BR",
+      {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      }
+    ).format(
+      date
+    );
+  }
+
+  function formatTaskDateTime(value) {
+    const date =
+      new Date(
+        value
+      );
+
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
+      return "--";
+    }
+
+    return new Intl.DateTimeFormat(
+      "pt-BR",
+      {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }
+    ).format(
+      date
+    );
+  }
+
+  function formatTaskMoney(value) {
+    const amount =
+      Number(
+        value ||
+        0
+      );
+
+    if (!amount) {
+      return "";
+    }
+
+    return new Intl.NumberFormat(
+      "pt-BR",
+      {
+        style: "currency",
+        currency: "BRL"
+      }
+    ).format(
+      amount
+    );
+  }
+
+  function populateTaskPeopleOptions() {
+    const people =
+      getTaskPeople();
+
+    const assignee =
+      document.getElementById(
+        "taskAssignee"
+      );
+
+    const filter =
+      document.getElementById(
+        "taskAssigneeFilter"
+      );
+
+    const currentAssignee =
+      assignee?.value ||
+      "";
+
+    const currentFilter =
+      filter?.value ||
+      "";
+
+    const options =
+      people
+        .map(
+          person => {
+            const value =
+              taskPersonKey(
+                person
+              );
+
+            return `<option value="${escapeHtml(value)}">${escapeHtml(person.name)} · ${escapeHtml(person.role)}</option>`;
+          }
+        )
+        .join("");
+
+    if (assignee) {
+      assignee.innerHTML =
+        options;
+
+      if (
+        currentAssignee &&
+        people.some(
+          person =>
+            taskPersonKey(person) ===
+            currentAssignee
+        )
+      ) {
+        assignee.value =
+          currentAssignee;
+      }
+    }
+
+    if (filter) {
+      filter.innerHTML =
+        '<option value="">Toda a equipe</option>' +
+        options;
+
+      filter.value =
+        people.some(
+          person =>
+            taskPersonKey(person) ===
+            currentFilter
+        )
+          ? currentFilter
+          : "";
+    }
+  }
+
+  function tasksForMonth(
+    tasks,
+    year,
+    month
+  ) {
+    return tasks.filter(
+      task => {
+        const date =
+          parseLocalDate(
+            task.dueDate
+          );
+
+        return (
+          date &&
+          date.getFullYear() ===
+            year &&
+          date.getMonth() ===
+            month
+        );
+      }
+    );
+  }
+
+  function filteredTasks() {
+    const tasks =
+      getCompanyTasks();
+
+    const status =
+      document.getElementById(
+        "taskStatusFilter"
+      )?.value || "";
+
+    const priority =
+      document.getElementById(
+        "taskPriorityFilter"
+      )?.value || "";
+
+    const assignee =
+      document.getElementById(
+        "taskAssigneeFilter"
+      )?.value || "";
+
+    const year =
+      calendarCursor.getFullYear();
+
+    const month =
+      calendarCursor.getMonth();
+
+    return tasks
+      .filter(
+        task => {
+          const date =
+            parseLocalDate(
+              task.dueDate
+            );
+
+          if (!date) {
+            return false;
+          }
+
+          if (
+            selectedTaskDate
+          ) {
+            if (
+              task.dueDate !==
+              selectedTaskDate
+            ) {
+              return false;
+            }
+          }
+          else if (
+            date.getFullYear() !==
+              year ||
+            date.getMonth() !==
+              month
+          ) {
+            return false;
+          }
+
+          if (
+            status &&
+            task.status !==
+              status
+          ) {
+            return false;
+          }
+
+          if (
+            priority &&
+            task.priority !==
+              priority
+          ) {
+            return false;
+          }
+
+          if (
+            assignee &&
+            String(
+              task.assigneeEmail ||
+              task.assigneeId
+            )
+              .toLowerCase() !==
+              assignee
+          ) {
+            return false;
+          }
+
+          return true;
+        }
+      )
+      .sort(
+        (a, b) => {
+          const byDate =
+            String(a.dueDate)
+              .localeCompare(
+                String(b.dueDate)
+              );
+
+          if (byDate) {
+            return byDate;
+          }
+
+          return (
+            (
+              PRIORITY_WEIGHT[b.priority] ||
+              0
+            ) -
+            (
+              PRIORITY_WEIGHT[a.priority] ||
+              0
+            )
+          );
+        }
+      );
+  }
+
+  function renderTaskList() {
+    const list =
+      document.getElementById(
+        "taskList"
+      );
+
+    const title =
+      document.getElementById(
+        "taskListTitle"
+      );
+
+    const total =
+      document.getElementById(
+        "taskTotal"
+      );
+
+    const clearDate =
+      document.getElementById(
+        "clearTaskDateFilter"
+      );
+
+    if (
+      !list ||
+      !title ||
+      !total
+    ) {
+      return;
+    }
+
+    const tasks =
+      filteredTasks();
+
+    total.textContent =
+      String(
+        tasks.length
+      );
+
+    if (selectedTaskDate) {
+      title.textContent =
+        `Tarefas de ${formatTaskDate(selectedTaskDate)}`;
+
+      if (clearDate) {
+        clearDate.hidden =
+          false;
+      }
+    }
+    else {
+      title.textContent =
+        "Tarefas do mês";
+
+      if (clearDate) {
+        clearDate.hidden =
+          true;
+      }
+    }
+
+    if (!tasks.length) {
+      list.innerHTML =
+        `
+          <div class="task-empty">
+            <i class="bx bx-check-square"></i>
+            <strong>Nenhuma tarefa aqui.</strong>
+            <span>Crie uma tarefa ou selecione outra data.</span>
+          </div>
+        `;
+
+      return;
+    }
+
+    list.innerHTML =
+      tasks
+        .map(
+          task => {
+            const cost =
+              formatTaskMoney(
+                task.cost
+              );
+
+            const updatedName =
+              task.updatedBy?.name ||
+              "Usuário";
+
+            return `
+              <article class="task-item priority-${escapeHtml(task.priority)}" data-task-id="${escapeHtml(task.id)}">
+                <button class="task-item-main" type="button" data-edit-task="${escapeHtml(task.id)}">
+                  <div class="task-item-topline">
+                    <span class="task-priority-pill priority-${escapeHtml(task.priority)}">${escapeHtml(TASK_PRIORITY[task.priority])}</span>
+                    <span class="task-due">${escapeHtml(formatTaskDate(task.dueDate))}</span>
+                  </div>
+
+                  <strong class="task-item-title">${escapeHtml(task.title)}</strong>
+
+                  <div class="task-item-meta">
+                    <span><i class="bx bx-user"></i>${escapeHtml(task.assigneeName || "Sem responsável")}</span>
+                    ${cost ? `<span><i class="bx bx-wallet"></i>${escapeHtml(cost)}</span>` : ""}
+                    ${task.category ? `<span><i class="bx bx-tag"></i>${escapeHtml(task.category)}</span>` : ""}
+                  </div>
+
+                  <small>Editado por ${escapeHtml(updatedName)} · ${escapeHtml(formatTaskDateTime(task.updatedAt))}</small>
+                </button>
+
+                <div class="task-item-status">
+                  <select data-quick-status="${escapeHtml(task.id)}" aria-label="Alterar status de ${escapeHtml(task.title)}">
+                    ${Object.entries(TASK_STATUS).map(([value,label]) => `<option value="${value}" ${task.status === value ? "selected" : ""}>${label}</option>`).join("")}
+                  </select>
+                </div>
+              </article>
+            `;
+          }
+        )
+        .join("");
   }
 
   function renderCalendar() {
@@ -1735,15 +2492,9 @@ document.addEventListener("DOMContentLoaded", () => {
         "calendarMonthLabel"
       );
 
-    const upcoming =
-      document.getElementById(
-        "upcomingEvents"
-      );
-
     if (
       !grid ||
-      !monthLabel ||
-      !upcoming
+      !monthLabel
     ) {
       return;
     }
@@ -1791,24 +2542,38 @@ document.addEventListener("DOMContentLoaded", () => {
       )
         .getDate();
 
-    const today =
-      new Date();
-
     const todayKey =
       localDateKey(
-        today
+        new Date()
       );
 
-    const events =
-      getCompanyEvents();
-
-    const eventDates =
-      new Set(
-        events.map(
-          event =>
-            event.date
-        )
+    const monthTasks =
+      tasksForMonth(
+        getCompanyTasks(),
+        year,
+        month
       );
+
+    const tasksByDate =
+      new Map();
+
+    monthTasks.forEach(
+      task => {
+        const items =
+          tasksByDate.get(
+            task.dueDate
+          ) || [];
+
+        items.push(
+          task
+        );
+
+        tasksByDate.set(
+          task.dueDate,
+          items
+        );
+      }
+    );
 
     const cells =
       [];
@@ -1828,24 +2593,27 @@ document.addEventListener("DOMContentLoaded", () => {
       day <= lastDay;
       day += 1
     ) {
-      const date =
-        new Date(
-          year,
-          month,
-          day
-        );
-
       const key =
         localDateKey(
-          date
+          new Date(
+            year,
+            month,
+            day
+          )
         );
+
+      const tasks =
+        tasksByDate.get(
+          key
+        ) || [];
 
       const classes = [
         "calendar-day"
       ];
 
       if (
-        key === todayKey
+        key ===
+        todayKey
       ) {
         classes.push(
           "is-today"
@@ -1853,116 +2621,380 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (
-        eventDates.has(
-          key
-        )
+        key ===
+        selectedTaskDate
+      ) {
+        classes.push(
+          "is-selected"
+        );
+      }
+
+      if (
+        tasks.length
       ) {
         classes.push(
           "has-event"
         );
       }
 
+      const dots =
+        tasks
+          .slice(0, 3)
+          .map(
+            task =>
+              `<i class="priority-dot priority-${escapeHtml(task.priority)}"></i>`
+          )
+          .join("");
+
+      const extra =
+        tasks.length > 3
+          ? `<span class="calendar-more">+${tasks.length - 3}</span>`
+          : "";
+
       cells.push(
-        `<button class="${classes.join(" ")}" type="button" data-calendar-date="${key}" aria-label="${day}">${day}</button>`
+        `
+          <button class="${classes.join(" ")}" type="button" data-calendar-date="${key}" aria-label="${day}, ${tasks.length} tarefa(s)">
+            <span class="calendar-day-number">${day}</span>
+            <span class="calendar-task-dots">${dots}${extra}</span>
+          </button>
+        `
       );
     }
 
     grid.innerHTML =
       cells.join("");
 
-    const todayStart =
-      new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
+    renderTaskList();
+  }
+
+  function renderTaskAudit(task) {
+    const audit =
+      document.getElementById(
+        "taskAudit"
       );
 
-    const futureEvents =
-      events
-        .map(
-          event => ({
-            ...event,
-            parsedDate:
-              parseLocalDate(
-                event.date
-              )
-          })
-        )
-        .filter(
-          event =>
-            event.parsedDate &&
-            event.parsedDate >=
-              todayStart
-        )
-        .sort(
-          (a, b) =>
-            a.parsedDate -
-            b.parsedDate
-        )
-        .slice(
-          0,
-          5
-        );
+    const summary =
+      document.getElementById(
+        "taskAuditSummary"
+      );
+
+    const history =
+      document.getElementById(
+        "taskHistoryList"
+      );
 
     if (
-      !futureEvents.length
+      !audit ||
+      !summary ||
+      !history
     ) {
-      upcoming.innerHTML =
-        '<div class="hub-empty"><i class="bx bx-calendar-check"></i><span>Nenhum compromisso futuro.</span></div>';
-
       return;
     }
 
-    upcoming.innerHTML =
-      futureEvents
-        .map(
-          event => {
+    if (!task) {
+      audit.hidden =
+        true;
+      summary.innerHTML =
+        "";
+      history.innerHTML =
+        "";
+      return;
+    }
 
-            const dateText =
-              new Intl.DateTimeFormat(
-                "pt-BR",
-                {
-                  day: "2-digit",
-                  month: "short"
-                }
-              )
-                .format(
-                  event.parsedDate
-                );
+    audit.hidden =
+      false;
 
-            return `
-              <div class="event-item">
-                <div class="event-date">${escapeHtml(dateText)}</div>
-                <div class="event-copy">
-                  <strong>${escapeHtml(event.title)}</strong>
-                  <span>Compromisso da empresa</span>
+    summary.innerHTML =
+      `
+        <div>
+          <span>Criada por</span>
+          <strong>${escapeHtml(task.createdBy?.name || "Usuário")}</strong>
+          <small>${escapeHtml(formatTaskDateTime(task.createdAt))}</small>
+        </div>
+        <div>
+          <span>Última edição</span>
+          <strong>${escapeHtml(task.updatedBy?.name || "Usuário")}</strong>
+          <small>${escapeHtml(formatTaskDateTime(task.updatedAt))}</small>
+        </div>
+      `;
+
+    const items =
+      Array.isArray(
+        task.history
+      )
+        ? [
+            ...task.history
+          ].reverse()
+        : [];
+
+    history.innerHTML =
+      items.length
+        ? items
+            .map(
+              entry => `
+                <div class="task-history-item">
+                  <i class="bx bx-history"></i>
+                  <div>
+                    <strong>${escapeHtml(entry.action || "Tarefa alterada")}</strong>
+                    <span>${escapeHtml(entry.actorName || "Usuário")} · ${escapeHtml(formatTaskDateTime(entry.at))}</span>
+                  </div>
                 </div>
-                <button type="button" data-remove-event="${escapeHtml(event.id)}" aria-label="Remover compromisso">
-                  <i class="bx bx-x"></i>
-                </button>
-              </div>
-            `;
-          }
+              `
+            )
+            .join("")
+        : '<div class="task-history-empty">Sem alterações anteriores.</div>';
+  }
+
+  function openTaskModal(
+    taskId = "",
+    presetDate = ""
+  ) {
+    const modal =
+      document.getElementById(
+        "taskModal"
+      );
+
+    const form =
+      document.getElementById(
+        "taskForm"
+      );
+
+    const title =
+      document.getElementById(
+        "taskModalTitle"
+      );
+
+    const subtitle =
+      document.getElementById(
+        "taskModalSubtitle"
+      );
+
+    const deleteButton =
+      document.getElementById(
+        "deleteTaskBtn"
+      );
+
+    const feedback =
+      document.getElementById(
+        "taskFormFeedback"
+      );
+
+    const tasks =
+      getCompanyTasks();
+
+    const task =
+      tasks.find(
+        item =>
+          item.id ===
+          taskId
+      );
+
+    const people =
+      getTaskPeople();
+
+    populateTaskPeopleOptions();
+
+    editingTaskId =
+      task?.id ||
+      "";
+
+    form?.reset();
+
+    if (feedback) {
+      feedback.textContent =
+        "";
+    }
+
+    document.getElementById(
+      "taskId"
+    ).value =
+      task?.id ||
+      "";
+
+    document.getElementById(
+      "taskTitle"
+    ).value =
+      task?.title ||
+      "";
+
+    document.getElementById(
+      "taskDueDate"
+    ).value =
+      task?.dueDate ||
+      presetDate ||
+      selectedTaskDate ||
+      localDateKey(
+        new Date()
+      );
+
+    document.getElementById(
+      "taskPriority"
+    ).value =
+      task?.priority ||
+      "medium";
+
+    document.getElementById(
+      "taskStatus"
+    ).value =
+      task?.status ||
+      "todo";
+
+    document.getElementById(
+      "taskCost"
+    ).value =
+      task?.cost ||
+      "";
+
+    document.getElementById(
+      "taskCategory"
+    ).value =
+      task?.category ||
+      "";
+
+    document.getElementById(
+      "taskDescription"
+    ).value =
+      task?.description ||
+      "";
+
+    const assignee =
+      document.getElementById(
+        "taskAssignee"
+      );
+
+    if (assignee) {
+      const actor =
+        getCurrentActor();
+
+      const wanted =
+        task
+          ? String(
+              task.assigneeEmail ||
+              task.assigneeId
+            )
+              .toLowerCase()
+          : String(
+              actor.email ||
+              actor.id
+            )
+              .toLowerCase();
+
+      if (
+        [
+          ...assignee.options
+        ].some(
+          option =>
+            option.value ===
+            wanted
         )
-        .join("");
+      ) {
+        assignee.value =
+          wanted;
+      }
+      else if (
+        people.length
+      ) {
+        assignee.value =
+          taskPersonKey(
+            people[0]
+          );
+      }
+    }
+
+    if (title) {
+      title.textContent =
+        task
+          ? "Editar tarefa"
+          : "Nova tarefa";
+    }
+
+    if (subtitle) {
+      subtitle.textContent =
+        task
+          ? "Atualize os dados. A alteração será registrada no histórico."
+          : "Cadastre uma atividade e acompanhe quem é responsável por ela.";
+    }
+
+    if (deleteButton) {
+      deleteButton.hidden =
+        !task;
+    }
+
+    renderTaskAudit(
+      task
+    );
+
+    modal?.classList.add(
+      "active"
+    );
+
+    modal?.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+    document.body.style.overflow =
+      "hidden";
+
+    window.setTimeout(
+      () =>
+        document.getElementById(
+          "taskTitle"
+        )?.focus(),
+      30
+    );
+  }
+
+  function closeTaskModal() {
+    const modal =
+      document.getElementById(
+        "taskModal"
+      );
+
+    modal?.classList.remove(
+      "active"
+    );
+
+    modal?.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    editingTaskId =
+      "";
+
+    document.body.style.overflow =
+      "";
+  }
+
+  function appendTaskHistory(
+    task,
+    action,
+    actor
+  ) {
+    const history =
+      Array.isArray(
+        task.history
+      )
+        ? task.history
+        : [];
+
+    history.push({
+      action,
+      actorName:
+        actor.name,
+      actorEmail:
+        actor.email,
+      at:
+        new Date().toISOString()
+    });
+
+    return history.slice(
+      -40
+    );
   }
 
   function initializeCalendar() {
-    const titleInput =
-      document.getElementById(
-        "eventTitleInput"
-      );
-
-    const dateInput =
-      document.getElementById(
-        "eventDateInput"
-      );
-
-    const addButton =
-      document.getElementById(
-        "addEventBtn"
-      );
-
     const previousButton =
       document.getElementById(
         "prevMonthBtn"
@@ -1973,57 +3005,495 @@ document.addEventListener("DOMContentLoaded", () => {
         "nextMonthBtn"
       );
 
-    const upcoming =
+    const newTaskButton =
       document.getElementById(
-        "upcomingEvents"
+        "newTaskBtn"
       );
 
-    if (dateInput) {
-      dateInput.value =
-        localDateKey(
-          new Date()
-        );
-    }
+    const calendar =
+      document.getElementById(
+        "companyCalendar"
+      );
 
-    addButton?.addEventListener(
+    const list =
+      document.getElementById(
+        "taskList"
+      );
+
+    const clearDate =
+      document.getElementById(
+        "clearTaskDateFilter"
+      );
+
+    const filters = [
+      document.getElementById(
+        "taskStatusFilter"
+      ),
+      document.getElementById(
+        "taskPriorityFilter"
+      ),
+      document.getElementById(
+        "taskAssigneeFilter"
+      )
+    ];
+
+    const modal =
+      document.getElementById(
+        "taskModal"
+      );
+
+    const closeButton =
+      document.getElementById(
+        "closeTaskModal"
+      );
+
+    const cancelButton =
+      document.getElementById(
+        "cancelTaskBtn"
+      );
+
+    const deleteButton =
+      document.getElementById(
+        "deleteTaskBtn"
+      );
+
+    const form =
+      document.getElementById(
+        "taskForm"
+      );
+
+    populateTaskPeopleOptions();
+
+    previousButton?.addEventListener(
       "click",
       () => {
+        calendarCursor =
+          new Date(
+            calendarCursor.getFullYear(),
+            calendarCursor.getMonth() - 1,
+            1
+          );
 
-        const title =
-          titleInput
-            ?.value
-            .trim();
+        selectedTaskDate =
+          "";
 
-        const date =
-          dateInput
-            ?.value;
+        renderCalendar();
+      }
+    );
 
-        if (
-          !title ||
-          !date
-        ) {
-          titleInput?.focus();
+    nextButton?.addEventListener(
+      "click",
+      () => {
+        calendarCursor =
+          new Date(
+            calendarCursor.getFullYear(),
+            calendarCursor.getMonth() + 1,
+            1
+          );
+
+        selectedTaskDate =
+          "";
+
+        renderCalendar();
+      }
+    );
+
+    newTaskButton?.addEventListener(
+      "click",
+      () => {
+        let date =
+          selectedTaskDate;
+
+        if (!date) {
+          const now =
+            new Date();
+
+          const isCurrentMonth =
+            now.getFullYear() ===
+              calendarCursor.getFullYear() &&
+            now.getMonth() ===
+              calendarCursor.getMonth();
+
+          date =
+            isCurrentMonth
+              ? localDateKey(
+                  now
+                )
+              : localDateKey(
+                  new Date(
+                    calendarCursor.getFullYear(),
+                    calendarCursor.getMonth(),
+                    1
+                  )
+                );
+        }
+
+        openTaskModal(
+          "",
+          date
+        );
+      }
+    );
+
+    calendar?.addEventListener(
+      "click",
+      event => {
+        const day =
+          event.target.closest(
+            "[data-calendar-date]"
+          );
+
+        if (!day) {
           return;
         }
 
-        const events =
-          getCompanyEvents();
+        const date =
+          day.dataset.calendarDate;
 
-        events.push({
-          id:
-            `evt_${Date.now().toString(36)}`,
-          title,
-          date
-        });
+        selectedTaskDate =
+          selectedTaskDate ===
+            date
+            ? ""
+            : date;
 
-        saveArray(
-          EVENTS_KEY,
-          events
+        renderCalendar();
+      }
+    );
+
+    list?.addEventListener(
+      "click",
+      event => {
+        const button =
+          event.target.closest(
+            "[data-edit-task]"
+          );
+
+        if (!button) {
+          return;
+        }
+
+        openTaskModal(
+          button.dataset.editTask
+        );
+      }
+    );
+
+    list?.addEventListener(
+      "change",
+      event => {
+        const select =
+          event.target.closest(
+            "[data-quick-status]"
+          );
+
+        if (!select) {
+          return;
+        }
+
+        const tasks =
+          getCompanyTasks();
+
+        const index =
+          tasks.findIndex(
+            task =>
+              task.id ===
+              select.dataset.quickStatus
+          );
+
+        if (index < 0) {
+          return;
+        }
+
+        const actor =
+          getCurrentActor();
+
+        const task =
+          tasks[index];
+
+        const oldStatus =
+          task.status;
+
+        task.status =
+          select.value;
+
+        task.updatedAt =
+          new Date().toISOString();
+
+        task.updatedBy =
+          actor;
+
+        task.history =
+          appendTaskHistory(
+            task,
+            `Status alterado de ${TASK_STATUS[oldStatus]} para ${TASK_STATUS[task.status]}`,
+            actor
+          );
+
+        tasks[index] =
+          normalizeTask(
+            task
+          );
+
+        saveCompanyTasks(
+          tasks
+        );
+
+        renderCalendar();
+      }
+    );
+
+    clearDate?.addEventListener(
+      "click",
+      () => {
+        selectedTaskDate =
+          "";
+
+        renderCalendar();
+      }
+    );
+
+    filters.forEach(
+      filter =>
+        filter?.addEventListener(
+          "change",
+          renderTaskList
+        )
+    );
+
+    closeButton?.addEventListener(
+      "click",
+      closeTaskModal
+    );
+
+    cancelButton?.addEventListener(
+      "click",
+      closeTaskModal
+    );
+
+    modal?.addEventListener(
+      "click",
+      event => {
+        if (
+          event.target ===
+          modal
+        ) {
+          closeTaskModal();
+        }
+      }
+    );
+
+    form?.addEventListener(
+      "submit",
+      event => {
+        event.preventDefault();
+
+        const title =
+          document.getElementById(
+            "taskTitle"
+          )?.value.trim();
+
+        const dueDate =
+          document.getElementById(
+            "taskDueDate"
+          )?.value;
+
+        const assigneeKey =
+          document.getElementById(
+            "taskAssignee"
+          )?.value;
+
+        const feedback =
+          document.getElementById(
+            "taskFormFeedback"
+          );
+
+        if (
+          !title ||
+          !dueDate ||
+          !assigneeKey
+        ) {
+          if (feedback) {
+            feedback.textContent =
+              "Preencha nome, responsável e data de entrega.";
+          }
+          return;
+        }
+
+        const people =
+          getTaskPeople();
+
+        const person =
+          people.find(
+            item =>
+              taskPersonKey(
+                item
+              ) ===
+              assigneeKey
+          );
+
+        if (!person) {
+          if (feedback) {
+            feedback.textContent =
+              "Selecione um responsável válido.";
+          }
+          return;
+        }
+
+        const tasks =
+          getCompanyTasks();
+
+        const actor =
+          getCurrentActor();
+
+        const now =
+          new Date().toISOString();
+
+        const existingIndex =
+          tasks.findIndex(
+            task =>
+              task.id ===
+              editingTaskId
+          );
+
+        if (
+          existingIndex >= 0
+        ) {
+          const existing =
+            tasks[
+              existingIndex
+            ];
+
+          const previousStatus =
+            existing.status;
+
+          const updated = {
+            ...existing,
+            title,
+            assigneeId:
+              person.id,
+            assigneeName:
+              person.name,
+            assigneeEmail:
+              person.email,
+            dueDate,
+            priority:
+              document.getElementById(
+                "taskPriority"
+              ).value,
+            status:
+              document.getElementById(
+                "taskStatus"
+              ).value,
+            cost:
+              Number(
+                document.getElementById(
+                  "taskCost"
+                ).value ||
+                0
+              ),
+            category:
+              document.getElementById(
+                "taskCategory"
+              ).value.trim(),
+            description:
+              document.getElementById(
+                "taskDescription"
+              ).value.trim(),
+            updatedAt:
+              now,
+            updatedBy:
+              actor
+          };
+
+          const statusChanged =
+            previousStatus !==
+            updated.status;
+
+          updated.history =
+            appendTaskHistory(
+              updated,
+              statusChanged
+                ? `Tarefa editada · status: ${TASK_STATUS[updated.status]}`
+                : "Tarefa editada",
+              actor
+            );
+
+          tasks[
+            existingIndex
+          ] =
+            normalizeTask(
+              updated
+            );
+        }
+        else {
+          const task = normalizeTask({
+            id:
+              `task_${Date.now().toString(36)}`,
+            title,
+            assigneeId:
+              person.id,
+            assigneeName:
+              person.name,
+            assigneeEmail:
+              person.email,
+            dueDate,
+            priority:
+              document.getElementById(
+                "taskPriority"
+              ).value,
+            status:
+              document.getElementById(
+                "taskStatus"
+              ).value,
+            cost:
+              Number(
+                document.getElementById(
+                  "taskCost"
+                ).value ||
+                0
+              ),
+            category:
+              document.getElementById(
+                "taskCategory"
+              ).value.trim(),
+            description:
+              document.getElementById(
+                "taskDescription"
+              ).value.trim(),
+            createdAt:
+              now,
+            createdBy:
+              actor,
+            updatedAt:
+              now,
+            updatedBy:
+              actor,
+            history: [
+              {
+                action:
+                  "Tarefa criada",
+                actorName:
+                  actor.name,
+                actorEmail:
+                  actor.email,
+                at:
+                  now
+              }
+            ]
+          });
+
+          tasks.push(
+            task
+          );
+        }
+
+        saveCompanyTasks(
+          tasks
         );
 
         const parsed =
           parseLocalDate(
-            date
+            dueDate
           );
 
         if (parsed) {
@@ -2035,78 +3505,56 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         }
 
-        if (titleInput) {
-          titleInput.value =
-            "";
-        }
+        selectedTaskDate =
+          dueDate;
+
+        closeTaskModal();
 
         renderCalendar();
-
       }
     );
 
-    previousButton?.addEventListener(
+    deleteButton?.addEventListener(
       "click",
       () => {
-
-        calendarCursor =
-          new Date(
-            calendarCursor.getFullYear(),
-            calendarCursor.getMonth() - 1,
-            1
-          );
-
-        renderCalendar();
-
-      }
-    );
-
-    nextButton?.addEventListener(
-      "click",
-      () => {
-
-        calendarCursor =
-          new Date(
-            calendarCursor.getFullYear(),
-            calendarCursor.getMonth() + 1,
-            1
-          );
-
-        renderCalendar();
-
-      }
-    );
-
-    upcoming?.addEventListener(
-      "click",
-      event => {
-
-        const button =
-          event.target.closest(
-            "[data-remove-event]"
-          );
-
-        if (!button) {
+        if (!editingTaskId) {
           return;
         }
 
-        const id =
-          button.dataset.removeEvent;
+        const tasks =
+          getCompanyTasks();
 
-        const events =
-          getCompanyEvents()
-            .filter(
-              item =>
-                item.id !== id
-            );
+        const task =
+          tasks.find(
+            item =>
+              item.id ===
+              editingTaskId
+          );
 
-        saveArray(
-          EVENTS_KEY,
-          events
+        if (!task) {
+          return;
+        }
+
+        const confirmed =
+          window.confirm(
+            `Excluir a tarefa "${task.title}"?`
+          );
+
+        if (!confirmed) {
+          return;
+        }
+
+        saveCompanyTasks(
+          tasks.filter(
+            item =>
+              item.id !==
+              editingTaskId
+          )
         );
 
-        renderCalendar();
+        closeTaskModal();
 
+        renderCalendar();
       }
     );
 
@@ -2357,9 +3805,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const profile =
-      getProfile();
-
     const members =
       readArray(
         TEAM_KEY
@@ -2368,11 +3813,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const registered =
       getRegisteredEmails();
 
+    const companyOwner =
+      getCompanyOwner();
+
     const owner = {
-      id: "owner",
-      name: profile.name,
-      email: profile.email,
-      role: "Proprietário",
+      ...companyOwner,
       owner: true
     };
 
@@ -2426,6 +3871,9 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         )
         .join("");
+
+    populateTaskPeopleOptions();
+    renderTaskList();
   }
 
   function initializeTeam() {
@@ -2596,6 +4044,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
 
         closeProfileModalFunction();
+        closeTaskModal();
 
       }
 
