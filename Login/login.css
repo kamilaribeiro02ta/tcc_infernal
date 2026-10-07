@@ -138,8 +138,12 @@ a {
   object-position: left center;
 }
 
+.auth-logo {
+  filter: brightness(0);
+}
+
 body.dark .auth-logo {
-  filter: invert(1);
+  filter: none;
 }
 
 
@@ -169,11 +173,17 @@ body.dark .auth-logo {
 
 #loginPanel .auth-header h1 {
   max-width: 430px;
-  font-family: "Times New Roman", Times, serif;
-  font-size: clamp(46px, 4.1vw, 62px);
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(42px, 4vw, 56px);
   font-weight: 700;
-  line-height: .88;
-  letter-spacing: -.045em;
+  line-height: .94;
+  letter-spacing: -.05em;
+}
+
+#loginPanel .auth-header .login-title-serif {
+  font-family: "Times New Roman", Times, serif;
+  font-weight: 700;
+  letter-spacing: -.035em;
 }
 
 .auth-header p {
