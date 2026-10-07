@@ -170,7 +170,7 @@
 
       const destination = loggedIn
         ? projectUrl("perfil/perfil.html")
-        : projectUrl("Login-2/login-2.html");
+        : projectUrl("Login/login.html");
 
       if (block.tagName === "A") {
         block.href = destination;
