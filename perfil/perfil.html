@@ -275,25 +275,7 @@
     <main class="profile-page">
       <div class="profile-dashboard">
 
-        <header class="dashboard-header">
-          <div>
-            <span class="profile-kicker">SUA CONTA ZUZ</span>
-            <h1><span class="profile-title-serif">Olá,</span> <span id="profileGreetingName">Usuário</span>.</h1>
-            <p>Acompanhe seus produtos, resultados e informações da conta em um só lugar.</p>
-          </div>
 
-          <div class="dashboard-actions">
-            <a href="../produtos/produtos.html" class="dashboard-search-link">
-              <i class="bx bx-search"></i>
-              <span>Gerenciar produtos</span>
-            </a>
-
-            <button class="logout-button" id="logoutBtn" type="button">
-              <i class="bx bx-log-out" aria-hidden="true"></i>
-              <span>Sair</span>
-            </button>
-          </div>
-        </header>
 
         <section class="account-section" aria-labelledby="accountSectionTitle">
           <div class="section-heading-row account-section-heading">
@@ -303,10 +285,17 @@
               <p>Informações pessoais ficam separadas da análise da empresa para não competir com os dados do negócio.</p>
             </div>
 
-            <button class="section-secondary-action" id="editProfileBtnAccount" type="button">
-              <i class="bx bx-edit-alt" aria-hidden="true"></i>
-              Editar perfil
-            </button>
+            <div class="account-section-actions">
+              <button class="section-secondary-action" id="editProfileBtnAccount" type="button">
+                <i class="bx bx-edit-alt" aria-hidden="true"></i>
+                Editar perfil
+              </button>
+
+              <button class="account-logout-action" id="logoutBtn" type="button">
+                <i class="bx bx-log-out" aria-hidden="true"></i>
+                Sair
+              </button>
+            </div>
           </div>
 
           <div class="account-surface">
