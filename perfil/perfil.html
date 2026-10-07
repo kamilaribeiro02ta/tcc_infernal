@@ -397,6 +397,52 @@
           </div>
         </section>
 
+        <section class="team-card" aria-label="Equipe da empresa">
+          <div class="card-heading team-heading">
+            <div>
+              <span class="card-kicker">EQUIPE</span>
+              <h2>Pessoas com acesso ao negócio</h2>
+              <p>Organize quem participa da empresa e qual é a função de cada pessoa.</p>
+            </div>
+            <span class="team-count" id="teamCount">1 pessoa</span>
+          </div>
+
+          <div class="team-layout">
+            <form class="team-add-form" id="teamAddForm">
+              <label>
+                <span>Nome</span>
+                <input id="teamMemberName" type="text" maxlength="60" placeholder="Nome da pessoa" required>
+              </label>
+              <label>
+                <span>Email</span>
+                <input id="teamMemberEmail" type="email" maxlength="120" placeholder="email@exemplo.com" required>
+              </label>
+              <label>
+                <span>Função</span>
+                <select id="teamMemberRole">
+                  <option value="Administrador">Administrador</option>
+                  <option value="Financeiro">Financeiro</option>
+                  <option value="Produtos">Produtos</option>
+                  <option value="Visualização">Visualização</option>
+                </select>
+              </label>
+              <button class="hub-primary-button" type="submit">
+                <i class="bx bx-user-plus"></i>
+                Adicionar à equipe
+              </button>
+            </form>
+
+            <div>
+              <div class="team-members" id="teamMembers"></div>
+              <p class="team-note">
+                Nesta versão do protótipo, a equipe é salva neste navegador. Para cada pessoa ter login próprio em dispositivos diferentes, a próxima etapa é conectar autenticação e banco de dados.
+              </p>
+            </div>
+          </div>
+        </section>
+
+
+
         <section class="business-hub" aria-label="Central da empresa">
           <article class="calendar-card">
             <div class="card-heading">
@@ -570,49 +616,7 @@
           </article>
         </section>
 
-        <section class="team-card" aria-label="Equipe da empresa">
-          <div class="card-heading team-heading">
-            <div>
-              <span class="card-kicker">EQUIPE</span>
-              <h2>Pessoas com acesso ao negócio</h2>
-              <p>Organize quem participa da empresa e qual é a função de cada pessoa.</p>
-            </div>
-            <span class="team-count" id="teamCount">1 pessoa</span>
-          </div>
 
-          <div class="team-layout">
-            <form class="team-add-form" id="teamAddForm">
-              <label>
-                <span>Nome</span>
-                <input id="teamMemberName" type="text" maxlength="60" placeholder="Nome da pessoa" required>
-              </label>
-              <label>
-                <span>Email</span>
-                <input id="teamMemberEmail" type="email" maxlength="120" placeholder="email@exemplo.com" required>
-              </label>
-              <label>
-                <span>Função</span>
-                <select id="teamMemberRole">
-                  <option value="Administrador">Administrador</option>
-                  <option value="Financeiro">Financeiro</option>
-                  <option value="Produtos">Produtos</option>
-                  <option value="Visualização">Visualização</option>
-                </select>
-              </label>
-              <button class="hub-primary-button" type="submit">
-                <i class="bx bx-user-plus"></i>
-                Adicionar à equipe
-              </button>
-            </form>
-
-            <div>
-              <div class="team-members" id="teamMembers"></div>
-              <p class="team-note">
-                Nesta versão do protótipo, a equipe é salva neste navegador. Para cada pessoa ter login próprio em dispositivos diferentes, a próxima etapa é conectar autenticação e banco de dados.
-              </p>
-            </div>
-          </div>
-        </section>
 
 
 
