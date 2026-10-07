@@ -131,8 +131,8 @@ a {
 }
 
 .auth-logo {
-  width: 148px;
-  height: 82px;
+  width: 176px;
+  height: 86px;
   display: block;
   object-fit: contain;
   object-position: left center;
@@ -165,6 +165,15 @@ body.dark .auth-logo {
   line-height: 1.02;
   letter-spacing: -.05em;
   font-weight: 700;
+}
+
+#loginPanel .auth-header h1 {
+  max-width: 430px;
+  font-family: "Times New Roman", Times, serif;
+  font-size: clamp(46px, 4.1vw, 62px);
+  font-weight: 700;
+  line-height: .88;
+  letter-spacing: -.045em;
 }
 
 .auth-header p {
@@ -303,25 +312,52 @@ body.dark .auth-logo {
   transform: translateY(0);
 }
 
-.secondary-auth-btn {
-  width: 100%;
-  min-height: 52px;
-  margin-top: -6px;
-  padding: 0 18px;
-  border: 1px solid color-mix(in srgb, var(--auth-purple) 28%, var(--auth-border));
-  border-radius: 13px;
+
+.account-mode-row {
+  margin-top: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--auth-muted);
+  font-size: 10.5px;
+}
+
+.account-mode-switch {
+  min-height: 36px;
+  padding: 3px 3px 3px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid color-mix(in srgb, var(--auth-purple) 30%, var(--auth-border));
+  border-radius: 999px;
   background: transparent;
   color: var(--auth-purple);
-  font-size: 12px;
-  font-weight: 700;
   cursor: pointer;
   transition: background .18s ease, border-color .18s ease, transform .16s ease;
 }
 
-.secondary-auth-btn:hover {
+.account-mode-switch:hover {
   background: var(--auth-purple-soft);
   border-color: var(--auth-purple);
   transform: translateY(-1px);
+}
+
+.account-mode-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.account-mode-knob {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--auth-purple);
+  color: #fff;
+  font-size: 16px;
 }
 
 .form-status {
@@ -558,8 +594,8 @@ body.dark .visual-content h2 {
   }
 
   .auth-logo {
-    width: 112px;
-    height: 62px;
+    width: 138px;
+    height: 68px;
   }
 
   .auth-header h1 {
