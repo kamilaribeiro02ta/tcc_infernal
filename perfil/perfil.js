@@ -3667,6 +3667,34 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
+        const startTime =
+          document.getElementById(
+            "taskStartTime"
+          )?.value || "";
+
+        const endTime =
+          document.getElementById(
+            "taskEndTime"
+          )?.value || "";
+
+        if (
+          startTime &&
+          endTime &&
+          endTime <=
+            startTime
+        ) {
+          if (feedback) {
+            feedback.textContent =
+              "O horário final precisa ser depois do horário inicial.";
+          }
+
+          document.getElementById(
+            "taskEndTime"
+          )?.focus();
+
+          return;
+        }
+
         const people =
           getTaskPeople();
 
