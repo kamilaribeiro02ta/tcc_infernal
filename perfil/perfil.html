@@ -295,231 +295,6 @@
           </div>
         </header>
 
-        <section class="summary-grid" aria-label="Resumo do negócio">
-          <article class="summary-tile">
-            <div class="summary-icon"><i class="bx bx-package"></i></div>
-            <div>
-              <span>Produtos</span>
-              <strong id="profileProducts">0</strong>
-              <small>Cadastrados</small>
-            </div>
-          </article>
-
-          <article class="summary-tile">
-            <div class="summary-icon"><i class="bx bx-category"></i></div>
-            <div>
-              <span>Categorias</span>
-              <strong id="profileCategories">0</strong>
-              <small>Organizadas</small>
-            </div>
-          </article>
-
-          <article class="summary-tile">
-            <div class="summary-icon"><i class="bx bx-trending-up"></i></div>
-            <div>
-              <span>Margem média</span>
-              <strong id="profileAverageMargin">0.0%</strong>
-              <small>Dos produtos</small>
-            </div>
-          </article>
-
-          <article class="summary-tile">
-            <div class="summary-icon"><i class="bx bx-wallet"></i></div>
-            <div>
-              <span>Faturamento</span>
-              <strong id="profileRevenue">R$ 0,00</strong>
-              <small>Estimado</small>
-            </div>
-          </article>
-        </section>
-
-        <section class="business-section" aria-labelledby="businessOverviewTitle">
-          <div class="section-heading-row">
-            <div>
-              <span class="section-label">SEU NEGÓCIO</span>
-              <h2 id="businessOverviewTitle">Visão geral</h2>
-              <p>Acompanhe a margem dos produtos sem disputar atenção com as informações da sua conta.</p>
-            </div>
-
-            <a href="../garfico/grafico.html" class="section-primary-action">
-              Ver gráfico completo
-              <i class="bx bx-right-arrow-alt"></i>
-            </a>
-          </div>
-
-          <div class="business-overview-surface">
-            <div class="overview-chart" id="businessOverviewChart" role="img" aria-label="Margem dos produtos cadastrados">
-              <div class="chart-y-labels">
-                <span>100</span>
-                <span>75</span>
-                <span>50</span>
-                <span>25</span>
-                <span>0</span>
-              </div>
-
-              <div class="chart-stage">
-                <span class="grid-line line-1"></span>
-                <span class="grid-line line-2"></span>
-                <span class="grid-line line-3"></span>
-                <span class="grid-line line-4"></span>
-                <span class="grid-line line-5"></span>
-
-                <svg class="overview-chart-svg" viewBox="0 0 700 260" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="profileChartArea" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="currentColor" stop-opacity=".14"/>
-                      <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
-                    </linearGradient>
-                  </defs>
-                  <path class="chart-area" id="profileChartAreaPath" d="M10 230 L690 230 L690 250 L10 250 Z"/>
-                  <path class="chart-line" id="profileChartLinePath" d="M10 230 L690 230"/>
-                  <circle cx="10" cy="210" r="5"/>
-                  <circle cx="120" cy="178" r="5"/>
-                  <circle cx="230" cy="126" r="5"/>
-                  <circle cx="340" cy="160" r="5"/>
-                  <circle cx="450" cy="98" r="5"/>
-                  <circle cx="560" cy="72" r="5"/>
-                  <circle cx="690" cy="82" r="5"/>
-                </svg>
-
-                <div class="chart-x-labels" id="profileChartLabels">
-                  <span>Produto</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="chart-caption">
-              <strong>Margem por produto</strong>
-              <span>Quanto maior a linha, maior a margem calculada para aquele produto.</span>
-            </div>
-          </div>
-        </section>
-
-        <div class="section-intro">
-          <span class="section-label">GESTÃO DIÁRIA</span>
-          <div>
-            <h2>Organize o que precisa acontecer.</h2>
-            <p>Agenda, notas e avisos ficam juntos porque fazem parte do mesmo fluxo de trabalho.</p>
-          </div>
-        </div>
-
-        <section class="business-hub" aria-label="Central da empresa">
-          <article class="calendar-card">
-            <div class="card-heading">
-              <div>
-                <span class="card-kicker">AGENDA</span>
-                <h2>Calendário da empresa</h2>
-              </div>
-              <div class="calendar-toolbar" aria-label="Navegar pelos meses">
-                <button id="prevMonthBtn" type="button" aria-label="Mês anterior"><i class="bx bx-chevron-left"></i></button>
-                <span class="compact-badge" id="calendarMonthLabel">Mês atual</span>
-                <button id="nextMonthBtn" type="button" aria-label="Próximo mês"><i class="bx bx-chevron-right"></i></button>
-              </div>
-            </div>
-
-            <div class="calendar-layout">
-              <div>
-                <div class="calendar-weekdays" aria-hidden="true">
-                  <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
-                </div>
-                <div class="calendar-grid" id="companyCalendar" aria-label="Calendário mensal"></div>
-              </div>
-
-              <div class="agenda-column">
-                <div class="agenda-create">
-                  <label>
-                    <span>Compromisso</span>
-                    <input id="eventTitleInput" type="text" maxlength="60" placeholder="Ex.: revisar preços">
-                  </label>
-                  <label>
-                    <span>Data</span>
-                    <input id="eventDateInput" type="date">
-                  </label>
-                  <button id="addEventBtn" class="hub-primary-button" type="button">
-                    <i class="bx bx-plus"></i>
-                    Adicionar
-                  </button>
-                </div>
-                <div class="upcoming-events" id="upcomingEvents" aria-live="polite"></div>
-              </div>
-            </div>
-          </article>
-
-          <article class="notes-card">
-            <div class="card-heading">
-              <div>
-                <span class="card-kicker">NOTAS</span>
-                <h2>Notas rápidas</h2>
-              </div>
-              <span class="save-status" id="notesSaveStatus">Salvo</span>
-            </div>
-
-            <p class="hub-description">Use este espaço para decisões, lembretes e pontos para revisar depois.</p>
-            <textarea
-              id="companyNotes"
-              maxlength="2500"
-              placeholder="Anote aqui o que não pode esquecer..."
-              aria-label="Notas da empresa"
-            ></textarea>
-          </article>
-
-          <article class="alerts-card">
-            <div class="card-heading">
-              <div>
-                <span class="card-kicker">AVISOS</span>
-                <h2>O que pede atenção</h2>
-              </div>
-              <div class="card-heading-icon"><i class="bx bx-bell"></i></div>
-            </div>
-
-            <div class="business-alerts" id="businessAlerts" aria-live="polite"></div>
-          </article>
-        </section>
-
-        <section class="team-card" aria-label="Equipe da empresa">
-          <div class="card-heading team-heading">
-            <div>
-              <span class="card-kicker">EQUIPE</span>
-              <h2>Pessoas com acesso ao negócio</h2>
-              <p>Organize quem participa da empresa e qual é a função de cada pessoa.</p>
-            </div>
-            <span class="team-count" id="teamCount">1 pessoa</span>
-          </div>
-
-          <div class="team-layout">
-            <form class="team-add-form" id="teamAddForm">
-              <label>
-                <span>Nome</span>
-                <input id="teamMemberName" type="text" maxlength="60" placeholder="Nome da pessoa" required>
-              </label>
-              <label>
-                <span>Email</span>
-                <input id="teamMemberEmail" type="email" maxlength="120" placeholder="email@exemplo.com" required>
-              </label>
-              <label>
-                <span>Função</span>
-                <select id="teamMemberRole">
-                  <option value="Administrador">Administrador</option>
-                  <option value="Financeiro">Financeiro</option>
-                  <option value="Produtos">Produtos</option>
-                  <option value="Visualização">Visualização</option>
-                </select>
-              </label>
-              <button class="hub-primary-button" type="submit">
-                <i class="bx bx-user-plus"></i>
-                Adicionar à equipe
-              </button>
-            </form>
-
-            <div>
-              <div class="team-members" id="teamMembers"></div>
-              <p class="team-note">
-                Nesta versão do protótipo, a equipe é salva neste navegador. Para cada pessoa ter login próprio em dispositivos diferentes, a próxima etapa é conectar autenticação e banco de dados.
-              </p>
-            </div>
-          </div>
-        </section>
-
         <section class="account-section" aria-labelledby="accountSectionTitle">
           <div class="section-heading-row account-section-heading">
             <div>
@@ -608,6 +383,232 @@
             </div>
           </div>
         </section>
+
+        <div class="section-intro">
+          <span class="section-label">GESTÃO DIÁRIA</span>
+          <div>
+            <h2>Organize o que precisa acontecer.</h2>
+            <p>Agenda, notas e avisos ficam juntos porque fazem parte do mesmo fluxo de trabalho.</p>
+          </div>
+        </div>
+
+        <section class="business-hub" aria-label="Central da empresa">
+          <article class="calendar-card">
+            <div class="card-heading">
+              <div>
+                <span class="card-kicker">AGENDA</span>
+                <h2>Calendário da empresa</h2>
+              </div>
+              <div class="calendar-toolbar" aria-label="Navegar pelos meses">
+                <button id="prevMonthBtn" type="button" aria-label="Mês anterior"><i class="bx bx-chevron-left"></i></button>
+                <span class="compact-badge" id="calendarMonthLabel">Mês atual</span>
+                <button id="nextMonthBtn" type="button" aria-label="Próximo mês"><i class="bx bx-chevron-right"></i></button>
+              </div>
+            </div>
+
+            <div class="calendar-layout">
+              <div>
+                <div class="calendar-weekdays" aria-hidden="true">
+                  <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+                </div>
+                <div class="calendar-grid" id="companyCalendar" aria-label="Calendário mensal"></div>
+              </div>
+
+              <div class="agenda-column">
+                <div class="agenda-create">
+                  <label>
+                    <span>Compromisso</span>
+                    <input id="eventTitleInput" type="text" maxlength="60" placeholder="Ex.: revisar preços">
+                  </label>
+                  <label>
+                    <span>Data</span>
+                    <input id="eventDateInput" type="date">
+                  </label>
+                  <button id="addEventBtn" class="hub-primary-button" type="button">
+                    <i class="bx bx-plus"></i>
+                    Adicionar
+                  </button>
+                </div>
+                <div class="upcoming-events" id="upcomingEvents" aria-live="polite"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="notes-card">
+            <div class="card-heading">
+              <div>
+                <span class="card-kicker">NOTAS</span>
+                <h2>Notas rápidas</h2>
+              </div>
+              <span class="save-status" id="notesSaveStatus">Salvo</span>
+            </div>
+
+            <p class="hub-description">Use este espaço para decisões, lembretes e pontos para revisar depois.</p>
+            <textarea
+              id="companyNotes"
+              maxlength="2500"
+              placeholder="Anote aqui o que não pode esquecer..."
+              aria-label="Notas da empresa"
+            ></textarea>
+          </article>
+
+          <article class="alerts-card">
+            <div class="card-heading">
+              <div>
+                <span class="card-kicker">AVISOS</span>
+                <h2>O que pede atenção</h2>
+              </div>
+              <div class="card-heading-icon"><i class="bx bx-bell"></i></div>
+            </div>
+
+            <div class="business-alerts" id="businessAlerts" aria-live="polite"></div>
+          </article>
+        </section>
+
+        <section class="business-section" aria-labelledby="businessOverviewTitle">
+          <div class="section-heading-row">
+            <div>
+              <span class="section-label">SEU NEGÓCIO</span>
+              <h2 id="businessOverviewTitle">Visão geral</h2>
+              <p>Acompanhe a margem dos produtos sem disputar atenção com as informações da sua conta.</p>
+            </div>
+
+            <a href="../garfico/grafico.html" class="section-primary-action">
+              Ver gráfico completo
+              <i class="bx bx-right-arrow-alt"></i>
+            </a>
+          </div>
+
+          <div class="business-overview-surface">
+            <div class="overview-chart" id="businessOverviewChart" role="img" aria-label="Margem dos produtos cadastrados">
+              <div class="chart-y-labels">
+                <span>100</span>
+                <span>75</span>
+                <span>50</span>
+                <span>25</span>
+                <span>0</span>
+              </div>
+
+              <div class="chart-stage">
+                <span class="grid-line line-1"></span>
+                <span class="grid-line line-2"></span>
+                <span class="grid-line line-3"></span>
+                <span class="grid-line line-4"></span>
+                <span class="grid-line line-5"></span>
+
+                <svg class="overview-chart-svg" viewBox="0 0 700 260" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="profileChartArea" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="currentColor" stop-opacity=".14"/>
+                      <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path class="chart-area" id="profileChartAreaPath" d="M10 230 L690 230 L690 250 L10 250 Z"/>
+                  <path class="chart-line" id="profileChartLinePath" d="M10 230 L690 230"/>
+                  <circle cx="10" cy="210" r="5"/>
+                  <circle cx="120" cy="178" r="5"/>
+                  <circle cx="230" cy="126" r="5"/>
+                  <circle cx="340" cy="160" r="5"/>
+                  <circle cx="450" cy="98" r="5"/>
+                  <circle cx="560" cy="72" r="5"/>
+                  <circle cx="690" cy="82" r="5"/>
+                </svg>
+
+                <div class="chart-x-labels" id="profileChartLabels">
+                  <span>Produto</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-caption">
+              <strong>Margem por produto</strong>
+              <span>Quanto maior a linha, maior a margem calculada para aquele produto.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="summary-grid" aria-label="Resumo do negócio">
+          <article class="summary-tile">
+            <div class="summary-icon"><i class="bx bx-package"></i></div>
+            <div>
+              <span>Produtos</span>
+              <strong id="profileProducts">0</strong>
+              <small>Cadastrados</small>
+            </div>
+          </article>
+
+          <article class="summary-tile">
+            <div class="summary-icon"><i class="bx bx-category"></i></div>
+            <div>
+              <span>Categorias</span>
+              <strong id="profileCategories">0</strong>
+              <small>Organizadas</small>
+            </div>
+          </article>
+
+          <article class="summary-tile">
+            <div class="summary-icon"><i class="bx bx-trending-up"></i></div>
+            <div>
+              <span>Margem média</span>
+              <strong id="profileAverageMargin">0.0%</strong>
+              <small>Dos produtos</small>
+            </div>
+          </article>
+
+          <article class="summary-tile">
+            <div class="summary-icon"><i class="bx bx-wallet"></i></div>
+            <div>
+              <span>Faturamento</span>
+              <strong id="profileRevenue">R$ 0,00</strong>
+              <small>Estimado</small>
+            </div>
+          </article>
+        </section>
+
+        <section class="team-card" aria-label="Equipe da empresa">
+          <div class="card-heading team-heading">
+            <div>
+              <span class="card-kicker">EQUIPE</span>
+              <h2>Pessoas com acesso ao negócio</h2>
+              <p>Organize quem participa da empresa e qual é a função de cada pessoa.</p>
+            </div>
+            <span class="team-count" id="teamCount">1 pessoa</span>
+          </div>
+
+          <div class="team-layout">
+            <form class="team-add-form" id="teamAddForm">
+              <label>
+                <span>Nome</span>
+                <input id="teamMemberName" type="text" maxlength="60" placeholder="Nome da pessoa" required>
+              </label>
+              <label>
+                <span>Email</span>
+                <input id="teamMemberEmail" type="email" maxlength="120" placeholder="email@exemplo.com" required>
+              </label>
+              <label>
+                <span>Função</span>
+                <select id="teamMemberRole">
+                  <option value="Administrador">Administrador</option>
+                  <option value="Financeiro">Financeiro</option>
+                  <option value="Produtos">Produtos</option>
+                  <option value="Visualização">Visualização</option>
+                </select>
+              </label>
+              <button class="hub-primary-button" type="submit">
+                <i class="bx bx-user-plus"></i>
+                Adicionar à equipe
+              </button>
+            </form>
+
+            <div>
+              <div class="team-members" id="teamMembers"></div>
+              <p class="team-note">
+                Nesta versão do protótipo, a equipe é salva neste navegador. Para cada pessoa ter login próprio em dispositivos diferentes, a próxima etapa é conectar autenticação e banco de dados.
+              </p>
+            </div>
+          </div>
+        </section>
+
 
 
 
