@@ -5,8 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const SESSION_KEY = "zuz-session";
   const PROFILE_KEY = "zuz-profile";
 
-  const loginTab = document.getElementById("loginTab");
-  const signupTab = document.getElementById("signupTab");
   const loginPanel = document.getElementById("loginPanel");
   const signupPanel = document.getElementById("signupPanel");
 
@@ -85,16 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function showMode(mode, updateUrl = true) {
     const isLogin = mode !== "signup";
 
-    loginTab.classList.toggle("active", isLogin);
-    signupTab.classList.toggle("active", !isLogin);
-    loginTab.setAttribute("aria-selected", String(isLogin));
-    signupTab.setAttribute("aria-selected", String(!isLogin));
-
     loginPanel.hidden = !isLogin;
     signupPanel.hidden = isLogin;
-    loginPanel.classList.toggle("active", isLogin);
-    signupPanel.classList.toggle("active", !isLogin);
-
     document.title = isLogin ? "ZUZ | Entrar" : "ZUZ | Criar conta";
 
     if (updateUrl) {
@@ -161,9 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  loginTab.addEventListener("click", () => showMode("login"));
-  signupTab.addEventListener("click", () => showMode("signup"));
-
   document.querySelectorAll("[data-switch-mode]").forEach(button => {
     button.addEventListener("click", () => showMode(button.dataset.switchMode));
   });
@@ -174,7 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const email = loginEmail.value.trim().toLowerCase();
     const password = loginPassword.value;
-
     let valid = true;
 
     if (!email) {
@@ -207,9 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const passwordHash = await hashPassword(password);
-    const passwordMatches =
-      user.passwordHash === passwordHash ||
-      user.passwordHash === password;
+    const passwordMatches = user.passwordHash === passwordHash || user.passwordHash === password;
 
     if (!passwordMatches) {
       setStatus(loginStatus, "Senha incorreta.", "is-error");
@@ -233,7 +217,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const last = lastName.value.trim();
     const email = signupEmail.value.trim().toLowerCase();
     const password = signupPassword.value;
-
     let valid = true;
 
     if (!first) {
