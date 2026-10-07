@@ -1,15 +1,15 @@
 :root {
-  --page-bg: #f5f4f2;
+  --page-bg: #f7f6fb;
   --surface: #ffffff;
-  --surface-soft: #f0eeeb;
+  --surface-soft: #f3f0fa;
   --text: #111014;
-  --muted: #706a74;
+  --muted: #686171;
   --line: rgba(20,16,28,.10);
 
   --purple: #6a3df0;
-  --purple-dark: #4f28d0;
-  --purple-soft: #e9e2ff;
-  --purple-pale: #f3efff;
+  --purple-dark: #572bd8;
+  --purple-soft: #ece6ff;
+  --purple-pale: #f6f3ff;
 
   --black-panel: #141217;
 
@@ -67,7 +67,7 @@ body {
   font-family: "Poppins", sans-serif;
   color: var(--text);
   background: var(--page-bg);
-  background-color: #0E0A14;
+  background-color: var(--page-bg);
 }
 
 a {
