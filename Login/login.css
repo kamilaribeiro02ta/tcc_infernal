@@ -1995,13 +1995,6 @@ body {
     transform: translateY(4px);
   }
 
-  .auth-page.is-signup-mode .auth-logo-link {
-    margin-left: auto;
-  }
-
-  .auth-page.is-signup-mode .auth-logo {
-    object-position: right center;
-  }
 }
 
 @media (min-width: 993px) and (max-width: 1180px) {
@@ -2043,9 +2036,6 @@ body {
     transition: none;
   }
 
-  .auth-page.is-signup-mode .auth-logo-link {
-    margin-left: 0;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
