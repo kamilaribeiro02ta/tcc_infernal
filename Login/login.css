@@ -406,7 +406,12 @@ body.dark .auth-logo {
   overflow: hidden;
   isolation: isolate;
   background:
-    linear-gradient(135deg, #f4ecff 0%, #f7eef7 45%, #e8ddff 100%);
+    linear-gradient(
+      135deg,
+      var(--brand-primary-soft) 0%,
+      var(--brand-bg) 48%,
+      color-mix(in srgb, var(--brand-violet) 22%, #ffffff) 100%
+    );
 }
 
 .auth-visual::before {
@@ -418,8 +423,14 @@ body.dark .auth-logo {
   bottom: 3%;
   border-radius: 32% 68% 58% 42% / 44% 39% 61% 56%;
   background:
-    radial-gradient(circle at 28% 30%, rgba(255,255,255,.80), transparent 24%),
-    radial-gradient(circle at 58% 54%, rgba(242,151,120,.72), rgba(215,113,90,.42) 38%, rgba(107,66,238,.18) 70%, transparent 82%);
+    radial-gradient(circle at 28% 30%, rgba(255,255,255,.82), transparent 24%),
+    radial-gradient(
+      circle at 58% 54%,
+      color-mix(in srgb, var(--brand-peach) 78%, #ffffff),
+      color-mix(in srgb, var(--brand-peach) 58%, var(--brand-primary)) 38%,
+      color-mix(in srgb, var(--brand-primary) 30%, transparent) 70%,
+      transparent 82%
+    );
   filter: blur(28px);
   opacity: .96;
   transform: rotate(-5deg) scale(1.06);
@@ -435,7 +446,13 @@ body.dark .auth-logo {
   top: 9%;
   border-radius: 38% 62% 52% 48% / 44% 36% 64% 56%;
   background:
-    radial-gradient(circle at 38% 34%, rgba(255,255,255,.92), rgba(189,165,255,.55) 42%, rgba(128,88,231,.28) 72%, transparent 82%);
+    radial-gradient(
+      circle at 38% 34%,
+      rgba(255,255,255,.92),
+      color-mix(in srgb, var(--brand-violet) 42%, #ffffff) 42%,
+      color-mix(in srgb, var(--brand-primary) 30%, transparent) 72%,
+      transparent 82%
+    );
   filter: blur(22px);
   opacity: .88;
   z-index: 0;
@@ -443,19 +460,36 @@ body.dark .auth-logo {
 
 body.dark .auth-visual {
   background:
-    linear-gradient(135deg, #1a1027 0%, #26152f 46%, #201644 100%);
+    linear-gradient(
+      135deg,
+      var(--brand-dark-bg) 0%,
+      var(--brand-dark-surface) 48%,
+      color-mix(in srgb, var(--brand-primary-dark) 34%, var(--brand-dark-bg)) 100%
+    );
 }
 
 body.dark .auth-visual::before {
   background:
-    radial-gradient(circle at 28% 30%, rgba(255,255,255,.12), transparent 24%),
-    radial-gradient(circle at 58% 54%, rgba(210,128,108,.62), rgba(151,72,77,.38) 38%, rgba(119,82,238,.34) 72%, transparent 82%);
-  opacity: .92;
+    radial-gradient(circle at 28% 30%, rgba(255,255,255,.10), transparent 24%),
+    radial-gradient(
+      circle at 58% 54%,
+      color-mix(in srgb, var(--brand-peach) 48%, var(--brand-dark-surface)),
+      color-mix(in srgb, var(--brand-primary) 46%, var(--brand-dark-surface)) 40%,
+      color-mix(in srgb, var(--brand-violet) 34%, transparent) 72%,
+      transparent 82%
+    );
+  opacity: .90;
 }
 
 body.dark .auth-visual::after {
   background:
-    radial-gradient(circle at 38% 34%, rgba(255,255,255,.64), rgba(187,166,255,.36) 42%, rgba(139,101,255,.24) 72%, transparent 82%);
+    radial-gradient(
+      circle at 38% 34%,
+      rgba(255,255,255,.54),
+      color-mix(in srgb, var(--brand-violet) 38%, transparent) 42%,
+      color-mix(in srgb, var(--brand-primary) 26%, transparent) 72%,
+      transparent 82%
+    );
   opacity: .72;
 }
 
@@ -482,7 +516,11 @@ body.dark .auth-visual::after {
   bottom: 10%;
   border-radius: 42% 58% 63% 37% / 56% 42% 58% 44%;
   background:
-    linear-gradient(135deg, rgba(255,206,187,.58), rgba(183,137,255,.30));
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--brand-peach) 62%, #ffffff),
+      color-mix(in srgb, var(--brand-violet) 34%, transparent)
+    );
   filter: blur(44px);
   opacity: .60;
   transform: rotate(8deg);
@@ -495,20 +533,32 @@ body.dark .auth-visual::after {
   top: 15%;
   border-radius: 44% 56% 48% 52% / 52% 42% 58% 48%;
   background:
-    linear-gradient(145deg, rgba(255,255,255,.78), rgba(157,124,255,.36));
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.78),
+      color-mix(in srgb, var(--brand-violet) 38%, transparent)
+    );
   filter: blur(34px);
   opacity: .72;
 }
 
 body.dark .visual-orb-one {
   background:
-    linear-gradient(135deg, rgba(212,126,109,.34), rgba(124,92,255,.28));
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--brand-peach) 34%, transparent),
+      color-mix(in srgb, var(--brand-violet) 30%, transparent)
+    );
   opacity: .55;
 }
 
 body.dark .visual-orb-two {
   background:
-    linear-gradient(145deg, rgba(255,255,255,.30), rgba(151,120,255,.28));
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.28),
+      color-mix(in srgb, var(--brand-violet) 30%, transparent)
+    );
   opacity: .58;
 }
 
