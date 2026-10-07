@@ -1630,3 +1630,49 @@ body.dark .business-alert.success .business-alert-icon {
   background: var(--purple-pale);
   font-size: 15px;
 }
+
+
+/* =========================================================
+   PROFILE SECTION ORDER
+   Perfil -> calendário -> gráfico -> indicadores -> equipe
+========================================================= */
+
+.dashboard-header + .account-section {
+  margin-top: 30px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.account-section + .section-intro {
+  margin-top: var(--section-gap);
+}
+
+.section-intro + .business-hub {
+  margin-top: 24px;
+}
+
+.business-hub + .business-section {
+  margin-top: var(--section-gap);
+}
+
+.business-section + .summary-grid {
+  margin-top: 28px;
+}
+
+.summary-grid + .team-card {
+  margin-top: var(--section-gap);
+}
+
+@media (max-width: 760px) {
+  .dashboard-header + .account-section {
+    margin-top: 22px;
+  }
+
+  .section-intro + .business-hub {
+    margin-top: 18px;
+  }
+
+  .business-section + .summary-grid {
+    margin-top: 18px;
+  }
+}
