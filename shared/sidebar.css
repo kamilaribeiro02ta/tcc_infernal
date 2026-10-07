@@ -628,3 +628,187 @@ body.dark .nav-item[aria-current="page"] {
     width: 145px !important;
   }
 }
+
+
+/* =========================================================
+   FINAL ROUNDED SIDEBAR SYSTEM
+   Shared by every ZUZ page
+========================================================= */
+
+.sidebar,
+.page .sidebar {
+  border-radius: 0 24px 24px 0 !important;
+  border-right: 0 !important;
+  box-shadow: 0 10px 34px rgba(39, 26, 68, .06) !important;
+}
+
+body.dark .sidebar,
+body.dark .page .sidebar {
+  box-shadow: 0 12px 36px rgba(0, 0, 0, .18) !important;
+}
+
+.sidebar .login-block,
+.page .sidebar .login-block {
+  margin-bottom: 14px !important;
+  padding: 10px 10px !important;
+  min-height: 64px !important;
+  border: 1px solid transparent !important;
+  border-radius: 16px !important;
+  background: transparent !important;
+  transition:
+    background .18s ease,
+    border-color .18s ease !important;
+}
+
+.sidebar .login-block:hover,
+.page .sidebar .login-block:hover {
+  border-color: color-mix(in srgb, var(--purple, #6a3df0) 12%, transparent) !important;
+  background: color-mix(in srgb, var(--nav-hover-bg, #f6f5ff) 72%, transparent) !important;
+}
+
+.sidebar .avatar {
+  border-radius: 14px !important;
+}
+
+.sidebar .nav-menu {
+  gap: 7px !important;
+}
+
+.sidebar .nav-item,
+.page .sidebar .nav-item {
+  min-height: 44px !important;
+  padding: 10px 14px !important;
+  border: 1px solid transparent !important;
+  border-radius: 14px !important;
+  background: transparent !important;
+}
+
+.sidebar .nav-item:hover,
+.page .sidebar .nav-item:hover {
+  border-color: color-mix(in srgb, var(--purple, #6a3df0) 10%, transparent) !important;
+  background: var(--nav-hover-bg, #f6f5ff) !important;
+}
+
+.sidebar .nav-item.active,
+.sidebar .nav-item[aria-current="page"],
+.page .sidebar .nav-item.active,
+.page .sidebar .nav-item[aria-current="page"] {
+  border: 1px solid color-mix(in srgb, var(--purple, #6a3df0) 16%, transparent) !important;
+  border-left: 1px solid color-mix(in srgb, var(--purple, #6a3df0) 16%, transparent) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--purple, #6a3df0) 16%, transparent) !important;
+  border-radius: 14px !important;
+  color: var(--purple, #6a3df0) !important;
+  background:
+    color-mix(in srgb, var(--nav-hover-bg, #f6f5ff) 88%, var(--purple, #6a3df0) 4%) !important;
+  box-shadow: 0 6px 18px rgba(106,61,240,.07) !important;
+}
+
+body.dark .sidebar .nav-item.active,
+body.dark .sidebar .nav-item[aria-current="page"],
+body.dark .page .sidebar .nav-item.active,
+body.dark .page .sidebar .nav-item[aria-current="page"] {
+  border-color: color-mix(in srgb, var(--purple, #8c6bff) 20%, transparent) !important;
+  background:
+    color-mix(in srgb, var(--nav-hover-bg, #241d3d) 90%, var(--purple, #8c6bff) 6%) !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,.12) !important;
+}
+
+/* Theme control with explicit sun in light mode and moon in dark mode */
+.sidebar .theme-toggle {
+  overflow: hidden !important;
+  border: 1px solid color-mix(in srgb, var(--purple, #6a3df0) 8%, transparent) !important;
+  border-radius: 999px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.34) !important;
+}
+
+.sidebar .theme-toggle-knob {
+  border: 1px solid color-mix(in srgb, var(--purple, #6a3df0) 10%, transparent) !important;
+  border-radius: 50% !important;
+}
+
+.sidebar #iconSun {
+  display: block !important;
+  color: #f2b33d !important;
+}
+
+.sidebar #iconMoon {
+  display: none !important;
+  color: #c4b0ff !important;
+}
+
+body.dark .sidebar #iconSun {
+  display: none !important;
+}
+
+body.dark .sidebar #iconMoon {
+  display: block !important;
+}
+
+@media (max-width: 992px) {
+  .sidebar,
+  .page .sidebar {
+    border-radius: 0 0 22px 22px !important;
+    border-bottom: 0 !important;
+    box-shadow: 0 10px 28px rgba(39, 26, 68, .06) !important;
+  }
+
+  .sidebar .login-block,
+  .page .sidebar .login-block {
+    margin: 0 !important;
+    padding: 7px 9px !important;
+    min-height: 48px !important;
+    border-radius: 14px !important;
+  }
+
+  .sidebar .nav-menu,
+  .page .sidebar .nav-menu {
+    padding: 3px !important;
+    gap: 5px !important;
+    border-radius: 16px !important;
+  }
+
+  .sidebar .nav-item,
+  .page .sidebar .nav-item {
+    min-height: 40px !important;
+    padding: 9px 13px !important;
+    border: 1px solid transparent !important;
+    border-radius: 12px !important;
+  }
+
+  .sidebar .nav-item.active,
+  .sidebar .nav-item[aria-current="page"],
+  .page .sidebar .nav-item.active,
+  .page .sidebar .nav-item[aria-current="page"] {
+    border: 1px solid color-mix(in srgb, var(--purple, #6a3df0) 16%, transparent) !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--purple, #6a3df0) 16%, transparent) !important;
+    border-radius: 12px !important;
+  }
+
+  .sidebar .theme-toggle {
+    border-radius: 999px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .sidebar,
+  .page .sidebar {
+    border-radius: 0 0 18px 18px !important;
+  }
+
+  .sidebar .login-block,
+  .page .sidebar .login-block {
+    border-radius: 12px !important;
+  }
+
+  .sidebar .nav-menu,
+  .page .sidebar .nav-menu {
+    border-radius: 14px !important;
+  }
+
+  .sidebar .nav-item,
+  .page .sidebar .nav-item,
+  .sidebar .nav-item.active,
+  .sidebar .nav-item[aria-current="page"] {
+    border-radius: 11px !important;
+  }
+}
