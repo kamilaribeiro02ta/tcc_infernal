@@ -406,72 +406,133 @@ body.dark .auth-logo {
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(circle at 26% 74%, rgba(242,167,143,.82), transparent 27%),
-    radial-gradient(circle at 77% 17%, rgba(255,255,255,.82), transparent 24%),
-    radial-gradient(circle at 80% 72%, rgba(123,86,246,.35), transparent 34%),
-    linear-gradient(138deg, #eee8ff 0%, #f7eaf3 44%, #ddd3ff 100%);
+    linear-gradient(135deg, #f4ecff 0%, #f7eef7 45%, #e8ddff 100%);
+}
+
+.auth-visual::before {
+  content: "";
+  position: absolute;
+  width: 72%;
+  height: 58%;
+  left: 8%;
+  bottom: 3%;
+  border-radius: 32% 68% 58% 42% / 44% 39% 61% 56%;
+  background:
+    radial-gradient(circle at 28% 30%, rgba(255,255,255,.80), transparent 24%),
+    radial-gradient(circle at 58% 54%, rgba(242,151,120,.72), rgba(215,113,90,.42) 38%, rgba(107,66,238,.18) 70%, transparent 82%);
+  filter: blur(28px);
+  opacity: .96;
+  transform: rotate(-5deg) scale(1.06);
+  z-index: 0;
+}
+
+.auth-visual::after {
+  content: "";
+  position: absolute;
+  width: 34%;
+  aspect-ratio: 1;
+  right: 8%;
+  top: 9%;
+  border-radius: 38% 62% 52% 48% / 44% 36% 64% 56%;
+  background:
+    radial-gradient(circle at 38% 34%, rgba(255,255,255,.92), rgba(189,165,255,.55) 42%, rgba(128,88,231,.28) 72%, transparent 82%);
+  filter: blur(22px);
+  opacity: .88;
+  z-index: 0;
 }
 
 body.dark .auth-visual {
   background:
-    radial-gradient(circle at 26% 74%, rgba(217,140,127,.48), transparent 27%),
-    radial-gradient(circle at 77% 17%, rgba(255,255,255,.09), transparent 24%),
-    radial-gradient(circle at 80% 72%, rgba(140,107,255,.48), transparent 34%),
-    linear-gradient(138deg, #21152e 0%, #2a1936 44%, #241b49 100%);
+    linear-gradient(135deg, #1a1027 0%, #26152f 46%, #201644 100%);
+}
+
+body.dark .auth-visual::before {
+  background:
+    radial-gradient(circle at 28% 30%, rgba(255,255,255,.12), transparent 24%),
+    radial-gradient(circle at 58% 54%, rgba(210,128,108,.62), rgba(151,72,77,.38) 38%, rgba(119,82,238,.34) 72%, transparent 82%);
+  opacity: .92;
+}
+
+body.dark .auth-visual::after {
+  background:
+    radial-gradient(circle at 38% 34%, rgba(255,255,255,.64), rgba(187,166,255,.36) 42%, rgba(139,101,255,.24) 72%, transparent 82%);
+  opacity: .72;
 }
 
 .visual-noise {
   position: absolute;
   inset: 0;
-  opacity: .10;
-  background-image: radial-gradient(rgba(255,255,255,.86) .55px, transparent .55px);
+  opacity: .055;
+  background-image: radial-gradient(rgba(255,255,255,.82) .55px, transparent .55px);
   background-size: 5px 5px;
   mix-blend-mode: soft-light;
+  z-index: 1;
 }
 
 .visual-orb {
   position: absolute;
-  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .visual-orb-one {
-  width: 34vw;
-  max-width: 520px;
-  aspect-ratio: 1;
-  left: 14%;
-  bottom: 5%;
-  background: radial-gradient(circle at 35% 32%, rgba(255,255,255,.80), rgba(242,167,143,.30) 43%, rgba(106,61,240,.07) 73%, transparent 75%);
-  filter: blur(2px);
+  width: 54%;
+  height: 44%;
+  left: 16%;
+  bottom: 10%;
+  border-radius: 42% 58% 63% 37% / 56% 42% 58% 44%;
+  background:
+    linear-gradient(135deg, rgba(255,206,187,.58), rgba(183,137,255,.30));
+  filter: blur(44px);
+  opacity: .60;
+  transform: rotate(8deg);
 }
 
 .visual-orb-two {
-  width: 190px;
-  height: 190px;
-  right: 13%;
+  width: 24%;
+  aspect-ratio: 1;
+  right: 11%;
   top: 15%;
-  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.86), rgba(140,107,255,.24) 62%, transparent 69%);
-  filter: blur(6px);
+  border-radius: 44% 56% 48% 52% / 52% 42% 58% 48%;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.78), rgba(157,124,255,.36));
+  filter: blur(34px);
+  opacity: .72;
+}
+
+body.dark .visual-orb-one {
+  background:
+    linear-gradient(135deg, rgba(212,126,109,.34), rgba(124,92,255,.28));
+  opacity: .55;
+}
+
+body.dark .visual-orb-two {
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.30), rgba(151,120,255,.28));
+  opacity: .58;
 }
 
 .visual-ring {
   position: absolute;
-  border: 3px solid rgba(255,255,255,.72);
+  z-index: 1;
+  border: 2px solid rgba(255,255,255,.48);
   border-radius: 50%;
+  opacity: .56;
 }
 
 .visual-ring-one {
-  width: 820px;
-  height: 820px;
-  right: -410px;
-  top: -150px;
+  width: 860px;
+  height: 860px;
+  right: -475px;
+  top: -190px;
 }
 
 .visual-ring-two {
-  width: 600px;
-  height: 600px;
-  left: 5%;
-  bottom: -420px;
-  border-color: rgba(255,255,255,.48);
+  width: 640px;
+  height: 640px;
+  left: 7%;
+  bottom: -470px;
+  border-color: rgba(255,255,255,.34);
 }
 
 .visual-content {
