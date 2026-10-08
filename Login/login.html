@@ -12,12 +12,13 @@
   <link rel="stylesheet" href="../shared/sidebar.css">
   <link rel="stylesheet" href="../shared/design-system.css">
   <link rel="stylesheet" href="./login.css">
+  <link rel="stylesheet" href="../shared/app-shell.css?v=20261008-ui">
   <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png">
 </head>
 <body>
   <div class="page auth-layout">
     <aside class="sidebar">
-      <a href="./login.html" class="login-block auth-sidebar-account" aria-label="Entrar na minha conta">
+      <a href="./login.html" class="login-block" aria-label="Abrir minha conta">
         <div class="avatar" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="8" r="4" fill="white"></circle>
@@ -49,17 +50,21 @@
         </a>
       </nav>
 
-      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Alternar tema">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Alternar entre modo claro e modo escuro">
         <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
         <span class="theme-toggle-knob" aria-hidden="true">
-          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="4"></circle>
-            <line x1="12" y1="2" x2="12" y2="4"></line>
-            <line x1="12" y1="20" x2="12" y2="22"></line>
-            <line x1="2" y1="12" x2="4" y2="12"></line>
-            <line x1="20" y1="12" x2="22" y2="12"></line>
+          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3.2"></circle>
+            <line x1="12" y1="2.4" x2="12" y2="4.2"></line>
+            <line x1="12" y1="19.8" x2="12" y2="21.6"></line>
+            <line x1="2.4" y1="12" x2="4.2" y2="12"></line>
+            <line x1="19.8" y1="12" x2="21.6" y2="12"></line>
+            <line x1="5.2" y1="5.2" x2="6.5" y2="6.5"></line>
+            <line x1="17.5" y1="17.5" x2="18.8" y2="18.8"></line>
+            <line x1="18.8" y1="5.2" x2="17.5" y2="6.5"></line>
+            <line x1="6.5" y1="17.5" x2="5.2" y2="18.8"></line>
           </svg>
-          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none" aria-hidden="true">
             <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
           </svg>
         </span>
@@ -219,6 +224,6 @@
   </div>
 
   <script src="./login.js"></script>
-  <script src="../shared/site.js?v=20261007-auth-full"></script>
+  <script src="../shared/site.js?v=20261008-ui"></script>
 </body>
 </html>
