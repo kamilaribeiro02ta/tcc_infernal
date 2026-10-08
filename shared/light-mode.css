@@ -1,8 +1,8 @@
 /* ZUZ LIGHT MODE: lavanda pastel, translúcido e confortável */
 body:not(.dark) {
-  --page-bg: #f7f6fb;
-  --surface: rgba(245,242,250,.68);
-  --surface-soft: #ddd7e8;
+  --page-bg: #f8f6ff;
+  --surface: rgba(253,252,255,.82);
+  --surface-soft: #f0ebf7;
   --text: #17131f;
   --muted: #686171;
   --line: rgba(72,61,91,.12);
@@ -10,7 +10,7 @@ body:not(.dark) {
   --purple-dark: #572bd8;
   --purple-soft: #ece6ff;
   --purple-pale: #f6f3ff;
-  --sidebar-bg: rgba(255,255,255,.88);
+  --sidebar-bg: rgba(251,249,255,.94);
   --sidebar-border: rgba(92,78,116,.14);
   --nav-inactive: #81798b;
   --nav-hover-bg: rgba(106,61,240,.08);
@@ -18,7 +18,7 @@ body:not(.dark) {
   --login-subtitle: #928b9d;
   --toggle-track: #eeeaf8;
   --toggle-text: #666072;
-  --toggle-knob-bg: #ffffff;
+  --toggle-knob-bg: #fdfcff;
   --toggle-icon: #6a3df0;
   background: radial-gradient(circle at 82% 8%,rgba(171,146,218,.18),transparent 28%),radial-gradient(circle at 15% 72%,rgba(188,169,220,.13),transparent 30%),var(--page-bg);
 }
@@ -29,8 +29,8 @@ body:not(.dark) .experimental-home {
 
 body:not(.dark) .sidebar,
 body:not(.dark) .page .sidebar {
-  background: rgba(255,255,255,.88) !important;
-  background-color: rgba(255,255,255,.88) !important;
+  background: rgba(251,249,255,.94) !important;
+  background-color: rgba(251,249,255,.94) !important;
   border-right-color: rgba(92,78,116,.14) !important;
   -webkit-backdrop-filter: blur(22px) saturate(120%) !important;
   backdrop-filter: blur(22px) saturate(120%) !important;
