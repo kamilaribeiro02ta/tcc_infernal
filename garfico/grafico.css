@@ -150,12 +150,19 @@ a {
 .panel-kicker,
 .preview-label {
   display: block;
-  margin-bottom: 7px;
+  margin-bottom: 6px;
   color: var(--purple);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.dashboard-header .eyebrow {
+  margin-bottom: 8px;
   font-size: 11.5px;
   font-weight: 500;
   letter-spacing: 0.055em;
-  text-transform: uppercase;
 }
 
 .dashboard-header h1 {
