@@ -569,6 +569,7 @@
           <span><i class="bx bx-calendar"></i>${formatted}</span>
           ${cost ? `<span><i class="bx bx-wallet"></i>${escapeHtml(cost)}</span>` : ""}
         </div>
+        <small class="planner-board-edited">Editado por ${escapeHtml(task.updatedBy?.name || task.createdBy?.name || "Usuário")}</small>
         <select data-board-status="${escapeHtml(task.id)}" aria-label="Status da tarefa">
           ${Object.entries(TASK_STATUS)
             .map(([value, label]) => `<option value="${value}" ${task.status === value ? "selected" : ""}>${label}</option>`)
