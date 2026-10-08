@@ -1,0 +1,76 @@
+/* =========================================================
+   ZUZ App Shell
+   Paleta clara global carregada por último em todas as páginas.
+========================================================= */
+
+body:not(.dark) {
+  --page-bg: #f8f6ff;
+  --bg: #f8f6ff;
+  --auth-bg: #f8f6ff;
+
+  --surface: #fdfcff;
+  --surface-soft: #f3effb;
+  --surface-muted: #f5f2fb;
+  --surface-subtle: #faf8ff;
+  --card-bg: #fdfcff;
+  --auth-field: #f5f1fa;
+
+  --sidebar-bg: #fbf9ff;
+  --sidebar-border: #e8e2f1;
+  --nav-inactive: #777181;
+  --nav-hover-bg: #f0eaff;
+
+  --border: #e6e0ee;
+  --border-strong: #d8d0e4;
+  --line: rgba(72, 57, 94, .12);
+
+  --text: #17131f;
+  --text-main: #17131f;
+  --text-primary: #17131f;
+  --text-secondary: #686171;
+  --text-muted: #91899c;
+
+  --login-title: #17131f;
+  --login-subtitle: #8d8597;
+
+  --toggle-track: #eee9f7;
+  --toggle-text: #686171;
+  --toggle-knob-bg: #fdfcff;
+  --toggle-icon: #8d8793;
+
+  --bg-image: none;
+}
+
+body:not(.dark) {
+  background-color: var(--page-bg) !important;
+  background-image:
+    radial-gradient(circle at 82% 8%, rgba(120, 87, 210, .055), transparent 25%),
+    radial-gradient(circle at 14% 76%, rgba(147, 112, 214, .04), transparent 28%) !important;
+  background-attachment: fixed;
+}
+
+body:not(.dark) .experimental-home,
+body:not(.dark) .about-work-page,
+body:not(.dark) .products-page,
+body:not(.dark) .dashboard,
+body:not(.dark) .profile-page {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+body:not(.dark) .auth-page {
+  background-color: var(--page-bg) !important;
+}
+
+body:not(.dark) .auth-form-side {
+  background: #fdfcff !important;
+}
+
+body:not(.dark) .modal-card,
+body:not(.dark) .account-widget,
+body:not(.dark) .business-hub,
+body:not(.dark) .business-overview-surface,
+body:not(.dark) .summary-tile,
+body:not(.dark) .team-card {
+  border-color: var(--line) !important;
+}

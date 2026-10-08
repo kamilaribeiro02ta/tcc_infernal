@@ -63,13 +63,12 @@
 
 
   <!-- ÍCONE -->
-
-  <link
-    rel="icon"
+  <link rel="icon"
     type="image/png"
     href="../imagens/logo-zuz-header.png"
   >
 
+  <link rel="stylesheet" href="../shared/app-shell.css?v=20261008-ui">
 </head>
 
 
@@ -84,147 +83,31 @@
     ====================================================== -->
 
     <aside class="sidebar">
-
-
-      <!-- CONTA -->
-
-      <a
-        href="./perfil.html"
-        class="login-block profile-account-link active-profile"
-        id="accountLink"
-        aria-label="Abrir meu perfil"
-      >
-
-
+      <a href="./perfil.html" class="login-block profile-account-link active-profile" id="accountLink" aria-label="Abrir meu perfil">
         <div class="avatar profile-sidebar-avatar">
-
-
-          <img
-            id="sidebarProfileImage"
-            src=""
-            alt="Foto de perfil"
-            hidden
-          >
-
-
-          <svg
-            id="sidebarDefaultAvatar"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
-          >
-
-            <circle
-              cx="12"
-              cy="8"
-              r="4"
-              fill="white"
-            ></circle>
-
-            <path
-              d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"
-              fill="white"
-            ></path>
-
+          <img id="sidebarProfileImage" src="" alt="Foto de perfil" hidden>
+          <svg id="sidebarDefaultAvatar" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" fill="white"></circle>
+            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"></path>
           </svg>
-
-
         </div>
-
-
         <div class="login-text">
-
-
-          <div
-            class="login-title"
-            id="sidebarUserName"
-          >
-            Minha Conta
-          </div>
-
-
-          <div
-            class="login-subtitle"
-            id="sidebarUserSubtitle"
-          >
-            Meu perfil
-          </div>
-
-
+          <div class="login-title" id="sidebarUserName">Minha Conta</div>
+          <div class="login-subtitle" id="sidebarUserSubtitle">Meu perfil</div>
         </div>
-
-
       </a>
 
-
-
-      <!-- =====================================================
-           MENU
-      ====================================================== -->
-
       <nav class="nav-menu" aria-label="Navegação principal">
-        <a href="../index.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Início</span>
-        </a>
-
-        <a href="../introducao/intro.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Sobre</span>
-        </a>
-
-        <a href="../produtos/produtos.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Produtos</span>
-        </a>
-
-        <a href="../garfico/grafico.html" class="nav-item">
-          <span class="nav-dot"></span>
-          <span>Gráfico</span>
-        </a>
-
-        
+        <a href="../index.html" class="nav-item"><span class="nav-dot"></span><span>Início</span></a>
+        <a href="../introducao/intro.html" class="nav-item"><span class="nav-dot"></span><span>Sobre</span></a>
+        <a href="../produtos/produtos.html" class="nav-item"><span class="nav-dot"></span><span>Produtos</span></a>
+        <a href="../garfico/grafico.html" class="nav-item"><span class="nav-dot"></span><span>Gráfico</span></a>
       </nav>
 
-
-
-      <!-- =====================================================
-           TEMA
-      ====================================================== -->
-
-      <button
-        class="theme-toggle"
-        id="themeToggle"
-        type="button"
-        aria-pressed="false"
-        aria-label="Alternar tema"
-      >
-
-
-        <span
-          class="theme-toggle-label"
-          id="themeLabel"
-        >Modo Claro</span>
-
-
-        <span
-          class="theme-toggle-knob"
-          aria-hidden="true"
-        >
-
-
-          <!-- SOL -->
-
-          <svg
-            id="iconSun"
-            class="theme-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            aria-hidden="true"
-          >
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Alternar entre modo claro e modo escuro">
+        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
+        <span class="theme-toggle-knob" aria-hidden="true">
+          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
             <circle cx="12" cy="12" r="3.2"></circle>
             <line x1="12" y1="2.4" x2="12" y2="4.2"></line>
             <line x1="12" y1="19.8" x2="12" y2="21.6"></line>
@@ -235,35 +118,11 @@
             <line x1="18.8" y1="5.2" x2="17.5" y2="6.5"></line>
             <line x1="6.5" y1="17.5" x2="5.2" y2="18.8"></line>
           </svg>
-
-
-          <!-- LUA -->
-
-          <svg
-            id="iconMoon"
-            class="theme-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="display: none;"
-          >
-
-            <path
-              d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"
-            ></path>
-
+          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none" aria-hidden="true">
+            <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
           </svg>
-
-
         </span>
-
-
       </button>
-
-
     </aside>
 
 
@@ -921,7 +780,7 @@
   ====================================================== -->
 
   <script src="./perfil.js"></script>
-  <script src="../shared/site.js?v=20260930-2040"></script>
+  <script src="../shared/site.js?v=20261008-ui"></script>
 
 
 </body>
