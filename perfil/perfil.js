@@ -954,6 +954,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         closeProfileModalFunction();
         closeTaskModal();
+        closeDayDrawer();
 
       }
 
@@ -3361,6 +3362,19 @@ document.addEventListener("DOMContentLoaded", () => {
       cells.join("");
 
     renderTaskList();
+
+    if (
+      selectedTaskDate &&
+      document.getElementById(
+        "dayDrawer"
+      )?.classList.contains(
+        "active"
+      )
+    ) {
+      renderDayDrawer(
+        selectedTaskDate
+      );
+    }
   }
 
   function renderTaskAudit(task) {
@@ -3735,6 +3749,11 @@ document.addEventListener("DOMContentLoaded", () => {
         "nextMonthBtn"
       );
 
+    const todayButton =
+      document.getElementById(
+        "todayCalendarBtn"
+      );
+
     const newTaskButton =
       document.getElementById(
         "newTaskBtn"
@@ -3807,6 +3826,26 @@ document.addEventListener("DOMContentLoaded", () => {
         "addChecklistItemBtn"
       );
 
+    const dayDrawer =
+      document.getElementById(
+        "dayDrawer"
+      );
+
+    const closeDayDrawerButton =
+      document.getElementById(
+        "closeDayDrawer"
+      );
+
+    const newTaskForDayButton =
+      document.getElementById(
+        "newTaskForDayBtn"
+      );
+
+    const dayDrawerTaskList =
+      document.getElementById(
+        "dayDrawerTaskList"
+      );
+
     populateTaskPeopleOptions();
 
     previousButton?.addEventListener(
@@ -3821,6 +3860,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         selectedTaskDate =
           "";
+
+        dayDrawer?.classList.remove(
+          "active"
+        );
+
+        dayDrawer?.setAttribute(
+          "aria-hidden",
+          "true"
+        );
 
         renderCalendar();
       }
@@ -3839,7 +3887,37 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedTaskDate =
           "";
 
+        dayDrawer?.classList.remove(
+          "active"
+        );
+
+        dayDrawer?.setAttribute(
+          "aria-hidden",
+          "true"
+        );
+
         renderCalendar();
+      }
+    );
+
+    todayButton?.addEventListener(
+      "click",
+      () => {
+        const now =
+          new Date();
+
+        calendarCursor =
+          new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
+          );
+
+        openDayDrawer(
+          localDateKey(
+            now
+          )
+        );
       }
     );
 
@@ -3911,13 +3989,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const date =
           day.dataset.calendarDate;
 
-        selectedTaskDate =
-          selectedTaskDate ===
-            date
-            ? ""
-            : date;
-
-        renderCalendar();
+        openDayDrawer(
+          date
+        );
       }
     );
 
@@ -3951,55 +4025,10 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        const tasks =
-          getCompanyTasks();
-
-        const index =
-          tasks.findIndex(
-            task =>
-              task.id ===
-              select.dataset.quickStatus
-          );
-
-        if (index < 0) {
-          return;
-        }
-
-        const actor =
-          getCurrentActor();
-
-        const task =
-          tasks[index];
-
-        const oldStatus =
-          task.status;
-
-        task.status =
-          select.value;
-
-        task.updatedAt =
-          new Date().toISOString();
-
-        task.updatedBy =
-          actor;
-
-        task.history =
-          appendTaskHistory(
-            task,
-            `Status alterado de ${TASK_STATUS[oldStatus]} para ${TASK_STATUS[task.status]}`,
-            actor
-          );
-
-        tasks[index] =
-          normalizeTask(
-            task
-          );
-
-        saveCompanyTasks(
-          tasks
+        updateTaskStatus(
+          select.dataset.quickStatus,
+          select.value
         );
-
-        renderCalendar();
       }
     );
 
@@ -4009,7 +4038,84 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedTaskDate =
           "";
 
+        dayDrawer?.classList.remove(
+          "active"
+        );
+
+        dayDrawer?.setAttribute(
+          "aria-hidden",
+          "true"
+        );
+
         renderCalendar();
+      }
+    );
+
+    closeDayDrawerButton?.addEventListener(
+      "click",
+      closeDayDrawer
+    );
+
+    dayDrawer?.addEventListener(
+      "click",
+      event => {
+        if (
+          event.target ===
+          dayDrawer
+        ) {
+          closeDayDrawer();
+        }
+      }
+    );
+
+    newTaskForDayButton?.addEventListener(
+      "click",
+      () => {
+        if (!selectedTaskDate) {
+          return;
+        }
+
+        openTaskModal(
+          "",
+          selectedTaskDate
+        );
+      }
+    );
+
+    dayDrawerTaskList?.addEventListener(
+      "click",
+      event => {
+        const button =
+          event.target.closest(
+            "[data-day-edit-task]"
+          );
+
+        if (!button) {
+          return;
+        }
+
+        openTaskModal(
+          button.dataset.dayEditTask
+        );
+      }
+    );
+
+    dayDrawerTaskList?.addEventListener(
+      "change",
+      event => {
+        const select =
+          event.target.closest(
+            "[data-day-status]"
+          );
+
+        if (!select) {
+          return;
+        }
+
+        updateTaskStatus(
+          select.dataset.dayStatus,
+          select.value
+        );
       }
     );
 
