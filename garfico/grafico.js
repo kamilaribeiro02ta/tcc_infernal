@@ -2,6 +2,10 @@
   "use strict";
 
   const STORAGE_KEY = "zuz-pricing-products-v2";
+  const TASKS_KEY = "zuz-company-tasks";
+  const TEAM_KEY = "zuz-company-team";
+  const PROFILE_KEY = "zuz-profile";
+  const SESSION_KEY = "zuz-session";
   const monthNames = [
     "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
     "Jul", "Ago", "Set", "Out", "Nov", "Dez"
@@ -50,10 +54,24 @@
     previewStatus: document.getElementById("previewStatus"),
 
     manageList: document.getElementById("manageList"),
-    toast: document.getElementById("toast")
+    toast: document.getElementById("toast"),
+
+    plannerJumpBtn: document.getElementById("plannerJumpBtn"),
+    plannerLauncherMonth: document.getElementById("plannerLauncherMonth"),
+    plannerSummary: document.getElementById("plannerSummary"),
+    plannerMonthLabel: document.getElementById("plannerMonthLabel"),
+    plannerPrevMonth: document.getElementById("plannerPrevMonth"),
+    plannerNextMonth: document.getElementById("plannerNextMonth"),
+    plannerAssigneeFilter: document.getElementById("plannerAssigneeFilter"),
+    plannerPriorityFilter: document.getElementById("plannerPriorityFilter"),
+    plannerCalendarView: document.getElementById("plannerCalendarView"),
+    plannerCalendarGrid: document.getElementById("plannerCalendarGrid"),
+    plannerBoardView: document.getElementById("plannerBoardView")
   };
 
   let selectedMonth = new Date().getMonth();
+  let plannerYear = new Date().getFullYear();
+  let plannerView = "calendar";
   let products = loadProducts();
 
   function id() {
@@ -354,6 +372,408 @@
 
     renderMonthChips();
   }
+
+  const TASK_STATUS = {
+    todo: "A fazer",
+    doing: "Em andamento",
+    blocked: "Bloqueada",
+    done: "Concluída"
+  };
+
+  const TASK_PRIORITY = {
+    low: "Baixa",
+    medium: "Média",
+    high: "Alta",
+    urgent: "Urgente"
+  };
+
+  function readJson(key, fallback) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key));
+      return value ?? fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function loadCompanyTasks() {
+    const tasks = readJson(TASKS_KEY, []);
+    return Array.isArray(tasks) ? tasks.filter(task => task && task.id) : [];
+  }
+
+  function saveCompanyTasks(tasks) {
+    localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+  }
+
+  function currentActor() {
+    const profile = readJson(PROFILE_KEY, {});
+    const session = readJson(SESSION_KEY, {});
+    return {
+      id: session.userId || profile.id || profile.email || "local-user",
+      name: profile.name || session.email || "Usuário ZUZ",
+      email: profile.email || session.email || ""
+    };
+  }
+
+  function taskColorClass(task) {
+    const allowed = ["purple", "blue", "green", "amber", "coral", "gray"];
+    const color = allowed.includes(task?.color) ? task.color : "purple";
+    return "color-" + color;
+  }
+
+  function taskDate(task) {
+    const value = String(task?.dueDate || "");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+    const [year, month, day] = value.split("-").map(Number);
+    return new Date(year, month - 1, day);
+  }
+
+  function plannerTasks() {
+    const assignee = els.plannerAssigneeFilter?.value || "";
+    const priority = els.plannerPriorityFilter?.value || "";
+
+    return loadCompanyTasks()
+      .filter(task => {
+        const date = taskDate(task);
+        if (!date) return false;
+        if (date.getFullYear() !== plannerYear || date.getMonth() !== selectedMonth) return false;
+
+        const taskAssignee = String(task.assigneeEmail || task.assigneeId || task.assigneeName || "").toLowerCase();
+        if (assignee && taskAssignee !== assignee) return false;
+        if (priority && task.priority !== priority) return false;
+        return true;
+      })
+      .sort((a, b) => String(a.dueDate).localeCompare(String(b.dueDate)));
+  }
+
+  function plannerMonthText() {
+    return new Intl.DateTimeFormat("pt-BR", {
+      month: "long",
+      year: "numeric"
+    }).format(new Date(plannerYear, selectedMonth, 1))
+      .replace(/^./, letter => letter.toUpperCase());
+  }
+
+  function populatePlannerPeople() {
+    if (!els.plannerAssigneeFilter) return;
+
+    const current = els.plannerAssigneeFilter.value;
+    const people = new Map();
+
+    const team = readJson(TEAM_KEY, []);
+    if (Array.isArray(team)) {
+      team.forEach(member => {
+        const key = String(member.email || member.id || "").toLowerCase();
+        if (key) people.set(key, member.name || member.email || "Membro");
+      });
+    }
+
+    loadCompanyTasks().forEach(task => {
+      const key = String(task.assigneeEmail || task.assigneeId || task.assigneeName || "").toLowerCase();
+      if (key && !people.has(key)) {
+        people.set(key, task.assigneeName || task.assigneeEmail || "Responsável");
+      }
+    });
+
+    els.plannerAssigneeFilter.innerHTML =
+      '<option value="">Toda a equipe</option>' +
+      [...people.entries()]
+        .sort((a, b) => a[1].localeCompare(b[1], "pt-BR"))
+        .map(([value, label]) => `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`)
+        .join("");
+
+    if (people.has(current)) {
+      els.plannerAssigneeFilter.value = current;
+    }
+  }
+
+  function renderPlannerSummary(tasks) {
+    if (!els.plannerSummary) return;
+
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
+    const doing = tasks.filter(task => task.status === "doing").length;
+    const done = tasks.filter(task => task.status === "done").length;
+    const overdue = tasks.filter(task => {
+      const date = taskDate(task);
+      return date && date < now && task.status !== "done";
+    }).length;
+
+    const items = [
+      ["Tarefas no mês", tasks.length, "bx-task"],
+      ["Em andamento", doing, "bx-loader-circle"],
+      ["Atrasadas", overdue, "bx-error-circle"],
+      ["Concluídas", done, "bx-check-circle"]
+    ];
+
+    els.plannerSummary.innerHTML = items
+      .map(([label, value, icon]) => `
+        <div class="planner-summary-item">
+          <i class="bx ${icon}"></i>
+          <div>
+            <strong>${value}</strong>
+            <span>${label}</span>
+          </div>
+        </div>
+      `)
+      .join("");
+  }
+
+  function plannerTaskChip(task) {
+    const time = task.startTime ? `${escapeHtml(task.startTime)} · ` : "";
+    const doneClass = task.status === "done" ? " is-done" : "";
+    return `
+      <button
+        class="planner-event ${taskColorClass(task)}${doneClass}"
+        type="button"
+        data-planner-task="${escapeHtml(task.id)}"
+        title="${escapeHtml(task.title || "Tarefa")}"
+      >
+        <span class="planner-event-dot"></span>
+        <span class="planner-event-title">${time}${escapeHtml(task.title || "Tarefa")}</span>
+      </button>
+    `;
+  }
+
+  function renderPlannerCalendar(tasks) {
+    if (!els.plannerCalendarGrid) return;
+
+    const firstWeekday = new Date(plannerYear, selectedMonth, 1).getDay();
+    const lastDay = new Date(plannerYear, selectedMonth + 1, 0).getDate();
+    const today = new Date();
+    const byDay = new Map();
+
+    tasks.forEach(task => {
+      const date = taskDate(task);
+      if (!date) return;
+      const day = date.getDate();
+      const group = byDay.get(day) || [];
+      group.push(task);
+      byDay.set(day, group);
+    });
+
+    const cells = [];
+
+    for (let index = 0; index < firstWeekday; index += 1) {
+      cells.push('<div class="planner-day is-empty" aria-hidden="true"></div>');
+    }
+
+    for (let day = 1; day <= lastDay; day += 1) {
+      const dayTasks = byDay.get(day) || [];
+      const isToday =
+        today.getFullYear() === plannerYear &&
+        today.getMonth() === selectedMonth &&
+        today.getDate() === day;
+
+      const visible = dayTasks.slice(0, 3).map(plannerTaskChip).join("");
+      const extra = dayTasks.length > 3
+        ? `<a class="planner-day-more" href="../perfil/perfil.html#agenda">+${dayTasks.length - 3} tarefa(s)</a>`
+        : "";
+
+      cells.push(`
+        <div class="planner-day${isToday ? " is-today" : ""}">
+          <span class="planner-day-number">${day}</span>
+          <div class="planner-day-events">${visible}${extra}</div>
+        </div>
+      `);
+    }
+
+    els.plannerCalendarGrid.innerHTML = cells.join("");
+
+    els.plannerCalendarGrid.querySelectorAll("[data-planner-task]").forEach(button => {
+      button.addEventListener("click", () => {
+        window.location.href = "../perfil/perfil.html#agenda";
+      });
+    });
+  }
+
+  function plannerBoardCard(task) {
+    const date = taskDate(task);
+    const formatted = date
+      ? new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit" }).format(date)
+      : "--";
+
+    const cost = Number(task.cost || 0) > 0 ? currency(Number(task.cost)) : "";
+    const priority = TASK_PRIORITY[task.priority] || "Média";
+
+    return `
+      <article
+        class="planner-board-card ${taskColorClass(task)}"
+        draggable="true"
+        data-board-task-id="${escapeHtml(task.id)}"
+      >
+        <div class="planner-board-card-top">
+          <span class="planner-board-color"></span>
+          <span class="planner-board-priority">${escapeHtml(priority)}</span>
+        </div>
+        <strong>${escapeHtml(task.title || "Tarefa")}</strong>
+        <div class="planner-board-meta">
+          <span><i class="bx bx-user"></i>${escapeHtml(task.assigneeName || "Sem responsável")}</span>
+          <span><i class="bx bx-calendar"></i>${formatted}</span>
+          ${cost ? `<span><i class="bx bx-wallet"></i>${escapeHtml(cost)}</span>` : ""}
+        </div>
+        <select data-board-status="${escapeHtml(task.id)}" aria-label="Status da tarefa">
+          ${Object.entries(TASK_STATUS)
+            .map(([value, label]) => `<option value="${value}" ${task.status === value ? "selected" : ""}>${label}</option>`)
+            .join("")}
+        </select>
+      </article>
+    `;
+  }
+
+  function renderPlannerBoard(tasks) {
+    if (!els.plannerBoardView) return;
+
+    const statuses = ["todo", "doing", "blocked", "done"];
+
+    els.plannerBoardView.innerHTML = statuses
+      .map(status => {
+        const group = tasks.filter(task => task.status === status);
+        return `
+          <section class="planner-board-column" data-board-column="${status}">
+            <div class="planner-board-column-head">
+              <strong>${TASK_STATUS[status]}</strong>
+              <span>${group.length}</span>
+            </div>
+            <div class="planner-board-list" data-board-dropzone="${status}">
+              ${group.map(plannerBoardCard).join("") || '<div class="planner-board-empty">Nenhuma tarefa</div>'}
+            </div>
+          </section>
+        `;
+      })
+      .join("");
+
+    els.plannerBoardView.querySelectorAll("[data-board-status]").forEach(select => {
+      select.addEventListener("change", () => {
+        updatePlannerTaskStatus(select.dataset.boardStatus, select.value);
+      });
+    });
+
+    els.plannerBoardView.querySelectorAll("[data-board-task-id]").forEach(card => {
+      card.addEventListener("dragstart", event => {
+        event.dataTransfer.setData("text/plain", card.dataset.boardTaskId);
+        event.dataTransfer.effectAllowed = "move";
+        card.classList.add("is-dragging");
+      });
+
+      card.addEventListener("dragend", () => {
+        card.classList.remove("is-dragging");
+      });
+    });
+
+    els.plannerBoardView.querySelectorAll("[data-board-dropzone]").forEach(zone => {
+      zone.addEventListener("dragover", event => {
+        event.preventDefault();
+        zone.classList.add("is-dragover");
+      });
+
+      zone.addEventListener("dragleave", () => {
+        zone.classList.remove("is-dragover");
+      });
+
+      zone.addEventListener("drop", event => {
+        event.preventDefault();
+        zone.classList.remove("is-dragover");
+        const taskId = event.dataTransfer.getData("text/plain");
+        updatePlannerTaskStatus(taskId, zone.dataset.boardDropzone);
+      });
+    });
+  }
+
+  function updatePlannerTaskStatus(taskId, status) {
+    if (!TASK_STATUS[status]) return;
+
+    const tasks = loadCompanyTasks();
+    const index = tasks.findIndex(task => String(task.id) === String(taskId));
+    if (index < 0) return;
+
+    const actor = currentActor();
+    const task = tasks[index];
+    const oldStatus = task.status || "todo";
+
+    if (oldStatus === status) return;
+
+    task.status = status;
+    task.updatedAt = new Date().toISOString();
+    task.updatedBy = actor;
+    task.history = Array.isArray(task.history) ? task.history : [];
+    task.history.push({
+      action: `Status alterado de ${TASK_STATUS[oldStatus] || oldStatus} para ${TASK_STATUS[status]}`,
+      actorName: actor.name,
+      actorEmail: actor.email,
+      at: task.updatedAt
+    });
+    task.history = task.history.slice(-40);
+
+    tasks[index] = task;
+    saveCompanyTasks(tasks);
+    renderPlanner();
+  }
+
+  function renderPlanner() {
+    if (!els.plannerCalendarGrid || !els.plannerBoardView) return;
+
+    populatePlannerPeople();
+
+    const tasks = plannerTasks();
+    const monthText = plannerMonthText();
+
+    if (els.plannerMonthLabel) els.plannerMonthLabel.textContent = monthText;
+    if (els.plannerLauncherMonth) els.plannerLauncherMonth.textContent = monthText;
+
+    renderPlannerSummary(tasks);
+    renderPlannerCalendar(tasks);
+    renderPlannerBoard(tasks);
+
+    if (els.plannerCalendarView) {
+      els.plannerCalendarView.hidden = plannerView !== "calendar";
+    }
+    els.plannerBoardView.hidden = plannerView !== "board";
+
+    document.querySelectorAll("[data-planner-view]").forEach(button => {
+      const active = button.dataset.plannerView === plannerView;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  function changePlannerMonth(delta) {
+    const cursor = new Date(plannerYear, selectedMonth + delta, 1);
+    plannerYear = cursor.getFullYear();
+    selectedMonth = cursor.getMonth();
+    els.monthFilter.value = String(selectedMonth);
+    renderAll();
+  }
+
+  function initPlanner() {
+    els.plannerJumpBtn?.addEventListener("click", () => {
+      document.getElementById("companyPlannerSection")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+
+    els.plannerPrevMonth?.addEventListener("click", () => changePlannerMonth(-1));
+    els.plannerNextMonth?.addEventListener("click", () => changePlannerMonth(1));
+
+    els.plannerAssigneeFilter?.addEventListener("change", renderPlanner);
+    els.plannerPriorityFilter?.addEventListener("change", renderPlanner);
+
+    document.querySelectorAll("[data-planner-view]").forEach(button => {
+      button.addEventListener("click", () => {
+        plannerView = button.dataset.plannerView === "board" ? "board" : "calendar";
+        renderPlanner();
+      });
+    });
+
+    window.addEventListener("storage", event => {
+      if ([TASKS_KEY, TEAM_KEY].includes(event.key)) {
+        renderPlanner();
+      }
+    });
+  }
+
 
   function statCard(label, value, icon, helper) {
     return `
@@ -820,6 +1240,7 @@
     renderChart();
     renderInsights();
     renderProducts();
+    renderPlanner();
   }
 
   els.searchProduct.addEventListener("input", renderProducts);
@@ -941,5 +1362,6 @@
   });
 
   initMonthFilter();
+  initPlanner();
   renderAll();
 })();
