@@ -1,0 +1,310 @@
+/* =========================================================
+   ZUZ App Shell
+   Camada global carregada por último em todas as páginas.
+   Unifica menu, modo claro e superfícies sem alterar o dark.
+========================================================= */
+
+body:not(.dark) {
+  --page-bg: #f8f6ff;
+  --bg: #f8f6ff;
+  --auth-bg: #f8f6ff;
+
+  --surface: #fdfcff;
+  --surface-soft: #f3effb;
+  --surface-muted: #f5f2fb;
+  --surface-subtle: #faf8ff;
+  --card-bg: #fdfcff;
+  --auth-field: #f5f1fa;
+
+  --sidebar-bg: #fbf9ff;
+  --sidebar-border: #e8e2f1;
+  --nav-inactive: #777181;
+  --nav-hover-bg: #f0eaff;
+
+  --border: #e6e0ee;
+  --border-strong: #d8d0e4;
+  --line: rgba(72, 57, 94, .12);
+
+  --text: #17131f;
+  --text-main: #17131f;
+  --text-primary: #17131f;
+  --text-secondary: #686171;
+  --text-muted: #91899c;
+
+  --login-title: #17131f;
+  --login-subtitle: #8d8597;
+
+  --toggle-track: #eee9f7;
+  --toggle-text: #686171;
+  --toggle-knob-bg: #fdfcff;
+  --toggle-icon: #8d8793;
+
+  --bg-image: none;
+}
+
+/* Fundo claro único, com lilás quase branco */
+body:not(.dark) {
+  background-color: var(--page-bg) !important;
+  background-image:
+    radial-gradient(circle at 82% 8%, rgba(120, 87, 210, .055), transparent 25%),
+    radial-gradient(circle at 14% 76%, rgba(147, 112, 214, .04), transparent 28%) !important;
+  background-attachment: fixed;
+}
+
+/* Containers principais não criam uma segunda cor de página */
+body:not(.dark) .experimental-home,
+body:not(.dark) .about-work-page,
+body:not(.dark) .products-page,
+body:not(.dark) .dashboard,
+body:not(.dark) .profile-page {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Login continua com a composição própria, mas sem branco puro */
+body:not(.dark) .auth-form-side {
+  background: #fdfcff !important;
+}
+
+body:not(.dark) .auth-page {
+  background-color: var(--page-bg) !important;
+}
+
+/* =========================================================
+   Sidebar canônica
+========================================================= */
+
+.sidebar,
+.page .sidebar,
+.app .sidebar {
+  width: 240px !important;
+  min-width: 240px !important;
+  padding: 22px 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body:not(.dark) .sidebar,
+body:not(.dark) .page .sidebar,
+body:not(.dark) .app .sidebar {
+  background: var(--sidebar-bg) !important;
+  background-color: var(--sidebar-bg) !important;
+  background-image: none !important;
+  border-right: 1px solid var(--sidebar-border) !important;
+  box-shadow: none !important;
+}
+
+.sidebar .login-block,
+.page .sidebar .login-block,
+.app .sidebar .login-block {
+  width: 100% !important;
+  min-height: 64px !important;
+  margin: 0 0 10px !important;
+  padding: 8px 8px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--sidebar-border) !important;
+  border-radius: 0 !important;
+  color: inherit !important;
+  background: transparent !important;
+  text-decoration: none !important;
+  box-sizing: border-box !important;
+}
+
+.sidebar .login-block:hover {
+  background: transparent !important;
+}
+
+.sidebar .avatar {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+.sidebar .login-text {
+  min-width: 0 !important;
+}
+
+.sidebar .login-title {
+  color: var(--login-title) !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
+
+.sidebar .login-subtitle {
+  margin-top: 2px !important;
+  color: var(--login-subtitle) !important;
+  font-size: 13px !important;
+  line-height: 1.3 !important;
+}
+
+.sidebar .nav-menu {
+  width: 100% !important;
+  margin-top: 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.sidebar .nav-item {
+  width: 100% !important;
+  min-height: 44px !important;
+  padding: 10px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border: 0 !important;
+  border-left: 3px solid transparent !important;
+  border-radius: 10px !important;
+  color: var(--nav-inactive) !important;
+  background: transparent !important;
+  font-size: 14.5px !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+}
+
+.sidebar .nav-item:hover {
+  color: var(--purple, #6a3df0) !important;
+  background: var(--nav-hover-bg) !important;
+}
+
+.sidebar .nav-item.active,
+.sidebar .nav-item[aria-current="page"] {
+  color: var(--purple, #6a3df0) !important;
+  border-left-color: var(--purple, #6a3df0) !important;
+  background: var(--nav-hover-bg) !important;
+  font-weight: 700 !important;
+}
+
+.sidebar .theme-toggle {
+  width: 100% !important;
+  min-height: 48px !important;
+  height: 48px !important;
+  margin-top: auto !important;
+  padding: 4px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: var(--toggle-track) !important;
+}
+
+.sidebar .theme-toggle-knob {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  background: var(--toggle-knob-bg) !important;
+  box-shadow: 0 2px 7px rgba(38, 26, 65, .12) !important;
+}
+
+body:not(.dark) .sidebar .theme-icon {
+  color: var(--toggle-icon) !important;
+}
+
+/* Superfícies claras coerentes entre telas */
+body:not(.dark) .modal-card,
+body:not(.dark) .account-widget,
+body:not(.dark) .business-hub,
+body:not(.dark) .business-overview-surface,
+body:not(.dark) .summary-tile,
+body:not(.dark) .team-card {
+  border-color: var(--line) !important;
+}
+
+@media (min-width: 993px) {
+  .sidebar,
+  .page .sidebar,
+  .app .sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .sidebar,
+  .page .sidebar,
+  .app .sidebar {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    padding: 12px 14px !important;
+    overflow: visible !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--sidebar-border) !important;
+  }
+
+  .sidebar .login-block {
+    min-height: 52px !important;
+    margin-bottom: 8px !important;
+    padding: 4px 8px 10px !important;
+  }
+
+  .sidebar .nav-menu {
+    flex-direction: row !important;
+    gap: 6px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none;
+  }
+
+  .sidebar .nav-menu::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar .nav-item {
+    width: auto !important;
+    min-width: max-content !important;
+    border-left: 0 !important;
+    border-bottom: 3px solid transparent !important;
+  }
+
+  .sidebar .nav-item.active,
+  .sidebar .nav-item[aria-current="page"] {
+    border-left: 0 !important;
+    border-bottom-color: var(--purple, #6a3df0) !important;
+  }
+
+  .sidebar .theme-toggle {
+    margin-top: 10px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .sidebar,
+  .page .sidebar,
+  .app .sidebar {
+    padding: 10px !important;
+  }
+
+  .sidebar .avatar {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+  }
+
+  .sidebar .login-title {
+    font-size: 14px !important;
+  }
+
+  .sidebar .login-subtitle {
+    font-size: 12px !important;
+  }
+}
