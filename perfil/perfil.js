@@ -954,6 +954,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         closeProfileModalFunction();
         closeTaskModal();
+        closeDayDrawer();
 
       }
 
@@ -2413,10 +2414,64 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  function filteredTasks() {
-    const tasks =
-      getCompanyTasks();
+  function taskDayDistance(task) {
+    const due =
+      parseLocalDate(
+        task?.dueDate
+      );
 
+    if (!due) {
+      return null;
+    }
+
+    const today =
+      parseLocalDate(
+        localDateKey(
+          new Date()
+        )
+      );
+
+    return Math.round(
+      (
+        due.getTime() -
+        today.getTime()
+      ) /
+      86400000
+    );
+  }
+
+  function deadlineLabel(task) {
+    const distance =
+      taskDayDistance(
+        task
+      );
+
+    if (distance === null) {
+      return "Sem data";
+    }
+
+    if (distance < 0) {
+      return `${Math.abs(distance)} dia${Math.abs(distance) === 1 ? "" : "s"} atrasada`;
+    }
+
+    if (distance === 0) {
+      return "Hoje";
+    }
+
+    if (distance === 1) {
+      return "Amanhã";
+    }
+
+    if (distance <= 7) {
+      return `Em ${distance} dias`;
+    }
+
+    return formatTaskDate(
+      task.dueDate
+    );
+  }
+
+  function filteredTasks() {
     const status =
       document.getElementById(
         "taskStatusFilter"
@@ -2432,39 +2487,28 @@ document.addEventListener("DOMContentLoaded", () => {
         "taskAssigneeFilter"
       )?.value || "";
 
-    const year =
-      calendarCursor.getFullYear();
-
-    const month =
-      calendarCursor.getMonth();
-
-    return tasks
+    return getCompanyTasks()
       .filter(
         task => {
-          const date =
-            parseLocalDate(
-              task.dueDate
+          const distance =
+            taskDayDistance(
+              task
             );
 
-          if (!date) {
+          if (distance === null) {
             return false;
           }
 
           if (
-            selectedTaskDate
+            distance > 14
           ) {
-            if (
-              task.dueDate !==
-              selectedTaskDate
-            ) {
-              return false;
-            }
+            return false;
           }
-          else if (
-            date.getFullYear() !==
-              year ||
-            date.getMonth() !==
-              month
+
+          if (
+            !status &&
+            task.status ===
+              "done"
           ) {
             return false;
           }
@@ -2526,6 +2570,157 @@ document.addEventListener("DOMContentLoaded", () => {
       );
   }
 
+  function renderDeadlineSummary() {
+    const container =
+      document.getElementById(
+        "deadlineSummary"
+      );
+
+    if (!container) {
+      return;
+    }
+
+    const active =
+      getCompanyTasks()
+        .filter(
+          task =>
+            task.status !==
+              "done" &&
+            taskDayDistance(task) !==
+              null
+        );
+
+    const overdue =
+      active.filter(
+        task =>
+          taskDayDistance(task) <
+          0
+      ).length;
+
+    const today =
+      active.filter(
+        task =>
+          taskDayDistance(task) ===
+          0
+      ).length;
+
+    const soon =
+      active.filter(
+        task => {
+          const distance =
+            taskDayDistance(
+              task
+            );
+
+          return (
+            distance !==
+              null &&
+            distance > 0 &&
+            distance <= 7
+          );
+        }
+      ).length;
+
+    container.innerHTML =
+      `
+        <div class="deadline-summary-item ${overdue ? "is-alert" : ""}">
+          <span>Atrasadas</span>
+          <strong>${overdue}</strong>
+        </div>
+        <div class="deadline-summary-item ${today ? "is-today" : ""}">
+          <span>Hoje</span>
+          <strong>${today}</strong>
+        </div>
+        <div class="deadline-summary-item">
+          <span>Próximos 7 dias</span>
+          <strong>${soon}</strong>
+        </div>
+      `;
+  }
+
+  function taskCardMarkup(
+    task,
+    {
+      editAttribute =
+        "data-edit-task",
+      statusAttribute =
+        "data-quick-status"
+    } = {}
+  ) {
+    const cost =
+      formatTaskMoney(
+        task.cost
+      );
+
+    const updatedName =
+      task.updatedBy?.name ||
+      "Usuário";
+
+    const progress =
+      checklistProgress(
+        task
+      );
+
+    const time =
+      taskTimeLabel(
+        task
+      );
+
+    const distance =
+      taskDayDistance(
+        task
+      );
+
+    const deadlineClass =
+      distance !== null &&
+      distance < 0 &&
+      task.status !==
+        "done"
+        ? " is-overdue"
+        : distance === 0 &&
+          task.status !==
+            "done"
+          ? " is-due-today"
+          : "";
+
+    return `
+      <article class="task-item color-${escapeHtml(task.color)} priority-${escapeHtml(task.priority)} status-${escapeHtml(task.status)}${deadlineClass}" data-task-id="${escapeHtml(task.id)}">
+        <button class="task-item-main" type="button" ${editAttribute}="${escapeHtml(task.id)}">
+          <div class="task-item-topline">
+            <span class="task-color-chip color-${escapeHtml(task.color)}"></span>
+            <span class="task-priority-pill priority-${escapeHtml(task.priority)}">${escapeHtml(TASK_PRIORITY[task.priority])}</span>
+            <span class="task-due">${escapeHtml(deadlineLabel(task))}${time ? ` · ${escapeHtml(time)}` : ""}</span>
+          </div>
+
+          <strong class="task-item-title">${escapeHtml(task.title)}</strong>
+
+          ${task.description ? `<p class="task-item-description">${escapeHtml(task.description)}</p>` : ""}
+
+          <div class="task-item-meta">
+            <span><i class="bx bx-user"></i>${escapeHtml(task.assigneeName || "Sem responsável")}</span>
+            ${cost ? `<span><i class="bx bx-wallet"></i>${escapeHtml(cost)}</span>` : ""}
+            ${task.category ? `<span><i class="bx bx-tag"></i>${escapeHtml(task.category)}</span>` : ""}
+            ${progress.total ? `<span><i class="bx bx-check-square"></i>${progress.done}/${progress.total}</span>` : ""}
+          </div>
+
+          ${progress.total ? `
+            <div class="task-progress-track" aria-label="${progress.percent}% do checklist concluído">
+              <span style="width:${progress.percent}%"></span>
+            </div>
+          ` : ""}
+
+          <small>Editado por ${escapeHtml(updatedName)} · ${escapeHtml(formatTaskDateTime(task.updatedAt))}</small>
+        </button>
+
+        <div class="task-item-status">
+          <select ${statusAttribute}="${escapeHtml(task.id)}" aria-label="Alterar status de ${escapeHtml(task.title)}">
+            ${Object.entries(TASK_STATUS).map(([value,label]) => `<option value="${value}" ${task.status === value ? "selected" : ""}>${label}</option>`).join("")}
+          </select>
+        </div>
+      </article>
+    `;
+  }
+
   function renderTaskList() {
     const list =
       document.getElementById(
@@ -2558,37 +2753,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const tasks =
       filteredTasks();
 
+    title.textContent =
+      "O que está se aproximando";
+
     total.textContent =
       String(
         tasks.length
       );
 
-    if (selectedTaskDate) {
-      title.textContent =
-        `Tarefas de ${formatTaskDate(selectedTaskDate)}`;
-
-      if (clearDate) {
-        clearDate.hidden =
-          false;
-      }
+    if (clearDate) {
+      clearDate.hidden =
+        true;
     }
-    else {
-      title.textContent =
-        "Tarefas do mês";
 
-      if (clearDate) {
-        clearDate.hidden =
-          true;
-      }
-    }
+    renderDeadlineSummary();
 
     if (!tasks.length) {
       list.innerHTML =
         `
-          <div class="task-empty">
-            <i class="bx bx-check-square"></i>
-            <strong>Nenhuma tarefa aqui.</strong>
-            <span>Crie uma tarefa ou selecione outra data.</span>
+          <div class="task-empty deadline-empty">
+            <i class="bx bx-calendar-check"></i>
+            <strong>Nenhum prazo próximo.</strong>
+            <span>As tarefas dos próximos 14 dias aparecerão aqui.</span>
           </div>
         `;
 
@@ -2598,65 +2784,387 @@ document.addEventListener("DOMContentLoaded", () => {
     list.innerHTML =
       tasks
         .map(
-          task => {
-            const cost =
-              formatTaskMoney(
-                task.cost
+          task =>
+            taskCardMarkup(
+              task
+            )
+        )
+        .join("");
+  }
+
+  function renderDayDrawer(
+    date =
+      selectedTaskDate
+  ) {
+    if (!date) {
+      return;
+    }
+
+    const drawer =
+      document.getElementById(
+        "dayDrawer"
+      );
+
+    const dateTitle =
+      document.getElementById(
+        "dayDrawerDate"
+      );
+
+    const taskCount =
+      document.getElementById(
+        "dayDrawerTaskCount"
+      );
+
+    const peopleCount =
+      document.getElementById(
+        "dayDrawerPeopleCount"
+      );
+
+    const doneCount =
+      document.getElementById(
+        "dayDrawerDoneCount"
+      );
+
+    const teamContainer =
+      document.getElementById(
+        "dayDrawerTeam"
+      );
+
+    const taskContainer =
+      document.getElementById(
+        "dayDrawerTaskList"
+      );
+
+    const parsed =
+      parseLocalDate(
+        date
+      );
+
+    if (
+      !drawer ||
+      !parsed ||
+      !teamContainer ||
+      !taskContainer
+    ) {
+      return;
+    }
+
+    const tasks =
+      getCompanyTasks()
+        .filter(
+          task =>
+            task.dueDate ===
+            date
+        )
+        .sort(
+          (a, b) => {
+            const timeA =
+              a.startTime ||
+              "99:99";
+
+            const timeB =
+              b.startTime ||
+              "99:99";
+
+            const byTime =
+              timeA.localeCompare(
+                timeB
               );
 
-            const updatedName =
-              task.updatedBy?.name ||
-              "Usuário";
+            if (byTime) {
+              return byTime;
+            }
 
-            const progress =
-              checklistProgress(
-                task
+            return (
+              (
+                PRIORITY_WEIGHT[b.priority] ||
+                0
+              ) -
+              (
+                PRIORITY_WEIGHT[a.priority] ||
+                0
+              )
+            );
+          }
+        );
+
+    const involvedKeys =
+      new Set(
+        tasks
+          .map(
+            task =>
+              String(
+                task.assigneeEmail ||
+                task.assigneeId
+              )
+                .toLowerCase()
+          )
+          .filter(Boolean)
+      );
+
+    if (dateTitle) {
+      dateTitle.textContent =
+        new Intl.DateTimeFormat(
+          "pt-BR",
+          {
+            weekday:
+              "long",
+            day:
+              "2-digit",
+            month:
+              "long",
+            year:
+              "numeric"
+          }
+        )
+          .format(
+            parsed
+          )
+          .replace(
+            /^./,
+            letter =>
+              letter.toUpperCase()
+          );
+    }
+
+    if (taskCount) {
+      taskCount.textContent =
+        String(
+          tasks.length
+        );
+    }
+
+    if (peopleCount) {
+      peopleCount.textContent =
+        String(
+          involvedKeys.size
+        );
+    }
+
+    if (doneCount) {
+      doneCount.textContent =
+        String(
+          tasks.filter(
+            task =>
+              task.status ===
+              "done"
+          ).length
+        );
+    }
+
+    const people =
+      getTaskPeople();
+
+    teamContainer.innerHTML =
+      people
+        .map(
+          person => {
+            const key =
+              taskPersonKey(
+                person
               );
 
-            const time =
-              taskTimeLabel(
-                task
+            const personTasks =
+              tasks.filter(
+                task =>
+                  String(
+                    task.assigneeEmail ||
+                    task.assigneeId
+                  )
+                    .toLowerCase() ===
+                    key
               );
+
+            const active =
+              personTasks.length >
+              0;
 
             return `
-              <article class="task-item color-${escapeHtml(task.color)} priority-${escapeHtml(task.priority)} status-${escapeHtml(task.status)}" data-task-id="${escapeHtml(task.id)}">
-                <button class="task-item-main" type="button" data-edit-task="${escapeHtml(task.id)}">
-                  <div class="task-item-topline">
-                    <span class="task-color-chip color-${escapeHtml(task.color)}"></span>
-                    <span class="task-priority-pill priority-${escapeHtml(task.priority)}">${escapeHtml(TASK_PRIORITY[task.priority])}</span>
-                    <span class="task-due">${escapeHtml(formatTaskDate(task.dueDate))}${time ? ` · ${escapeHtml(time)}` : ""}</span>
-                  </div>
-
-                  <strong class="task-item-title">${escapeHtml(task.title)}</strong>
-
-                  ${task.description ? `<p class="task-item-description">${escapeHtml(task.description)}</p>` : ""}
-
-                  <div class="task-item-meta">
-                    <span><i class="bx bx-user"></i>${escapeHtml(task.assigneeName || "Sem responsável")}</span>
-                    ${cost ? `<span><i class="bx bx-wallet"></i>${escapeHtml(cost)}</span>` : ""}
-                    ${task.category ? `<span><i class="bx bx-tag"></i>${escapeHtml(task.category)}</span>` : ""}
-                    ${progress.total ? `<span><i class="bx bx-check-square"></i>${progress.done}/${progress.total}</span>` : ""}
-                  </div>
-
-                  ${progress.total ? `
-                    <div class="task-progress-track" aria-label="${progress.percent}% do checklist concluído">
-                      <span style="width:${progress.percent}%"></span>
-                    </div>
-                  ` : ""}
-
-                  <small>Editado por ${escapeHtml(updatedName)} · ${escapeHtml(formatTaskDateTime(task.updatedAt))}</small>
-                </button>
-
-                <div class="task-item-status">
-                  <select data-quick-status="${escapeHtml(task.id)}" aria-label="Alterar status de ${escapeHtml(task.title)}">
-                    ${Object.entries(TASK_STATUS).map(([value,label]) => `<option value="${value}" ${task.status === value ? "selected" : ""}>${label}</option>`).join("")}
-                  </select>
+              <div class="day-team-person ${active ? "has-tasks" : ""}">
+                <span class="day-team-avatar">${escapeHtml(initials(person.name))}</span>
+                <div>
+                  <strong>${escapeHtml(person.name)}</strong>
+                  <small>${escapeHtml(person.role || "Equipe")}</small>
                 </div>
-              </article>
+                <span class="day-team-count">${personTasks.length} tarefa${personTasks.length === 1 ? "" : "s"}</span>
+              </div>
             `;
           }
         )
         .join("");
+
+    taskContainer.innerHTML =
+      tasks.length
+        ? tasks
+            .map(
+              task =>
+                taskCardMarkup(
+                  task,
+                  {
+                    editAttribute:
+                      "data-day-edit-task",
+                    statusAttribute:
+                      "data-day-status"
+                  }
+                )
+            )
+            .join("")
+        : `
+            <div class="day-drawer-empty">
+              <i class="bx bx-calendar-plus"></i>
+              <strong>Dia livre.</strong>
+              <span>Não há nenhuma tarefa cadastrada para esta data.</span>
+            </div>
+          `;
+  }
+
+  function openDayDrawer(
+    date
+  ) {
+    const drawer =
+      document.getElementById(
+        "dayDrawer"
+      );
+
+    if (
+      !drawer ||
+      !date
+    ) {
+      return;
+    }
+
+    selectedTaskDate =
+      date;
+
+    renderCalendar();
+    renderDayDrawer(
+      date
+    );
+
+    drawer.classList.add(
+      "active"
+    );
+
+    drawer.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+    window.setTimeout(
+      () =>
+        document.getElementById(
+          "closeDayDrawer"
+        )?.focus(),
+      20
+    );
+  }
+
+  function closeDayDrawer() {
+    const drawer =
+      document.getElementById(
+        "dayDrawer"
+      );
+
+    drawer?.classList.remove(
+      "active"
+    );
+
+    drawer?.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    selectedTaskDate =
+      "";
+
+    renderCalendar();
+  }
+
+  function updateTaskStatus(
+    taskId,
+    value
+  ) {
+    if (
+      !TASK_STATUS[
+        value
+      ]
+    ) {
+      return;
+    }
+
+    const tasks =
+      getCompanyTasks();
+
+    const index =
+      tasks.findIndex(
+        task =>
+          task.id ===
+          taskId
+      );
+
+    if (index < 0) {
+      return;
+    }
+
+    const actor =
+      getCurrentActor();
+
+    const task =
+      tasks[
+        index
+      ];
+
+    const oldStatus =
+      task.status;
+
+    if (
+      oldStatus ===
+      value
+    ) {
+      return;
+    }
+
+    task.status =
+      value;
+
+    task.updatedAt =
+      new Date().toISOString();
+
+    task.updatedBy =
+      actor;
+
+    task.history =
+      appendTaskHistory(
+        task,
+        `Status alterado de ${TASK_STATUS[oldStatus]} para ${TASK_STATUS[task.status]}`,
+        actor
+      );
+
+    tasks[
+      index
+    ] =
+      normalizeTask(
+        task
+      );
+
+    saveCompanyTasks(
+      tasks
+    );
+
+    renderCalendar();
+
+    if (
+      selectedTaskDate &&
+      document.getElementById(
+        "dayDrawer"
+      )?.classList.contains(
+        "active"
+      )
+    ) {
+      renderDayDrawer(
+        selectedTaskDate
+      );
+    }
   }
 
   function renderCalendar() {
@@ -2854,6 +3362,19 @@ document.addEventListener("DOMContentLoaded", () => {
       cells.join("");
 
     renderTaskList();
+
+    if (
+      selectedTaskDate &&
+      document.getElementById(
+        "dayDrawer"
+      )?.classList.contains(
+        "active"
+      )
+    ) {
+      renderDayDrawer(
+        selectedTaskDate
+      );
+    }
   }
 
   function renderTaskAudit(task) {
@@ -3228,6 +3749,11 @@ document.addEventListener("DOMContentLoaded", () => {
         "nextMonthBtn"
       );
 
+    const todayButton =
+      document.getElementById(
+        "todayCalendarBtn"
+      );
+
     const newTaskButton =
       document.getElementById(
         "newTaskBtn"
@@ -3300,6 +3826,26 @@ document.addEventListener("DOMContentLoaded", () => {
         "addChecklistItemBtn"
       );
 
+    const dayDrawer =
+      document.getElementById(
+        "dayDrawer"
+      );
+
+    const closeDayDrawerButton =
+      document.getElementById(
+        "closeDayDrawer"
+      );
+
+    const newTaskForDayButton =
+      document.getElementById(
+        "newTaskForDayBtn"
+      );
+
+    const dayDrawerTaskList =
+      document.getElementById(
+        "dayDrawerTaskList"
+      );
+
     populateTaskPeopleOptions();
 
     previousButton?.addEventListener(
@@ -3314,6 +3860,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         selectedTaskDate =
           "";
+
+        dayDrawer?.classList.remove(
+          "active"
+        );
+
+        dayDrawer?.setAttribute(
+          "aria-hidden",
+          "true"
+        );
 
         renderCalendar();
       }
@@ -3332,7 +3887,37 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedTaskDate =
           "";
 
+        dayDrawer?.classList.remove(
+          "active"
+        );
+
+        dayDrawer?.setAttribute(
+          "aria-hidden",
+          "true"
+        );
+
         renderCalendar();
+      }
+    );
+
+    todayButton?.addEventListener(
+      "click",
+      () => {
+        const now =
+          new Date();
+
+        calendarCursor =
+          new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
+          );
+
+        openDayDrawer(
+          localDateKey(
+            now
+          )
+        );
       }
     );
 
@@ -3404,13 +3989,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const date =
           day.dataset.calendarDate;
 
-        selectedTaskDate =
-          selectedTaskDate ===
-            date
-            ? ""
-            : date;
-
-        renderCalendar();
+        openDayDrawer(
+          date
+        );
       }
     );
 
@@ -3444,55 +4025,10 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        const tasks =
-          getCompanyTasks();
-
-        const index =
-          tasks.findIndex(
-            task =>
-              task.id ===
-              select.dataset.quickStatus
-          );
-
-        if (index < 0) {
-          return;
-        }
-
-        const actor =
-          getCurrentActor();
-
-        const task =
-          tasks[index];
-
-        const oldStatus =
-          task.status;
-
-        task.status =
-          select.value;
-
-        task.updatedAt =
-          new Date().toISOString();
-
-        task.updatedBy =
-          actor;
-
-        task.history =
-          appendTaskHistory(
-            task,
-            `Status alterado de ${TASK_STATUS[oldStatus]} para ${TASK_STATUS[task.status]}`,
-            actor
-          );
-
-        tasks[index] =
-          normalizeTask(
-            task
-          );
-
-        saveCompanyTasks(
-          tasks
+        updateTaskStatus(
+          select.dataset.quickStatus,
+          select.value
         );
-
-        renderCalendar();
       }
     );
 
@@ -3502,7 +4038,84 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedTaskDate =
           "";
 
+        dayDrawer?.classList.remove(
+          "active"
+        );
+
+        dayDrawer?.setAttribute(
+          "aria-hidden",
+          "true"
+        );
+
         renderCalendar();
+      }
+    );
+
+    closeDayDrawerButton?.addEventListener(
+      "click",
+      closeDayDrawer
+    );
+
+    dayDrawer?.addEventListener(
+      "click",
+      event => {
+        if (
+          event.target ===
+          dayDrawer
+        ) {
+          closeDayDrawer();
+        }
+      }
+    );
+
+    newTaskForDayButton?.addEventListener(
+      "click",
+      () => {
+        if (!selectedTaskDate) {
+          return;
+        }
+
+        openTaskModal(
+          "",
+          selectedTaskDate
+        );
+      }
+    );
+
+    dayDrawerTaskList?.addEventListener(
+      "click",
+      event => {
+        const button =
+          event.target.closest(
+            "[data-day-edit-task]"
+          );
+
+        if (!button) {
+          return;
+        }
+
+        openTaskModal(
+          button.dataset.dayEditTask
+        );
+      }
+    );
+
+    dayDrawerTaskList?.addEventListener(
+      "change",
+      event => {
+        const select =
+          event.target.closest(
+            "[data-day-status]"
+          );
+
+        if (!select) {
+          return;
+        }
+
+        updateTaskStatus(
+          select.dataset.dayStatus,
+          select.value
+        );
       }
     );
 
