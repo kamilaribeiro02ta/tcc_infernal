@@ -1377,9 +1377,7 @@ body.dark .business-alert.success .business-alert-icon {
   .business-hub {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "calendar"
-      "notes"
-      "alerts";
+      "calendar";
     gap: 30px;
   }
 
@@ -2102,8 +2100,7 @@ body.dark .business-alert.success .business-alert-icon {
 .business-hub {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-areas:
-    "calendar calendar"
-    "notes alerts";
+    "calendar calendar";
   gap: 30px 36px;
 }
 
@@ -2675,9 +2672,7 @@ body.dark .business-alert.success .business-alert-icon {
   .business-hub {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "calendar"
-      "notes"
-      "alerts";
+      "calendar";
   }
 
   .calendar-card {
@@ -2788,8 +2783,7 @@ body.dark .business-alert.success .business-alert-icon {
 .business-hub {
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    "calendar"
-    "notes";
+    "calendar";
   gap: 30px;
 }
 
@@ -3106,8 +3100,7 @@ body.dark .calendar-event-chip:hover {
 @media (max-width: 1180px) {
   .business-hub {
     grid-template-areas:
-      "calendar"
-      "notes";
+    "calendar";
   }
 
   .task-calendar-layout {
@@ -3797,4 +3790,14 @@ body.dark .day-drawer-backdrop {
 /* O editor da tarefa precisa aparecer acima da aba lateral do dia. */
 .task-modal-overlay {
   z-index: 240;
+}
+
+
+/* Notas rápidas removidas: a central da empresa agora termina no calendário. */
+.business-hub {
+  grid-template-areas: "calendar";
+}
+
+.notes-card {
+  display: none !important;
 }

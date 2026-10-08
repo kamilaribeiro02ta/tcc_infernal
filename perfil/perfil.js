@@ -8,8 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     "zuz-company-events";
   const TASKS_KEY =
     "zuz-company-tasks";
-  const NOTES_KEY =
-    "zuz-company-notes";
   const TEAM_KEY =
     "zuz-company-team";
   const BUSINESS_OWNER_KEY =
@@ -4587,67 +4585,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =========================================================
-     NOTAS
-  ========================================================= */
-
-  function initializeNotes() {
-    const notes =
-      document.getElementById(
-        "companyNotes"
-      );
-
-    const status =
-      document.getElementById(
-        "notesSaveStatus"
-      );
-
-    if (!notes) {
-      return;
-    }
-
-    notes.value =
-      localStorage.getItem(
-        NOTES_KEY
-      ) || "";
-
-    let timer;
-
-    notes.addEventListener(
-      "input",
-      () => {
-
-        if (status) {
-          status.textContent =
-            "Salvando...";
-        }
-
-        window.clearTimeout(
-          timer
-        );
-
-        timer =
-          window.setTimeout(
-            () => {
-
-              localStorage.setItem(
-                NOTES_KEY,
-                notes.value
-              );
-
-              if (status) {
-                status.textContent =
-                  "Salvo";
-              }
-
-            },
-            380
-          );
-
-      }
-    );
-  }
-
-  /* =========================================================
      EQUIPE
   ========================================================= */
 
@@ -4964,7 +4901,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderSummary();
   renderBusinessChart();
   initializeCalendar();
-  initializeNotes();
   initializeTeam();
 
 });
