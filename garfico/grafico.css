@@ -2354,3 +2354,12 @@ body.dark .planner-event:hover {
     flex-direction: column;
   }
 }
+
+
+.planner-board-edited {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-dim, var(--text-muted));
+  font-size: 6.8px;
+  line-height: 1.4;
+}
