@@ -173,12 +173,14 @@ a {
 
 .dashboard-title-serif {
   display: inline-block;
+  margin-left: 0.015em;
   font-family: "Times New Roman", Times, serif;
-  font-size: 1.13em;
+  font-size: 1.28em;
   font-style: italic;
   font-weight: 700;
-  line-height: 0.86;
-  letter-spacing: -0.085em;
+  line-height: 0.80;
+  letter-spacing: -0.075em;
+  vertical-align: -0.015em;
 }
 
 .dashboard-header p {
@@ -1646,5 +1648,13 @@ body.dark .month-chips {
   .month-chip {
     min-width: 46px;
     min-height: 36px;
+  }
+}
+
+
+@media (max-width: 520px) {
+  .dashboard-title-serif {
+    font-size: 1.22em;
+    line-height: 0.82;
   }
 }
