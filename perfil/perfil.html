@@ -338,16 +338,19 @@
                 </div>
               </div>
 
-              <div class="task-panel">
+              <aside class="task-panel deadline-panel" aria-labelledby="taskListTitle">
                 <div class="task-panel-heading">
                   <div>
-                    <span class="card-kicker">TAREFAS</span>
-                    <h3 id="taskListTitle">Tarefas do mês</h3>
+                    <span class="card-kicker">PRÓXIMOS PRAZOS</span>
+                    <h3 id="taskListTitle">O que está se aproximando</h3>
+                    <p id="deadlineHint">Acompanhe atrasos, tarefas de hoje e entregas dos próximos dias.</p>
                   </div>
                   <span class="task-total" id="taskTotal">0</span>
                 </div>
 
-                <div class="task-filters" aria-label="Filtros das tarefas">
+                <div class="deadline-summary" id="deadlineSummary" aria-label="Resumo dos prazos"></div>
+
+                <div class="task-filters deadline-filters" aria-label="Filtros dos próximos prazos">
                   <select id="taskStatusFilter" aria-label="Filtrar por status">
                     <option value="">Todos os status</option>
                     <option value="todo">A fazer</option>
@@ -369,12 +372,17 @@
                   </select>
 
                   <button id="clearTaskDateFilter" type="button" class="task-filter-clear" hidden>
-                    Ver mês inteiro
+                    Limpar data
                   </button>
                 </div>
 
-                <div class="task-list" id="taskList" aria-live="polite"></div>
-              </div>
+                <div class="task-list deadline-list" id="taskList" aria-live="polite"></div>
+
+                <div class="deadline-help">
+                  <i class="bx bx-mouse"></i>
+                  <span>Clique em qualquer dia do calendário para abrir os detalhes daquele dia.</span>
+                </div>
+              </aside>
             </div>
           </article>
 
@@ -510,6 +518,71 @@
 
   </div>
 
+
+
+
+
+
+  <!-- =====================================================
+       ABA LATERAL DO DIA
+  ====================================================== -->
+
+  <div class="day-drawer-backdrop" id="dayDrawer" aria-hidden="true">
+    <aside class="day-drawer" id="dayDrawerPanel" role="dialog" aria-modal="true" aria-labelledby="dayDrawerDate">
+      <header class="day-drawer-header">
+        <div>
+          <span class="card-kicker">AGENDA DO DIA</span>
+          <h2 id="dayDrawerDate">Data selecionada</h2>
+          <p id="dayDrawerSubtitle">Veja as tarefas e quem está responsável por cada ponto.</p>
+        </div>
+
+        <button id="closeDayDrawer" class="day-drawer-close" type="button" aria-label="Fechar agenda do dia">
+          <i class="bx bx-x"></i>
+        </button>
+      </header>
+
+      <div class="day-drawer-summary">
+        <div>
+          <span>Tarefas</span>
+          <strong id="dayDrawerTaskCount">0</strong>
+        </div>
+        <div>
+          <span>Pessoas envolvidas</span>
+          <strong id="dayDrawerPeopleCount">0</strong>
+        </div>
+        <div>
+          <span>Concluídas</span>
+          <strong id="dayDrawerDoneCount">0</strong>
+        </div>
+      </div>
+
+      <section class="day-drawer-section">
+        <div class="day-drawer-section-head">
+          <div>
+            <span class="card-kicker">EQUIPE</span>
+            <h3>Quem está com tarefas neste dia</h3>
+          </div>
+        </div>
+        <div class="day-team-list" id="dayDrawerTeam"></div>
+      </section>
+
+      <section class="day-drawer-section day-tasks-section">
+        <div class="day-drawer-section-head">
+          <div>
+            <span class="card-kicker">TAREFAS</span>
+            <h3>Pontos do dia</h3>
+          </div>
+
+          <button id="newTaskForDayBtn" class="hub-primary-button day-add-task" type="button">
+            <i class="bx bx-plus"></i>
+            Nova tarefa
+          </button>
+        </div>
+
+        <div class="day-task-list" id="dayDrawerTaskList"></div>
+      </section>
+    </aside>
+  </div>
 
 
   <!-- =====================================================
