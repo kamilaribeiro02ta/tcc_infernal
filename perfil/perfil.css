@@ -3792,3 +3792,9 @@ body.dark .day-drawer-backdrop {
     padding-left: 12px;
   }
 }
+
+
+/* O editor da tarefa precisa aparecer acima da aba lateral do dia. */
+.task-modal-overlay {
+  z-index: 240;
+}
