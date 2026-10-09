@@ -196,11 +196,11 @@ body.dark .message-content {
   position: absolute;
   inset: 0;
   z-index: -3;
-  background: url("../imagens/baixados.gif") center center / cover no-repeat;
-  opacity: .96;
-  filter: saturate(1.08) contrast(1.02);
-  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 58%, rgba(0,0,0,.82) 72%, transparent 94%);
-  mask-image: linear-gradient(90deg, #000 0%, #000 58%, rgba(0,0,0,.82) 72%, transparent 94%);
+  background:
+    radial-gradient(circle at 28% 30%, rgba(140,107,255,.34), transparent 24%),
+    radial-gradient(circle at 72% 62%, rgba(106,61,240,.20), transparent 34%),
+    linear-gradient(145deg, #16111f 0%, #24183a 52%, #0d0a12 100%);
+  opacity: 1;
 }
 
 .hero-overlay {
