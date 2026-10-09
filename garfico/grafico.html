@@ -463,6 +463,198 @@
 
 
   <!-- =========================================
+       AGENDA DA EQUIPE: DETALHE DO DIA
+  ========================================= -->
+
+  <div class="graph-day-drawer-backdrop" id="graphDayDrawer" aria-hidden="true">
+    <aside class="graph-day-drawer" role="dialog" aria-modal="true" aria-labelledby="graphDayDrawerDate">
+      <header class="graph-day-drawer-header">
+        <div>
+          <span class="panel-kicker">AGENDA DO DIA</span>
+          <h2 id="graphDayDrawerDate">Data selecionada</h2>
+          <p>Veja os pontos da equipe e edite as tarefas sem sair do painel.</p>
+        </div>
+
+        <button class="graph-day-close" id="graphCloseDayDrawer" type="button" aria-label="Fechar agenda do dia">
+          <i class="bx bx-x"></i>
+        </button>
+      </header>
+
+      <div class="graph-day-summary">
+        <div><span>Tarefas</span><strong id="graphDayTaskCount">0</strong></div>
+        <div><span>Pessoas</span><strong id="graphDayPeopleCount">0</strong></div>
+        <div><span>Concluídas</span><strong id="graphDayDoneCount">0</strong></div>
+      </div>
+
+      <section class="graph-day-section">
+        <div class="graph-day-section-head">
+          <div>
+            <span class="panel-kicker">EQUIPE</span>
+            <h3>Responsáveis deste dia</h3>
+          </div>
+        </div>
+        <div class="graph-day-team" id="graphDayTeam"></div>
+      </section>
+
+      <section class="graph-day-section">
+        <div class="graph-day-section-head">
+          <div>
+            <span class="panel-kicker">TAREFAS</span>
+            <h3>Pontos do dia</h3>
+          </div>
+
+          <button class="btn btn-primary btn-small" id="graphNewTaskForDay" type="button">
+            <i class="bx bx-plus"></i>
+            Nova tarefa
+          </button>
+        </div>
+
+        <div class="graph-day-task-list" id="graphDayTaskList"></div>
+      </section>
+    </aside>
+  </div>
+
+
+  <!-- =========================================
+       AGENDA DA EQUIPE: EDITOR DE TAREFA
+  ========================================= -->
+
+  <div class="modal-overlay graph-task-overlay" id="graphTaskModal" aria-hidden="true">
+    <section class="modal graph-task-modal" role="dialog" aria-modal="true" aria-labelledby="graphTaskModalTitle">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-icon"><i class="bx bx-task"></i></span>
+          <div>
+            <h2 id="graphTaskModalTitle">Nova tarefa</h2>
+            <p id="graphTaskModalSubtitle">Organize responsáveis, prazo e andamento da equipe.</p>
+          </div>
+        </div>
+
+        <button class="icon-btn" id="graphCloseTaskModal" type="button" aria-label="Fechar">
+          <i class="bx bx-x"></i>
+        </button>
+      </div>
+
+      <form id="graphTaskForm">
+        <div class="modal-body graph-task-body">
+          <label class="graph-task-field graph-task-field-wide">
+            <span>Nome da tarefa</span>
+            <input id="graphTaskTitle" type="text" maxlength="100" placeholder="Ex.: Entrega de custos" required>
+          </label>
+
+          <div class="graph-task-grid">
+            <label class="graph-task-field">
+              <span>Responsável</span>
+              <select id="graphTaskAssignee" required></select>
+            </label>
+
+            <label class="graph-task-field">
+              <span>Data de entrega</span>
+              <input id="graphTaskDueDate" type="date" required>
+            </label>
+
+            <label class="graph-task-field">
+              <span>Prioridade</span>
+              <select id="graphTaskPriority" required>
+                <option value="low">Baixa</option>
+                <option value="medium" selected>Média</option>
+                <option value="high">Alta</option>
+                <option value="urgent">Urgente</option>
+              </select>
+            </label>
+
+            <label class="graph-task-field">
+              <span>Status</span>
+              <select id="graphTaskStatus" required>
+                <option value="todo">A fazer</option>
+                <option value="doing">Em andamento</option>
+                <option value="blocked">Bloqueada</option>
+                <option value="done">Concluída</option>
+              </select>
+            </label>
+
+            <label class="graph-task-field">
+              <span>Valor ou custo</span>
+              <input id="graphTaskCost" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+            </label>
+
+            <label class="graph-task-field">
+              <span>Categoria ou etiqueta</span>
+              <input id="graphTaskCategory" type="text" maxlength="40" placeholder="Ex.: Financeiro">
+            </label>
+
+            <label class="graph-task-field">
+              <span>Horário inicial</span>
+              <input id="graphTaskStartTime" type="time">
+            </label>
+
+            <label class="graph-task-field">
+              <span>Horário final</span>
+              <input id="graphTaskEndTime" type="time">
+            </label>
+
+            <label class="graph-task-field">
+              <span>Cor da tarefa</span>
+              <select id="graphTaskColor">
+                <option value="purple">Roxo ZUZ</option>
+                <option value="blue">Azul</option>
+                <option value="green">Verde</option>
+                <option value="amber">Amarelo</option>
+                <option value="coral">Coral</option>
+                <option value="gray">Cinza</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="graph-task-field graph-task-field-wide">
+            <span>Descrição</span>
+            <textarea id="graphTaskDescription" maxlength="1200" placeholder="Contexto, instruções ou observações importantes..."></textarea>
+          </label>
+
+          <section class="graph-checklist">
+            <div class="graph-checklist-head">
+              <div>
+                <span class="panel-kicker">CHECKLIST</span>
+                <strong>Etapas da tarefa</strong>
+              </div>
+              <span id="graphChecklistProgress">0/0 concluídas</span>
+            </div>
+
+            <div id="graphChecklistItems"></div>
+
+            <div class="graph-checklist-add">
+              <input id="graphChecklistNew" type="text" maxlength="90" placeholder="Adicionar uma etapa">
+              <button id="graphAddChecklistItem" type="button">
+                <i class="bx bx-plus"></i>
+                Adicionar
+              </button>
+            </div>
+          </section>
+
+          <section class="graph-task-audit" id="graphTaskAudit" hidden>
+            <div id="graphTaskAuditSummary"></div>
+            <div class="graph-task-history">
+              <strong>Histórico de atividade</strong>
+              <div id="graphTaskHistoryList"></div>
+            </div>
+          </section>
+
+          <p class="form-error" id="graphTaskFeedback" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="modal-footer graph-task-footer">
+          <button class="btn btn-danger" id="graphDeleteTask" type="button" hidden>Excluir tarefa</button>
+          <div>
+            <button class="btn btn-secondary" id="graphCancelTask" type="button">Cancelar</button>
+            <button class="btn btn-primary" type="submit">Salvar tarefa</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+
+
+  <!-- =========================================
        MODAL CADASTRAR PRODUTO
   ========================================= -->
 
