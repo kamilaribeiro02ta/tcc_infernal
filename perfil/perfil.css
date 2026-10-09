@@ -3801,3 +3801,37 @@ body.dark .day-drawer-backdrop {
 .notes-card {
   display: none !important;
 }
+
+
+/* =========================================================
+   Correção do avatar da sidebar do Perfil
+========================================================= */
+
+.profile-sidebar-avatar {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.profile-sidebar-avatar img,
+#sidebarProfileImage {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  border-radius: inherit;
+}
+
+#sidebarProfileImage[hidden] {
+  display: none !important;
+}
+
+#sidebarDefaultAvatar {
+  width: 22px;
+  height: 22px;
+  position: relative;
+  z-index: 1;
+}

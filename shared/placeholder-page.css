@@ -1,5 +1,5 @@
 :root {
-  --bg-image: url("../imagens/Main.png");
+  --bg-image: none;
   --text-primary: #17131f;
   --text-secondary: #665f73;
   --sidebar-bg: #ffffff;
@@ -18,7 +18,7 @@
 }
 
 body.dark {
-  --bg-image: url("../imagens/Main\ \(1\).png");
+  --bg-image: none;
   --text-primary: #f3f1fa;
   --text-secondary: #c7c2db;
   --sidebar-bg: #15111f;

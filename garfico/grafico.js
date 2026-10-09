@@ -6,6 +6,7 @@
   const TEAM_KEY = "zuz-company-team";
   const PROFILE_KEY = "zuz-profile";
   const SESSION_KEY = "zuz-session";
+  const BUSINESS_OWNER_KEY = "zuz-company-owner";
   const monthNames = [
     "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
     "Jul", "Ago", "Set", "Out", "Nov", "Dez"
@@ -66,12 +67,53 @@
     plannerPriorityFilter: document.getElementById("plannerPriorityFilter"),
     plannerCalendarView: document.getElementById("plannerCalendarView"),
     plannerCalendarGrid: document.getElementById("plannerCalendarGrid"),
-    plannerBoardView: document.getElementById("plannerBoardView")
+    plannerBoardView: document.getElementById("plannerBoardView"),
+    plannerTodayBtn: document.getElementById("plannerTodayBtn"),
+    plannerNewTaskBtn: document.getElementById("plannerNewTaskBtn"),
+
+    graphDayDrawer: document.getElementById("graphDayDrawer"),
+    graphDayDrawerDate: document.getElementById("graphDayDrawerDate"),
+    graphDayTaskCount: document.getElementById("graphDayTaskCount"),
+    graphDayPeopleCount: document.getElementById("graphDayPeopleCount"),
+    graphDayDoneCount: document.getElementById("graphDayDoneCount"),
+    graphDayTeam: document.getElementById("graphDayTeam"),
+    graphDayTaskList: document.getElementById("graphDayTaskList"),
+    graphCloseDayDrawer: document.getElementById("graphCloseDayDrawer"),
+    graphNewTaskForDay: document.getElementById("graphNewTaskForDay"),
+
+    graphTaskModal: document.getElementById("graphTaskModal"),
+    graphTaskModalTitle: document.getElementById("graphTaskModalTitle"),
+    graphTaskForm: document.getElementById("graphTaskForm"),
+    graphTaskTitle: document.getElementById("graphTaskTitle"),
+    graphTaskAssignee: document.getElementById("graphTaskAssignee"),
+    graphTaskDueDate: document.getElementById("graphTaskDueDate"),
+    graphTaskPriority: document.getElementById("graphTaskPriority"),
+    graphTaskStatus: document.getElementById("graphTaskStatus"),
+    graphTaskCost: document.getElementById("graphTaskCost"),
+    graphTaskCategory: document.getElementById("graphTaskCategory"),
+    graphTaskStartTime: document.getElementById("graphTaskStartTime"),
+    graphTaskEndTime: document.getElementById("graphTaskEndTime"),
+    graphTaskColor: document.getElementById("graphTaskColor"),
+    graphTaskDescription: document.getElementById("graphTaskDescription"),
+    graphChecklistProgress: document.getElementById("graphChecklistProgress"),
+    graphChecklistItems: document.getElementById("graphChecklistItems"),
+    graphChecklistNew: document.getElementById("graphChecklistNew"),
+    graphAddChecklistItem: document.getElementById("graphAddChecklistItem"),
+    graphTaskAudit: document.getElementById("graphTaskAudit"),
+    graphTaskAuditSummary: document.getElementById("graphTaskAuditSummary"),
+    graphTaskHistoryList: document.getElementById("graphTaskHistoryList"),
+    graphTaskFeedback: document.getElementById("graphTaskFeedback"),
+    graphCloseTaskModal: document.getElementById("graphCloseTaskModal"),
+    graphCancelTask: document.getElementById("graphCancelTask"),
+    graphDeleteTask: document.getElementById("graphDeleteTask")
   };
 
   let selectedMonth = new Date().getMonth();
   let plannerYear = new Date().getFullYear();
   let plannerView = "calendar";
+  let selectedPlannerDate = "";
+  let editingPlannerTaskId = "";
+  let plannerChecklistDraft = [];
   let products = loadProducts();
 
   function id() {
@@ -352,13 +394,55 @@
     }
   }
 
+  function normalizeGraphTask(task) {
+    const actor = currentActor();
+    const now = new Date().toISOString();
+    const colors = ["purple", "blue", "green", "amber", "coral", "gray"];
+
+    return {
+      id: String(task?.id || `task_${Date.now().toString(36)}`),
+      title: String(task?.title || "Nova tarefa"),
+      assigneeId: String(task?.assigneeId || ""),
+      assigneeName: String(task?.assigneeName || "Sem responsável"),
+      assigneeEmail: String(task?.assigneeEmail || "").toLowerCase(),
+      dueDate: /^\d{4}-\d{2}-\d{2}$/.test(String(task?.dueDate || ""))
+        ? String(task.dueDate)
+        : toDateInputValue(new Date()),
+      startTime: String(task?.startTime || ""),
+      endTime: String(task?.endTime || ""),
+      color: colors.includes(task?.color) ? task.color : "purple",
+      priority: TASK_PRIORITY[task?.priority] ? task.priority : "medium",
+      status: TASK_STATUS[task?.status] ? task.status : "todo",
+      cost: Math.max(0, numberValue(task?.cost)),
+      category: String(task?.category || ""),
+      description: String(task?.description || ""),
+      checklist: Array.isArray(task?.checklist)
+        ? task.checklist.map(item => ({
+            id: String(item?.id || `check_${Date.now().toString(36)}`),
+            text: String(item?.text || ""),
+            done: Boolean(item?.done)
+          }))
+        : [],
+      createdAt: task?.createdAt || now,
+      createdBy: task?.createdBy || actor,
+      updatedAt: task?.updatedAt || task?.createdAt || now,
+      updatedBy: task?.updatedBy || task?.createdBy || actor,
+      history: Array.isArray(task?.history) ? task.history : []
+    };
+  }
+
   function loadCompanyTasks() {
     const tasks = readJson(TASKS_KEY, []);
-    return Array.isArray(tasks) ? tasks.filter(task => task && task.id) : [];
+    return Array.isArray(tasks)
+      ? tasks.filter(task => task && task.id).map(normalizeGraphTask)
+      : [];
   }
 
   function saveCompanyTasks(tasks) {
-    localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+    localStorage.setItem(
+      TASKS_KEY,
+      JSON.stringify(tasks.map(normalizeGraphTask))
+    );
   }
 
   function currentActor() {
@@ -367,8 +451,64 @@
     return {
       id: session.userId || profile.id || profile.email || "local-user",
       name: profile.name || session.email || "Usuário ZUZ",
-      email: profile.email || session.email || ""
+      email: String(profile.email || session.email || "").toLowerCase()
     };
+  }
+
+  function plannerPersonKey(person) {
+    return String(person?.email || person?.id || person?.name || "")
+      .trim()
+      .toLowerCase();
+  }
+
+  function getPlannerPeople() {
+    const profile = readJson(PROFILE_KEY, {});
+    const ownerSaved = readJson(BUSINESS_OWNER_KEY, {});
+    const actor = currentActor();
+
+    const owner = {
+      id: ownerSaved.id || profile.id || actor.id || "owner",
+      name: ownerSaved.name || profile.name || actor.name || "Proprietário",
+      email: String(ownerSaved.email || profile.email || actor.email || "").toLowerCase(),
+      role: "Proprietário"
+    };
+
+    const team = readJson(TEAM_KEY, []);
+    const people = [owner];
+
+    if (Array.isArray(team)) {
+      team.forEach(member => {
+        people.push({
+          id: member.id || member.email || member.name,
+          name: member.name || member.email || "Membro",
+          email: String(member.email || "").toLowerCase(),
+          role: member.role || "Equipe"
+        });
+      });
+    }
+
+    loadCompanyTasks().forEach(task => {
+      const key = String(task.assigneeEmail || task.assigneeId || task.assigneeName || "").toLowerCase();
+      if (!key) return;
+
+      const exists = people.some(person => plannerPersonKey(person) === key);
+      if (!exists) {
+        people.push({
+          id: task.assigneeId || key,
+          name: task.assigneeName || task.assigneeEmail || "Responsável",
+          email: String(task.assigneeEmail || "").toLowerCase(),
+          role: "Equipe"
+        });
+      }
+    });
+
+    const seen = new Set();
+    return people.filter(person => {
+      const key = plannerPersonKey(person);
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
   }
 
   function taskColorClass(task) {
@@ -382,6 +522,19 @@
     if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
     const [year, month, day] = value.split("-").map(Number);
     return new Date(year, month - 1, day);
+  }
+
+  function plannerDateKey(year, monthIndex, day) {
+    return [
+      year,
+      String(monthIndex + 1).padStart(2, "0"),
+      String(day).padStart(2, "0")
+    ].join("-");
+  }
+
+  function plannerTaskTime(task) {
+    if (task.startTime && task.endTime) return `${task.startTime}–${task.endTime}`;
+    return task.startTime || task.endTime || "";
   }
 
   function plannerTasks() {
@@ -399,7 +552,11 @@
         if (priority && task.priority !== priority) return false;
         return true;
       })
-      .sort((a, b) => String(a.dueDate).localeCompare(String(b.dueDate)));
+      .sort((a, b) => {
+        const byDate = String(a.dueDate).localeCompare(String(b.dueDate));
+        if (byDate) return byDate;
+        return String(a.startTime || "99:99").localeCompare(String(b.startTime || "99:99"));
+      });
   }
 
   function plannerMonthText() {
@@ -411,35 +568,36 @@
   }
 
   function populatePlannerPeople() {
-    if (!els.plannerAssigneeFilter) return;
+    const people = getPlannerPeople();
 
-    const current = els.plannerAssigneeFilter.value;
-    const people = new Map();
+    if (els.plannerAssigneeFilter) {
+      const current = els.plannerAssigneeFilter.value;
+      els.plannerAssigneeFilter.innerHTML =
+        '<option value="">Toda a equipe</option>' +
+        people
+          .map(person => {
+            const key = plannerPersonKey(person);
+            return `<option value="${escapeHtml(key)}">${escapeHtml(person.name)}</option>`;
+          })
+          .join("");
 
-    const team = readJson(TEAM_KEY, []);
-    if (Array.isArray(team)) {
-      team.forEach(member => {
-        const key = String(member.email || member.id || "").toLowerCase();
-        if (key) people.set(key, member.name || member.email || "Membro");
-      });
+      if (people.some(person => plannerPersonKey(person) === current)) {
+        els.plannerAssigneeFilter.value = current;
+      }
     }
 
-    loadCompanyTasks().forEach(task => {
-      const key = String(task.assigneeEmail || task.assigneeId || task.assigneeName || "").toLowerCase();
-      if (key && !people.has(key)) {
-        people.set(key, task.assigneeName || task.assigneeEmail || "Responsável");
-      }
-    });
-
-    els.plannerAssigneeFilter.innerHTML =
-      '<option value="">Toda a equipe</option>' +
-      [...people.entries()]
-        .sort((a, b) => a[1].localeCompare(b[1], "pt-BR"))
-        .map(([value, label]) => `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`)
+    if (els.graphTaskAssignee) {
+      const current = els.graphTaskAssignee.value;
+      els.graphTaskAssignee.innerHTML = people
+        .map(person => {
+          const key = plannerPersonKey(person);
+          return `<option value="${escapeHtml(key)}">${escapeHtml(person.name)} · ${escapeHtml(person.role)}</option>`;
+        })
         .join("");
 
-    if (people.has(current)) {
-      els.plannerAssigneeFilter.value = current;
+      if (people.some(person => plannerPersonKey(person) === current)) {
+        els.graphTaskAssignee.value = current;
+      }
     }
   }
 
@@ -479,6 +637,7 @@
   function plannerTaskChip(task) {
     const time = task.startTime ? `${escapeHtml(task.startTime)} · ` : "";
     const doneClass = task.status === "done" ? " is-done" : "";
+
     return `
       <button
         class="planner-event ${taskColorClass(task)}${doneClass}"
@@ -517,18 +676,26 @@
 
     for (let day = 1; day <= lastDay; day += 1) {
       const dayTasks = byDay.get(day) || [];
+      const dateKey = plannerDateKey(plannerYear, selectedMonth, day);
       const isToday =
         today.getFullYear() === plannerYear &&
         today.getMonth() === selectedMonth &&
         today.getDate() === day;
+      const isSelected = selectedPlannerDate === dateKey;
 
       const visible = dayTasks.slice(0, 3).map(plannerTaskChip).join("");
       const extra = dayTasks.length > 3
-        ? `<a class="planner-day-more" href="../perfil/perfil.html#agenda">+${dayTasks.length - 3} tarefa(s)</a>`
+        ? `<span class="planner-day-more">+${dayTasks.length - 3} tarefa(s)</span>`
         : "";
 
       cells.push(`
-        <div class="planner-day${isToday ? " is-today" : ""}">
+        <div
+          class="planner-day${isToday ? " is-today" : ""}${isSelected ? " is-selected" : ""}"
+          data-planner-date="${dateKey}"
+          role="button"
+          tabindex="0"
+          aria-label="${day} de ${plannerMonthText()}, ${dayTasks.length} tarefa(s)"
+        >
           <span class="planner-day-number">${day}</span>
           <div class="planner-day-events">${visible}${extra}</div>
         </div>
@@ -538,9 +705,21 @@
     els.plannerCalendarGrid.innerHTML = cells.join("");
 
     els.plannerCalendarGrid.querySelectorAll("[data-planner-task]").forEach(button => {
-      button.addEventListener("click", () => {
-        window.location.href = "../perfil/perfil.html#agenda";
+      button.addEventListener("click", event => {
+        event.stopPropagation();
+        openGraphTaskModal(button.dataset.plannerTask);
       });
+    });
+
+    els.plannerCalendarGrid.querySelectorAll("[data-planner-date]").forEach(day => {
+      const open = event => {
+        if (event.type === "keydown" && !["Enter", " "].includes(event.key)) return;
+        if (event.type === "keydown") event.preventDefault();
+        openGraphDayDrawer(day.dataset.plannerDate);
+      };
+
+      day.addEventListener("click", open);
+      day.addEventListener("keydown", open);
     });
   }
 
@@ -559,17 +738,20 @@
         draggable="true"
         data-board-task-id="${escapeHtml(task.id)}"
       >
-        <div class="planner-board-card-top">
-          <span class="planner-board-color"></span>
-          <span class="planner-board-priority">${escapeHtml(priority)}</span>
-        </div>
-        <strong>${escapeHtml(task.title || "Tarefa")}</strong>
-        <div class="planner-board-meta">
-          <span><i class="bx bx-user"></i>${escapeHtml(task.assigneeName || "Sem responsável")}</span>
-          <span><i class="bx bx-calendar"></i>${formatted}</span>
-          ${cost ? `<span><i class="bx bx-wallet"></i>${escapeHtml(cost)}</span>` : ""}
-        </div>
-        <small class="planner-board-edited">Editado por ${escapeHtml(task.updatedBy?.name || task.createdBy?.name || "Usuário")}</small>
+        <button class="planner-board-open" type="button" data-board-edit-task="${escapeHtml(task.id)}">
+          <div class="planner-board-card-top">
+            <span class="planner-board-color"></span>
+            <span class="planner-board-priority">${escapeHtml(priority)}</span>
+          </div>
+          <strong>${escapeHtml(task.title || "Tarefa")}</strong>
+          <div class="planner-board-meta">
+            <span><i class="bx bx-user"></i>${escapeHtml(task.assigneeName || "Sem responsável")}</span>
+            <span><i class="bx bx-calendar"></i>${formatted}</span>
+            ${cost ? `<span><i class="bx bx-wallet"></i>${escapeHtml(cost)}</span>` : ""}
+          </div>
+          <small class="planner-board-edited">Editado por ${escapeHtml(task.updatedBy?.name || task.createdBy?.name || "Usuário")}</small>
+        </button>
+
         <select data-board-status="${escapeHtml(task.id)}" aria-label="Status da tarefa">
           ${Object.entries(TASK_STATUS)
             .map(([value, label]) => `<option value="${value}" ${task.status === value ? "selected" : ""}>${label}</option>`)
@@ -607,6 +789,12 @@
       });
     });
 
+    els.plannerBoardView.querySelectorAll("[data-board-edit-task]").forEach(button => {
+      button.addEventListener("click", () => {
+        openGraphTaskModal(button.dataset.boardEditTask);
+      });
+    });
+
     els.plannerBoardView.querySelectorAll("[data-board-task-id]").forEach(card => {
       card.addEventListener("dragstart", event => {
         event.dataTransfer.setData("text/plain", card.dataset.boardTaskId);
@@ -638,6 +826,17 @@
     });
   }
 
+  function appendGraphTaskHistory(task, action, actor = currentActor()) {
+    const history = Array.isArray(task?.history) ? [...task.history] : [];
+    history.push({
+      action,
+      actorName: actor.name,
+      actorEmail: actor.email,
+      at: new Date().toISOString()
+    });
+    return history.slice(-40);
+  }
+
   function updatePlannerTaskStatus(taskId, status) {
     if (!TASK_STATUS[status]) return;
 
@@ -654,18 +853,264 @@
     task.status = status;
     task.updatedAt = new Date().toISOString();
     task.updatedBy = actor;
-    task.history = Array.isArray(task.history) ? task.history : [];
-    task.history.push({
-      action: `Status alterado de ${TASK_STATUS[oldStatus] || oldStatus} para ${TASK_STATUS[status]}`,
-      actorName: actor.name,
-      actorEmail: actor.email,
-      at: task.updatedAt
-    });
-    task.history = task.history.slice(-40);
+    task.history = appendGraphTaskHistory(
+      task,
+      `Status alterado de ${TASK_STATUS[oldStatus] || oldStatus} para ${TASK_STATUS[status]}`,
+      actor
+    );
 
-    tasks[index] = task;
+    tasks[index] = normalizeGraphTask(task);
     saveCompanyTasks(tasks);
     renderPlanner();
+
+    if (selectedPlannerDate && els.graphDayDrawer?.classList.contains("active")) {
+      renderGraphDayDrawer(selectedPlannerDate);
+    }
+  }
+
+  function plannerInitials(value) {
+    return String(value || "?")
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map(part => part[0] || "")
+      .join("")
+      .toUpperCase();
+  }
+
+  function graphDayTaskMarkup(task) {
+    const time = plannerTaskTime(task);
+    const cost = task.cost > 0 ? currency(task.cost) : "";
+
+    return `
+      <article class="graph-day-task ${taskColorClass(task)}">
+        <button type="button" data-graph-edit-task="${escapeHtml(task.id)}">
+          <div class="graph-day-task-top">
+            <span class="graph-task-color"></span>
+            <span class="graph-priority priority-${escapeHtml(task.priority)}">${escapeHtml(TASK_PRIORITY[task.priority])}</span>
+            <span>${time ? escapeHtml(time) : "Sem horário"}</span>
+          </div>
+          <strong>${escapeHtml(task.title)}</strong>
+          <div class="graph-day-task-meta">
+            <span><i class="bx bx-user"></i>${escapeHtml(task.assigneeName || "Sem responsável")}</span>
+            ${task.category ? `<span><i class="bx bx-tag"></i>${escapeHtml(task.category)}</span>` : ""}
+            ${cost ? `<span><i class="bx bx-wallet"></i>${escapeHtml(cost)}</span>` : ""}
+          </div>
+        </button>
+
+        <select data-graph-day-status="${escapeHtml(task.id)}" aria-label="Status de ${escapeHtml(task.title)}">
+          ${Object.entries(TASK_STATUS)
+            .map(([value, label]) => `<option value="${value}" ${task.status === value ? "selected" : ""}>${label}</option>`)
+            .join("")}
+        </select>
+      </article>
+    `;
+  }
+
+  function renderGraphDayDrawer(dateKey = selectedPlannerDate) {
+    if (!dateKey || !els.graphDayDrawer) return;
+
+    const date = taskDate({ dueDate: dateKey });
+    if (!date) return;
+
+    const tasks = loadCompanyTasks()
+      .filter(task => task.dueDate === dateKey)
+      .sort((a, b) => String(a.startTime || "99:99").localeCompare(String(b.startTime || "99:99")));
+
+    const people = getPlannerPeople();
+    const involved = new Set(
+      tasks
+        .map(task => String(task.assigneeEmail || task.assigneeId || "").toLowerCase())
+        .filter(Boolean)
+    );
+
+    els.graphDayDrawerDate.textContent = new Intl.DateTimeFormat("pt-BR", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+      year: "numeric"
+    }).format(date).replace(/^./, letter => letter.toUpperCase());
+
+    els.graphDayTaskCount.textContent = String(tasks.length);
+    els.graphDayPeopleCount.textContent = String(involved.size);
+    els.graphDayDoneCount.textContent = String(tasks.filter(task => task.status === "done").length);
+
+    els.graphDayTeam.innerHTML = people
+      .map(person => {
+        const key = plannerPersonKey(person);
+        const count = tasks.filter(task => {
+          const assignee = String(task.assigneeEmail || task.assigneeId || "").toLowerCase();
+          return assignee === key;
+        }).length;
+
+        return `
+          <div class="graph-day-person ${count ? "has-tasks" : ""}">
+            <span class="graph-day-avatar">${escapeHtml(plannerInitials(person.name))}</span>
+            <div>
+              <strong>${escapeHtml(person.name)}</strong>
+              <small>${escapeHtml(person.role || "Equipe")}</small>
+            </div>
+            <span class="graph-day-person-count">${count} tarefa${count === 1 ? "" : "s"}</span>
+          </div>
+        `;
+      })
+      .join("");
+
+    els.graphDayTaskList.innerHTML = tasks.length
+      ? tasks.map(graphDayTaskMarkup).join("")
+      : `
+          <div class="graph-day-empty">
+            <i class="bx bx-calendar-plus"></i>
+            <strong>Dia livre.</strong>
+            <span>Não há tarefas cadastradas para esta data.</span>
+          </div>
+        `;
+  }
+
+  function openGraphDayDrawer(dateKey) {
+    if (!dateKey || !els.graphDayDrawer) return;
+
+    selectedPlannerDate = dateKey;
+    renderPlanner();
+    renderGraphDayDrawer(dateKey);
+
+    els.graphDayDrawer.classList.add("active");
+    els.graphDayDrawer.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeGraphDayDrawer() {
+    els.graphDayDrawer?.classList.remove("active");
+    els.graphDayDrawer?.setAttribute("aria-hidden", "true");
+    selectedPlannerDate = "";
+    renderPlanner();
+
+    if (!document.querySelector(".modal-overlay.open")) {
+      document.body.style.overflow = "";
+    }
+  }
+
+  function renderPlannerChecklist() {
+    if (!els.graphChecklistItems || !els.graphChecklistProgress) return;
+
+    const done = plannerChecklistDraft.filter(item => item.done).length;
+    els.graphChecklistProgress.textContent = `${done}/${plannerChecklistDraft.length} concluídas`;
+
+    els.graphChecklistItems.innerHTML = plannerChecklistDraft.length
+      ? plannerChecklistDraft.map(item => `
+          <div class="graph-checklist-row" data-check-id="${escapeHtml(item.id)}">
+            <label>
+              <input type="checkbox" data-check-toggle="${escapeHtml(item.id)}" ${item.done ? "checked" : ""}>
+              <span>${escapeHtml(item.text)}</span>
+            </label>
+            <button type="button" data-check-remove="${escapeHtml(item.id)}" aria-label="Remover etapa">
+              <i class="bx bx-x"></i>
+            </button>
+          </div>
+        `).join("")
+      : '<div class="graph-checklist-empty">Nenhuma etapa adicionada.</div>';
+  }
+
+  function formatGraphTaskDateTime(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "--";
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(date);
+  }
+
+  function renderGraphTaskAudit(task) {
+    if (!els.graphTaskAudit || !els.graphTaskAuditSummary || !els.graphTaskHistoryList) return;
+
+    if (!task) {
+      els.graphTaskAudit.hidden = true;
+      return;
+    }
+
+    els.graphTaskAudit.hidden = false;
+
+    const createdName = task.createdBy?.name || "Usuário";
+    const updatedName = task.updatedBy?.name || createdName;
+
+    els.graphTaskAuditSummary.innerHTML = `
+      <div>
+        <span>Criada por</span>
+        <strong>${escapeHtml(createdName)}</strong>
+        <small>${escapeHtml(formatGraphTaskDateTime(task.createdAt))}</small>
+      </div>
+      <div>
+        <span>Última edição</span>
+        <strong>${escapeHtml(updatedName)}</strong>
+        <small>${escapeHtml(formatGraphTaskDateTime(task.updatedAt))}</small>
+      </div>
+    `;
+
+    const history = Array.isArray(task.history) ? [...task.history].reverse() : [];
+
+    els.graphTaskHistoryList.innerHTML = history.length
+      ? history.map(entry => `
+          <div class="graph-history-item">
+            <i class="bx bx-history"></i>
+            <div>
+              <strong>${escapeHtml(entry.action || "Alteração")}</strong>
+              <span>${escapeHtml(entry.actorName || entry.actor?.name || "Usuário")} · ${escapeHtml(formatGraphTaskDateTime(entry.at))}</span>
+            </div>
+          </div>
+        `).join("")
+      : '<span class="graph-history-empty">Sem alterações registradas.</span>';
+  }
+
+  function openGraphTaskModal(taskId = "", dateKey = "") {
+    const tasks = loadCompanyTasks();
+    const task = taskId ? tasks.find(item => String(item.id) === String(taskId)) : null;
+
+    editingPlannerTaskId = task?.id || "";
+    plannerChecklistDraft = Array.isArray(task?.checklist)
+      ? task.checklist.map(item => ({ ...item }))
+      : [];
+
+    populatePlannerPeople();
+
+    els.graphTaskModalTitle.textContent = task ? "Editar tarefa" : "Nova tarefa";
+    els.graphTaskTitle.value = task?.title || "";
+    els.graphTaskDueDate.value = task?.dueDate || dateKey || selectedPlannerDate || toDateInputValue(new Date());
+    els.graphTaskPriority.value = task?.priority || "medium";
+    els.graphTaskStatus.value = task?.status || "todo";
+    els.graphTaskCost.value = task?.cost || "";
+    els.graphTaskCategory.value = task?.category || "";
+    els.graphTaskStartTime.value = task?.startTime || "";
+    els.graphTaskEndTime.value = task?.endTime || "";
+    els.graphTaskColor.value = task?.color || "purple";
+    els.graphTaskDescription.value = task?.description || "";
+    els.graphTaskFeedback.textContent = "";
+    els.graphDeleteTask.hidden = !task;
+
+    const assigneeKey = task
+      ? String(task.assigneeEmail || task.assigneeId || "").toLowerCase()
+      : plannerPersonKey(getPlannerPeople()[0]);
+
+    if ([...els.graphTaskAssignee.options].some(option => option.value === assigneeKey)) {
+      els.graphTaskAssignee.value = assigneeKey;
+    }
+
+    renderPlannerChecklist();
+    renderGraphTaskAudit(task);
+    openModal(els.graphTaskModal);
+    requestAnimationFrame(() => els.graphTaskTitle?.focus());
+  }
+
+  function closeGraphTaskModal() {
+    closeModal(els.graphTaskModal);
+    editingPlannerTaskId = "";
+    plannerChecklistDraft = [];
+
+    if (els.graphDayDrawer?.classList.contains("active")) {
+      document.body.style.overflow = "hidden";
+    }
   }
 
   function renderPlanner() {
@@ -686,6 +1131,7 @@
     if (els.plannerCalendarView) {
       els.plannerCalendarView.hidden = plannerView !== "calendar";
     }
+
     els.plannerBoardView.hidden = plannerView !== "board";
 
     document.querySelectorAll("[data-planner-view]").forEach(button => {
@@ -693,12 +1139,17 @@
       button.classList.toggle("active", active);
       button.setAttribute("aria-pressed", String(active));
     });
+
+    if (selectedPlannerDate && els.graphDayDrawer?.classList.contains("active")) {
+      renderGraphDayDrawer(selectedPlannerDate);
+    }
   }
 
   function changePlannerMonth(delta) {
     const cursor = new Date(plannerYear, selectedMonth + delta, 1);
     plannerYear = cursor.getFullYear();
     selectedMonth = cursor.getMonth();
+    selectedPlannerDate = "";
     els.monthFilter.value = String(selectedMonth);
     renderAll();
   }
@@ -714,6 +1165,19 @@
     els.plannerPrevMonth?.addEventListener("click", () => changePlannerMonth(-1));
     els.plannerNextMonth?.addEventListener("click", () => changePlannerMonth(1));
 
+    els.plannerTodayBtn?.addEventListener("click", () => {
+      const today = new Date();
+      plannerYear = today.getFullYear();
+      selectedMonth = today.getMonth();
+      els.monthFilter.value = String(selectedMonth);
+      openGraphDayDrawer(toDateInputValue(today));
+      renderAll();
+    });
+
+    els.plannerNewTaskBtn?.addEventListener("click", () => {
+      openGraphTaskModal("", selectedPlannerDate || toDateInputValue(new Date()));
+    });
+
     els.plannerAssigneeFilter?.addEventListener("change", renderPlanner);
     els.plannerPriorityFilter?.addEventListener("change", renderPlanner);
 
@@ -724,8 +1188,217 @@
       });
     });
 
+    els.graphCloseDayDrawer?.addEventListener("click", closeGraphDayDrawer);
+
+    els.graphDayDrawer?.addEventListener("click", event => {
+      if (event.target === els.graphDayDrawer) closeGraphDayDrawer();
+    });
+
+    els.graphNewTaskForDay?.addEventListener("click", () => {
+      openGraphTaskModal("", selectedPlannerDate || toDateInputValue(new Date()));
+    });
+
+    els.graphDayTaskList?.addEventListener("click", event => {
+      const button = event.target.closest("[data-graph-edit-task]");
+      if (button) openGraphTaskModal(button.dataset.graphEditTask);
+    });
+
+    els.graphDayTaskList?.addEventListener("change", event => {
+      const select = event.target.closest("[data-graph-day-status]");
+      if (select) updatePlannerTaskStatus(select.dataset.graphDayStatus, select.value);
+    });
+
+    els.graphCloseTaskModal?.addEventListener("click", closeGraphTaskModal);
+    els.graphCancelTask?.addEventListener("click", closeGraphTaskModal);
+
+    els.graphAddChecklistItem?.addEventListener("click", () => {
+      const text = els.graphChecklistNew?.value.trim();
+      if (!text) {
+        els.graphChecklistNew?.focus();
+        return;
+      }
+
+      plannerChecklistDraft.push({
+        id: `check_${Date.now().toString(36)}`,
+        text,
+        done: false
+      });
+
+      els.graphChecklistNew.value = "";
+      renderPlannerChecklist();
+      els.graphChecklistNew.focus();
+    });
+
+    els.graphChecklistNew?.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        els.graphAddChecklistItem?.click();
+      }
+    });
+
+    els.graphChecklistItems?.addEventListener("change", event => {
+      const checkbox = event.target.closest("[data-check-toggle]");
+      if (!checkbox) return;
+
+      const item = plannerChecklistDraft.find(entry => entry.id === checkbox.dataset.checkToggle);
+      if (item) {
+        item.done = checkbox.checked;
+        renderPlannerChecklist();
+      }
+    });
+
+    els.graphChecklistItems?.addEventListener("click", event => {
+      const button = event.target.closest("[data-check-remove]");
+      if (!button) return;
+
+      plannerChecklistDraft = plannerChecklistDraft.filter(
+        item => item.id !== button.dataset.checkRemove
+      );
+      renderPlannerChecklist();
+    });
+
+    els.graphTaskForm?.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const title = els.graphTaskTitle.value.trim();
+      const dueDate = els.graphTaskDueDate.value;
+      const assigneeKey = els.graphTaskAssignee.value;
+      const startTime = els.graphTaskStartTime.value;
+      const endTime = els.graphTaskEndTime.value;
+
+      if (!title) {
+        els.graphTaskFeedback.textContent = "Informe o nome da tarefa.";
+        els.graphTaskTitle.focus();
+        return;
+      }
+
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dueDate)) {
+        els.graphTaskFeedback.textContent = "Informe uma data válida.";
+        els.graphTaskDueDate.focus();
+        return;
+      }
+
+      if (startTime && endTime && endTime <= startTime) {
+        els.graphTaskFeedback.textContent = "O horário final precisa ser depois do horário inicial.";
+        els.graphTaskEndTime.focus();
+        return;
+      }
+
+      const person = getPlannerPeople().find(item => plannerPersonKey(item) === assigneeKey);
+      if (!person) {
+        els.graphTaskFeedback.textContent = "Selecione um responsável válido.";
+        els.graphTaskAssignee.focus();
+        return;
+      }
+
+      const tasks = loadCompanyTasks();
+      const actor = currentActor();
+      const now = new Date().toISOString();
+      const existingIndex = tasks.findIndex(task => task.id === editingPlannerTaskId);
+
+      if (existingIndex >= 0) {
+        const existing = tasks[existingIndex];
+        const oldStatus = existing.status;
+
+        const updated = normalizeGraphTask({
+          ...existing,
+          title,
+          assigneeId: person.id,
+          assigneeName: person.name,
+          assigneeEmail: person.email,
+          dueDate,
+          startTime,
+          endTime,
+          color: els.graphTaskColor.value,
+          priority: els.graphTaskPriority.value,
+          status: els.graphTaskStatus.value,
+          cost: numberValue(els.graphTaskCost.value),
+          category: els.graphTaskCategory.value.trim(),
+          description: els.graphTaskDescription.value.trim(),
+          checklist: plannerChecklistDraft.map(item => ({ ...item })),
+          updatedAt: now,
+          updatedBy: actor
+        });
+
+        updated.history = appendGraphTaskHistory(
+          updated,
+          oldStatus !== updated.status
+            ? `Tarefa editada · status: ${TASK_STATUS[updated.status]}`
+            : "Tarefa editada",
+          actor
+        );
+
+        tasks[existingIndex] = updated;
+      } else {
+        const created = normalizeGraphTask({
+          id: `task_${Date.now().toString(36)}`,
+          title,
+          assigneeId: person.id,
+          assigneeName: person.name,
+          assigneeEmail: person.email,
+          dueDate,
+          startTime,
+          endTime,
+          color: els.graphTaskColor.value,
+          priority: els.graphTaskPriority.value,
+          status: els.graphTaskStatus.value,
+          cost: numberValue(els.graphTaskCost.value),
+          category: els.graphTaskCategory.value.trim(),
+          description: els.graphTaskDescription.value.trim(),
+          checklist: plannerChecklistDraft.map(item => ({ ...item })),
+          createdAt: now,
+          createdBy: actor,
+          updatedAt: now,
+          updatedBy: actor,
+          history: [{
+            action: "Tarefa criada",
+            actorName: actor.name,
+            actorEmail: actor.email,
+            at: now
+          }]
+        });
+
+        tasks.push(created);
+      }
+
+      saveCompanyTasks(tasks);
+
+      const savedDate = taskDate({ dueDate });
+      if (savedDate) {
+        plannerYear = savedDate.getFullYear();
+        selectedMonth = savedDate.getMonth();
+        selectedPlannerDate = dueDate;
+        els.monthFilter.value = String(selectedMonth);
+      }
+
+      closeGraphTaskModal();
+      renderAll();
+
+      if (selectedPlannerDate) {
+        openGraphDayDrawer(selectedPlannerDate);
+      }
+    });
+
+    els.graphDeleteTask?.addEventListener("click", () => {
+      if (!editingPlannerTaskId) return;
+
+      const tasks = loadCompanyTasks();
+      const task = tasks.find(item => item.id === editingPlannerTaskId);
+      if (!task) return;
+
+      if (!window.confirm(`Excluir a tarefa "${task.title}"?`)) return;
+
+      saveCompanyTasks(tasks.filter(item => item.id !== editingPlannerTaskId));
+      closeGraphTaskModal();
+      renderAll();
+
+      if (selectedPlannerDate) {
+        renderGraphDayDrawer(selectedPlannerDate);
+      }
+    });
+
     window.addEventListener("storage", event => {
-      if ([TASKS_KEY, TEAM_KEY].includes(event.key)) {
+      if ([TASKS_KEY, TEAM_KEY, PROFILE_KEY, BUSINESS_OWNER_KEY].includes(event.key)) {
         renderPlanner();
       }
     });
@@ -1306,16 +1979,30 @@
 
   document.querySelectorAll(".modal-overlay").forEach(overlay => {
     overlay.addEventListener("mousedown", event => {
-      if (event.target === overlay) {
+      if (event.target !== overlay) return;
+
+      if (overlay === els.graphTaskModal) {
+        closeGraphTaskModal();
+      } else {
         closeModal(overlay);
       }
     });
   });
 
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-      document.querySelectorAll(".modal-overlay.open").forEach(closeModal);
+    if (event.key !== "Escape") return;
+
+    if (els.graphTaskModal?.classList.contains("open")) {
+      closeGraphTaskModal();
+      return;
     }
+
+    if (els.graphDayDrawer?.classList.contains("active")) {
+      closeGraphDayDrawer();
+      return;
+    }
+
+    document.querySelectorAll(".modal-overlay.open").forEach(closeModal);
   });
 
   initMonthFilter();

@@ -1,5 +1,5 @@
 :root {
-  --bg-image: url("../imagens/Main.png");
+  --bg-image: none;
   --page-bg: #f7f7fb;
   --surface: rgba(255, 255, 255, 0.96);
   --surface-soft: #faf9fd;
@@ -35,7 +35,7 @@
 }
 
 body.dark {
-  --bg-image: url("../imagens/Main\ \(1\).png");
+  --bg-image: none;
   --page-bg: #0f0c18;
   --surface: rgba(25, 20, 37, 0.96);
   --surface-soft: #1c1728;

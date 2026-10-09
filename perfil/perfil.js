@@ -378,6 +378,51 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
+  function applyProfilePhoto(image, fallback, source, fallbackDisplay = "") {
+    if (!image) {
+      if (fallback) {
+        fallback.hidden = false;
+        fallback.style.display = fallbackDisplay;
+      }
+      return;
+    }
+
+    const showFallback = () => {
+      image.hidden = true;
+      image.removeAttribute("src");
+
+      if (fallback) {
+        fallback.hidden = false;
+        fallback.style.display = fallbackDisplay;
+      }
+    };
+
+    if (!source) {
+      showFallback();
+      return;
+    }
+
+    image.hidden = true;
+
+    if (fallback) {
+      fallback.hidden = false;
+      fallback.style.display = fallbackDisplay;
+    }
+
+    image.onload = () => {
+      image.hidden = false;
+
+      if (fallback) {
+        fallback.hidden = true;
+        fallback.style.display = "none";
+      }
+    };
+
+    image.onerror = showFallback;
+    image.src = source;
+  }
+
+
   /* =========================================================
      MOSTRAR PERFIL
   ========================================================= */
@@ -436,81 +481,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* FOTO */
 
-    if (profile.photo) {
+    applyProfilePhoto(
+      profileImage,
+      profilePlaceholder,
+      profile.photo,
+      ""
+    );
 
-      if (profileImage) {
-
-        profileImage.src =
-          profile.photo;
-
-        profileImage.hidden =
-          false;
-
-      }
-
-
-      if (profilePlaceholder) {
-
-        profilePlaceholder.hidden =
-          true;
-
-      }
-
-
-      if (sidebarProfileImage) {
-
-        sidebarProfileImage.src =
-          profile.photo;
-
-        sidebarProfileImage.hidden =
-          false;
-
-      }
-
-
-      if (sidebarDefaultAvatar) {
-
-        sidebarDefaultAvatar.style.display =
-          "none";
-
-      }
-
-    }
-
-    else {
-
-      if (profileImage) {
-
-        profileImage.hidden =
-          true;
-
-      }
-
-
-      if (profilePlaceholder) {
-
-        profilePlaceholder.hidden =
-          false;
-
-      }
-
-
-      if (sidebarProfileImage) {
-
-        sidebarProfileImage.hidden =
-          true;
-
-      }
-
-
-      if (sidebarDefaultAvatar) {
-
-        sidebarDefaultAvatar.style.display =
-          "";
-
-      }
-
-    }
+    applyProfilePhoto(
+      sidebarProfileImage,
+      sidebarDefaultAvatar,
+      profile.photo,
+      ""
+    );
 
 
     /* BANNER */
