@@ -6,6 +6,7 @@
   const TEAM_KEY = "zuz-company-team";
   const PROFILE_KEY = "zuz-profile";
   const SESSION_KEY = "zuz-session";
+  const BUSINESS_OWNER_KEY = "zuz-company-owner";
   const monthNames = [
     "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
     "Jul", "Ago", "Set", "Out", "Nov", "Dez"
@@ -66,12 +67,53 @@
     plannerPriorityFilter: document.getElementById("plannerPriorityFilter"),
     plannerCalendarView: document.getElementById("plannerCalendarView"),
     plannerCalendarGrid: document.getElementById("plannerCalendarGrid"),
-    plannerBoardView: document.getElementById("plannerBoardView")
+    plannerBoardView: document.getElementById("plannerBoardView"),
+    plannerTodayBtn: document.getElementById("plannerTodayBtn"),
+    plannerNewTaskBtn: document.getElementById("plannerNewTaskBtn"),
+
+    graphDayDrawer: document.getElementById("graphDayDrawer"),
+    graphDayDrawerDate: document.getElementById("graphDayDrawerDate"),
+    graphDayTaskCount: document.getElementById("graphDayTaskCount"),
+    graphDayPeopleCount: document.getElementById("graphDayPeopleCount"),
+    graphDayDoneCount: document.getElementById("graphDayDoneCount"),
+    graphDayTeam: document.getElementById("graphDayTeam"),
+    graphDayTaskList: document.getElementById("graphDayTaskList"),
+    graphCloseDayDrawer: document.getElementById("graphCloseDayDrawer"),
+    graphNewTaskForDay: document.getElementById("graphNewTaskForDay"),
+
+    graphTaskModal: document.getElementById("graphTaskModal"),
+    graphTaskModalTitle: document.getElementById("graphTaskModalTitle"),
+    graphTaskForm: document.getElementById("graphTaskForm"),
+    graphTaskTitle: document.getElementById("graphTaskTitle"),
+    graphTaskAssignee: document.getElementById("graphTaskAssignee"),
+    graphTaskDueDate: document.getElementById("graphTaskDueDate"),
+    graphTaskPriority: document.getElementById("graphTaskPriority"),
+    graphTaskStatus: document.getElementById("graphTaskStatus"),
+    graphTaskCost: document.getElementById("graphTaskCost"),
+    graphTaskCategory: document.getElementById("graphTaskCategory"),
+    graphTaskStartTime: document.getElementById("graphTaskStartTime"),
+    graphTaskEndTime: document.getElementById("graphTaskEndTime"),
+    graphTaskColor: document.getElementById("graphTaskColor"),
+    graphTaskDescription: document.getElementById("graphTaskDescription"),
+    graphChecklistProgress: document.getElementById("graphChecklistProgress"),
+    graphChecklistItems: document.getElementById("graphChecklistItems"),
+    graphChecklistNew: document.getElementById("graphChecklistNew"),
+    graphAddChecklistItem: document.getElementById("graphAddChecklistItem"),
+    graphTaskAudit: document.getElementById("graphTaskAudit"),
+    graphTaskAuditSummary: document.getElementById("graphTaskAuditSummary"),
+    graphTaskHistoryList: document.getElementById("graphTaskHistoryList"),
+    graphTaskFeedback: document.getElementById("graphTaskFeedback"),
+    graphCloseTaskModal: document.getElementById("graphCloseTaskModal"),
+    graphCancelTask: document.getElementById("graphCancelTask"),
+    graphDeleteTask: document.getElementById("graphDeleteTask")
   };
 
   let selectedMonth = new Date().getMonth();
   let plannerYear = new Date().getFullYear();
   let plannerView = "calendar";
+  let selectedPlannerDate = "";
+  let editingPlannerTaskId = "";
+  let plannerChecklistDraft = [];
   let products = loadProducts();
 
   function id() {
