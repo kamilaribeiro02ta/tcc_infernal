@@ -42,6 +42,19 @@ body:not(.dark) {
   --bg-image: none;
 }
 
+body.dark {
+  --sidebar-bg: #130e1e;
+  --sidebar-border: rgba(255,255,255,.08);
+  --nav-inactive: #a69bb8;
+  --nav-hover-bg: #241b38;
+  --login-title: #f5f2fb;
+  --login-subtitle: #9f94af;
+  --toggle-track: #241a37;
+  --toggle-text: #eee9f8;
+  --toggle-knob-bg: #3b285c;
+  --toggle-icon: #ae91ff;
+}
+
 body:not(.dark) {
   background: var(--page-bg) !important;
   background-image: none !important;
@@ -136,6 +149,8 @@ body.dark .sidebar #iconMoon {
   width: 20px !important;
   height: 20px !important;
   display: block !important;
+  color: var(--toggle-icon) !important;
+  stroke: currentColor !important;
 }
 
 /* =========================================================
