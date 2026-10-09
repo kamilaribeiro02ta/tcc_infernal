@@ -1979,16 +1979,30 @@
 
   document.querySelectorAll(".modal-overlay").forEach(overlay => {
     overlay.addEventListener("mousedown", event => {
-      if (event.target === overlay) {
+      if (event.target !== overlay) return;
+
+      if (overlay === els.graphTaskModal) {
+        closeGraphTaskModal();
+      } else {
         closeModal(overlay);
       }
     });
   });
 
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-      document.querySelectorAll(".modal-overlay.open").forEach(closeModal);
+    if (event.key !== "Escape") return;
+
+    if (els.graphTaskModal?.classList.contains("open")) {
+      closeGraphTaskModal();
+      return;
     }
+
+    if (els.graphDayDrawer?.classList.contains("active")) {
+      closeGraphDayDrawer();
+      return;
+    }
+
+    document.querySelectorAll(".modal-overlay.open").forEach(closeModal);
   });
 
   initMonthFilter();
