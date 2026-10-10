@@ -496,3 +496,10 @@ body.dark .design-folder-end {color:#b9aacb;border-color:#453653;}
   .design-folder,.design-folder-front,.design-folder-peeking-paper,
   .zuz-finance-section-toggle::after,.zuz-finance-doc .zuz-finance-block{transition:none!important;}
 }
+
+/* Papel visível atrás das três pastas: acompanha o tema escuro. */
+body.dark .design-folder-peeking-paper {
+  background: #292139;
+  border: 1px solid rgba(168, 143, 220, .28);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .22);
+}
