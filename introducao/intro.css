@@ -2201,3 +2201,24 @@ body:not(.dark) .about-objective-visual::after {
 
 
 /* Componente original da pasta: regras isoladas em arquivo próprio. */
+
+/* Seção de apresentação: texto acima, três pastas lado a lado abaixo. */
+.about-problem-split {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(32px, 4vw, 56px);
+  align-items: start;
+}
+.about-problem-copy {
+  position: static;
+  top: auto;
+  width: 100%;
+}
+.about-problem-copy p {
+  max-width: 1100px;
+}
+@media (max-width: 1120px) {
+  .about-problem-split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+}
