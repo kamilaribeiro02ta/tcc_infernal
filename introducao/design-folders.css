@@ -120,3 +120,31 @@
 .design-folder-end { margin-top: 40px; padding-top: 16px; border-top: 1px solid #e7e5ef; font: 400 12px/1.4 'Geist Mono',monospace; color: #5d5a75; }
 @media (max-width: 720px) { .design-folder-grid { width: min(100%, 280px); gap: 24px; } }
 @media (prefers-reduced-motion: reduce) { .design-folder-front { transition: none; } }
+
+/* Alinhamento horizontal da seção, sem alterar o visual de cada pasta. */
+.about-problem-split .design-folder-grid {
+  width: 100%;
+  max-width: 1000px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  justify-self: center;
+  justify-items: center;
+  gap: clamp(16px, 3vw, 36px);
+}
+.about-problem-split .design-folder {
+  width: min(100%, 300px);
+}
+@media (max-width: 720px) {
+  .about-problem-split .design-folder-grid {
+    max-width: 600px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 16px;
+  }
+}
+@media (max-width: 480px) {
+  .about-problem-split .design-folder-grid {
+    max-width: 300px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+}
