@@ -9,14 +9,16 @@
 .page-rise > .stats-grid,
 .page-rise > .catalog-shell,
 .page-rise > .dashboard-grid,
-.page-rise > .team-planner {
+.page-rise > .team-planner,
+.page-rise > .products-panel {
   animation: zuz-page-rise .72s cubic-bezier(.22,.61,.36,1) both;
 }
 .page-rise > .page-header,
 .page-rise > .dashboard-header { animation-delay: 0s; }
 .page-rise > .summary-grid,
 .page-rise > .stats-grid,
-.page-rise > .team-planner { animation-delay: .12s; }
+.page-rise > .team-planner,
+.page-rise > .products-panel { animation-delay: .12s; }
 .page-rise > .catalog-shell,
 .page-rise > .dashboard-grid { animation-delay: .23s; }
 @media (prefers-reduced-motion: reduce) {
@@ -26,5 +28,9 @@
   .page-rise > .stats-grid,
   .page-rise > .catalog-shell,
   .page-rise > .dashboard-grid,
-  .page-rise > .team-planner { animation: none !important; }
+  .page-rise > .team-planner,
+.page-rise > .products-panel { animation: none !important; }
 }
+
+/* Entrada sequencial do painel Produtos cadastrados em Análises. */
+.page-rise > .products-panel { animation-delay: .34s; }
