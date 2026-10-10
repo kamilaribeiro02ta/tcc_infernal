@@ -1,1 +1,78 @@
-(()=>{"use strict";const P=JSON.parse(localStorage.getItem("zuz-pricing-products-v2")||"[]"),$=id=>document.getElementById(id),m=v=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number(v)||0),n=v=>Number.parseFloat(v)||0,E={product:$("product"),margin:$("margin"),price:$("price"),units:$("units"),suggested:$("suggested"),cost:$("cost"),technical:$("technical"),net:$("net"),contribution:$("contribution"),breakEven:$("breakEven"),profit:$("profit"),range:$("range"),use:$("use")};function cur(){return P.find(p=>p.id===E.product.value)||P[0]}function direct(p){return n(p?.baseCost)+(p?.additionalCosts||[]).reduce((s,i)=>s+n(i.value),0)}function calc(){const p=cur();if(!p)return null;const r=ZUZPricing.calculate({unitDirectCost:direct(p),salePrice:n(E.price.value),targetMargin:n(E.margin.value),units:n(E.units.value)});E.suggested.textContent=m(r.suggestedPrice);E.cost.textContent=m(r.unitBaseCost);E.technical.textContent=m(r.technicalPrice);E.net.textContent=r.netMarginPct.toFixed(1)+"%";E.contribution.textContent=m(r.contributionMargin);E.breakEven.textContent=r.breakEvenUnits?r.breakEvenUnits+" un.":"Não calculado";E.profit.textContent=m(r.profit);E.range.textContent=m(r.recommendedRange.low)+" a "+m(r.recommendedRange.high);return r}function load(){const p=cur();if(!p)return;E.margin.value=p.targetMargin||ZUZPricing.loadSettings().defaultMargin;E.price.value=p.salePrice||"";E.units.value=p.units||100;calc()}E.product.innerHTML=P.length?P.map(p=>'<option value="'+p.id+'">'+p.name.replace(/[<>]/g,"")+'</option>').join(""):'<option>Cadastre um produto primeiro</option>';[E.margin,E.price,E.units].forEach(i=>i.oninput=calc);E.product.onchange=load;E.use.onclick=()=>{const r=calc();if(r){E.price.value=r.suggestedPrice.toFixed(2);calc()}};load()})();
+(() => {
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const money = value => new Intl.NumberFormat("pt-BR", {style:"currency",currency:"BRL"}).format(Number(value)||0);
+  const number = value => {const n=Number.parseFloat(value);return Number.isFinite(n)?n:0;};
+  const elements = {
+    product:$("product"),margin:$("margin"),price:$("price"),units:$("units"),suggested:$("suggested"),
+    cost:$("cost"),technical:$("technical"),net:$("net"),contribution:$("contribution"),
+    breakEven:$("breakEven"),profit:$("profit"),range:$("range"),use:$("use"),status:$("simulationStatus")
+  };
+  let products=[];
+  try {
+    const saved=JSON.parse(localStorage.getItem("zuz-pricing-products-v2")||"[]");
+    products=Array.isArray(saved)?saved:[];
+  } catch {
+    elements.status.textContent="Não foi possível ler os produtos salvos. Verifique os dados do navegador.";
+    elements.status.classList.add("is-error");
+  }
+  const product=()=>products.find(item=>String(item.id)===elements.product.value)||products[0]||null;
+  const directCost=item=>Math.max(0,number(item?.baseCost))+(Array.isArray(item?.additionalCosts)?item.additionalCosts:[]).reduce((sum,cost)=>sum+Math.max(0,number(cost.value)),0);
+  function calculate() {
+    const current=product();
+    if(!current)return null;
+    const margin=number(elements.margin.value);
+    const units=number(elements.units.value);
+    const price=number(elements.price.value);
+    if(margin<0||margin>90||!Number.isInteger(units)||units<1||price<0){
+      elements.status.textContent="Informe margem de 0 a 90%, preço não negativo e quantidade inteira maior que zero.";
+      elements.status.className="workspace-status is-error";
+      return null;
+    }
+    elements.status.textContent="";
+    elements.status.className="workspace-status";
+    const result=ZUZPricing.calculate({unitDirectCost:directCost(current),salePrice:price,targetMargin:margin,units});
+    elements.suggested.textContent=money(result.suggestedPrice);
+    elements.cost.textContent=money(result.unitBaseCost);
+    elements.technical.textContent=money(result.technicalPrice);
+    elements.net.textContent=result.netMarginPct.toFixed(1)+"%";
+    elements.contribution.textContent=money(result.contributionMargin);
+    elements.breakEven.textContent=result.breakEvenUnits?result.breakEvenUnits+" un.":"Não calculado";
+    elements.profit.textContent=money(result.profit);
+    elements.range.textContent=money(result.recommendedRange.low)+" a "+money(result.recommendedRange.high);
+    return result;
+  }
+  function loadProduct() {
+    const current=product();
+    if(!current)return;
+    elements.margin.value=current.targetMargin??ZUZPricing.loadSettings().defaultMargin;
+    elements.price.value=current.salePrice??"";
+    elements.units.value=current.units??100;
+    calculate();
+  }
+  if(!products.length){
+    const option=document.createElement("option");
+    option.value="";option.textContent="Nenhum produto cadastrado";
+    elements.product.append(option);
+    elements.status.textContent="Cadastre um produto em Produtos para utilizar as simulações.";
+    elements.status.className="workspace-status";
+    elements.use.disabled=true;
+    [elements.product,elements.margin,elements.price,elements.units].forEach(el=>el.disabled=true);
+    return;
+  }
+  products.forEach(item=>{
+    const option=document.createElement("option");
+    option.value=String(item.id);
+    option.textContent=String(item.name||"Produto sem nome");
+    elements.product.append(option);
+  });
+  [elements.margin,elements.price,elements.units].forEach(input=>input.addEventListener("input",calculate));
+  elements.product.addEventListener("change",loadProduct);
+  elements.use.addEventListener("click",()=>{
+    const result=calculate();
+    if(!result)return;
+    elements.price.value=result.suggestedPrice.toFixed(2);
+    calculate();
+  });
+  loadProduct();
+})();
