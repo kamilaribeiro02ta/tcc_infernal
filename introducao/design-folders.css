@@ -39,7 +39,20 @@
 }
 .design-folder:focus-visible { outline: 2px solid #6a4fd8; outline-offset: 10px; border-radius: 22px; }
 .design-folder-back { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+.design-folder-peeking-paper {
+  position: absolute;
+  z-index: 1;
+  top: 23%;
+  left: 8.2%;
+  width: 83.6%;
+  height: 23%;
+  border-radius: 9px 9px 0 0;
+  background: #fbfbfd;
+  box-shadow: 0 2px 7px rgba(37, 20, 91, .10);
+  pointer-events: none;
+}
 .design-folder-front {
+  z-index: 2;
   position: absolute;
   left: 0; right: 0; bottom: 0;
   top: 33.47%;
