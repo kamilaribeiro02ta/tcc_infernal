@@ -1198,8 +1198,16 @@
   }
 
   function applyAgendaPeriod(monthValue, yearValue) {
-    const month = clamp(Number(monthValue), 0, 11);
-    const year = clamp(Number(yearValue), 2020, 2100);
+    const parsedMonth = Number(monthValue);
+    const parsedYear = Number(yearValue);
+
+    const month = Number.isFinite(parsedMonth)
+      ? clamp(parsedMonth, 0, 11)
+      : selectedMonth;
+
+    const year = Number.isFinite(parsedYear)
+      ? clamp(Math.trunc(parsedYear), 2020, 2100)
+      : plannerYear;
 
     selectedMonth = month;
     plannerYear = year;
