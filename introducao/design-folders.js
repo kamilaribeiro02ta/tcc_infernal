@@ -53,8 +53,57 @@
         </div>
       `
     },
-    '02': { title:'Decisão visual', eyebrow:'Leitura de dados', description:'Gráficos e indicadores ajudam o usuário a enxergar custo, margem e resultado sem depender de planilhas complexas.' },
-    '03': { title:'Agente de IA', eyebrow:'Assistente inteligente', description:'A interface conversa com o usuário, coleta informações e auxilia no processo de precificação.' }
+    '02': {
+      title:'Decisão visual', eyebrow:'Leitura de dados',
+      description:'Gráficos e indicadores ajudam o usuário a enxergar custo, margem e resultado sem depender de planilhas complexas.',
+      details:`
+        <div class="zuz-finance-layout">
+          <p class="zuz-finance-intro">Números ganham sentido quando podem ser comparados. Na ZUZ, a visualização aproxima custos, preços e margens de uma decisão prática.</p>
+          <section class="zuz-finance-block">
+            <h3>Enxergar o que os números dizem</h3>
+            <p>A leitura de dados reúne os resultados da precificação em indicadores e gráficos, permitindo identificar diferenças entre custo de produção, preço sugerido e retorno estimado.</p>
+          </section>
+          <section class="zuz-finance-block">
+            <h3>O que pode ser acompanhado?</h3>
+            <ul class="zuz-finance-list"><li>Custo por unidade</li><li>Preço de venda</li><li>Margem estimada</li><li>Resultado projetado</li><li>Quantidade vendida</li><li>Cenários de preço</li></ul>
+            <p>Os indicadores dependem dos valores registrados pelo próprio usuário. Uma informação incorreta pode afetar a interpretação dos resultados.</p>
+          </section>
+          <section class="zuz-finance-block">
+            <h3>Comparar antes de decidir</h3>
+            <div class="zuz-finance-terms"><p><strong>Visão geral</strong> sintetiza o desempenho estimado dos produtos e facilita a consulta rápida.</p><p><strong>Simulações</strong> permitem testar alterações de preço, margem e volume antes de tomar uma decisão.</p></div>
+          </section>
+          <section class="zuz-finance-block">
+            <h3>Por que isso importa?</h3>
+            <p>Uma apresentação clara reduz o esforço necessário para compreender os cálculos e ajuda o empreendedor a reconhecer situações que exigem atenção. A decisão continua sendo do usuário, apoiada pelas informações disponíveis.</p>
+          </section>
+          <p class="zuz-finance-reference">Esta folha descreve a proposta de apresentação de dados da ZUZ. Os indicadores são estimativas baseadas nas informações cadastradas e não representam garantia de desempenho financeiro.</p>
+        </div>`
+    },
+    '03': {
+      title:'Agente de IA', eyebrow:'Assistente inteligente',
+      description:'A interface conversa com o usuário, coleta informações e auxilia no processo de precificação.',
+      details:`
+        <div class="zuz-finance-layout">
+          <p class="zuz-finance-intro">Uma interface que conversa com quem empreende. O agente da ZUZ transforma perguntas simples em informações úteis para o processo de precificação.</p>
+          <section class="zuz-finance-block">
+            <h3>Um assistente integrado ao sistema</h3>
+            <p>A proposta é integrar um agente de inteligência artificial ao site e a um dispositivo físico com uma pequena tela. A interação conversacional auxilia na coleta e na organização dos dados necessários para cadastrar produtos e calcular preços.</p>
+          </section>
+          <section class="zuz-finance-block">
+            <h3>Como a conversa funciona?</h3>
+            <ol class="zuz-finance-steps"><li><strong>Entender</strong><span>O usuário descreve o produto e o contexto de venda.</span></li><li><strong>Perguntar</strong><span>O agente solicita custos, insumos e quantidades que ainda faltam.</span></li><li><strong>Organizar</strong><span>As informações são encaminhadas às funções do sistema, com possibilidade de atualização dos registros.</span></li><li><strong>Apresentar</strong><span>A interface mostra os resultados calculados e orienta a próxima decisão.</span></li></ol>
+          </section>
+          <section class="zuz-finance-block">
+            <h3>O que aparece na tela?</h3>
+            <p>O dispositivo poderá apresentar o custo do produto, uma sugestão de preço e os limites calculados conforme as premissas utilizadas. A integração com o site busca manter as informações acessíveis em uma única experiência.</p>
+          </section>
+          <section class="zuz-finance-block">
+            <h3>O papel da inteligência artificial</h3>
+            <p>O agente facilita o diálogo e o preenchimento dos dados; os valores financeiros devem ser obtidos por regras de cálculo verificáveis. Sugestões precisam ser avaliadas pelo empreendedor e não substituem sua decisão.</p>
+          </section>
+          <p class="zuz-finance-reference">Descrição da arquitetura proposta para a ZUZ. A disponibilidade de comandos, integração com o dispositivo e automações depende da implementação e dos testes do projeto.</p>
+        </div>`
+    }
   };
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const duration = reduced ? 180 : 680;
@@ -109,7 +158,7 @@
     if(open || active)return;
     active=folder;
     const item=data[folder.dataset.folder]; if(!item)return;
-    title.textContent=item.title;eyebrow.textContent=item.eyebrow;description.innerHTML=item.details || '';if(!item.details) description.textContent=item.description;doc.classList.toggle('zuz-finance-doc',folder.dataset.folder==='01');
+    title.textContent=item.title;eyebrow.textContent=item.eyebrow;description.innerHTML=item.details || '';if(!item.details) description.textContent=item.description;doc.classList.toggle('zuz-finance-doc',Boolean(item.details));doc.dataset.folder=folder.dataset.folder;
     build();setOpen(true);
   }));
   closeBtn.addEventListener('click',()=>setOpen(false));
