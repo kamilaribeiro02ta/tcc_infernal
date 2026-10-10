@@ -2200,243 +2200,124 @@ body:not(.dark) .about-objective-visual::after {
 }
 
 
-/* Pastas compactas da seção Sobre, com frente de vidro fosco. */
-.about-cards.about-cards-side {
-  width: min(100%, 350px);
-  max-width: 350px;
-  margin: 0;
-  padding: 0;
-  justify-self: end;
+/* Pastas ZUZ: proporções, contorno e camadas fiéis à referência. */
+.zuz-folder-grid {
+  width: min(100%, 246px);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 24px;
-}
-
-.about-cards-side .about-card.about-card-inspired {
-  width: 100%;
-  height: 246px;
-  min-height: 0;
-  aspect-ratio: auto;
+  gap: 28px;
+  justify-self: center;
+  margin: 0 auto;
   padding: 0;
-  display: block;
-  position: relative;
-  overflow: visible;
-  isolation: isolate;
-  box-sizing: border-box;
-  border: 0;
-  border-radius: 0 0 18px 18px;
-  background: transparent;
-  box-shadow: none;
-  transition: transform .28s ease, filter .28s ease;
 }
 
-/* O recorte superior forma a aba real da pasta, sem imagens. */
-.about-cards-side .about-card-visual {
+.zuz-folder {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  isolation: isolate;
+  border-radius: 20px;
+  filter: drop-shadow(0 11px 15px rgba(46, 28, 114, .14));
+  transition: transform .25s ease, filter .25s ease;
+}
+
+.zuz-folder-shape {
   position: absolute;
-  inset: 0 0 0;
+  inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
-  min-height: 0;
-  z-index: 0;
   overflow: visible;
-  border-radius: 21px 21px 18px 18px;
-  clip-path: polygon(0 15%, 0 0, 34% 0, 39% 11%, 41% 13%, 100% 13%, 100% 100%, 0 100%);
-  background: linear-gradient(145deg, #9269f3 0%, #7750de 38%, #5935b8 100%);
-  box-shadow: none;
+  z-index: 0;
 }
 
-.about-cards-side .about-card-visual::before {
-  content: "";
-  display: block;
+.zuz-folder-sheet {
   position: absolute;
-  inset: 1px;
-  width: auto;
-  height: auto;
-  border: 1px solid rgba(255,255,255,.17);
-  border-radius: 21px 21px 18px 18px;
-  background: linear-gradient(150deg, rgba(255,255,255,.13), transparent 44%);
-  filter: none;
-  opacity: 1;
-  transform: none;
-  pointer-events: none;
-}
-
-.about-cards-side .about-card-visual::after {
-  display: none;
-}
-
-/* Frente translúcida do envelope: os textos ficam nela. */
-.about-cards-side .about-card-content {
-  position: absolute;
-  inset: 77px 0 0;
   z-index: 1;
-  width: 100%;
-  height: auto;
-  min-height: 0;
-  margin: 0;
-  padding: 18px 18px 16px;
+  top: 23%;
+  left: 8%;
+  right: 8%;
+  height: 28%;
+  border-radius: 8px 8px 2px 2px;
+  background: linear-gradient(180deg, #f9f6ff, #eee9ff);
+  box-shadow: 0 3px 8px rgba(34, 17, 89, .10);
+}
+
+.zuz-folder-glass {
+  position: absolute;
+  z-index: 2;
+  inset: 33% 0 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 14px;
-  overflow: hidden;
-  box-sizing: border-box;
-  border: 1px solid rgba(255,255,255,.25);
-  border-radius: 16px 16px 18px 18px;
-  clip-path: none;
-  color: #fff;
-  background: linear-gradient(158deg, rgba(218,190,255,.63), rgba(157,121,240,.51) 48%, rgba(90,58,187,.70) 100%);
-  -webkit-backdrop-filter: blur(16px) saturate(135%);
-  backdrop-filter: blur(16px) saturate(135%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.30), 0 16px 30px rgba(48,23,104,.16);
-}
-
-.about-cards-side .about-card-content::before {
-  content: "";
-  display: block;
-  position: absolute;
-  inset: 0 0 auto;
-  height: 34px;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(255,255,255,.16), transparent);
-}
-
-.about-cards-side .about-card-kicker,
-.about-cards-side .about-card-details,
-.about-cards-side .about-card-heading {
-  position: relative;
-  z-index: 1;
-}
-
-.about-cards-side .about-card-kicker {
+  align-items: stretch;
   min-height: 0;
-  margin: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  color: rgba(255,255,255,.89);
-}
-
-.about-cards-side .about-card-kicker .about-card-number {
+  padding: 13px 13px 11px;
+  box-sizing: border-box;
   color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: .015em;
+  border-radius: 16px 16px 17px 17px;
+  border: 1px solid rgba(255, 255, 255, .24);
+  background: linear-gradient(180deg, rgba(198, 166, 255, .49), rgba(121, 82, 225, .56) 73%, rgba(89, 57, 193, .70));
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.23), 0 4px 8px rgba(42,25,105,.10);
 }
 
-.about-cards-side .about-card-kicker > span:last-child {
-  font-size: 8px;
-  font-weight: 600;
-  line-height: 1.3;
-  text-align: right;
-  text-transform: uppercase;
-  letter-spacing: .045em;
-}
-
-.about-cards-side .about-card-details {
-  display: grid;
-  gap: 7px;
-}
-
-.about-cards-side .about-card-heading {
+.zuz-folder-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
 }
 
-.about-cards-side .about-card-inspired h2 {
+.zuz-folder-heading h2 {
   margin: 0;
   color: #fff;
-  font-size: 19px;
+  font-size: 14px;
   font-weight: 600;
-  line-height: 1.22;
   letter-spacing: -.035em;
+  line-height: 1.25;
 }
 
-.about-cards-side .about-card-inspired p {
-  max-width: none;
-  margin: 0;
-  color: rgba(255,255,255,.90);
-  font-size: 10px;
-  line-height: 1.5;
-}
-
-.about-cards-side .about-card-heading .about-card-icon {
-  position: static;
-  display: inline-block;
-  flex: 0 0 auto;
-  width: auto;
-  height: auto;
-  border: 0;
-  border-radius: 0;
+.zuz-folder-heading i {
   color: rgba(255,255,255,.88);
-  background: none;
-  box-shadow: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  font-size: 19px;
-  line-height: 1;
+  font-size: 14px;
+  flex: none;
 }
 
-body.dark .about-cards-side .about-card.about-card-inspired,
-body:not(.dark) .about-cards-side .about-card.about-card-inspired {
-  border: 0;
-  background: transparent;
-  box-shadow: none;
+.zuz-folder-glass p {
+  margin: 6px 0 0;
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.38;
+  color: rgba(255,255,255,.91);
 }
 
-body:not(.dark) .about-cards-side .about-card-content {
-  color: #fff;
+.zuz-folder-footnote {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 6px;
+  margin-top: auto;
+  font-size: 8px;
+  line-height: 1.3;
+  color: rgba(255,255,255,.85);
 }
 
-body:not(.dark) .about-cards-side .about-card-inspired p,
-body:not(.dark) .about-cards-side .about-card-kicker {
-  color: rgba(255,255,255,.90);
+.zuz-folder-footnote span:last-child {
+  text-align: right;
 }
 
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .about-cards-side .about-card.about-card-inspired:hover {
-    transform: translateY(-5px);
-    filter: drop-shadow(0 10px 15px rgba(77,44,159,.18));
+  .zuz-folder:hover {
+    transform: translateY(-3px);
+    filter: drop-shadow(0 15px 18px rgba(46,28,114,.20));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .about-cards-side .about-card.about-card-inspired {
-    transition: none;
-  }
+  .zuz-folder { transition: none; }
 }
 
 @media (max-width: 1120px) {
-  .about-cards.about-cards-side {
-    width: min(100%, 350px);
-    max-width: 350px;
-    justify-self: start;
-  }
-}
-
-@media (max-width: 720px) {
-  .about-cards.about-cards-side {
-    width: min(100%, 350px);
-    max-width: 350px;
-    gap: 20px;
-  }
-
-  .about-cards-side .about-card.about-card-inspired {
-    height: 246px;
-    min-height: 0;
-  }
-}
-
-@media (max-width: 370px) {
-  .about-cards.about-cards-side {
-    width: 100%;
-  }
-
-  .about-cards-side .about-card-content {
-    padding: 16px 14px;
-  }
+  .zuz-folder-grid { justify-self: center; }
 }
