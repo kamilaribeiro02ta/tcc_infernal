@@ -267,3 +267,21 @@ body.dark .workspace-shell {
 .workspace-shell > .sidebar .login-subtitle {
   font-family: 'Poppins', sans-serif;
 }
+
+/* Fundo idêntico à página Produtos nos temas claro e escuro. */
+body:not(.dark):has(.workspace-shell) {
+  --page-bg: #f7f7fb;
+  background-color: #f7f7fb !important;
+}
+body.dark:has(.workspace-shell) {
+  --page-bg: #0f0c18;
+  background-color: #0f0c18 !important;
+}
+body:not(.dark) .workspace-shell,
+body:not(.dark) .workspace-shell > .workspace-page {
+  background-color: #f7f7fb !important;
+}
+body.dark .workspace-shell,
+body.dark .workspace-shell > .workspace-page {
+  background-color: #0f0c18 !important;
+}
