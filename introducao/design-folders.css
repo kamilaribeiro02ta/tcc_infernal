@@ -503,3 +503,27 @@ body.dark .design-folder-peeking-paper {
   border: 1px solid rgba(168, 143, 220, .28);
   box-shadow: 0 3px 12px rgba(0, 0, 0, .22);
 }
+
+/* Degradê suave ancorado ao topo visível da folha: não acompanha a rolagem. */
+.design-folder-doc.zuz-finance-doc {
+  background: linear-gradient(
+    to bottom,
+    #efe8fb 0,
+    #f5f0fc 135px,
+    #faf8fe 310px,
+    #fbfbfd 460px
+  ) !important;
+  background-attachment: scroll !important;
+  background-repeat: no-repeat !important;
+}
+body.dark .design-folder-doc.zuz-finance-doc {
+  background: linear-gradient(
+    to bottom,
+    #2b2044 0,
+    #231b35 135px,
+    #1b1628 310px,
+    #17121f 460px
+  ) !important;
+  background-attachment: scroll !important;
+  background-repeat: no-repeat !important;
+}
