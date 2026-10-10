@@ -175,3 +175,75 @@ body.dark .cost-summary,body.dark .simulation-output { background:#1e1832; borde
 @media (prefers-reduced-motion:reduce) {
   .workspace-page input, .workspace-page select { transition:none; }
 }
+
+/* Correspondência visual com o menu canônico da página Início. */
+body:has(.workspace-shell) {
+  --purple: #6a3df0;
+  --purple-dark: #572bd8;
+  --page-bg: #f7f6fb;
+  background: var(--page-bg);
+}
+body.dark:has(.workspace-shell) {
+  --purple: #9275ff;
+  --purple-dark: #7757ee;
+  --page-bg: #08070e;
+  background: var(--page-bg);
+}
+.workspace-shell { background: var(--page-bg); }
+.workspace-shell > .sidebar {
+  border: 1px solid var(--sidebar-border, #eae7ed) !important;
+  border-left: 0 !important;
+  border-radius: 0 24px 24px 0 !important;
+  background: var(--sidebar-bg, #fff) !important;
+  overflow: hidden;
+}
+.workspace-shell .sidebar .nav-item.active,
+.workspace-shell .sidebar .nav-item[aria-current="page"] {
+  color: var(--purple) !important;
+  background: var(--nav-hover-bg) !important;
+  border: 1px solid color-mix(in srgb,var(--purple) 16%,transparent) !important;
+  font-weight: 700 !important;
+}
+.workspace-shell .sidebar .nav-item.active:hover,
+.workspace-shell .sidebar .nav-item[aria-current="page"]:hover {
+  color: var(--purple) !important;
+}
+@media (max-width: 992px) {
+  .workspace-shell > .sidebar {
+    border: 1px solid var(--sidebar-border, #eae7ed) !important;
+    border-top: 0 !important;
+    border-radius: 0 0 22px 22px !important;
+    overflow: visible;
+  }
+}
+@media (max-width: 520px) {
+  .workspace-shell > .sidebar { border-radius: 0 0 18px 18px !important; }
+}
+/* Entrada do conteúdo: deslocamento vertical e suavização como na Início/Sobre. */
+@keyframes zuz-workspace-rise {
+  from { opacity: 0; transform: translateY(34px); filter: blur(7px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+.workspace-page .workspace-heading {
+  animation: zuz-workspace-rise .72s cubic-bezier(.22,.61,.36,1) both;
+}
+.workspace-page .workspace-sections > .workspace-panel,
+.workspace-page .simulation-input,
+.workspace-page .cost-summary,
+.workspace-page .simulation-output {
+  animation: zuz-workspace-rise .72s cubic-bezier(.22,.61,.36,1) both;
+}
+.workspace-page .workspace-sections > .workspace-panel:nth-child(1),
+.workspace-page .simulation-input { animation-delay: .11s; }
+.workspace-page .workspace-sections > .workspace-panel:nth-child(2),
+.workspace-page .simulation-output,
+.workspace-page .cost-summary { animation-delay: .19s; }
+.workspace-page .workspace-sections > .workspace-panel:nth-child(3) { animation-delay: .27s; }
+.workspace-page .workspace-sections > .workspace-panel:nth-child(4) { animation-delay: .35s; }
+@media (prefers-reduced-motion: reduce) {
+  .workspace-page .workspace-heading,
+  .workspace-page .workspace-sections > .workspace-panel,
+  .workspace-page .simulation-input,
+  .workspace-page .cost-summary,
+  .workspace-page .simulation-output { animation: none !important; }
+}
