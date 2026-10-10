@@ -18,8 +18,8 @@
     '03': { title:'Agente de IA', eyebrow:'Assistente inteligente', description:'A interface conversa com o usuário, coleta informações e auxilia no processo de precificação.' }
   };
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const duration = reduced ? 220 : 950;
-  const midpoint = .44;
+  const duration = reduced ? 180 : 720;
+  const midpoint = .40;
   const easeOut = 'cubic-bezier(.33,0,.2,1)';
   const easeInOut = 'cubic-bezier(.55,0,.2,1)';
   const shadowOff = 'drop-shadow(0 0 0 rgba(28,16,80,0)) drop-shadow(0 0 0 rgba(28,16,80,0))';
@@ -49,24 +49,25 @@
       {transform:tf(g.x0,g.ym,g.s),filter:shadowOff,offset:midpoint,easing:easeInOut},
       {transform:tf(g.xf,g.yf,1),filter:shadowOn,offset:1}],o);
     const a2=paper.animate([
-      {clipPath:clip(g.H),offset:0,easing:easeOut},
-      {clipPath:clip(g.inset(g.ym)),offset:midpoint,easing:easeInOut},
-      {clipPath:clip(0),offset:1}],o);
+      {clipPath:clip(g.H),opacity:0,offset:0,easing:easeOut},
+      {clipPath:clip(g.inset(g.y0)),opacity:1,offset:.12,easing:easeOut},
+      {clipPath:clip(g.inset(g.ym)),opacity:1,offset:midpoint,easing:easeInOut},
+      {clipPath:clip(0),opacity:1,offset:1}],o);
     const a3=content.animate([{opacity:0,offset:0},{opacity:0,offset:.06},{opacity:1,offset:.56},{opacity:1,offset:1}],o);
     const a4=veil.animate([{opacity:0,offset:0},{opacity:0,offset:midpoint*.7},{opacity:1,offset:1}],o);
     animations=[a1,a2,a3,a4];
     animations.forEach(a=>{a.pause();a.currentTime=open?duration:0;});
-    a1.onfinish=()=>{if(open) closeBtn.focus({preventScroll:true});else {doc.scrollTop=0;active?.focus({preventScroll:true});active=null;sheet.style.visibility='hidden';}};
+    a1.onfinish=()=>{if(open){closeBtn.focus({preventScroll:true});}else{doc.scrollTop=0;sheet.style.visibility='hidden';sheet.inert=true;veil.inert=true;sheet.setAttribute('aria-hidden','true');active?.focus({preventScroll:true});active=null;}};
     sheet.style.visibility='visible';
   }
   function setOpen(next) {
     if(next===open||!animations.length)return;
     open=next;
     if(active){active.setAttribute('aria-expanded',String(next));active.inert=next;}
-    sheet.inert=!next; veil.inert=!next;
-    sheet.setAttribute('aria-hidden',String(!next));
+    // Keep the dialog painted until the reverse animation actually reaches its start.
+    if(next){sheet.inert=false;veil.inert=false;sheet.setAttribute('aria-hidden','false');}
     sheet.classList.toggle('on',next);veil.classList.toggle('on',next);
-    animations.forEach(a=>{a.playbackRate=next?1:-1;a.play();});
+    animations.forEach(a=>{if(next){a.play();}else{a.reverse();}});
   }
   folders.forEach(folder=>folder.addEventListener('click',()=>{
     if(open)return;
