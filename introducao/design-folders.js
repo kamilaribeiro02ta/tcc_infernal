@@ -49,9 +49,10 @@
       {transform:tf(g.x0,g.ym,g.s),filter:shadowOff,offset:midpoint,easing:easeInOut},
       {transform:tf(g.xf,g.yf,1),filter:shadowOn,offset:1}],o);
     const a2=paper.animate([
-      {clipPath:clip(g.inset(g.y0)),offset:0,easing:easeOut},
-      {clipPath:clip(g.inset(g.ym)),offset:midpoint,easing:easeInOut},
-      {clipPath:clip(0),offset:1}],o);
+      {clipPath:clip(g.inset(g.y0)),opacity:0,offset:0,easing:easeOut},
+      {clipPath:clip(g.inset(g.y0)),opacity:0,offset:.18,easing:easeOut},
+      {clipPath:clip(g.inset(g.ym)),opacity:1,offset:midpoint,easing:easeInOut},
+      {clipPath:clip(0),opacity:1,offset:1}],o);
     const a3=content.animate([{opacity:0,offset:0},{opacity:0,offset:.06},{opacity:1,offset:.56},{opacity:1,offset:1}],o);
     const a4=veil.animate([{opacity:0,offset:0},{opacity:0,offset:midpoint*.7},{opacity:1,offset:1}],o);
     animations=[a1,a2,a3,a4];
