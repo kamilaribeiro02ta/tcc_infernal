@@ -186,55 +186,50 @@
   .zuz-finance-doc .zuz-finance-intro {font-size:16px;}
 }
 
-/* Pastas ZUZ — composição bicolor inspirada no cartão de referência. */
-.design-folder {
-  filter: drop-shadow(0 14px 25px rgba(24, 13, 58, .20));
-  transition: filter .26s ease;
+/* Somente o documento aberto: inspiração bicolor do cartão de referência. */
+.design-folder-doc.zuz-finance-doc {
+  background: linear-gradient(to bottom, #f4eefc 0, #f4eefc 245px, #fbfbfd 245px, #fbfbfd 100%);
 }
-.design-folder-back path {
-  fill: #a38bec;
-  stroke: rgba(219, 207, 255, .68);
+.zuz-finance-doc > .design-folder-eyebrow {
+  color: #6540b9;
 }
-.design-folder-peeking-paper {
-  background: #fbfaff;
-  border: 1px solid rgba(255,255,255,.65);
-  box-shadow: 0 4px 14px rgba(29,14,69,.17);
+.zuz-finance-doc > h2 {
+  color: #20172f;
+  margin-bottom: 24px;
 }
-.design-folder-front {
-  background: linear-gradient(145deg, #30214f 0%, #211735 100%);
-  border: 1px solid rgba(192, 171, 255, .35);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.10);
-  transition: filter .25s ease, border-color .25s ease;
+.zuz-finance-doc .zuz-finance-intro {
+  position: relative;
+  max-width: none;
+  padding: 24px 26px 28px;
+  margin: 0 0 38px;
+  border-radius: 14px;
+  background: #261a43;
+  color: #f7f3ff;
+  box-shadow: 0 8px 23px rgba(32, 22, 68, .12);
+  font-size: 16px;
+  line-height: 1.65;
 }
-.design-folder-front::before {
+.zuz-finance-doc .zuz-finance-intro::after {
   content: "";
   position: absolute;
-  top: -1px;
+  top: 100%;
   left: 50%;
-  width: 19cqw;
-  height: 4.6cqw;
   transform: translateX(-50%);
-  background: #a38bec;
+  width: 22px;
+  height: 10px;
+  background: #261a43;
   clip-path: polygon(0 0, 100% 0, 50% 100%);
-  pointer-events: none;
 }
-.design-folder-front::after {
-  content: "";
-  display: block;
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(165deg, rgba(176,149,247,.12) 0%, transparent 48%);
-  pointer-events: none;
+.zuz-finance-doc .zuz-finance-block h3 {
+  font-weight: 650;
+  letter-spacing: -.03em;
 }
-.design-folder-title { letter-spacing: -.025em; }
-.design-folder-count { color: #cbbef0; }
-.design-folder-added { color: #b7a5e0; }
-.design-folder-info { color: #d7caff; }
-.design-folder:hover { filter: drop-shadow(0 19px 30px rgba(50,28,105,.32)); }
-.design-folder:hover .design-folder-front {
-  filter: brightness(1.11);
-  border-color: rgba(218,204,255,.64);
+.zuz-finance-doc .zuz-finance-list li::before {
+  color: #7958df;
 }
-@media (prefers-reduced-motion: reduce) {
-  .design-folder, .design-folder-front { transition: none; }
+@media (max-width: 480px) {
+  .zuz-finance-doc .zuz-finance-intro {
+    padding: 20px;
+    font-size: 15px;
+  }
 }
