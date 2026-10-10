@@ -2227,3 +2227,10 @@ body:not(.dark) .about-objective-visual::after {
 .about-problem-split { width:min(100%,1200px); margin-inline:auto; justify-items:center; text-align:center; }
 .about-problem-split .about-problem-copy { width:100%; display:flex; justify-content:center; }
 .about-problem-split .about-problem-copy p { width:min(100%,1050px); max-width:1050px; margin-inline:auto; text-align:center; text-wrap:balance; }
+
+/* Ênfase editorial apenas nas palavras solicitadas. */
+.about-problem-copy .about-editorial-italic {
+  font-family: 'Times New Roman', Times, serif;
+  font-style: italic;
+  font-weight: 400;
+}
