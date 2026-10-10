@@ -197,14 +197,66 @@
       });
     });
   }
+  function finishClosing() {
+    doc.scrollTop=0;
+    sheet.style.visibility='hidden';
+    sheet.style.opacity='';
+    sheet.inert=true;
+    veil.inert=true;
+    sheet.setAttribute('aria-hidden','true');
+    active?.classList.remove('design-folder-is-opening');
+    active?.removeAttribute('inert');
+    active?.setAttribute('aria-expanded','false');
+    active?.focus({preventScroll:true});
+    active=null;
+    animations.forEach(a=>a.cancel());
+    animations=[];
+  }
   function setOpen(next) {
     if(next===open||!animations.length)return;
-    open=next;
-    if(active){active.setAttribute('aria-expanded',String(next));active.inert=next;if(next)active.classList.add('design-folder-is-opening');}
-    // Keep the dialog painted until the reverse animation actually reaches its start.
-    if(next){sheet.inert=false;veil.inert=false;sheet.setAttribute('aria-hidden','false');}
-    sheet.classList.toggle('on',next);veil.classList.toggle('on',next);
-    animations.forEach(a=>{a.playbackRate=next?1:-1;a.play();});
+    if(next) {
+      open=true;
+      if(active) {
+        active.setAttribute('aria-expanded','true');
+        active.inert=true;
+        active.classList.add('design-folder-is-opening');
+      }
+      sheet.inert=false;
+      veil.inert=false;
+      sheet.setAttribute('aria-hidden','false');
+      sheet.classList.add('on');
+      veil.classList.add('on');
+      animations.forEach(a=>{a.playbackRate=1;a.play();});
+      return;
+    }
+    // Fecha com uma única transformação, sem inverter múltiplas máscaras
+    // ou exibir a folha de prévia antes do final do movimento.
+    open=false;
+    const currentTransform=getComputedStyle(sheet).transform;
+    const currentVeil=Number.parseFloat(getComputedStyle(veil).opacity)||0;
+    const g=geometry(active);
+    animations.forEach(a=>a.cancel());
+    animations=[];
+    sheet.style.transform=currentTransform === 'none' ? tf(g.xf,g.yf,1) : currentTransform;
+    sheet.style.opacity='1';
+    veil.style.opacity=String(currentVeil);
+    sheet.classList.remove('on');
+    veil.classList.remove('on');
+    const target=tf(g.x0,g.y0,g.scale);
+    const closing=sheet.animate([
+      {transform:sheet.style.transform,opacity:1},
+      {transform:target,opacity:0}
+    ],{duration:reduced?160:530,easing:'cubic-bezier(.55,0,.25,1)',fill:'forwards'});
+    const shade=veil.animate([
+      {opacity:currentVeil},{opacity:0}
+    ],{duration:reduced?160:530,easing:'ease-out',fill:'forwards'});
+    animations=[closing,shade];
+    closing.onfinish=()=>{
+      shade.cancel();
+      sheet.style.transform='';
+      veil.style.opacity='';
+      finishClosing();
+    };
   }
   folders.forEach(folder=>folder.addEventListener('click',()=>{
     if(open || active)return;
