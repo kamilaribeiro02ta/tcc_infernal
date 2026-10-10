@@ -190,6 +190,19 @@ body.dark:has(.workspace-shell) {
   background: var(--page-bg);
 }
 .workspace-shell { background: var(--page-bg); }
+/* A área exposta pelos cantos arredondados deve ter o mesmo fundo da página,
+   e não o fundo escuro da aplicação. */
+.workspace-shell > .sidebar {
+  background-clip: padding-box !important;
+}
+body.dark .workspace-shell,
+body.dark .workspace-shell > .workspace-page {
+  background-color: #171226 !important;
+}
+/* Igualar a cor do fundo junto às quinas ao plano de fundo do conteúdo. */
+body.dark .workspace-shell {
+  --page-bg: #171226;
+}
 .workspace-shell > .sidebar {
   border: 0 !important;
   border-radius: 0 24px 24px 0 !important;
