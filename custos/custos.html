@@ -1,1 +1,86 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ZUZ | Custos</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"><link rel="stylesheet" href="../shared/sidebar.css"><link rel="stylesheet" href="../shared/design-system.css"><link rel="stylesheet" href="../shared/app-shell.css"><link rel="stylesheet" href="custos.css"></head><body><div class="page"><aside class="sidebar"><a href="../Login/login.html" class="login-block"><div class="avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="white"></circle><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"></path></svg></div><div class="login-text"><div class="login-title">Login</div><div class="login-subtitle">Minha Conta</div></div></a><nav class="nav-menu"><a href="../index.html" class="nav-item"><span class="nav-dot"></span><span>Início</span></a><a href="../introducao/intro.html" class="nav-item"><span class="nav-dot"></span><span>Sobre</span></a><a href="../produtos/produtos.html" class="nav-item"><span class="nav-dot"></span><span>Produtos</span></a><a href="custos.html" class="nav-item active"><span class="nav-dot"></span><span>Custos</span></a><a href="../simulacoes/simulacoes.html" class="nav-item"><span class="nav-dot"></span><span>Simulações</span></a><a href="../garfico/grafico.html" class="nav-item"><span class="nav-dot"></span><span>Análises</span></a></nav></aside><main class="cost-page"><header><span>PERFIL ECONÔMICO</span><h1>Entenda os custos do seu negócio.</h1><p>A ZUZ usa estes dados para adaptar a precificação à realidade da sua empresa.</p></header><form id="form"><section><h2>1. Contexto da empresa</h2><div class="grid"><label>Segmento<input id="segment" placeholder="Ex: confeitaria artesanal"></label><label>Operação<select id="operationType"><option value="producao">Produção própria</option><option value="revenda">Revenda</option><option value="servico">Serviço</option><option value="misto">Misto</option></select></label><label>Posicionamento<select id="positioning"><option value="preco">Competir por preço</option><option value="mercado">Próximo ao mercado</option><option value="diferenciacao">Diferenciação</option></select></label><label>Público<input id="targetCustomer" placeholder="Ex: festas e eventos"></label><label>Volume mensal<input id="monthlyUnits" type="number" min="1" value="100"></label><label>Margem padrão (%)<input id="defaultMargin" type="number" min="0" max="90" value="30"></label></div></section><section><div class="head"><h2>2. Custos fixos mensais</h2><button type="button" id="addFixed">+ Adicionar</button></div><div id="fixedRows"></div><strong id="fixedTotal">R$ 0,00</strong></section><section><h2>3. Taxas sobre a venda</h2><div class="grid"><label>Tributos (%)<input id="taxesPct" type="number" min="0" step=".1"></label><label>Taxas e comissões (%)<input id="sellingFeesPct" type="number" min="0" step=".1"></label></div></section><section><div class="head"><h2>4. Referências de mercado</h2><button type="button" id="addComp">+ Adicionar</button></div><div id="compRows"></div><p id="market"></p></section><aside><h2>Resumo</h2><p id="summary"></p><button type="submit">Salvar perfil econômico</button><small id="status"></small></aside></form></main></div><script src="../shared/pricing-engine.js"></script><script src="custos.js"></script><script src="../shared/site.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="ZUZ — organização de custos para pequenos negócios."><title>ZUZ | Custos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../shared/sidebar.css"><link rel="stylesheet" href="../shared/design-system.css"><link rel="stylesheet" href="../shared/app-shell.css?v=20261010">
+<link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010"><link rel="stylesheet" href="custos.css?v=20261010">
+<link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png"></head>
+<body><div class="page">
+    <aside class="sidebar">
+      <a href="../Login/login.html" class="login-block" aria-label="Abrir minha conta">
+        <div class="avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" fill="white"></circle>
+            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"></path>
+          </svg>
+        </div>
+        <div class="login-text">
+          <div class="login-title">Login</div>
+          <div class="login-subtitle">Minha Conta</div>
+        </div>
+      </a>
+
+      <nav class="nav-menu" aria-label="Navegação principal">
+        <a href="../index.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Início</span>
+        </a>
+        <a href="../introducao/intro.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Sobre</span>
+        </a>
+        <a href="../produtos/produtos.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Produtos</span>
+        </a>
+        <a href="../custos/custos.html" class="nav-item active" aria-current="page"><span class="nav-dot"></span><span>Custos</span></a>
+        <a href="../simulacoes/simulacoes.html" class="nav-item"><span class="nav-dot"></span><span>Simulações</span></a>
+        <a href="../garfico/grafico.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Análises</span>
+        </a>
+      </nav>
+
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Alternar entre modo claro e modo escuro">
+        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
+        <span class="theme-toggle-knob" aria-hidden="true">
+          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3.2"></circle>
+            <line x1="12" y1="2.4" x2="12" y2="4.2"></line>
+            <line x1="12" y1="19.8" x2="12" y2="21.6"></line>
+            <line x1="2.4" y1="12" x2="4.2" y2="12"></line>
+            <line x1="19.8" y1="12" x2="21.6" y2="12"></line>
+            <line x1="5.2" y1="5.2" x2="6.5" y2="6.5"></line>
+            <line x1="17.5" y1="17.5" x2="18.8" y2="18.8"></line>
+            <line x1="18.8" y1="5.2" x2="17.5" y2="6.5"></line>
+            <line x1="6.5" y1="17.5" x2="5.2" y2="18.8"></line>
+          </svg>
+          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none" aria-hidden="true">
+            <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
+          </svg>
+        </span>
+      </button>
+    </aside>
+<main class="workspace-page cost-page" id="conteudo"><header class="workspace-heading"><span class="workspace-kicker">PERFIL ECONÔMICO</span><h1>Entenda os custos do seu negócio.</h1><p>Organize as despesas da empresa e defina as premissas utilizadas pela ZUZ na precificação.</p></header>
+<form id="form" class="cost-layout" novalidate>
+  <div class="workspace-sections">
+    <section class="workspace-panel"><div class="workspace-section-head"><span>01 / NEGÓCIO</span><h2>Contexto da empresa</h2></div><div class="workspace-fields">
+      <label>Segmento<input id="segment" placeholder="Ex.: confeitaria artesanal" autocomplete="organization-title"></label>
+      <label>Operação<select id="operationType"><option value="producao">Produção própria</option><option value="revenda">Revenda</option><option value="servico">Serviço</option><option value="misto">Misto</option></select></label>
+      <label>Posicionamento<select id="positioning"><option value="preco">Competir por preço</option><option value="mercado">Próximo ao mercado</option><option value="diferenciacao">Diferenciação</option></select></label>
+      <label>Público<input id="targetCustomer" placeholder="Ex.: festas e eventos"></label>
+      <label>Volume mensal estimado<input id="monthlyUnits" type="number" min="1" step="1" value="100" required></label>
+      <label>Margem desejada (%)<input id="defaultMargin" type="number" min="0" max="90" step=".1" value="30" required></label>
+    </div></section>
+    <section class="workspace-panel"><div class="workspace-section-head with-action"><div><span>02 / ESTRUTURA</span><h2>Custos fixos mensais</h2></div><button class="workspace-secondary" type="button" id="addFixed">Adicionar custo</button></div><p class="workspace-help">Informe os gastos mensais da empresa. O valor será rateado pelo volume informado.</p><div id="fixedRows" class="workspace-rows"></div><div class="workspace-total"><span>Total mensal</span><strong id="fixedTotal">R$ 0,00</strong></div></section>
+    <section class="workspace-panel"><div class="workspace-section-head"><span>03 / ENCARGOS</span><h2>Taxas sobre a venda</h2></div><div class="workspace-fields"><label>Tributos (%)<input id="taxesPct" type="number" min="0" max="100" step=".1" value="0"></label><label>Taxas e comissões (%)<input id="sellingFeesPct" type="number" min="0" max="100" step=".1" value="0"></label></div></section>
+    <section class="workspace-panel"><div class="workspace-section-head with-action"><div><span>04 / MERCADO</span><h2>Referências de mercado</h2></div><button class="workspace-secondary" type="button" id="addComp">Adicionar referência</button></div><p class="workspace-help">Utilize preços comparáveis apenas como referência, não como substitutos do custo.</p><div id="compRows" class="workspace-rows"></div><p id="market" class="workspace-note"></p></section>
+  </div><aside class="workspace-panel cost-summary"><span class="workspace-kicker">RESUMO DO PERFIL</span><h2>Visão financeira</h2><p id="summary" aria-live="polite"></p><button class="workspace-primary" type="submit">Salvar perfil econômico</button><p id="status" class="workspace-status" role="status" aria-live="polite"></p><a class="workspace-aux-link" href="../simulacoes/simulacoes.html">Ir para simulações <i class="bx bx-right-arrow-alt" aria-hidden="true"></i></a></aside>
+</form></main>
+</div>
+<script src="../shared/pricing-engine.js"></script><script src="custos.js?v=20261010"></script><script src="../shared/site.js?v=20261010"></script>
+</body></html>
