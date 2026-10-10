@@ -18,27 +18,50 @@
       eyebrow:'Base financeira',
       description:'O sistema reúne os valores que compõem o produto para criar uma base de cálculo mais clara.',
       details: `
-        <section class="design-folder-section">
+        <header class="zuz-finance-hero">
+          <span class="zuz-finance-tag">01 / FUNDAMENTO DA PRECIFICAÇÃO</span>
+          <p class="zuz-finance-lead">Transformar gastos dispersos em informações claras é o primeiro passo para precificar com mais segurança.</p>
+          <div class="zuz-finance-hero-rule" aria-hidden="true"></div>
+        </header>
+        <section class="zuz-finance-section">
+          <span class="zuz-finance-index">01 / CONCEITO</span>
           <h3>O que é a base financeira?</h3>
           <p>A base financeira reúne e organiza as informações necessárias para determinar quanto custa produzir e comercializar um produto. Na ZUZ, ela sustenta os cálculos de custo e a análise de preços, ajudando o pequeno empreendedor a tomar decisões com dados do próprio negócio.</p>
         </section>
-        <section class="design-folder-section">
+        <section class="zuz-finance-section">
+          <span class="zuz-finance-index">02 / COMPOSIÇÃO</span>
           <h3>Quais gastos são considerados?</h3>
-          <p>O cadastro pode contemplar matéria-prima, embalagens, mão de obra, despesas operacionais, taxas, tributos e outros gastos associados à produção e à venda. A distinção entre custos diretos, indiretos, fixos e variáveis auxilia na identificação e na atribuição correta dos valores a cada produto.</p>
+          <p>O cadastro pode contemplar os principais gastos associados à produção e à venda:</p>
+          <div class="zuz-finance-cost-grid" aria-label="Categorias de gastos">
+            <div><span>01</span><strong>Matéria-prima</strong></div>
+            <div><span>02</span><strong>Embalagens</strong></div>
+            <div><span>03</span><strong>Mão de obra</strong></div>
+            <div><span>04</span><strong>Despesas operacionais</strong></div>
+            <div><span>05</span><strong>Taxas e tributos</strong></div>
+            <div><span>06</span><strong>Outros gastos</strong></div>
+          </div>
+          <p class="zuz-finance-caption">Distinguir custos diretos, indiretos, fixos e variáveis contribui para atribuir corretamente os valores a cada produto.</p>
         </section>
-        <section class="design-folder-section">
+        <section class="zuz-finance-section">
+          <span class="zuz-finance-index">03 / DISTINÇÃO</span>
           <h3>Custos financeiros e base financeira</h3>
-          <p>Custos financeiros são gastos relacionados às operações de financiamento, como juros e encargos bancários. Já a base financeira é mais ampla: organiza os diferentes custos e despesas utilizados como referência para a precificação. Nem todo gasto financeiro deve ser atribuído diretamente a uma unidade vendida.</p>
+          <div class="zuz-finance-comparison">
+            <div><span>Custos financeiros</span><p>Gastos relacionados a operações de financiamento, como juros e encargos bancários.</p></div>
+            <div><span>Base financeira</span><p>Estrutura mais ampla que organiza custos e despesas utilizados como referência para a precificação.</p></div>
+          </div>
+          <p class="zuz-finance-caption">Nem todo gasto financeiro deve ser atribuído diretamente a uma unidade vendida.</p>
         </section>
-        <section class="design-folder-section">
+        <section class="zuz-finance-section">
+          <span class="zuz-finance-index">04 / APLICAÇÃO</span>
           <h3>Como a ZUZ utiliza esses dados?</h3>
           <p>Ao registrar os gastos e a quantidade estimada de unidades, o usuário fornece os dados para apurar o custo por unidade e analisar cenários de preço. O sistema pode apresentar o custo calculado e apoiar uma sugestão de preço de venda, considerando as informações disponíveis e as premissas adotadas.</p>
         </section>
-        <section class="design-folder-section">
+        <section class="zuz-finance-conclusion">
+          <span class="zuz-finance-index">05 / IMPORTÂNCIA</span>
           <h3>Por que essa etapa é importante?</h3>
           <p>Um preço definido apenas pela comparação com concorrentes ou pela intuição pode ignorar despesas relevantes. Organizar os custos favorece a compreensão da margem de contribuição e dos resultados, mas a definição do preço também exige considerar mercado, demanda, tributos e valor percebido.</p>
         </section>
-        <p class="design-folder-source-note">Fundamentação: conceitos de formação de preços, classificação de custos e despesas discutidos nos materiais acadêmicos do TCC da ZUZ. A aplicação descrita representa a proposta funcional do projeto, não um resultado já comprovado por testes.</p>
+        <p class="zuz-finance-source">Fundamentação: conceitos de formação de preços, classificação de custos e despesas discutidos nos materiais acadêmicos do TCC da ZUZ. A aplicação descrita representa a proposta funcional do projeto, não um resultado já comprovado por testes.</p>
       `
     },
     '02': { title:'Decisão visual', eyebrow:'Leitura de dados', description:'Gráficos e indicadores ajudam o usuário a enxergar custo, margem e resultado sem depender de planilhas complexas.' },
@@ -97,7 +120,7 @@
     if(open || active)return;
     active=folder;
     const item=data[folder.dataset.folder]; if(!item)return;
-    title.textContent=item.title;eyebrow.textContent=item.eyebrow;description.innerHTML=item.details || '';if(!item.details) description.textContent=item.description;
+    title.textContent=item.title;eyebrow.textContent=item.eyebrow;description.innerHTML=item.details || '';if(!item.details) description.textContent=item.description;doc.classList.toggle('zuz-finance-doc',folder.dataset.folder==='01');
     build();setOpen(true);
   }));
   closeBtn.addEventListener('click',()=>setOpen(false));
