@@ -191,11 +191,12 @@ body.dark:has(.workspace-shell) {
 }
 .workspace-shell { background: var(--page-bg); }
 .workspace-shell > .sidebar {
-  border: 1px solid var(--sidebar-border, #eae7ed) !important;
-  border-left: 0 !important;
+  border: 0 !important;
   border-radius: 0 24px 24px 0 !important;
   background: var(--sidebar-bg, #fff) !important;
-  overflow: hidden;
+  box-shadow: 0 10px 34px rgba(39,26,68,.055) !important;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .workspace-shell .sidebar .nav-item.active,
 .workspace-shell .sidebar .nav-item[aria-current="page"] {
@@ -210,8 +211,7 @@ body.dark:has(.workspace-shell) {
 }
 @media (max-width: 992px) {
   .workspace-shell > .sidebar {
-    border: 1px solid var(--sidebar-border, #eae7ed) !important;
-    border-top: 0 !important;
+    border: 0 !important;
     border-radius: 0 0 22px 22px !important;
     overflow: visible;
   }
