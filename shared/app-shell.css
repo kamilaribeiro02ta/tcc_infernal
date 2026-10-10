@@ -515,3 +515,29 @@ body:not(.dark) .sidebar #iconSun {
   body.dark .sidebar #iconMoon,
   body:not(.dark) .sidebar #iconSun { animation: none !important; }
 }
+
+/* Sol e lua: entrada expressiva, sincronizada com o deslize do seletor. */
+@keyframes zuz-sun-pop {
+  0% { opacity: 0; transform: rotate(-115deg) scale(.25); }
+  42% { opacity: 1; transform: rotate(24deg) scale(1.38); }
+  68% { transform: rotate(-13deg) scale(.9); }
+  86% { transform: rotate(7deg) scale(1.13); }
+  100% { opacity: 1; transform: rotate(0) scale(1); }
+}
+@keyframes zuz-moon-pop {
+  0% { opacity: 0; transform: rotate(105deg) scale(.25); }
+  42% { opacity: 1; transform: rotate(-22deg) scale(1.35); }
+  68% { transform: rotate(11deg) scale(.9); }
+  86% { transform: rotate(-5deg) scale(1.1); }
+  100% { opacity: 1; transform: rotate(0) scale(1); }
+}
+body:not(.dark) .sidebar #iconSun {
+  animation: zuz-sun-pop .94s cubic-bezier(.22,.61,.36,1) both !important;
+}
+body.dark .sidebar #iconMoon {
+  animation: zuz-moon-pop .94s cubic-bezier(.22,.61,.36,1) both !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  body:not(.dark) .sidebar #iconSun,
+  body.dark .sidebar #iconMoon { animation: none !important; }
+}
