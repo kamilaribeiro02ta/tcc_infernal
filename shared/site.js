@@ -180,6 +180,46 @@
         nestedLink.href = destination;
       }
 
+      // Reutiliza a foto persistida no perfil em todas as barras laterais.
+      // A página Perfil já gerencia sua própria imagem e não precisa ser duplicada.
+      const avatar = block.querySelector(".avatar");
+      if (avatar && !block.classList.contains("profile-account-link")) {
+        let photo = avatar.querySelector(".zuz-sidebar-photo");
+        const fallback = avatar.querySelector("svg");
+        const sameAccount = String(profile?.email || "").toLowerCase() ===
+          String(session?.email || "").toLowerCase();
+        const src = loggedIn && sameAccount && typeof profile?.photo === "string"
+          ? profile.photo : "";
+
+        if (src) {
+          if (!photo) {
+            photo = document.createElement("img");
+            photo.className = "zuz-sidebar-photo";
+            photo.alt = "Foto do perfil";
+            photo.style.cssText = "width:100%;height:100%;display:block;object-fit:cover;";
+            avatar.appendChild(photo);
+          }
+          photo.hidden = true;
+          photo.onload = () => {
+            photo.hidden = false;
+            if (fallback) fallback.style.display = "none";
+          };
+          photo.onerror = () => {
+            photo.hidden = true;
+            photo.removeAttribute("src");
+            if (fallback) fallback.style.display = "";
+          };
+          if (fallback) fallback.style.display = "";
+          photo.src = src;
+        } else {
+          if (photo) {
+            photo.hidden = true;
+            photo.removeAttribute("src");
+          }
+          if (fallback) fallback.style.display = "";
+        }
+      }
+
       if (loggedIn) {
         if (title) {
           title.textContent =
