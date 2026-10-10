@@ -2200,258 +2200,243 @@ body:not(.dark) .about-objective-visual::after {
 }
 
 
-/* =========================================================
-   CARDS DA PÁGINA SOBRE
-   Inspirados em uma pasta 3D com documentos visíveis.
-========================================================= */
-
+/* Pastas compactas da seção Sobre, com frente de vidro fosco. */
 .about-cards.about-cards-side {
-  width: min(100%, 500px);
-  gap: 28px;
+  width: min(100%, 350px);
+  max-width: 350px;
+  margin: 0;
+  padding: 0;
+  justify-self: end;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
 }
 
 .about-cards-side .about-card.about-card-inspired {
-  --folder-top: #7d45f1;
-  --folder-top-deep: #5c2cc7;
-  --folder-front: rgba(146, 94, 255, .72);
-  --folder-front-soft: rgba(188, 150, 255, .62);
-
   width: 100%;
-  min-height: 350px;
+  height: 246px;
+  min-height: 0;
+  aspect-ratio: auto;
+  padding: 0;
+  display: block;
   position: relative;
   overflow: visible;
-  display: block;
+  isolation: isolate;
+  box-sizing: border-box;
   border: 0;
-  border-radius: 34px;
+  border-radius: 0 0 18px 18px;
   background: transparent;
   box-shadow: none;
-  isolation: isolate;
+  transition: transform .28s ease, filter .28s ease;
 }
 
+/* O recorte superior forma a aba real da pasta, sem imagens. */
 .about-cards-side .about-card-visual {
+  position: absolute;
+  inset: 0 0 0;
   width: 100%;
-  height: 210px;
-  min-height: 210px;
-  position: relative;
-  overflow: hidden;
-  border-radius: 34px 34px 28px 28px;
-  background:
-    radial-gradient(circle at 18% 18%, rgba(255,255,255,.18), transparent 24%),
-    linear-gradient(145deg, var(--folder-top) 0%, var(--folder-top-deep) 100%);
-  box-shadow:
-    0 24px 46px rgba(58, 25, 116, .18),
-    inset 0 1px 0 rgba(255,255,255,.22);
+  height: 100%;
+  min-height: 0;
+  z-index: 0;
+  overflow: visible;
+  border-radius: 21px 21px 18px 18px;
+  clip-path: polygon(0 15%, 0 0, 34% 0, 39% 11%, 41% 13%, 100% 13%, 100% 100%, 0 100%);
+  background: linear-gradient(145deg, #9269f3 0%, #7750de 38%, #5935b8 100%);
+  box-shadow: none;
 }
 
-.about-cards-side .about-card-visual::before,
+.about-cards-side .about-card-visual::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 1px;
+  width: auto;
+  height: auto;
+  border: 1px solid rgba(255,255,255,.17);
+  border-radius: 21px 21px 18px 18px;
+  background: linear-gradient(150deg, rgba(255,255,255,.13), transparent 44%);
+  filter: none;
+  opacity: 1;
+  transform: none;
+  pointer-events: none;
+}
+
 .about-cards-side .about-card-visual::after {
   display: none;
 }
 
-.about-cards-side .about-card-visual-costs {
-  --folder-top: #7540ec;
-  --folder-top-deep: #4c229f;
-}
-
-.about-cards-side .about-card-visual-visual {
-  --folder-top: #8a50f4;
-  --folder-top-deep: #6330c7;
-}
-
-.about-cards-side .about-card-visual-ai {
-  --folder-top: #9659f4;
-  --folder-top-deep: #6b35c6;
-}
-
-.folder-paper {
-  position: absolute;
-  bottom: 24px;
-  width: 150px;
-  height: 116px;
-  border-radius: 13px 13px 7px 7px;
-  background:
-    linear-gradient(#dad7df 0 0) 20px 24px / 75px 7px no-repeat,
-    linear-gradient(#e4e1e8 0 0) 20px 42px / 104px 7px no-repeat,
-    linear-gradient(#dedbe4 0 0) 20px 60px / 64px 7px no-repeat,
-    #fff;
-  box-shadow: 0 12px 24px rgba(26,18,40,.12);
-}
-
-.folder-paper-one {
-  left: 50%;
-  transform: translateX(-58%) rotate(-8deg);
-  z-index: 1;
-}
-
-.folder-paper-two {
-  left: 50%;
-  transform: translateX(-15%) rotate(2deg);
-  z-index: 2;
-}
-
-.folder-paper-three {
-  left: 50%;
-  transform: translateX(18%) rotate(8deg);
-  z-index: 1;
-}
-
-.about-cards-side .about-card-visual .about-card-icon {
-  width: 44px;
-  height: 44px;
-  left: 20px;
-  top: 20px;
-  z-index: 4;
-  border: 1px solid rgba(255,255,255,.22);
-  border-radius: 14px;
-  color: #fff;
-  background: rgba(255,255,255,.10);
-  backdrop-filter: blur(12px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
-}
-
+/* Frente translúcida do envelope: os textos ficam nela. */
 .about-cards-side .about-card-content {
-  min-height: 205px;
-  margin-top: -78px;
-  padding: 112px 28px 26px;
-  position: relative;
-  z-index: 5;
+  position: absolute;
+  inset: 77px 0 0;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 18px 18px 16px;
   display: flex;
   flex-direction: column;
-  clip-path: none;
+  justify-content: space-between;
+  gap: 14px;
   overflow: hidden;
-  border-radius: 0 0 34px 34px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 16px 16px 18px 18px;
+  clip-path: none;
   color: #fff;
-  background:
-    linear-gradient(
-      145deg,
-      var(--folder-front-soft) 0%,
-      var(--folder-front) 55%,
-      rgba(92, 44, 199, .86) 100%
-    );
-  -webkit-backdrop-filter: blur(20px) saturate(120%);
-  backdrop-filter: blur(20px) saturate(120%);
-  box-shadow:
-    0 26px 50px rgba(58, 25, 116, .18),
-    inset 0 1px 0 rgba(255,255,255,.16);
+  background: linear-gradient(158deg, rgba(218,190,255,.63), rgba(157,121,240,.51) 48%, rgba(90,58,187,.70) 100%);
+  -webkit-backdrop-filter: blur(16px) saturate(135%);
+  backdrop-filter: blur(16px) saturate(135%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.30), 0 16px 30px rgba(48,23,104,.16);
 }
 
 .about-cards-side .about-card-content::before {
   content: "";
+  display: block;
   position: absolute;
-  inset: 0;
+  inset: 0 0 auto;
+  height: 34px;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 28% 8%, rgba(255,255,255,.22), transparent 30%),
-    linear-gradient(180deg, rgba(255,255,255,.08), transparent 44%);
+  background: linear-gradient(180deg, rgba(255,255,255,.16), transparent);
 }
 
 .about-cards-side .about-card-kicker,
-.about-cards-side .about-card-inspired h2,
-.about-cards-side .about-card-inspired p,
-.folder-card-cog {
+.about-cards-side .about-card-details,
+.about-cards-side .about-card-heading {
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
 .about-cards-side .about-card-kicker {
-  min-height: 22px;
-  margin: 0 0 22px;
+  min-height: 0;
+  margin: 0;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  color: rgba(255,255,255,.72);
+  align-items: center;
+  gap: 12px;
+  color: rgba(255,255,255,.89);
 }
 
 .about-cards-side .about-card-kicker .about-card-number {
-  color: rgba(255,255,255,.92);
-  font-size: 13px;
-  line-height: 1;
+  color: #fff;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: .02em;
+  line-height: 1.2;
+  letter-spacing: .015em;
 }
 
 .about-cards-side .about-card-kicker > span:last-child {
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 600;
-  letter-spacing: .08em;
+  line-height: 1.3;
+  text-align: right;
   text-transform: uppercase;
+  letter-spacing: .045em;
+}
+
+.about-cards-side .about-card-details {
+  display: grid;
+  gap: 7px;
+}
+
+.about-cards-side .about-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .about-cards-side .about-card-inspired h2 {
-  margin: auto 34px 8px 0;
+  margin: 0;
   color: #fff;
-  font-size: 28px;
-  line-height: 1.02;
-  letter-spacing: -.045em;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -.035em;
 }
 
 .about-cards-side .about-card-inspired p {
-  max-width: calc(100% - 42px);
+  max-width: none;
   margin: 0;
-  color: rgba(255,255,255,.76);
-  font-size: 9.5px;
-  line-height: 1.62;
+  color: rgba(255,255,255,.90);
+  font-size: 10px;
+  line-height: 1.5;
 }
 
-.folder-card-cog {
-  position: absolute;
-  right: 27px;
-  bottom: 26px;
-  color: rgba(255,255,255,.94);
-  font-size: 23px;
+.about-cards-side .about-card-heading .about-card-icon {
+  position: static;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  color: rgba(255,255,255,.88);
+  background: none;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  font-size: 19px;
+  line-height: 1;
 }
 
-body:not(.dark) .about-cards-side .about-card.about-card-inspired,
-body:not(.dark) .about-cards-side .about-card-content {
-  background-color: transparent;
+body.dark .about-cards-side .about-card.about-card-inspired,
+body:not(.dark) .about-cards-side .about-card.about-card-inspired {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 body:not(.dark) .about-cards-side .about-card-content {
   color: #fff;
 }
 
-body:not(.dark) .about-cards-side .about-card-kicker,
-body:not(.dark) .about-cards-side .about-card-inspired p {
-  color: rgba(255,255,255,.76);
+body:not(.dark) .about-cards-side .about-card-inspired p,
+body:not(.dark) .about-cards-side .about-card-kicker {
+  color: rgba(255,255,255,.90);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .about-cards-side .about-card.about-card-inspired:hover {
+    transform: translateY(-5px);
+    filter: drop-shadow(0 10px 15px rgba(77,44,159,.18));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-cards-side .about-card.about-card-inspired {
+    transition: none;
+  }
 }
 
 @media (max-width: 1120px) {
   .about-cards.about-cards-side {
-    width: min(100%, 620px);
+    width: min(100%, 350px);
+    max-width: 350px;
+    justify-self: start;
   }
 }
 
 @media (max-width: 720px) {
   .about-cards.about-cards-side {
-    gap: 22px;
+    width: min(100%, 350px);
+    max-width: 350px;
+    gap: 20px;
   }
 
   .about-cards-side .about-card.about-card-inspired {
-    min-height: 325px;
+    height: 246px;
+    min-height: 0;
   }
+}
 
-  .about-cards-side .about-card-visual {
-    height: 190px;
-    min-height: 190px;
-  }
-
-  .folder-paper {
-    width: 126px;
-    height: 98px;
+@media (max-width: 370px) {
+  .about-cards.about-cards-side {
+    width: 100%;
   }
 
   .about-cards-side .about-card-content {
-    min-height: 195px;
-    margin-top: -70px;
-    padding: 100px 22px 22px;
-  }
-
-  .about-cards-side .about-card-inspired h2 {
-    font-size: 24px;
-  }
-
-  .folder-card-cog {
-    right: 22px;
-    bottom: 22px;
+    padding: 16px 14px;
   }
 }
