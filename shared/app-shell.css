@@ -438,3 +438,23 @@ body:not(.dark) .sidebar .nav-item.active,
 body:not(.dark) .sidebar .nav-item[aria-current="page"] {
   border-color: transparent !important;
 }
+
+/* ZUZ / transição de tema: revelação circular a partir do controle da sidebar. */
+@keyframes zuz-theme-reveal {
+  from { clip-path: circle(0 at var(--zuz-theme-x) var(--zuz-theme-y)); }
+  to { clip-path: circle(var(--zuz-theme-radius) at var(--zuz-theme-x) var(--zuz-theme-y)); }
+}
+::view-transition-old(root) { animation: none; z-index: 1; }
+::view-transition-new(root) {
+  animation: zuz-theme-reveal .72s cubic-bezier(.22,.61,.36,1) both;
+  z-index: 2;
+}
+.sidebar .theme-toggle-knob {
+  transition: transform .4s cubic-bezier(.22,.61,.36,1), background-color .3s ease;
+}
+.sidebar .theme-toggle:hover .theme-toggle-knob { transform: scale(1.08) rotate(12deg); }
+.sidebar .theme-toggle:active .theme-toggle-knob { transform: scale(.93); }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
+  .sidebar .theme-toggle-knob { transition: none !important; }
+}
