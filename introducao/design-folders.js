@@ -145,6 +145,31 @@
     a1.onfinish=()=>{if(open){closeBtn.focus({preventScroll:true});}else{doc.scrollTop=0;sheet.style.visibility='hidden';sheet.inert=true;veil.inert=true;sheet.setAttribute('aria-hidden','true');active?.focus({preventScroll:true});active=null;}};
     sheet.style.visibility='visible';
   }
+  function enhanceDocument() {
+    const sections = [...description.querySelectorAll(".zuz-finance-block")];
+    sections.forEach((section, index) => {
+      const heading = section.querySelector(":scope > h3");
+      if (!heading) return;
+      const body = document.createElement("div");
+      body.className = "zuz-finance-section-body";
+      while (heading.nextSibling) body.appendChild(heading.nextSibling);
+      const button = document.createElement("button");
+      button.className = "zuz-finance-section-toggle";
+      button.type = "button";
+      button.textContent = heading.textContent;
+      button.setAttribute("aria-expanded", "true");
+      body.id = "zuz-folder-section-" + index;
+      button.setAttribute("aria-controls", body.id);
+      heading.replaceWith(button);
+      section.appendChild(body);
+      section.dataset.collapsible = "";
+      button.addEventListener("click", () => {
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        button.setAttribute("aria-expanded", String(!expanded));
+        body.hidden = expanded;
+      });
+    });
+  }
   function setOpen(next) {
     if(next===open||!animations.length)return;
     open=next;
@@ -158,7 +183,7 @@
     if(open || active)return;
     active=folder;
     const item=data[folder.dataset.folder]; if(!item)return;
-    title.textContent=item.title;eyebrow.textContent=item.eyebrow;description.innerHTML=item.details || '';if(!item.details) description.textContent=item.description;doc.classList.toggle('zuz-finance-doc',Boolean(item.details));doc.dataset.folder=folder.dataset.folder;
+    title.textContent=item.title;eyebrow.textContent=item.eyebrow;description.innerHTML=item.details || '';if(!item.details) description.textContent=item.description;doc.classList.toggle('zuz-finance-doc',Boolean(item.details));doc.dataset.folder=folder.dataset.folder;enhanceDocument();
     build();setOpen(true);
   }));
   closeBtn.addEventListener('click',()=>setOpen(false));
