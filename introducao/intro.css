@@ -2222,3 +2222,8 @@ body:not(.dark) .about-objective-visual::after {
     gap: 32px;
   }
 }
+
+/* Centralizar o texto e os cards nesta seção. */
+.about-problem-split { width:min(100%,1200px); margin-inline:auto; justify-items:center; text-align:center; }
+.about-problem-split .about-problem-copy { width:100%; display:flex; justify-content:center; }
+.about-problem-split .about-problem-copy p { width:min(100%,1050px); max-width:1050px; margin-inline:auto; text-align:center; text-wrap:balance; }
