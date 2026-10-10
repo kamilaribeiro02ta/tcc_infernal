@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../shared/sidebar.css"><link rel="stylesheet" href="../shared/design-system.css"><link rel="stylesheet" href="../shared/app-shell.css?v=20261010">
-<link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010-menu-rise3"><link rel="stylesheet" href="simulacoes.css?v=20261010">
+<link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010-menu-rise3"><link rel="stylesheet" href="simulacoes.css?v=20261010-serif1">
 <link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png"></head>
 <body><div class="page workspace-shell">
     <aside class="sidebar">
@@ -65,7 +65,7 @@
         </span>
       </button>
     </aside>
-<main class="workspace-page sim" id="conteudo"><header class="workspace-heading"><span class="workspace-kicker">SIMULAÇÃO DE CENÁRIOS</span><h1>Teste o preço antes de decidir.</h1><p>Compare diferentes margens, preços e quantidades sem alterar o produto cadastrado.</p></header>
+<main class="workspace-page sim" id="conteudo"><header class="workspace-heading"><span class="workspace-kicker">SIMULAÇÃO DE CENÁRIOS</span><h1>Teste o <span class="simulation-title-serif">preço</span> antes de decidir.</h1><p>Compare diferentes margens, preços e quantidades sem alterar o produto cadastrado.</p></header>
 <div class="simulation-layout">
 <section class="workspace-panel simulation-input"><div class="workspace-section-head"><span>01 / PARÂMETROS</span><h2>Configurar cenário</h2></div><label>Produto<select id="product"></select></label><div class="workspace-fields"><label>Margem desejada (%)<input id="margin" type="number" min="0" max="90" step=".1"></label><label>Preço de venda (R$)<input id="price" type="number" min="0" step=".01"></label><label>Quantidade estimada<input id="units" type="number" min="1" step="1" value="100"></label></div><button class="workspace-primary" id="use" type="button">Aplicar sugestão ZUZ</button><p id="simulationStatus" class="workspace-status" role="status" aria-live="polite"></p><a class="workspace-aux-link" href="../produtos/produtos.html">Gerenciar produtos <i class="bx bx-right-arrow-alt" aria-hidden="true"></i></a></section>
 <aside class="workspace-panel simulation-output"><span class="workspace-kicker">02 / RESULTADOS</span><p class="workspace-result-label">Preço sugerido</p><h2 id="suggested">R$ 0,00</h2><div class="workspace-metrics"><div><span>Custo completo</span><strong id="cost">—</strong></div><div><span>Preço técnico</span><strong id="technical">—</strong></div><div><span>Margem líquida</span><strong id="net">—</strong></div><div><span>Margem de contribuição</span><strong id="contribution">—</strong></div><div><span>Ponto de equilíbrio</span><strong id="breakEven">—</strong></div><div><span>Resultado estimado</span><strong id="profit">—</strong></div></div><p class="workspace-range">Faixa de análise <strong id="range">—</strong></p><p class="workspace-help">Os valores são estimativas calculadas a partir dos custos informados e das configurações do negócio.</p></aside>
