@@ -153,8 +153,37 @@
 
       const nextTheme = currentTheme === "dark" ? "light" : "dark";
 
-      localStorage.setItem("zuz-theme", nextTheme);
-      renderThemeControls(nextTheme === "dark");
+      // Expansão radial a partir do botão: a nova paleta revela a interface.
+      // Fallback mantém a troca funcional em navegadores sem View Transitions.
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const rect = themeToggle.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const radius = Math.ceil(Math.max(
+        Math.hypot(centerX, centerY),
+        Math.hypot(window.innerWidth - centerX, centerY),
+        Math.hypot(centerX, window.innerHeight - centerY),
+        Math.hypot(window.innerWidth - centerX, window.innerHeight - centerY)
+      ));
+      const applyTheme = () => {
+        localStorage.setItem("zuz-theme", nextTheme);
+        renderThemeControls(nextTheme === "dark");
+      };
+
+      if (reduceMotion || typeof document.startViewTransition !== "function") {
+        applyTheme();
+        return;
+      }
+
+      document.documentElement.style.setProperty("--zuz-theme-x", centerX + "px");
+      document.documentElement.style.setProperty("--zuz-theme-y", centerY + "px");
+      document.documentElement.style.setProperty("--zuz-theme-radius", radius + "px");
+      const transition = document.startViewTransition(applyTheme);
+      transition.finished.finally(() => {
+        document.documentElement.style.removeProperty("--zuz-theme-x");
+        document.documentElement.style.removeProperty("--zuz-theme-y");
+        document.documentElement.style.removeProperty("--zuz-theme-radius");
+      }).catch(() => {});
     });
   }
 
