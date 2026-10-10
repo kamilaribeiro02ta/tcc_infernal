@@ -2235,4 +2235,5 @@ body:not(.dark) .about-objective-visual::after {
   font-weight: 400;
   font-size: 1.14em;
   line-height: 0;
+  letter-spacing: -0.045em;
 }
