@@ -1,1 +1,75 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ZUZ | Simulações</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"><link rel="stylesheet" href="../shared/sidebar.css"><link rel="stylesheet" href="../shared/design-system.css"><link rel="stylesheet" href="../shared/app-shell.css"><link rel="stylesheet" href="simulacoes.css"></head><body><div class="page"><aside class="sidebar"><a href="../Login/login.html" class="login-block"><div class="avatar"></div><div class="login-text"><div class="login-title">Login</div><div class="login-subtitle">Minha Conta</div></div></a><nav class="nav-menu"><a href="../index.html" class="nav-item"><span class="nav-dot"></span><span>Início</span></a><a href="../introducao/intro.html" class="nav-item"><span class="nav-dot"></span><span>Sobre</span></a><a href="../produtos/produtos.html" class="nav-item"><span class="nav-dot"></span><span>Produtos</span></a><a href="../custos/custos.html" class="nav-item"><span class="nav-dot"></span><span>Custos</span></a><a href="simulacoes.html" class="nav-item active"><span class="nav-dot"></span><span>Simulações</span></a><a href="../garfico/grafico.html" class="nav-item"><span class="nav-dot"></span><span>Análises</span></a></nav></aside><main class="sim"><header><span>SIMULAÇÃO DE CENÁRIOS</span><h1>Teste o preço antes de decidir.</h1><p>Altere margem, preço e quantidade sem mudar o cadastro original.</p></header><div class="layout"><section><label>Produto<select id="product"></select></label><div class="grid"><label>Margem (%)<input id="margin" type="number" min="0" max="90"></label><label>Preço de venda<input id="price" type="number" min="0" step=".01"></label><label>Quantidade<input id="units" type="number" min="1" value="100"></label></div><button id="use" type="button">Usar sugestão ZUZ</button></section><aside><small>Preço sugerido</small><h2 id="suggested">R$ 0,00</h2><div class="metrics"><p>Custo completo <strong id="cost"></strong></p><p>Preço técnico <strong id="technical"></strong></p><p>Margem líquida <strong id="net"></strong></p><p>Margem de contribuição <strong id="contribution"></strong></p><p>Ponto de equilíbrio <strong id="breakEven"></strong></p><p>Resultado estimado <strong id="profit"></strong></p></div><p>Faixa de análise <strong id="range"></strong></p></aside></div></main></div><script src="../shared/pricing-engine.js"></script><script src="simulacoes.js"></script><script src="../shared/site.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="ZUZ — simulação de preços para pequenos negócios."><title>ZUZ | Simulações</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../shared/sidebar.css"><link rel="stylesheet" href="../shared/design-system.css"><link rel="stylesheet" href="../shared/app-shell.css?v=20261010">
+<link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010"><link rel="stylesheet" href="simulacoes.css?v=20261010">
+<link rel="icon" type="image/png" href="../imagens/logo-zuz-header.png"></head>
+<body><div class="page">
+    <aside class="sidebar">
+      <a href="../Login/login.html" class="login-block" aria-label="Abrir minha conta">
+        <div class="avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" fill="white"></circle>
+            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"></path>
+          </svg>
+        </div>
+        <div class="login-text">
+          <div class="login-title">Login</div>
+          <div class="login-subtitle">Minha Conta</div>
+        </div>
+      </a>
+
+      <nav class="nav-menu" aria-label="Navegação principal">
+        <a href="../index.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Início</span>
+        </a>
+        <a href="../introducao/intro.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Sobre</span>
+        </a>
+        <a href="../produtos/produtos.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Produtos</span>
+        </a>
+        <a href="../custos/custos.html" class="nav-item"><span class="nav-dot"></span><span>Custos</span></a>
+        <a href="../simulacoes/simulacoes.html" class="nav-item active" aria-current="page"><span class="nav-dot"></span><span>Simulações</span></a>
+        <a href="../garfico/grafico.html" class="nav-item">
+          <span class="nav-dot"></span>
+          <span>Análises</span>
+        </a>
+      </nav>
+
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Alternar entre modo claro e modo escuro">
+        <span class="theme-toggle-label" id="themeLabel">Modo Claro</span>
+        <span class="theme-toggle-knob" aria-hidden="true">
+          <svg id="iconSun" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3.2"></circle>
+            <line x1="12" y1="2.4" x2="12" y2="4.2"></line>
+            <line x1="12" y1="19.8" x2="12" y2="21.6"></line>
+            <line x1="2.4" y1="12" x2="4.2" y2="12"></line>
+            <line x1="19.8" y1="12" x2="21.6" y2="12"></line>
+            <line x1="5.2" y1="5.2" x2="6.5" y2="6.5"></line>
+            <line x1="17.5" y1="17.5" x2="18.8" y2="18.8"></line>
+            <line x1="18.8" y1="5.2" x2="17.5" y2="6.5"></line>
+            <line x1="6.5" y1="17.5" x2="5.2" y2="18.8"></line>
+          </svg>
+          <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none" aria-hidden="true">
+            <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
+          </svg>
+        </span>
+      </button>
+    </aside>
+<main class="workspace-page sim" id="conteudo"><header class="workspace-heading"><span class="workspace-kicker">SIMULAÇÃO DE CENÁRIOS</span><h1>Teste o preço antes de decidir.</h1><p>Compare diferentes margens, preços e quantidades sem alterar o produto cadastrado.</p></header>
+<div class="simulation-layout">
+<section class="workspace-panel simulation-input"><div class="workspace-section-head"><span>01 / PARÂMETROS</span><h2>Configurar cenário</h2></div><label>Produto<select id="product"></select></label><div class="workspace-fields"><label>Margem desejada (%)<input id="margin" type="number" min="0" max="90" step=".1"></label><label>Preço de venda (R$)<input id="price" type="number" min="0" step=".01"></label><label>Quantidade estimada<input id="units" type="number" min="1" step="1" value="100"></label></div><button class="workspace-primary" id="use" type="button">Aplicar sugestão ZUZ</button><p id="simulationStatus" class="workspace-status" role="status" aria-live="polite"></p><a class="workspace-aux-link" href="../produtos/produtos.html">Gerenciar produtos <i class="bx bx-right-arrow-alt" aria-hidden="true"></i></a></section>
+<aside class="workspace-panel simulation-output"><span class="workspace-kicker">02 / RESULTADOS</span><p class="workspace-result-label">Preço sugerido</p><h2 id="suggested">R$ 0,00</h2><div class="workspace-metrics"><div><span>Custo completo</span><strong id="cost">—</strong></div><div><span>Preço técnico</span><strong id="technical">—</strong></div><div><span>Margem líquida</span><strong id="net">—</strong></div><div><span>Margem de contribuição</span><strong id="contribution">—</strong></div><div><span>Ponto de equilíbrio</span><strong id="breakEven">—</strong></div><div><span>Resultado estimado</span><strong id="profit">—</strong></div></div><p class="workspace-range">Faixa de análise <strong id="range">—</strong></p><p class="workspace-help">Os valores são estimativas calculadas a partir dos custos informados e das configurações do negócio.</p></aside>
+</div></main>
+</div>
+<script src="../shared/pricing-engine.js"></script><script src="simulacoes.js?v=20261010"></script><script src="../shared/site.js?v=20261010"></script>
+</body></html>
