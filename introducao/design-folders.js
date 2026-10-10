@@ -18,13 +18,11 @@
     '03': { title:'Agente de IA', eyebrow:'Assistente inteligente', description:'A interface conversa com o usuário, coleta informações e auxilia no processo de precificação.' }
   };
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const duration = reduced ? 180 : 720;
-  const midpoint = .40;
+  const duration = reduced ? 180 : 680;
+  const midpoint = .36;
   const easeOut = 'cubic-bezier(.33,0,.2,1)';
   const easeInOut = 'cubic-bezier(.55,0,.2,1)';
-  const shadowOff = 'drop-shadow(0 0 0 rgba(28,16,80,0)) drop-shadow(0 0 0 rgba(28,16,80,0))';
-  const shadowOn = 'drop-shadow(0 30px 50px rgba(28,16,80,.30)) drop-shadow(0 6px 14px rgba(28,16,80,.14))';
-  let active = null, animations = [], open = false;
+    let active = null, animations = [], open = false;
   function geometry(folder) {
     const vw=window.innerWidth, vh=window.innerHeight;
     const W=Math.min(640,vw-32), H=Math.min(vh-32,800);
@@ -45,15 +43,14 @@
     sheet.style.width=g.W+'px'; sheet.style.height=g.H+'px';
     const o={duration,fill:'both'};
     const a1=sheet.animate([
-      {transform:tf(g.x0,g.y0,g.s),filter:shadowOff,offset:0,easing:easeOut},
-      {transform:tf(g.x0,g.ym,g.s),filter:shadowOff,offset:midpoint,easing:easeInOut},
-      {transform:tf(g.xf,g.yf,1),filter:shadowOn,offset:1}],o);
+      {transform:tf(g.x0,g.y0,g.s),offset:0,easing:easeOut},
+      {transform:tf(g.x0,g.ym,g.s),offset:midpoint,easing:easeInOut},
+      {transform:tf(g.xf,g.yf,1),offset:1}],o);
     const a2=paper.animate([
-      {clipPath:clip(g.H),opacity:0,offset:0,easing:easeOut},
-      {clipPath:clip(g.inset(g.y0)),opacity:1,offset:.12,easing:easeOut},
-      {clipPath:clip(g.inset(g.ym)),opacity:1,offset:midpoint,easing:easeInOut},
-      {clipPath:clip(0),opacity:1,offset:1}],o);
-    const a3=content.animate([{opacity:0,offset:0},{opacity:0,offset:.06},{opacity:1,offset:.56},{opacity:1,offset:1}],o);
+      {clipPath:clip(g.inset(g.y0)),offset:0,easing:easeOut},
+      {clipPath:clip(g.inset(g.ym)),offset:midpoint,easing:easeInOut},
+      {clipPath:clip(0),offset:1}],o);
+    const a3=content.animate([{opacity:0,offset:0},{opacity:0,offset:.34},{opacity:1,offset:.75},{opacity:1,offset:1}],o);
     const a4=veil.animate([{opacity:0,offset:0},{opacity:0,offset:midpoint*.7},{opacity:1,offset:1}],o);
     animations=[a1,a2,a3,a4];
     animations.forEach(a=>{a.pause();a.currentTime=open?duration:0;});
@@ -67,10 +64,10 @@
     // Keep the dialog painted until the reverse animation actually reaches its start.
     if(next){sheet.inert=false;veil.inert=false;sheet.setAttribute('aria-hidden','false');}
     sheet.classList.toggle('on',next);veil.classList.toggle('on',next);
-    animations.forEach(a=>{if(next){a.play();}else{a.reverse();}});
+    animations.forEach(a=>{a.playbackRate=next?1:-1;a.play();});
   }
   folders.forEach(folder=>folder.addEventListener('click',()=>{
-    if(open)return;
+    if(open || active)return;
     active=folder;
     const item=data[folder.dataset.folder]; if(!item)return;
     title.textContent=item.title;eyebrow.textContent=item.eyebrow;description.textContent=item.description;
