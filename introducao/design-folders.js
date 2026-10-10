@@ -160,7 +160,8 @@
       button.setAttribute("aria-expanded", "true");
       body.id = "zuz-folder-section-" + index;
       button.setAttribute("aria-controls", body.id);
-      heading.replaceWith(button);
+      heading.textContent = "";
+      heading.appendChild(button);
       section.appendChild(body);
       section.dataset.collapsible = "";
       button.addEventListener("click", () => {
