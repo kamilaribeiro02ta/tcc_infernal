@@ -458,3 +458,60 @@ body:not(.dark) .sidebar .nav-item[aria-current="page"] {
   ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
   .sidebar .theme-toggle-knob { transition: none !important; }
 }
+
+/* Botão de tema ZUZ: deslize com inércia suave e troca delicada de ícone. */
+.sidebar .theme-toggle {
+  position: relative !important;
+  transition: background-color .65s ease, border-color .65s ease !important;
+}
+.sidebar .theme-toggle-knob {
+  position: absolute !important;
+  top: 3px !important;
+  left: calc(100% - 44px) !important;
+  transform: translateX(0) !important;
+  transition:
+    left .78s cubic-bezier(.22, 1, .36, 1),
+    background-color .65s ease,
+    box-shadow .65s ease !important;
+  will-change: left;
+}
+body.dark .sidebar .theme-toggle-knob {
+  left: 3px !important;
+}
+.sidebar .theme-toggle-label {
+  flex: 1 1 auto !important;
+  text-align: left !important;
+  padding-left: 14px !important;
+  padding-right: 47px !important;
+  transition: color .65s ease !important;
+}
+body.dark .sidebar .theme-toggle-label {
+  text-align: right !important;
+  padding-left: 47px !important;
+  padding-right: 14px !important;
+}
+@keyframes zuz-theme-icon-arrive {
+  0% { opacity: 0; transform: rotate(-45deg) scale(.65); }
+  65% { opacity: 1; transform: rotate(8deg) scale(1.09); }
+  100% { opacity: 1; transform: rotate(0) scale(1); }
+}
+.sidebar #iconSun, .sidebar #iconMoon {
+  transform-origin: center;
+}
+body.dark .sidebar #iconMoon,
+body:not(.dark) .sidebar #iconSun {
+  animation: zuz-theme-icon-arrive .72s cubic-bezier(.22,.61,.36,1) both;
+}
+.sidebar .theme-toggle:hover .theme-toggle-knob {
+  transform: scale(1.07) !important;
+}
+.sidebar .theme-toggle:active .theme-toggle-knob {
+  transform: scale(.94) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar .theme-toggle,
+  .sidebar .theme-toggle-knob,
+  .sidebar .theme-toggle-label { transition: none !important; }
+  body.dark .sidebar #iconMoon,
+  body:not(.dark) .sidebar #iconSun { animation: none !important; }
+}
