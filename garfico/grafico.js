@@ -59,6 +59,13 @@
 
     plannerJumpBtn: document.getElementById("plannerJumpBtn"),
     plannerLauncherMonth: document.getElementById("plannerLauncherMonth"),
+    agendaQuickPicker: document.getElementById("agendaQuickPicker"),
+    agendaPeriodPopover: document.getElementById("agendaPeriodPopover"),
+    agendaPeriodMonth: document.getElementById("agendaPeriodMonth"),
+    agendaPeriodYear: document.getElementById("agendaPeriodYear"),
+    agendaPeriodApply: document.getElementById("agendaPeriodApply"),
+    agendaPeriodToday: document.getElementById("agendaPeriodToday"),
+    agendaPeriodClose: document.getElementById("agendaPeriodClose"),
     plannerSummary: document.getElementById("plannerSummary"),
     plannerMonthLabel: document.getElementById("plannerMonthLabel"),
     plannerPrevMonth: document.getElementById("plannerPrevMonth"),
@@ -359,11 +366,21 @@
   }
 
   function initMonthFilter() {
-    els.monthFilter.innerHTML = monthNames
+    const monthOptions = monthNames
       .map((name, index) => `<option value="${index}">${name}</option>`)
       .join("");
 
+    els.monthFilter.innerHTML = monthOptions;
     els.monthFilter.value = String(selectedMonth);
+
+    if (els.agendaPeriodMonth) {
+      els.agendaPeriodMonth.innerHTML = monthOptions;
+      els.agendaPeriodMonth.value = String(selectedMonth);
+    }
+
+    if (els.agendaPeriodYear) {
+      els.agendaPeriodYear.value = String(plannerYear);
+    }
 
     els.monthFilter.addEventListener("change", () => {
       selectedMonth = clamp(Number(els.monthFilter.value), 0, 11);
@@ -1124,6 +1141,14 @@
     if (els.plannerMonthLabel) els.plannerMonthLabel.textContent = monthText;
     if (els.plannerLauncherMonth) els.plannerLauncherMonth.textContent = monthText;
 
+    if (els.agendaPeriodMonth && !els.agendaPeriodPopover?.classList.contains("open")) {
+      els.agendaPeriodMonth.value = String(selectedMonth);
+    }
+
+    if (els.agendaPeriodYear && !els.agendaPeriodPopover?.classList.contains("open")) {
+      els.agendaPeriodYear.value = String(plannerYear);
+    }
+
     renderPlannerSummary(tasks);
     renderPlannerCalendar(tasks);
     renderPlannerBoard(tasks);
@@ -1154,12 +1179,88 @@
     renderAll();
   }
 
-  function initPlanner() {
-    els.plannerJumpBtn?.addEventListener("click", () => {
-      document.getElementById("companyPlannerSection")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
+  function setAgendaPeriodPopover(open) {
+    if (!els.agendaPeriodPopover || !els.plannerJumpBtn) return;
+
+    els.agendaPeriodPopover.classList.toggle("open", open);
+    els.agendaPeriodPopover.setAttribute("aria-hidden", String(!open));
+    els.plannerJumpBtn.setAttribute("aria-expanded", String(open));
+    els.agendaQuickPicker?.classList.toggle("is-open", open);
+
+    if (open) {
+      if (els.agendaPeriodMonth) els.agendaPeriodMonth.value = String(selectedMonth);
+      if (els.agendaPeriodYear) els.agendaPeriodYear.value = String(plannerYear);
+
+      requestAnimationFrame(() => {
+        els.agendaPeriodMonth?.focus();
       });
+    }
+  }
+
+  function applyAgendaPeriod(monthValue, yearValue) {
+    const parsedMonth = Number(monthValue);
+    const parsedYear = Number(yearValue);
+
+    const month = Number.isFinite(parsedMonth)
+      ? clamp(parsedMonth, 0, 11)
+      : selectedMonth;
+
+    const year = Number.isFinite(parsedYear)
+      ? clamp(Math.trunc(parsedYear), 2020, 2100)
+      : plannerYear;
+
+    selectedMonth = month;
+    plannerYear = year;
+    selectedPlannerDate = "";
+    els.monthFilter.value = String(selectedMonth);
+
+    setAgendaPeriodPopover(false);
+    renderAll();
+  }
+
+  function initPlanner() {
+    els.plannerJumpBtn?.addEventListener("click", event => {
+      event.stopPropagation();
+
+      const isOpen = els.agendaPeriodPopover?.classList.contains("open");
+      setAgendaPeriodPopover(!isOpen);
+    });
+
+    els.agendaPeriodClose?.addEventListener("click", () => {
+      setAgendaPeriodPopover(false);
+      els.plannerJumpBtn?.focus();
+    });
+
+    els.agendaPeriodApply?.addEventListener("click", () => {
+      applyAgendaPeriod(
+        els.agendaPeriodMonth?.value ?? selectedMonth,
+        els.agendaPeriodYear?.value ?? plannerYear
+      );
+    });
+
+    els.agendaPeriodToday?.addEventListener("click", () => {
+      const today = new Date();
+
+      applyAgendaPeriod(
+        today.getMonth(),
+        today.getFullYear()
+      );
+    });
+
+    els.agendaPeriodYear?.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        els.agendaPeriodApply?.click();
+      }
+    });
+
+    document.addEventListener("click", event => {
+      if (
+        els.agendaQuickPicker &&
+        !els.agendaQuickPicker.contains(event.target)
+      ) {
+        setAgendaPeriodPopover(false);
+      }
     });
 
     els.plannerPrevMonth?.addEventListener("click", () => changePlannerMonth(-1));
@@ -1991,6 +2092,12 @@
 
   document.addEventListener("keydown", event => {
     if (event.key !== "Escape") return;
+
+    if (els.agendaPeriodPopover?.classList.contains("open")) {
+      setAgendaPeriodPopover(false);
+      els.plannerJumpBtn?.focus();
+      return;
+    }
 
     if (els.graphTaskModal?.classList.contains("open")) {
       closeGraphTaskModal();

@@ -3017,3 +3017,214 @@ body.dark .graph-day-drawer-backdrop {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================================================
+   Seletor compacto de mês e ano da Agenda da equipe
+========================================================= */
+
+.header-actions {
+  overflow: visible;
+}
+
+.agenda-quick-picker {
+  position: relative;
+  z-index: 45;
+}
+
+.agenda-quick-picker.is-open .agenda-launcher {
+  border-color: color-mix(in srgb, var(--purple) 34%, var(--border));
+  background: var(--surface-soft);
+}
+
+.agenda-quick-picker.is-open .agenda-launcher-arrow {
+  transform: rotate(180deg);
+}
+
+.agenda-launcher-arrow {
+  transition: transform .18s ease;
+}
+
+.agenda-period-popover {
+  position: absolute;
+  top: calc(100% + 9px);
+  left: 0;
+  z-index: 80;
+  width: 248px;
+  padding: 14px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-5px) scale(.98);
+  transform-origin: top left;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--text-primary);
+  background: var(--card-bg);
+  box-shadow: 0 18px 45px rgba(29, 21, 48, .14);
+  transition:
+    opacity .16s ease,
+    visibility .16s ease,
+    transform .16s ease;
+}
+
+.agenda-period-popover.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.agenda-period-popover-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.agenda-period-popover-head > div {
+  min-width: 0;
+}
+
+.agenda-period-popover-head small {
+  display: block;
+  color: var(--purple);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.agenda-period-popover-head strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-primary);
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.agenda-period-popover-head > button {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: transparent;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.agenda-period-popover-head > button:hover {
+  color: var(--purple);
+  background: var(--purple-softer);
+}
+
+.agenda-period-fields {
+  margin-top: 13px;
+  display: grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap: 8px;
+}
+
+.agenda-period-fields label {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.agenda-period-fields label > span {
+  color: var(--text-muted);
+  font-size: 7px;
+  font-weight: 600;
+}
+
+.agenda-period-fields select,
+.agenda-period-fields input {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  color: var(--text-primary);
+  background: var(--surface-soft);
+  font-family: "Poppins", sans-serif;
+  font-size: 8.5px;
+}
+
+.agenda-period-fields input {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.agenda-period-fields input::-webkit-outer-spin-button,
+.agenda-period-fields input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.agenda-period-fields select:focus,
+.agenda-period-fields input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px var(--purple-soft);
+}
+
+.agenda-period-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.agenda-period-actions button {
+  min-height: 34px;
+  padding: 0 11px;
+  border-radius: 9px;
+  font-family: "Poppins", sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.agenda-period-ghost {
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  background: transparent;
+}
+
+.agenda-period-ghost:hover {
+  color: var(--purple);
+  background: var(--purple-softer);
+}
+
+.agenda-period-apply {
+  border: 1px solid var(--purple);
+  color: #fff;
+  background: var(--purple);
+}
+
+.agenda-period-apply:hover {
+  filter: brightness(1.04);
+}
+
+body.dark .agenda-period-popover {
+  box-shadow: 0 20px 48px rgba(0, 0, 0, .34);
+}
+
+@media (max-width: 760px) {
+  .agenda-quick-picker {
+    width: 100%;
+  }
+
+  .agenda-launcher {
+    width: 100%;
+  }
+
+  .agenda-period-popover {
+    left: 0;
+    right: auto;
+    width: min(270px, calc(100vw - 36px));
+  }
+}

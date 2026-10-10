@@ -112,23 +112,71 @@
 
         <div class="header-actions">
 
-          <button
-            class="agenda-launcher"
-            id="plannerJumpBtn"
-            type="button"
-            aria-controls="companyPlannerSection"
-          >
-            <span class="agenda-launcher-icon">
-              <i class="bx bx-calendar"></i>
-            </span>
+          <div class="agenda-quick-picker" id="agendaQuickPicker">
+            <button
+              class="agenda-launcher"
+              id="plannerJumpBtn"
+              type="button"
+              aria-haspopup="dialog"
+              aria-expanded="false"
+              aria-controls="agendaPeriodPopover"
+            >
+              <span class="agenda-launcher-icon">
+                <i class="bx bx-calendar"></i>
+              </span>
 
-            <span class="agenda-launcher-copy">
-              <small>Agenda da equipe</small>
-              <strong id="plannerLauncherMonth">Mês atual</strong>
-            </span>
+              <span class="agenda-launcher-copy">
+                <small>Agenda da equipe</small>
+                <strong id="plannerLauncherMonth">Mês atual</strong>
+              </span>
 
-            <i class="bx bx-chevron-down agenda-launcher-arrow" aria-hidden="true"></i>
-          </button>
+              <i class="bx bx-chevron-down agenda-launcher-arrow" aria-hidden="true"></i>
+            </button>
+
+            <div
+              class="agenda-period-popover"
+              id="agendaPeriodPopover"
+              role="dialog"
+              aria-label="Selecionar mês e ano"
+              aria-hidden="true"
+            >
+              <div class="agenda-period-popover-head">
+                <div>
+                  <small>PERÍODO</small>
+                  <strong>Escolha mês e ano</strong>
+                </div>
+
+                <button id="agendaPeriodClose" type="button" aria-label="Fechar seletor de período">
+                  <i class="bx bx-x"></i>
+                </button>
+              </div>
+
+              <div class="agenda-period-fields">
+                <label>
+                  <span>Mês</span>
+                  <select id="agendaPeriodMonth" aria-label="Mês"></select>
+                </label>
+
+                <label>
+                  <span>Ano</span>
+                  <input
+                    id="agendaPeriodYear"
+                    type="number"
+                    min="2020"
+                    max="2100"
+                    step="1"
+                    inputmode="numeric"
+                    aria-label="Ano"
+                  >
+                </label>
+              </div>
+
+              <div class="agenda-period-actions">
+                <button id="agendaPeriodToday" class="agenda-period-ghost" type="button">Hoje</button>
+                <button id="agendaPeriodApply" class="agenda-period-apply" type="button">Aplicar</button>
+              </div>
+            </div>
+          </div>
 
           <select id="monthFilter" class="sr-only" aria-label="Mês do painel"></select>
 
