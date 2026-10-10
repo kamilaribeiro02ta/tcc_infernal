@@ -247,3 +247,10 @@ body.dark:has(.workspace-shell) {
   .workspace-page .cost-summary,
   .workspace-page .simulation-output { animation: none !important; }
 }
+
+/* O cabeçalho de conta usa a mesma tipografia da sidebar da Início. */
+.workspace-shell > .sidebar .login-block,
+.workspace-shell > .sidebar .login-title,
+.workspace-shell > .sidebar .login-subtitle {
+  font-family: 'Poppins', sans-serif;
+}
