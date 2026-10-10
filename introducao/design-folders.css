@@ -168,3 +168,32 @@
 .design-folder-section h3 { margin: 0 0 10px; font-size: 17px; line-height: 1.35; font-weight: 600; color: #1c1930; }
 .design-folder-doc .design-folder-section p { max-width: 64ch; color: #5d5a75; font-size: 15px; line-height: 1.7; }
 .design-folder-doc .design-folder-source-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e7e5ef; font-size: 12px; line-height: 1.6; color: #77718c; }
+
+/* Folha de Base Financeira: estrutura editorial ZUZ, sem alterar as demais pastas. */
+.design-folder-doc.zuz-finance-doc { padding: 44px clamp(20px, 6vw, 52px) 56px; }
+.zuz-finance-doc > h2 { margin-bottom: 14px; }
+.zuz-finance-hero { padding: 0 0 30px; border-bottom: 1px solid #e6e1f1; }
+.zuz-finance-tag, .zuz-finance-index { color:#7352cf; font:600 10px/1.4 'Geist Mono',monospace; letter-spacing:.1em; }
+.zuz-finance-doc .zuz-finance-lead { max-width: 48ch; color:#4b4662; font-size:17px; line-height:1.55; font-weight:500; }
+.zuz-finance-hero-rule { width:56px; height:3px; margin-top:23px; background:#7958df; border-radius:10px; }
+.zuz-finance-section { padding:32px 0; margin:0; border-bottom:1px solid #ece9f4; }
+.zuz-finance-section h3, .zuz-finance-conclusion h3 { margin:9px 0 12px; font-size:clamp(19px,3vw,24px); line-height:1.25; font-weight:650; color:#201934; letter-spacing:-.025em; }
+.zuz-finance-section p, .zuz-finance-conclusion p { color:#605b73; line-height:1.7; font-size:14.5px; }
+.zuz-finance-cost-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:21px 0; }
+.zuz-finance-cost-grid > div { min-height:75px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:13px; border:1px solid #e9e5f3; border-radius:12px; background:#f7f5fc; }
+.zuz-finance-cost-grid span { color:#8168c6; font:500 10px/1 'Geist Mono',monospace; }
+.zuz-finance-cost-grid strong { color:#29233e; font-size:13px; font-weight:600; }
+.zuz-finance-comparison { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:20px 0; }
+.zuz-finance-comparison > div { border:1px solid #e8e3f4; border-radius:13px; padding:17px; background:#faf9fe; }
+.zuz-finance-comparison > div:last-child { background:#f0ecfb; border-color:#ded4f8; }
+.zuz-finance-comparison span { font-weight:650; font-size:14px; color:#493282; }
+.zuz-finance-comparison p { margin-top:9px; font-size:13px; line-height:1.55; }
+.zuz-finance-doc .zuz-finance-caption { margin-top:15px; font-size:12px; line-height:1.6; }
+.zuz-finance-conclusion { padding:25px; margin-top:30px; border-radius:16px; background:#f1edfb; border:1px solid #e0d6f7; }
+.zuz-finance-doc .zuz-finance-source { padding-top:16px; margin-top:26px; border-top:1px solid #e7e3ef; font-size:11px; line-height:1.65; color:#756f85; }
+@media (max-width:480px) {
+  .zuz-finance-comparison {grid-template-columns:1fr;}
+  .zuz-finance-cost-grid {gap:8px;}
+  .zuz-finance-cost-grid > div {padding:12px;}
+  .zuz-finance-conclusion {padding:18px;}
+}
