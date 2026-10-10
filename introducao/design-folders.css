@@ -91,7 +91,8 @@
   transform-origin: 0 0;
   visibility: hidden;
   pointer-events: none;
-  will-change: transform,filter;
+  will-change: transform;
+  filter: drop-shadow(0 16px 26px rgba(28,16,80,.20));
 }
 .design-folder-sheet.on { pointer-events: auto; }
 .design-folder-paper {
@@ -157,3 +158,7 @@
 
 /* Os três cards seguem centralizados sob o texto. */
 .about-problem-split .design-folder-grid { margin-inline:auto; justify-self:center; justify-content:center; justify-items:center; }
+
+/* A pasta inteira é a área clicável; as camadas internas não capturam o toque. */
+.design-folder { cursor: pointer; touch-action: manipulation; }
+.design-folder > * { pointer-events: none; }
