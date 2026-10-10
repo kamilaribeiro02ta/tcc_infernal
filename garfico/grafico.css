@@ -3231,3 +3231,12 @@ body.dark .agenda-period-popover {
 
 /* Respiro entre produtos cadastrados e calendário da equipe. */
 .dashboard > .team-planner { margin-top: 32px !important; }
+
+/* Agenda no tema claro: divisórias roxas finas e discretas entre os dias. */
+body:not(.dark) .team-planner .planner-calendar-grid {
+  border-color: #d9cff1;
+}
+body:not(.dark) .team-planner .planner-calendar-grid .planner-day {
+  border-right-color: #ded5f2;
+  border-bottom-color: #ded5f2;
+}
