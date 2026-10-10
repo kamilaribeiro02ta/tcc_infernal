@@ -2232,7 +2232,7 @@ body:not(.dark) .about-objective-visual::after {
 .about-problem-copy .about-editorial-italic {
   font-family: 'Times New Roman', Times, serif;
   font-style: italic;
-  font-weight: 400;
+  font-weight: 700;
   font-size: 1.14em;
   line-height: 0;
   letter-spacing: -0.045em;
