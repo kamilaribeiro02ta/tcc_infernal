@@ -5,3 +5,173 @@ body:has(.workspace-shell){margin:0}
 @media(max-width:992px){.workspace-shell{flex-direction:column}.workspace-shell>.sidebar{flex:0 0 auto;width:100%}}
 /* Páginas Custos e Simulações — usam o mesmo shell/menu da Início. */
 .workspace-page{flex:1;min-width:0;max-width:100%;padding:clamp(24px,4vw,64px);background:var(--page-bg,#f7f6fb);color:var(--text-primary,#17131f);font-family:Poppins,sans-serif;box-sizing:border-box}.workspace-page *{box-sizing:border-box}.workspace-heading,.cost-layout,.simulation-layout{max-width:1180px;margin-inline:auto}.workspace-heading{margin-bottom:32px}.workspace-kicker,.workspace-section-head>span,.workspace-section-head>div>span{display:block;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--purple,#6a3df0);text-transform:uppercase}.workspace-heading h1{max-width:21ch;margin:12px 0;font-size:clamp(30px,4vw,52px);line-height:1.12;letter-spacing:-.05em;font-weight:600}.workspace-heading p,.workspace-help,.workspace-note,.workspace-status{color:var(--text-secondary,#686171);font-size:13px;line-height:1.7}.workspace-heading p{max-width:65ch;font-size:15px}.workspace-panel{min-width:0;background:var(--card-bg,#fff);border:1px solid var(--sidebar-border,#e9e6ef);border-radius:18px;padding:clamp(18px,2.2vw,28px)}.workspace-section-head{margin-bottom:24px}.workspace-section-head h2,.cost-summary h2{margin:8px 0 0;font-size:22px;font-weight:600;letter-spacing:-.035em}.workspace-section-head.with-action{display:flex;justify-content:space-between;align-items:center;gap:16px}.workspace-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.workspace-page label{display:flex;flex-direction:column;gap:8px;min-width:0;font-size:13px;font-weight:600}.workspace-page input,.workspace-page select{width:100%;max-width:100%;min-height:44px;border:1px solid var(--sidebar-border,#e9e6ef);border-radius:10px;padding:10px 12px;background:var(--card-bg,#fff);color:var(--text-primary,#17131f);font-size:14px}.workspace-page input:focus-visible,.workspace-page select:focus-visible{outline:2px solid var(--purple,#6a3df0);outline-offset:2px}.workspace-primary,.workspace-secondary,.workspace-rows button{min-height:44px;cursor:pointer;border-radius:10px;padding:10px 15px;font:600 13px Poppins,sans-serif}.workspace-primary{border:0;background:var(--purple,#6a3df0);color:#fff}.workspace-secondary{background:var(--nav-hover-bg,#f6f1ff);color:var(--purple,#6a3df0);border:1px solid transparent}.workspace-primary:hover{filter:brightness(.94)}.workspace-total,.workspace-metrics>div,.workspace-range{display:flex;justify-content:space-between;gap:20px;align-items:baseline}.workspace-total{padding-top:16px;margin-top:20px;border-top:1px solid var(--sidebar-border,#e9e6ef)}.workspace-rows .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,150px) 44px;gap:10px;margin:10px 0}.workspace-rows button{padding:0;background:transparent;border:1px solid var(--sidebar-border,#e9e6ef);color:var(--text-primary,#17131f)}.workspace-aux-link{display:inline-flex;gap:8px;align-items:center;margin-top:16px;color:var(--purple,#6a3df0);font-weight:600;font-size:13px;text-decoration:none}.workspace-status{min-height:20px}.workspace-status.is-error{color:#bc3855}.workspace-status.is-success{color:#23814c}.cost-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,320px);align-items:start;gap:24px}.workspace-sections{display:grid;gap:20px;min-width:0}.cost-summary{position:sticky;top:24px}.cost-summary .workspace-primary{width:100%;margin-top:14px}.simulation-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}.simulation-input>.workspace-primary{margin-top:24px}.workspace-result-label{margin:24px 0 0;font-size:13px;color:var(--text-secondary,#686171)}.simulation-output>h2{font-size:clamp(34px,4vw,52px);line-height:1.1;letter-spacing:-.05em;margin:6px 0 24px}.workspace-metrics{border-top:1px solid var(--sidebar-border,#e9e6ef)}.workspace-metrics>div{border-bottom:1px solid var(--sidebar-border,#e9e6ef);padding:14px 0;font-size:13px}.workspace-metrics>div span{color:var(--text-secondary,#686171)}.workspace-metrics strong{text-align:right}.workspace-range{margin-top:22px;font-size:13px}.workspace-page .workspace-note{margin-top:14px}@media(max-width:1100px){.cost-layout{grid-template-columns:1fr}.cost-summary{position:static}}@media(max-width:800px){.simulation-layout{grid-template-columns:1fr}}@media(max-width:600px){.workspace-page{padding:24px 16px 48px}.workspace-fields{grid-template-columns:1fr}.workspace-section-head.with-action{align-items:flex-start;flex-wrap:wrap}.workspace-rows .row{grid-template-columns:minmax(0,1fr) minmax(80px,110px) 42px;gap:6px}.workspace-panel{padding:18px}.workspace-rows input{font-size:12px;padding:8px}.workspace-heading{margin-bottom:24px}}
+/* ZUZ — refinamento editorial das áreas financeiras (outubro/2026). */
+.workspace-page {
+  --workspace-line: color-mix(in srgb, var(--text-primary, #17131f) 10%, transparent);
+  --workspace-muted: var(--text-secondary, #686171);
+  --workspace-surface: var(--card-bg, #fff);
+  padding: clamp(32px, 4.4vw, 72px) clamp(24px, 4vw, 64px) 80px;
+}
+.workspace-heading {
+  display: grid;
+  gap: 0;
+  margin-bottom: clamp(32px, 4.2vw, 56px);
+  border-bottom: 1px solid var(--workspace-line);
+  padding-bottom: clamp(28px, 3vw, 40px);
+}
+.workspace-heading h1 {
+  max-width: 18ch;
+  margin: 15px 0 18px;
+  font-size: clamp(32px, 4.4vw, 56px);
+  line-height: 1.14;
+  letter-spacing: -.045em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+.workspace-heading p {
+  max-width: 54ch;
+  margin: 0;
+  color: var(--workspace-muted);
+  font-size: 15px;
+  line-height: 1.75;
+}
+.workspace-kicker,
+.workspace-section-head > span,
+.workspace-section-head > div > span {
+  font-size: 10px;
+  letter-spacing: .09em;
+  font-weight: 600;
+}
+.workspace-panel {
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.workspace-sections { gap: 0; }
+.workspace-sections > .workspace-panel {
+  border-top: 1px solid var(--workspace-line);
+  padding: 32px 0 38px;
+}
+.workspace-sections > .workspace-panel:first-child { border-top: 0; padding-top: 0; }
+.workspace-section-head { margin-bottom: 28px; }
+.workspace-section-head h2, .cost-summary h2 {
+  margin: 10px 0 0;
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 600;
+  letter-spacing: -.035em;
+}
+.workspace-fields { gap: 20px 24px; }
+.workspace-page label {
+  gap: 9px;
+  color: var(--text-primary,#17131f);
+  font-size: 12px;
+  font-weight: 500;
+}
+.workspace-page input, .workspace-page select {
+  background: var(--workspace-surface);
+  border: 1px solid var(--workspace-line);
+  border-radius: 9px;
+  padding: 12px 14px;
+  font-size: 13px;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.workspace-page input:hover, .workspace-page select:hover {
+  border-color: color-mix(in srgb, var(--purple,#6a3df0) 40%, var(--workspace-line));
+}
+.workspace-page input:focus-visible,.workspace-page select:focus-visible {
+  outline: none;
+  border-color: var(--purple,#6a3df0);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--purple,#6a3df0) 12%,transparent);
+}
+.workspace-secondary {
+  background: transparent;
+  border: 1px solid var(--workspace-line);
+  color: var(--text-primary,#17131f);
+  white-space: nowrap;
+}
+.workspace-secondary:hover {
+  border-color: var(--purple,#6a3df0);
+  color: var(--purple,#6a3df0);
+}
+.workspace-primary {
+  background: var(--purple,#6a3df0);
+  padding: 13px 20px;
+  border-radius: 9px;
+}
+.workspace-help { max-width: 65ch; margin: 0 0 20px; }
+.workspace-total {
+  padding-top: 18px;
+  margin-top: 22px;
+  border-color: var(--workspace-line);
+  font-size: 13px;
+}
+.workspace-total strong { font-size: 19px; font-weight: 600; }
+.workspace-rows .row { margin: 12px 0; }
+.workspace-rows button { background: transparent; border-color: var(--workspace-line); }
+.workspace-rows button:hover { color: var(--purple,#6a3df0); }
+.cost-layout { gap: clamp(32px,5vw,72px); grid-template-columns:minmax(0,1fr) minmax(240px,300px); }
+.cost-summary {
+  top: 28px;
+  padding: 26px;
+  background: var(--workspace-surface);
+  border: 1px solid var(--workspace-line);
+  border-radius: 14px;
+}
+.cost-summary > p#summary {
+  margin: 22px 0;
+  padding: 20px 0;
+  border-block: 1px solid var(--workspace-line);
+  color: var(--workspace-muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+.cost-summary .workspace-primary { margin-top: 0; }
+.simulation-layout {
+  grid-template-columns: minmax(0, .95fr) minmax(0,1.05fr);
+  gap: clamp(32px, 5vw, 72px);
+}
+.simulation-input {
+  padding: 0;
+}
+.simulation-input > label { margin-bottom: 22px; }
+.simulation-output {
+  padding: 28px;
+  border: 1px solid var(--workspace-line);
+  border-radius: 14px;
+  background: var(--workspace-surface);
+}
+.simulation-output > .workspace-result-label { margin-top: 22px; }
+.simulation-output > h2 {
+  margin: 6px 0 30px;
+  font-weight: 600;
+  letter-spacing: -.055em;
+  font-variant-numeric: tabular-nums;
+}
+.workspace-metrics { border-color: var(--workspace-line); }
+.workspace-metrics > div { border-color: var(--workspace-line); }
+.workspace-metrics strong, .workspace-range strong { font-variant-numeric: tabular-nums; }
+.workspace-range { align-items:flex-start; border-bottom:1px solid var(--workspace-line); padding-bottom:20px; }
+body.dark .workspace-sections > .workspace-panel,
+body.dark .simulation-input { background: transparent; border-color: var(--workspace-line); }
+body.dark .cost-summary,body.dark .simulation-output { background:#1e1832; border-color:var(--workspace-line); }
+@media (max-width: 1100px) {
+  .cost-layout { grid-template-columns: minmax(0,1fr); gap: 32px; }
+  .cost-summary { position: static; }
+}
+@media (max-width: 800px) {
+  .simulation-layout { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 600px) {
+  .workspace-page { padding: 32px 18px 56px; }
+  .workspace-heading h1 { font-size:clamp(30px,8vw,40px); }
+  .workspace-fields { grid-template-columns:1fr; gap:18px; }
+  .workspace-sections > .workspace-panel { padding:26px 0 32px; }
+  .workspace-section-head.with-action { align-items:flex-start; flex-wrap:wrap; }
+  .cost-summary,.simulation-output { padding:22px; }
+  .workspace-rows .row { grid-template-columns:minmax(0,1fr) minmax(80px,110px) 44px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .workspace-page input, .workspace-page select { transition:none; }
+}
