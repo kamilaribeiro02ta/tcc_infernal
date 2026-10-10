@@ -139,11 +139,10 @@
       {transform:tf(g.x0,g.ym,g.scale),offset:midpoint,easing:easeInOut},
       {transform:tf(g.xf,g.yf,1),offset:1}
     ],options);
-    // Revelação sempre proporcional: evita a faixa horizontal causada pelo recorte em pixels.
+    // Apenas uma folha se move: sem segunda máscara revelando outra camada.
     const a2=paper.animate([
-      {clipPath:'inset(0 0 100% 0 round 14px)',offset:0,easing:easeOut},
-      {clipPath:'inset(0 0 78% 0 round 14px)',offset:midpoint,easing:easeInOut},
-      {clipPath:'inset(0 0 0% 0 round 14px)',offset:1}
+      {opacity:1,offset:0},
+      {opacity:1,offset:1}
     ],options);
     const a3=content.animate([
       {opacity:0,offset:0},{opacity:0,offset:.32},{opacity:1,offset:.77},{opacity:1,offset:1}
@@ -165,6 +164,7 @@
       sheet.inert=true;
       veil.inert=true;
       sheet.setAttribute('aria-hidden','true');
+      active?.classList.remove('design-folder-is-opening');
       active?.removeAttribute('inert');
       active?.focus({preventScroll:true});
       active=null;
@@ -200,7 +200,7 @@
   function setOpen(next) {
     if(next===open||!animations.length)return;
     open=next;
-    if(active){active.setAttribute('aria-expanded',String(next));active.inert=next;}
+    if(active){active.setAttribute('aria-expanded',String(next));active.inert=next;if(next)active.classList.add('design-folder-is-opening');}
     // Keep the dialog painted until the reverse animation actually reaches its start.
     if(next){sheet.inert=false;veil.inert=false;sheet.setAttribute('aria-hidden','false');}
     sheet.classList.toggle('on',next);veil.classList.toggle('on',next);
