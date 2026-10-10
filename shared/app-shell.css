@@ -376,3 +376,59 @@ body:not(.dark) .team-planner {
     border-radius: 0 0 18px 18px !important;
   }
 }
+
+
+/* =========================================================
+   Página Sobre: hero full bleed
+   Ocupa 100% do espaço restante depois da sidebar.
+========================================================= */
+
+.about-work-page {
+  flex: 1 1 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden;
+}
+
+.about-work-page > .about-hero {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* As demais seções continuam centralizadas e legíveis. */
+.about-work-page > section:not(.about-hero) {
+  width: min(calc(100% - 48px), 1380px) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+@media (max-width: 992px) {
+  .about-work-page {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .about-work-page > .about-hero {
+    min-height: auto !important;
+    width: 100% !important;
+  }
+
+  .about-work-page > section:not(.about-hero) {
+    width: min(calc(100% - 36px), 1380px) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .about-work-page > section:not(.about-hero) {
+    width: min(calc(100% - 24px), 1380px) !important;
+  }
+}
