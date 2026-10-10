@@ -3228,3 +3228,6 @@ body.dark .agenda-period-popover {
     width: min(270px, calc(100vw - 36px));
   }
 }
+
+/* Respiro entre produtos cadastrados e calendário da equipe. */
+.dashboard > .team-planner { margin-top: 32px !important; }
