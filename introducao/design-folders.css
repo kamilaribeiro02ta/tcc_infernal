@@ -162,3 +162,9 @@
 /* A pasta inteira é a área clicável; as camadas internas não capturam o toque. */
 .design-folder { cursor: pointer; touch-action: manipulation; }
 .design-folder > * { pointer-events: none; }
+
+/* Conteúdo educativo exibido dentro da folha de Custos organizados. */
+.design-folder-section { margin-top: 28px; }
+.design-folder-section h3 { margin: 0 0 10px; font-size: 17px; line-height: 1.35; font-weight: 600; color: #1c1930; }
+.design-folder-doc .design-folder-section p { max-width: 64ch; color: #5d5a75; font-size: 15px; line-height: 1.7; }
+.design-folder-doc .design-folder-source-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e7e5ef; font-size: 12px; line-height: 1.6; color: #77718c; }
