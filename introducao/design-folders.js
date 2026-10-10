@@ -18,7 +18,10 @@
     '03': { title:'Agente de IA', eyebrow:'Assistente inteligente', description:'A interface conversa com o usuário, coleta informações e auxilia no processo de precificação.' }
   };
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const duration = reduced ? 160 : 620;
+  const duration = reduced ? 180 : 680;
+  const midpoint = .36;
+  const easeOut = 'cubic-bezier(.33,0,.2,1)';
+  const easeInOut = 'cubic-bezier(.55,0,.2,1)';
     let active = null, animations = [], open = false;
   function geometry(folder) {
     const vw=window.innerWidth, vh=window.innerHeight;
@@ -27,39 +30,30 @@
     const s=(fr.width*204/244)/W;
     const x0=fr.left+fr.width*20/244;
     const y0=fr.top+fr.height*56/245;
-    return {W,H,s,x0,y0,xf:(vw-W)/2,yf:(vh-H)/2};
+    const clipY=fr.top+fr.height*82/245;
+    const ym=Math.max(clipY-fr.height*.58,16);
+    return {W,H,s,x0,y0,ym,xf:(vw-W)/2,yf:(vh-H)/2,inset:y=>Math.max(0,H-(clipY-y)/s)};
   }
   const tf=(x,y,s)=>'translate('+x+'px, '+y+'px) scale('+s+')';
+  const clip=b=>'inset(0px 0px '+b+'px 0px)';
   function build() {
     if (!active) return;
     const g=geometry(active);
-    const progress=animations[0] ? Math.min(1,Math.max(0,(animations[0].currentTime || 0)/duration)) : 0;
-    animations.forEach(animation=>animation.cancel());
-    sheet.style.width=g.W+'px';
-    sheet.style.height=g.H+'px';
-    const options={duration,fill:'both'};
-    // Use one continuous transform. Clipping the page height created a thin rectangle.
+    animations.forEach(a=>a.cancel());
+    sheet.style.width=g.W+'px'; sheet.style.height=g.H+'px';
+    const o={duration,fill:'both'};
     const a1=sheet.animate([
-      {transform:tf(g.x0,g.y0,g.s),offset:0},
-      {transform:tf(g.xf,g.yf,1),offset:1}
-    ], {...options,easing:'cubic-bezier(.22,1,.36,1)'});
+      {transform:tf(g.x0,g.y0,g.s),offset:0,easing:easeOut},
+      {transform:tf(g.x0,g.ym,g.s),offset:midpoint,easing:easeInOut},
+      {transform:tf(g.xf,g.yf,1),offset:1}],o);
     const a2=paper.animate([
-      {opacity:0,offset:0},
-      {opacity:1,offset:.13},
-      {opacity:1,offset:1}
-    ],options);
-    const a3=content.animate([
-      {opacity:0,offset:0},
-      {opacity:0,offset:.28},
-      {opacity:1,offset:.72},
-      {opacity:1,offset:1}
-    ],options);
-    const a4=veil.animate([
-      {opacity:0,offset:0},
-      {opacity:1,offset:1}
-    ],{...options,easing:'ease-out'});
+      {clipPath:clip(g.inset(g.y0)),offset:0,easing:easeOut},
+      {clipPath:clip(g.inset(g.ym)),offset:midpoint,easing:easeInOut},
+      {clipPath:clip(0),offset:1}],o);
+    const a3=content.animate([{opacity:0,offset:0},{opacity:0,offset:.34},{opacity:1,offset:.75},{opacity:1,offset:1}],o);
+    const a4=veil.animate([{opacity:0,offset:0},{opacity:0,offset:midpoint*.7},{opacity:1,offset:1}],o);
     animations=[a1,a2,a3,a4];
-    animations.forEach(a=>{a.pause();a.currentTime=progress*duration;});
+    animations.forEach(a=>{a.pause();a.currentTime=open?duration:0;});
     a1.onfinish=()=>{if(open){closeBtn.focus({preventScroll:true});}else{doc.scrollTop=0;sheet.style.visibility='hidden';sheet.inert=true;veil.inert=true;sheet.setAttribute('aria-hidden','true');active?.focus({preventScroll:true});active=null;}};
     sheet.style.visibility='visible';
   }
