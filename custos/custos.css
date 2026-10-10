@@ -112,3 +112,28 @@ body.dark .cost-page {
   .cost-page .workspace-sections > .workspace-panel,
   .cost-page .cost-summary {padding:20px;}
 }
+
+/* Profundidade sutil dos cards no modo escuro da página Custos. */
+body.dark .cost-page {
+  --cost-surface: #171120;
+  --cost-border: #403354;
+}
+body.dark .cost-page .workspace-sections > .workspace-panel,
+body.dark .cost-page .cost-summary {
+  background: var(--cost-surface) !important;
+  border: 1px solid var(--cost-border) !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,.18), inset 0 1px 0 rgba(194,165,255,.035);
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  body.dark .cost-page .workspace-sections > .workspace-panel:hover,
+  body.dark .cost-page .cost-summary:hover {
+    border-color: #7354a8 !important;
+    box-shadow: 0 16px 42px rgba(0,0,0,.23), 0 0 20px rgba(124,88,222,.10), inset 0 1px 0 rgba(194,165,255,.08);
+    transform: translateY(-2px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.dark .cost-page .workspace-sections > .workspace-panel,
+  body.dark .cost-page .cost-summary { transition:none; }
+}
