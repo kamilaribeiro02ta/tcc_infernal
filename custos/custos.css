@@ -2,3 +2,16 @@
 body.dark .workspace-page{background:#171226;color:#f3f1fa}
 body.dark .workspace-panel{background:#1e1832;border-color:#332a4c}
 body.dark .workspace-page input,body.dark .workspace-page select{background:#171226;color:#f3f1fa;border-color:#3a3152}
+
+/* Mesmo tratamento tipográfico de “negócio” na página Análises. */
+.cost-page .cost-title-serif {
+  display: inline-block;
+  margin-left: 0.015em;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 1.28em;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 0.80;
+  letter-spacing: -0.075em;
+  vertical-align: -0.015em;
+}
