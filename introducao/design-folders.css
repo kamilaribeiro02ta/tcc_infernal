@@ -527,3 +527,7 @@ body.dark .design-folder-doc.zuz-finance-doc {
   background-attachment: scroll !important;
   background-repeat: no-repeat !important;
 }
+
+/* Ao abrir, o papel de prévia dá lugar à folha animada sem duplicação visual. */
+.design-folder.design-folder-is-opening .design-folder-peeking-paper { opacity: 0; }
+.design-folder-peeking-paper { transition: opacity .12s ease, transform .42s cubic-bezier(.2,.8,.2,1), box-shadow .42s ease; }
