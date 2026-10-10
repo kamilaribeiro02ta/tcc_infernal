@@ -352,3 +352,147 @@
   .zuz-finance-doc .zuz-finance-steps li span { grid-column: 2; }
   .zuz-finance-doc .zuz-finance-block h3 { font-size: 19px; }
 }
+
+/* Profundidade das pastas: a composição e a animação de papel permanecem intactas. */
+.design-folder {
+  transform: translateY(0) rotate(0deg);
+  filter: drop-shadow(0 14px 15px rgba(22, 9, 65, .24));
+  transition: transform .42s cubic-bezier(.2,.8,.2,1), filter .42s ease;
+}
+.design-folder-back { filter: drop-shadow(0 2px 1px rgba(255,255,255,.12)); }
+.design-folder-front {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.29), inset 0 -14px 24px rgba(47,20,109,.12);
+  transition: filter .3s ease, box-shadow .4s ease, border-color .35s ease;
+}
+.design-folder-front::before {
+  background: linear-gradient(125deg,rgba(255,255,255,.13),transparent 54%);
+}
+.design-folder-peeking-paper { transition: transform .42s cubic-bezier(.2,.8,.2,1), box-shadow .42s ease; }
+@media (hover:hover) and (prefers-reduced-motion:no-preference) {
+  .design-folder:hover {
+    transform: translateY(-9px) rotate(-1deg);
+    filter: drop-shadow(0 22px 21px rgba(60,35,132,.33));
+  }
+  .design-folder:hover .design-folder-peeking-paper {
+    transform: translateY(-9px);
+    box-shadow: 0 9px 19px rgba(43,20,97,.18);
+  }
+  .design-folder:hover .design-folder-front {
+    filter: brightness(1.06);
+    border-color: rgba(255,255,255,.63);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 0 22px rgba(138,103,245,.19);
+  }
+  .design-folder:active { transform: translateY(-3px) scale(.985); }
+}
+body:not(.dark) .design-folder {filter:drop-shadow(0 14px 18px rgba(84,58,148,.17));}
+body:not(.dark) .design-folder:hover {filter:drop-shadow(0 23px 23px rgba(84,58,148,.23));}
+
+/* O documento segue o modo claro/escuro da ZUZ, sem mudar a geometria da abertura. */
+.design-folder-paper {
+  background: var(--folder-sheet-bg,#fbfbfd);
+  border:1px solid var(--folder-sheet-stroke,#eee7f8);
+}
+.design-folder-doc.zuz-finance-doc {
+  --folder-ink: #211831;
+  --folder-muted:#645b73;
+  --folder-rule:#e4ddeb;
+  --folder-highlight:#f1ebfb;
+  --folder-accent:#7451d1;
+  --folder-sheet-bg:#fbfbfd;
+  background:linear-gradient(to bottom,#efe8fb 0,#f7f3fd 235px,#fbfbfd 235px);
+  color:var(--folder-ink);
+}
+.design-folder-doc.zuz-finance-doc > h2,
+.zuz-finance-doc .zuz-finance-block h3 {color:var(--folder-ink);}
+.zuz-finance-doc .zuz-finance-block p,
+.zuz-finance-doc .zuz-finance-reference,
+.zuz-finance-doc .zuz-finance-steps li {color:var(--folder-muted);}
+.zuz-finance-doc .zuz-finance-block {border-top-color:var(--folder-rule);}
+.zuz-finance-doc .zuz-finance-terms {
+  background:var(--folder-highlight);
+  border-color:var(--folder-rule);
+}
+.zuz-finance-doc .zuz-finance-terms strong,
+.zuz-finance-doc .zuz-finance-steps strong,
+.zuz-finance-doc .zuz-finance-list li {color:var(--folder-ink);}
+.zuz-finance-doc .zuz-finance-list,
+.zuz-finance-doc .zuz-finance-list li,
+.zuz-finance-doc .zuz-finance-steps,
+.zuz-finance-doc .zuz-finance-steps li,
+.zuz-finance-doc .zuz-finance-reference {border-color:var(--folder-rule);}
+.zuz-finance-doc .zuz-finance-intro {
+  box-shadow:0 18px 30px rgba(38,22,78,.17);
+  transition:box-shadow .3s ease;
+}
+.zuz-finance-doc .zuz-finance-block {
+  border-radius:12px;
+  transition:background-color .3s ease,padding .3s ease;
+}
+@media (hover:hover) {
+  .zuz-finance-doc .zuz-finance-block:hover {
+    background:color-mix(in srgb,var(--folder-highlight) 38%,transparent);
+  }
+}
+.zuz-finance-doc .zuz-finance-list li {
+  border-radius:6px;
+  transition:background .24s ease, padding-left .24s ease;
+}
+.zuz-finance-doc .zuz-finance-list li:hover {
+  padding-left:8px;
+  background:var(--folder-highlight);
+}
+body.dark .design-folder-paper {
+  --folder-sheet-bg:#17121f;
+  --folder-sheet-stroke:#43345b;
+  background:#17121f;
+  border-color:#43345b;
+}
+body.dark .design-folder-doc.zuz-finance-doc {
+  --folder-ink:#f5f0fc;
+  --folder-muted:#c3b9d4;
+  --folder-rule:#453653;
+  --folder-highlight:#292138;
+  --folder-accent:#baa0ff;
+  background:linear-gradient(to bottom,#2b2044 0,#20192f 235px,#17121f 235px);
+  color:var(--folder-ink);
+  scrollbar-color:#604c84 transparent;
+}
+body.dark .zuz-finance-doc > .design-folder-eyebrow {color:#c6aaff;}
+body.dark .zuz-finance-doc .zuz-finance-intro {
+  background:#392656;
+  color:#f6f0ff;
+  border-color:#634982;
+  box-shadow:0 16px 28px rgba(0,0,0,.23);
+}
+body.dark .zuz-finance-doc[data-folder="02"] .zuz-finance-intro {background:#403064;}
+body.dark .zuz-finance-doc[data-folder="03"] .zuz-finance-intro {background:#302144;}
+body.dark .zuz-finance-doc .zuz-finance-intro::after {background:#392656;}
+body.dark .zuz-finance-doc[data-folder="02"] .zuz-finance-intro::after {background:#403064;}
+body.dark .zuz-finance-doc[data-folder="03"] .zuz-finance-intro::after {background:#302144;}
+body.dark .design-folder-close {background:#2a2137;color:#f5f0fc;border-color:#59466b;}
+body.dark .design-folder-close:hover {background:#392c4e;}
+body.dark .design-folder-end {color:#b9aacb;border-color:#453653;}
+/* Miniacordeão: resumo visível e aprofundamento sob demanda. */
+.zuz-finance-doc .zuz-finance-block[data-collapsible] {padding:0;border-radius:0;}
+.zuz-finance-doc .zuz-finance-block[data-collapsible] > h3 {margin:0;}
+.zuz-finance-doc .zuz-finance-section-toggle {
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  width:100%;padding:24px 4px;background:none;border:0;
+  text-align:left;color:var(--folder-ink);cursor:pointer;
+  font:650 20px/1.35 'Geist',sans-serif;letter-spacing:-.025em;
+}
+.zuz-finance-section-toggle::after {
+  content:"+";flex:0 0 28px;width:28px;height:28px;display:grid;place-items:center;
+  border-radius:50%;background:var(--folder-highlight);
+  color:var(--folder-accent);font:500 22px/1 'Geist',sans-serif;
+  transition:transform .28s ease,background .28s ease;
+}
+.zuz-finance-section-toggle[aria-expanded="true"]::after {content:"−";transform:rotate(180deg);}
+.zuz-finance-section-toggle:focus-visible {outline:2px solid var(--folder-accent);outline-offset:3px;border-radius:8px;}
+.zuz-finance-section-body {padding:0 4px 26px;}
+.zuz-finance-section-body[hidden] {display:none;}
+@media(max-width:560px){.zuz-finance-doc .zuz-finance-section-toggle{font-size:18px;padding:20px 2px;}}
+@media(prefers-reduced-motion:reduce){
+  .design-folder,.design-folder-front,.design-folder-peeking-paper,
+  .zuz-finance-section-toggle::after,.zuz-finance-doc .zuz-finance-block{transition:none!important;}
+}
