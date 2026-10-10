@@ -214,86 +214,6 @@
       </header>
 
 
-      <!-- AGENDA INTEGRADA DA EQUIPE -->
-      <section class="team-planner" id="companyPlannerSection" aria-labelledby="companyPlannerTitle">
-        <div class="planner-head">
-          <div>
-            <span class="panel-kicker">ORGANIZAÇÃO DA EQUIPE</span>
-            <h2 id="companyPlannerTitle">Tudo que está acontecendo no negócio.</h2>
-            <p>Prazos, responsáveis e andamento das tarefas em uma visão compartilhada.</p>
-          </div>
-
-          <div class="planner-head-actions">
-            <div class="planner-view-switch" role="group" aria-label="Visualização da agenda">
-              <button class="planner-view-btn active" type="button" data-planner-view="calendar" aria-pressed="true">
-                <i class="bx bx-calendar"></i>
-                Calendário
-              </button>
-              <button class="planner-view-btn" type="button" data-planner-view="board" aria-pressed="false">
-                <i class="bx bx-columns"></i>
-                Quadro
-              </button>
-            </div>
-
-            <button class="planner-manage-link planner-new-task" id="plannerNewTaskBtn" type="button">
-              <i class="bx bx-plus"></i>
-              Nova tarefa
-            </button>
-
-            <a class="planner-manage-link" href="../perfil/perfil.html#agenda">
-              Abrir no Perfil
-              <i class="bx bx-right-arrow-alt"></i>
-            </a>
-          </div>
-        </div>
-
-        <div class="planner-summary" id="plannerSummary" aria-label="Resumo das tarefas"></div>
-
-        <div class="planner-toolbar">
-          <div class="planner-month-nav">
-            <button id="plannerPrevMonth" type="button" aria-label="Mês anterior">
-              <i class="bx bx-chevron-left"></i>
-            </button>
-            <strong id="plannerMonthLabel">Mês atual</strong>
-            <button id="plannerNextMonth" type="button" aria-label="Próximo mês">
-              <i class="bx bx-chevron-right"></i>
-            </button>
-            <button id="plannerTodayBtn" class="planner-today-btn" type="button">Hoje</button>
-          </div>
-
-          <div class="planner-filters" aria-label="Filtros da agenda">
-            <select id="plannerAssigneeFilter" aria-label="Filtrar por responsável">
-              <option value="">Toda a equipe</option>
-            </select>
-            <select id="plannerPriorityFilter" aria-label="Filtrar por prioridade">
-              <option value="">Todas as prioridades</option>
-              <option value="low">Baixa</option>
-              <option value="medium">Média</option>
-              <option value="high">Alta</option>
-              <option value="urgent">Urgente</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="planner-calendar-view" id="plannerCalendarView">
-          <div class="planner-weekdays" aria-hidden="true">
-            <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
-          </div>
-          <div class="planner-calendar-grid" id="plannerCalendarGrid" aria-label="Calendário mensal da equipe"></div>
-        </div>
-
-        <div class="planner-board-view" id="plannerBoardView" hidden aria-label="Quadro de tarefas por status"></div>
-
-        <div class="planner-footer">
-          <div class="planner-legend">
-            <span><i class="planner-color-dot color-purple"></i>Cor definida na tarefa</span>
-            <span><i class="bx bx-move-horizontal"></i>No quadro, arraste para mudar o status</span>
-          </div>
-          <span class="planner-sync-note">Usa a mesma agenda cadastrada no Perfil.</span>
-        </div>
-      </section>
-
-
       <!-- ESTATÍSTICAS -->
       <section
         class="stats-grid"
@@ -513,6 +433,86 @@
         </div>
 
       </section>
+
+      <!-- AGENDA INTEGRADA DA EQUIPE -->
+      <section class="team-planner" id="companyPlannerSection" aria-labelledby="companyPlannerTitle">
+        <div class="planner-head">
+          <div>
+            <span class="panel-kicker">ORGANIZAÇÃO DA EQUIPE</span>
+            <h2 id="companyPlannerTitle">Tudo que está acontecendo no negócio.</h2>
+            <p>Prazos, responsáveis e andamento das tarefas em uma visão compartilhada.</p>
+          </div>
+
+          <div class="planner-head-actions">
+            <div class="planner-view-switch" role="group" aria-label="Visualização da agenda">
+              <button class="planner-view-btn active" type="button" data-planner-view="calendar" aria-pressed="true">
+                <i class="bx bx-calendar"></i>
+                Calendário
+              </button>
+              <button class="planner-view-btn" type="button" data-planner-view="board" aria-pressed="false">
+                <i class="bx bx-columns"></i>
+                Quadro
+              </button>
+            </div>
+
+            <button class="planner-manage-link planner-new-task" id="plannerNewTaskBtn" type="button">
+              <i class="bx bx-plus"></i>
+              Nova tarefa
+            </button>
+
+            <a class="planner-manage-link" href="../perfil/perfil.html#agenda">
+              Abrir no Perfil
+              <i class="bx bx-right-arrow-alt"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="planner-summary" id="plannerSummary" aria-label="Resumo das tarefas"></div>
+
+        <div class="planner-toolbar">
+          <div class="planner-month-nav">
+            <button id="plannerPrevMonth" type="button" aria-label="Mês anterior">
+              <i class="bx bx-chevron-left"></i>
+            </button>
+            <strong id="plannerMonthLabel">Mês atual</strong>
+            <button id="plannerNextMonth" type="button" aria-label="Próximo mês">
+              <i class="bx bx-chevron-right"></i>
+            </button>
+            <button id="plannerTodayBtn" class="planner-today-btn" type="button">Hoje</button>
+          </div>
+
+          <div class="planner-filters" aria-label="Filtros da agenda">
+            <select id="plannerAssigneeFilter" aria-label="Filtrar por responsável">
+              <option value="">Toda a equipe</option>
+            </select>
+            <select id="plannerPriorityFilter" aria-label="Filtrar por prioridade">
+              <option value="">Todas as prioridades</option>
+              <option value="low">Baixa</option>
+              <option value="medium">Média</option>
+              <option value="high">Alta</option>
+              <option value="urgent">Urgente</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="planner-calendar-view" id="plannerCalendarView">
+          <div class="planner-weekdays" aria-hidden="true">
+            <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+          </div>
+          <div class="planner-calendar-grid" id="plannerCalendarGrid" aria-label="Calendário mensal da equipe"></div>
+        </div>
+
+        <div class="planner-board-view" id="plannerBoardView" hidden aria-label="Quadro de tarefas por status"></div>
+
+        <div class="planner-footer">
+          <div class="planner-legend">
+            <span><i class="planner-color-dot color-purple"></i>Cor definida na tarefa</span>
+            <span><i class="bx bx-move-horizontal"></i>No quadro, arraste para mudar o status</span>
+          </div>
+          <span class="planner-sync-note">Usa a mesma agenda cadastrada no Perfil.</span>
+        </div>
+      </section>
+
 
     </main>
 
