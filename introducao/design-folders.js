@@ -115,34 +115,60 @@
     const vw=window.innerWidth, vh=window.innerHeight;
     const W=Math.min(640,vw-32), H=Math.min(vh-32,800);
     const fr=folder.getBoundingClientRect();
-    const s=(fr.width*204/244)/W;
+    const scale=Math.max(.01,(fr.width*204/244)/W);
     const x0=fr.left+fr.width*20/244;
     const y0=fr.top+fr.height*56/245;
-    const clipY=fr.top+fr.height*82/245;
-    const ym=Math.max(clipY-fr.height*.58,16);
-    return {W,H,s,x0,y0,ym,xf:(vw-W)/2,yf:(vh-H)/2,inset:y=>Math.max(0,H-(clipY-y)/s)};
+    const ym=Math.max(16,y0-Math.min(fr.height*.28,60));
+    return {W,H,scale,x0,y0,ym,xf:(vw-W)/2,yf:(vh-H)/2};
   }
-  const tf=(x,y,s)=>'translate('+x+'px, '+y+'px) scale('+s+')';
-  const clip=b=>'inset(0px 0px '+b+'px 0px)';
+  const tf=(x,y,scale)=>'translate('+x+'px, '+y+'px) scale('+scale+')';
   function build() {
     if (!active) return;
-    const g=geometry(active);
+    const progress=animations.length
+      ? Math.min(1,Math.max(0,(animations[0].currentTime??0)/duration))
+      : 0;
+    const wasRunning=animations.some(a=>a.playState==='running');
     animations.forEach(a=>a.cancel());
-    sheet.style.width=g.W+'px'; sheet.style.height=g.H+'px';
-    const o={duration,fill:'both'};
+    const g=geometry(active);
+    sheet.style.width=g.W+'px';
+    sheet.style.height=g.H+'px';
+    const options={duration,fill:'both'};
+    // A folha sai da pasta, sobe levemente e depois se expande até o centro.
     const a1=sheet.animate([
-      {transform:tf(g.x0,g.y0,g.s),offset:0,easing:easeOut},
-      {transform:tf(g.x0,g.ym,g.s),offset:midpoint,easing:easeInOut},
-      {transform:tf(g.xf,g.yf,1),offset:1}],o);
+      {transform:tf(g.x0,g.y0,g.scale),offset:0,easing:easeOut},
+      {transform:tf(g.x0,g.ym,g.scale),offset:midpoint,easing:easeInOut},
+      {transform:tf(g.xf,g.yf,1),offset:1}
+    ],options);
+    // Revelação sempre proporcional: evita a faixa horizontal causada pelo recorte em pixels.
     const a2=paper.animate([
-      {clipPath:clip(g.inset(g.y0)),offset:0,easing:easeOut},
-      {clipPath:clip(g.inset(g.ym)),offset:midpoint,easing:easeInOut},
-      {clipPath:clip(0),offset:1}],o);
-    const a3=content.animate([{opacity:0,offset:0},{opacity:0,offset:.34},{opacity:1,offset:.75},{opacity:1,offset:1}],o);
-    const a4=veil.animate([{opacity:0,offset:0},{opacity:0,offset:midpoint*.7},{opacity:1,offset:1}],o);
+      {clipPath:'inset(0 0 100% 0 round 14px)',offset:0,easing:easeOut},
+      {clipPath:'inset(0 0 78% 0 round 14px)',offset:midpoint,easing:easeInOut},
+      {clipPath:'inset(0 0 0% 0 round 14px)',offset:1}
+    ],options);
+    const a3=content.animate([
+      {opacity:0,offset:0},{opacity:0,offset:.32},{opacity:1,offset:.77},{opacity:1,offset:1}
+    ],options);
+    const a4=veil.animate([
+      {opacity:0,offset:0},{opacity:0,offset:midpoint*.7},{opacity:1,offset:1}
+    ],options);
     animations=[a1,a2,a3,a4];
-    animations.forEach(a=>{a.pause();a.currentTime=open?duration:0;});
-    a1.onfinish=()=>{if(open){closeBtn.focus({preventScroll:true});}else{doc.scrollTop=0;sheet.style.visibility='hidden';sheet.inert=true;veil.inert=true;sheet.setAttribute('aria-hidden','true');active?.focus({preventScroll:true});active=null;}};
+    animations.forEach(a=>{
+      a.pause();
+      a.currentTime=progress*duration;
+      a.playbackRate=open?1:-1;
+      if(wasRunning)a.play();
+    });
+    a1.onfinish=()=>{
+      if(open){closeBtn.focus({preventScroll:true});return;}
+      doc.scrollTop=0;
+      sheet.style.visibility='hidden';
+      sheet.inert=true;
+      veil.inert=true;
+      sheet.setAttribute('aria-hidden','true');
+      active?.removeAttribute('inert');
+      active?.focus({preventScroll:true});
+      active=null;
+    };
     sheet.style.visibility='visible';
   }
   function enhanceDocument() {
