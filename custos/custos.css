@@ -15,3 +15,100 @@ body.dark .workspace-page input,body.dark .workspace-page select{background:#171
   letter-spacing: -0.075em;
   vertical-align: -0.015em;
 }
+
+/* Custos — legibilidade e hierarquia ZUZ, temas claro e escuro. */
+.cost-page {
+  --cost-text:#211a30;
+  --cost-muted:#696178;
+  --cost-border:#e5deed;
+  --cost-surface:#fff;
+  --cost-field:#fbfafd;
+  --cost-accent:#6a3df0;
+  color:var(--cost-text);
+}
+body.dark .cost-page {
+  --cost-text:#f4effb;
+  --cost-muted:#b9b0cb;
+  --cost-border:#382d4d;
+  --cost-surface:#1a1427;
+  --cost-field:#211a31;
+  --cost-accent:#a68bff;
+  color:var(--cost-text);
+}
+.cost-page .workspace-heading p {color:var(--cost-muted);}
+.cost-page .cost-layout {gap:clamp(24px,3.4vw,44px);}
+.cost-page .workspace-sections {gap:16px;}
+.cost-page .workspace-sections > .workspace-panel {
+  padding:clamp(22px,2.6vw,32px);
+  border:1px solid var(--cost-border);
+  border-radius:17px;
+  background:var(--cost-surface);
+  box-shadow:0 12px 30px rgba(29,15,52,.035);
+}
+.cost-page .workspace-sections > .workspace-panel:first-child {padding-top:clamp(22px,2.6vw,32px);}
+.cost-page .workspace-section-head h2,
+.cost-page .cost-summary h2 {color:var(--cost-text);font-weight:600;}
+.cost-page .workspace-section-head > span,
+.cost-page .workspace-section-head > div > span,
+.cost-page .workspace-kicker {color:var(--cost-accent);}
+.cost-page label {color:var(--cost-text) !important;font-size:13px;font-weight:500;}
+.cost-page input,.cost-page select {
+  color:var(--cost-text) !important;
+  background:var(--cost-field) !important;
+  border:1px solid var(--cost-border) !important;
+  min-height:46px;
+  border-radius:10px;
+  font:500 13px Poppins,sans-serif;
+}
+.cost-page input::placeholder {color:var(--cost-muted);opacity:1;}
+.cost-page input:focus-visible,.cost-page select:focus-visible {
+  border-color:var(--cost-accent) !important;
+  outline:2px solid color-mix(in srgb,var(--cost-accent) 20%,transparent);
+  outline-offset:1px;
+}
+.cost-page .workspace-help,.cost-page .workspace-note,
+.cost-page .workspace-status {color:var(--cost-muted);}
+.cost-page .workspace-secondary {
+  color:var(--cost-accent) !important;
+  border:1px solid var(--cost-border) !important;
+  background:var(--cost-field) !important;
+  min-height:40px;
+  border-radius:10px;
+}
+.cost-page .workspace-secondary:hover {
+  border-color:var(--cost-accent) !important;
+  background:color-mix(in srgb,var(--cost-accent) 8%,var(--cost-surface)) !important;
+}
+.cost-page .workspace-rows button {
+  color:var(--cost-text) !important;
+  border-color:var(--cost-border) !important;
+  background:var(--cost-field) !important;
+}
+.cost-page .workspace-total {
+  color:var(--cost-text);
+  border-top-color:var(--cost-border);
+}
+.cost-page .workspace-total strong {color:var(--cost-text);}
+.cost-page .cost-summary {
+  background:var(--cost-surface);
+  color:var(--cost-text);
+  border:1px solid var(--cost-border);
+  border-radius:17px;
+  padding:28px;
+}
+.cost-page .cost-summary #summary {
+  border-color:var(--cost-border);
+  color:var(--cost-muted);
+}
+.cost-page .workspace-primary {
+  background:#7958df;
+  color:#fff;
+  min-height:46px;
+}
+.cost-page .workspace-aux-link {color:var(--cost-accent);}
+.cost-page .workspace-status.is-error {color:#d85a75;}
+.cost-page .workspace-status.is-success {color:#39a66f;}
+@media (max-width:600px) {
+  .cost-page .workspace-sections > .workspace-panel,
+  .cost-page .cost-summary {padding:20px;}
+}
