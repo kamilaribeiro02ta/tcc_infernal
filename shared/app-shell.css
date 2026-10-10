@@ -432,3 +432,9 @@ body:not(.dark) .team-planner {
     width: min(calc(100% - 24px), 1380px) !important;
   }
 }
+
+/* No tema claro, o item ativo mantém o fundo lilás sem contorno roxo. */
+body:not(.dark) .sidebar .nav-item.active,
+body:not(.dark) .sidebar .nav-item[aria-current="page"] {
+  border-color: transparent !important;
+}
