@@ -183,10 +183,9 @@
   }
 
   function totalUnitCost(product) {
-    const extras = Array.isArray(product.additionalCosts)
-      ? product.additionalCosts.reduce((sum, item) => sum + numberValue(item.value), 0)
-      : 0;
-    return Math.max(0, numberValue(product.baseCost) + extras);
+    const extras=Array.isArray(product.additionalCosts)?product.additionalCosts.reduce((sum,item)=>sum+numberValue(item.value),0):0;
+    const direct=Math.max(0,numberValue(product.baseCost)+extras);
+    return window.ZUZPricing?window.ZUZPricing.calculate({unitDirectCost:direct,salePrice:product.salePrice,targetMargin:product.targetMargin,units:product.units}).unitBaseCost:direct;
   }
 
   function productMarginValue(product) {

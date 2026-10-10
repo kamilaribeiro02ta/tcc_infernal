@@ -732,32 +732,25 @@
 
   function formPricing() {
     const costItems = validCostItemsFromForm();
-    const totalCost = costItems.reduce((sum, item) => sum + item.value, 0);
+    const directCost = costItems.reduce((sum, item) => sum + item.value, 0);
     const salePrice = Math.max(0, numberValue(els.salePriceInput.value));
-    const targetMargin = Math.min(95, Math.max(0, numberValue(els.targetMarginInput.value)));
+    const settings = window.ZUZPricing ? window.ZUZPricing.loadSettings() : null;
+    const targetMargin = Math.min(90, Math.max(0, numberValue(els.targetMarginInput.value || settings?.defaultMargin || 30)));
     const units = Math.max(1, Math.round(numberValue(els.unitsInput.value || 100)));
-
-    const currentMargin = salePrice > 0
-      ? ((salePrice - totalCost) / salePrice) * 100
-      : 0;
-
-    const suggestedPrice = totalCost > 0
-      ? totalCost / (1 - targetMargin / 100)
-      : 0;
-
-    return {
-      costItems,
-      totalCost,
-      salePrice,
-      targetMargin,
-      units,
-      currentMargin,
-      suggestedPrice,
-      investment: totalCost * units,
-      revenue: salePrice * units,
-      unitProfit: salePrice - totalCost,
-      profit: (salePrice - totalCost) * units
-    };
+    if (window.ZUZPricing) {
+      const result = window.ZUZPricing.calculate({unitDirectCost:directCost,salePrice,targetMargin,units,settings});
+      return {costItems,totalCost:result.unitBaseCost,directCost,salePrice,targetMargin,units,currentMargin:result.netMarginPct,
+        suggestedPrice:result.suggestedPrice,technicalPrice:result.technicalPrice,fixedAllocation:result.fixedAllocation,
+        variableRatePct:result.variableRatePct,contributionMargin:result.contributionMargin,breakEvenUnits:result.breakEvenUnits,
+        range:result.recommendedRange,market:result.market,investment:result.investment,revenue:result.revenue,
+        unitProfit:result.unitProfit,profit:result.profit};
+    }
+    const currentMargin=salePrice>0?((salePrice-directCost)/salePrice)*100:0;
+    const suggestedPrice=directCost>0?directCost/(1-targetMargin/100):0;
+    return {costItems,totalCost:directCost,directCost,salePrice,targetMargin,units,currentMargin,suggestedPrice,
+      technicalPrice:suggestedPrice,fixedAllocation:0,variableRatePct:0,contributionMargin:salePrice-directCost,breakEvenUnits:0,
+      range:{low:suggestedPrice,high:suggestedPrice*1.1},market:{count:0},investment:directCost*units,revenue:salePrice*units,
+      unitProfit:salePrice-directCost,profit:(salePrice-directCost)*units};
   }
 
   function updatePricingAndSimulation() {
