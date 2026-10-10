@@ -137,3 +137,24 @@ body.dark .cost-page .cost-summary {
   body.dark .cost-page .workspace-sections > .workspace-panel,
   body.dark .cost-page .cost-summary { transition:none; }
 }
+
+/* Cards de Custos no tema claro: profundidade delicada e hover lilás. */
+body:not(.dark) .cost-page .workspace-sections > .workspace-panel,
+body:not(.dark) .cost-page .cost-summary {
+  background: #ffffff !important;
+  border: 1px solid #e6dcf4 !important;
+  box-shadow: 0 10px 28px rgba(79, 54, 126, .065), inset 0 1px 0 rgba(255,255,255,.9);
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  body:not(.dark) .cost-page .workspace-sections > .workspace-panel:hover,
+  body:not(.dark) .cost-page .cost-summary:hover {
+    border-color: #b49bea !important;
+    box-shadow: 0 16px 36px rgba(79, 54, 126, .10), 0 0 18px rgba(121, 88, 223, .09);
+    transform: translateY(-2px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body:not(.dark) .cost-page .workspace-sections > .workspace-panel,
+  body:not(.dark) .cost-page .cost-summary { transition:none; }
+}
