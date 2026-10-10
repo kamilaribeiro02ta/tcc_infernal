@@ -2198,3 +2198,260 @@ body:not(.dark) .about-objective-visual::after {
     width: min(100%, 470px);
   }
 }
+
+
+/* =========================================================
+   CARDS DA PÁGINA SOBRE
+   Inspirados em uma pasta 3D com documentos visíveis.
+========================================================= */
+
+.about-cards.about-cards-side {
+  width: min(100%, 500px);
+  gap: 28px;
+}
+
+.about-cards-side .about-card.about-card-inspired {
+  --folder-top: #7d45f1;
+  --folder-top-deep: #5c2cc7;
+  --folder-front: rgba(146, 94, 255, .72);
+  --folder-front-soft: rgba(188, 150, 255, .62);
+
+  width: 100%;
+  min-height: 350px;
+  position: relative;
+  overflow: visible;
+  display: block;
+  border: 0;
+  border-radius: 34px;
+  background: transparent;
+  box-shadow: none;
+  isolation: isolate;
+}
+
+.about-cards-side .about-card-visual {
+  width: 100%;
+  height: 210px;
+  min-height: 210px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 34px 34px 28px 28px;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,.18), transparent 24%),
+    linear-gradient(145deg, var(--folder-top) 0%, var(--folder-top-deep) 100%);
+  box-shadow:
+    0 24px 46px rgba(58, 25, 116, .18),
+    inset 0 1px 0 rgba(255,255,255,.22);
+}
+
+.about-cards-side .about-card-visual::before,
+.about-cards-side .about-card-visual::after {
+  display: none;
+}
+
+.about-cards-side .about-card-visual-costs {
+  --folder-top: #7540ec;
+  --folder-top-deep: #4c229f;
+}
+
+.about-cards-side .about-card-visual-visual {
+  --folder-top: #8a50f4;
+  --folder-top-deep: #6330c7;
+}
+
+.about-cards-side .about-card-visual-ai {
+  --folder-top: #9659f4;
+  --folder-top-deep: #6b35c6;
+}
+
+.folder-paper {
+  position: absolute;
+  bottom: 24px;
+  width: 150px;
+  height: 116px;
+  border-radius: 13px 13px 7px 7px;
+  background:
+    linear-gradient(#dad7df 0 0) 20px 24px / 75px 7px no-repeat,
+    linear-gradient(#e4e1e8 0 0) 20px 42px / 104px 7px no-repeat,
+    linear-gradient(#dedbe4 0 0) 20px 60px / 64px 7px no-repeat,
+    #fff;
+  box-shadow: 0 12px 24px rgba(26,18,40,.12);
+}
+
+.folder-paper-one {
+  left: 50%;
+  transform: translateX(-58%) rotate(-8deg);
+  z-index: 1;
+}
+
+.folder-paper-two {
+  left: 50%;
+  transform: translateX(-15%) rotate(2deg);
+  z-index: 2;
+}
+
+.folder-paper-three {
+  left: 50%;
+  transform: translateX(18%) rotate(8deg);
+  z-index: 1;
+}
+
+.about-cards-side .about-card-visual .about-card-icon {
+  width: 44px;
+  height: 44px;
+  left: 20px;
+  top: 20px;
+  z-index: 4;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 14px;
+  color: #fff;
+  background: rgba(255,255,255,.10);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
+}
+
+.about-cards-side .about-card-content {
+  min-height: 205px;
+  margin-top: -78px;
+  padding: 112px 28px 26px;
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  clip-path: none;
+  overflow: hidden;
+  border-radius: 0 0 34px 34px;
+  color: #fff;
+  background:
+    linear-gradient(
+      145deg,
+      var(--folder-front-soft) 0%,
+      var(--folder-front) 55%,
+      rgba(92, 44, 199, .86) 100%
+    );
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+  backdrop-filter: blur(20px) saturate(120%);
+  box-shadow:
+    0 26px 50px rgba(58, 25, 116, .18),
+    inset 0 1px 0 rgba(255,255,255,.16);
+}
+
+.about-cards-side .about-card-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 28% 8%, rgba(255,255,255,.22), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,.08), transparent 44%);
+}
+
+.about-cards-side .about-card-kicker,
+.about-cards-side .about-card-inspired h2,
+.about-cards-side .about-card-inspired p,
+.folder-card-cog {
+  position: relative;
+  z-index: 2;
+}
+
+.about-cards-side .about-card-kicker {
+  min-height: 22px;
+  margin: 0 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(255,255,255,.72);
+}
+
+.about-cards-side .about-card-kicker .about-card-number {
+  color: rgba(255,255,255,.92);
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.about-cards-side .about-card-kicker > span:last-child {
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.about-cards-side .about-card-inspired h2 {
+  margin: auto 34px 8px 0;
+  color: #fff;
+  font-size: 28px;
+  line-height: 1.02;
+  letter-spacing: -.045em;
+}
+
+.about-cards-side .about-card-inspired p {
+  max-width: calc(100% - 42px);
+  margin: 0;
+  color: rgba(255,255,255,.76);
+  font-size: 9.5px;
+  line-height: 1.62;
+}
+
+.folder-card-cog {
+  position: absolute;
+  right: 27px;
+  bottom: 26px;
+  color: rgba(255,255,255,.94);
+  font-size: 23px;
+}
+
+body:not(.dark) .about-cards-side .about-card.about-card-inspired,
+body:not(.dark) .about-cards-side .about-card-content {
+  background-color: transparent;
+}
+
+body:not(.dark) .about-cards-side .about-card-content {
+  color: #fff;
+}
+
+body:not(.dark) .about-cards-side .about-card-kicker,
+body:not(.dark) .about-cards-side .about-card-inspired p {
+  color: rgba(255,255,255,.76);
+}
+
+@media (max-width: 1120px) {
+  .about-cards.about-cards-side {
+    width: min(100%, 620px);
+  }
+}
+
+@media (max-width: 720px) {
+  .about-cards.about-cards-side {
+    gap: 22px;
+  }
+
+  .about-cards-side .about-card.about-card-inspired {
+    min-height: 325px;
+  }
+
+  .about-cards-side .about-card-visual {
+    height: 190px;
+    min-height: 190px;
+  }
+
+  .folder-paper {
+    width: 126px;
+    height: 98px;
+  }
+
+  .about-cards-side .about-card-content {
+    min-height: 195px;
+    margin-top: -70px;
+    padding: 100px 22px 22px;
+  }
+
+  .about-cards-side .about-card-inspired h2 {
+    font-size: 24px;
+  }
+
+  .folder-card-cog {
+    right: 22px;
+    bottom: 22px;
+  }
+}
