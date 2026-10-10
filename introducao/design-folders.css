@@ -148,3 +148,6 @@
     gap: 24px;
   }
 }
+
+/* Os três cards seguem centralizados sob o texto. */
+.about-problem-split .design-folder-grid { margin-inline:auto; justify-self:center; justify-content:center; justify-items:center; }
