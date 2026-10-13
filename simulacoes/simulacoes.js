@@ -1,5 +1,9 @@
-(() => {
+(async () => {
   "use strict";
+  let workspace;
+  try{workspace=await window.ZUZCompanyData.load();}
+  catch(error){window.location.replace("../Login/login.html");return;}
+  if(!workspace.company){window.location.replace("../onboarding/onboarding.html");return;}
   const $ = id => document.getElementById(id);
   const money = value => new Intl.NumberFormat("pt-BR", {style:"currency",currency:"BRL"}).format(Number(value)||0);
   const number = value => {const n=Number.parseFloat(value);return Number.isFinite(n)?n:0;};
@@ -8,14 +12,7 @@
     cost:$("cost"),technical:$("technical"),net:$("net"),contribution:$("contribution"),
     breakEven:$("breakEven"),profit:$("profit"),range:$("range"),use:$("use"),status:$("simulationStatus")
   };
-  let products=[];
-  try {
-    const saved=JSON.parse(localStorage.getItem("zuz-pricing-products-v2")||"[]");
-    products=Array.isArray(saved)?saved:[];
-  } catch {
-    elements.status.textContent="Não foi possível ler os produtos salvos. Verifique os dados do navegador.";
-    elements.status.classList.add("is-error");
-  }
+  let products=workspace.products;
   const product=()=>products.find(item=>String(item.id)===elements.product.value)||products[0]||null;
   const directCost=item=>Math.max(0,number(item?.baseCost))+(Array.isArray(item?.additionalCosts)?item.additionalCosts:[]).reduce((sum,cost)=>sum+Math.max(0,number(cost.value)),0);
   function calculate() {

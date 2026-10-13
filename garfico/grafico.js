@@ -1,5 +1,9 @@
-(() => {
+(async () => {
   "use strict";
+  let workspace;
+  try{workspace=await window.ZUZCompanyData.load();}
+  catch(error){console.warn("Faça login para visualizar análises.",error);window.location.replace("../Login/login.html");return;}
+  if(!workspace.company){window.location.replace("../onboarding/onboarding.html");return;}
 
   const STORAGE_KEY = "zuz-pricing-products-v2";
   const TASKS_KEY = "zuz-company-tasks";
@@ -121,7 +125,7 @@
   let selectedPlannerDate = "";
   let editingPlannerTaskId = "";
   let plannerChecklistDraft = [];
-  let products = loadProducts();
+  let products = workspace.products.map(normalizeProduct);
 
   function id() {
     if (window.crypto && typeof window.crypto.randomUUID === "function") {
@@ -291,6 +295,7 @@
       id: String(product.id || id()),
       name: String(product.name || "Produto"),
       category: String(product.category || "Sem categoria"),
+      image: typeof product.image === "string" ? product.image : "",
       baseCost: Math.max(0, numberValue(product.baseCost)),
       additionalCosts: Array.isArray(product.additionalCosts)
         ? product.additionalCosts
@@ -332,12 +337,8 @@
   }
 
   function saveProducts() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-    } catch (error) {
-      console.warn("Não foi possível salvar os produtos.", error);
-      showToast("Os dados foram atualizados, mas não puderam ser salvos no navegador.");
-    }
+    return window.ZUZCompanyData.saveProducts(products)
+      .catch(error=>showToast("Não foi possível salvar: "+error.message));
   }
 
   function monthMetrics(monthIndex) {

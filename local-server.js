@@ -1,26 +1,14 @@
+"use strict";
 const express = require("express");
 const path = require("path");
+const { createApi } = require("./server/api");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.get("/api/health", (req, res) => {
-  res.json({
-    ok: true,
-    app: "ZUZ",
-    message: "Servidor Node funcionando"
-  });
-});
-
+app.disable("x-powered-by");
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ extended: true, limit: "128kb" }));
+app.use("/api", createApi());
 app.use(express.static(path.join(__dirname)));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
-app.listen(PORT, () => {
-  console.log(`ZUZ rodando em http://localhost:${PORT}`);
-});
+app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "index.html")));
+app.listen(PORT, () => console.log(`ZUZ disponível em http://localhost:${PORT}`));

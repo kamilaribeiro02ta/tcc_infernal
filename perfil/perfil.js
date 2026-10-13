@@ -1,4 +1,6 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  try { await window.ZUZAPI.request("GET","/me"); }
+  catch { window.location.replace("../Login/login.html"); return; }
 
   const PROFILE_KEY =
     "zuz-profile";
@@ -95,7 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   logoutBtn?.addEventListener(
     "click",
-    () => {
+    async () => {
+      try { await window.ZUZAPI.request("POST","/auth/logout"); } catch(e) { console.warn("Falha ao finalizar sessão",e.message); }
       localStorage.removeItem(
         SESSION_KEY
       );

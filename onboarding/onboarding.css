@@ -1,0 +1,23 @@
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Poppins,sans-serif;color:#29243b;background:#f8f6fc}
+.onboard-shell{max-width:1040px;margin:auto;padding:32px 20px 70px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:50px;color:#716882;font-size:13px}
+.logo{font-size:30px;font-weight:800;color:#5c36a1;text-decoration:none;letter-spacing:-1px}.logo span{color:#d4b85a}
+.onboard-card{max-width:620px;margin:auto;border:1px solid #ece5f4;border-radius:22px;background:#fff;padding:clamp(24px,5vw,48px);box-shadow:0 18px 50px #3b246018}
+.step-label{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#795db0;font-weight:700;margin-bottom:14px}
+.progress{height:5px;border-radius:100px;background:#eee9f6;margin-bottom:32px;overflow:hidden}.progress span{display:block;background:#7852c3;width:33.333%;height:100%;transition:width .2s}
+h1{font-size:clamp(25px,4vw,35px);line-height:1.25;letter-spacing:-.045em;margin:0 0 10px}
+#description,.hint{font-size:14px;color:#6d6579;line-height:1.7}
+fieldset{padding:0;margin:24px 0 0;border:0}legend{font-weight:700;margin-bottom:14px}
+label{display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:600;margin-bottom:16px}
+input,select{font:inherit;font-size:14px;border:1px solid #dcd3e8;border-radius:10px;padding:12px 14px;outline-offset:3px;background:#fff;max-width:100%;width:100%}
+input:focus,select:focus{border-color:#7852c3}
+.categories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:16px 0 24px}
+.categories label{margin:0;flex-direction:row;align-items:center;border:1px solid #e6e0ec;padding:12px;border-radius:10px;gap:9px;font-weight:500}
+.categories input{width:auto}
+button{font:inherit;border:0;background:#6c42b6;color:white;padding:12px 20px;border-radius:10px;cursor:pointer;font-weight:600}
+button:hover{filter:brightness(.96)}button.secondary{background:transparent;border:1px solid #d6cce5;color:#5c3f86}
+button:disabled{opacity:.6;cursor:wait}
+.actions{display:flex;justify-content:space-between;gap:12px;margin-top:22px}.actions button:last-child{margin-left:auto}
+.error{font-size:13px;color:#ad2447;min-height:20px;margin-top:12px}
+.back-link{display:inline-block;margin-top:22px;text-decoration:none;color:#6e617f;font-size:12px}
+[hidden]{display:none!important}@media(max-width:500px){header{margin-bottom:28px}.categories{grid-template-columns:1fr}.onboard-shell{padding-inline:12px}}
