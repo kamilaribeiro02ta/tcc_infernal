@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!hasLocalSession()) {
     window.location.replace(
-      "../Login/login.html"
+      "../login/login.html"
     );
 
     return;
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       window.location.replace(
-        "../Login/login.html"
+        "../login/login.html"
       );
     }
   );
