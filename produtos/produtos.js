@@ -1,5 +1,9 @@
-(() => {
+(async () => {
   "use strict";
+  let workspace;
+  try { workspace=await window.ZUZCompanyData.load(); }
+  catch(e){ console.warn("Faça login para acessar seus produtos.",e);window.location.replace("../Login/login.html");return; }
+  if(!workspace.company){window.location.replace("../onboarding/onboarding.html");return;}
 
   const STORAGE_KEY = "zuz-pricing-products-v2";
   const els = {
@@ -76,7 +80,15 @@
     toast: document.getElementById("toast")
   };
 
-  let products = loadProducts();
+  let products = workspace.products.map(normalizeProduct);
+  window.ZUZCostSuggestions=[];
+  if(window.ZUZAPI){
+    window.ZUZAPI.request("GET","/company").then(({company,categories})=>{
+      if(!company)return;
+      const base=window.ZUZBusinessTemplates?.operations?.[company.operation_type]?.categories||[];
+      window.ZUZCostSuggestions=(categories.length?categories.map(x=>x.label):base).slice(0,12);
+    }).catch(()=>{});
+  }
   let editingId = null;
   let pendingDeleteId = null;
   let currentPhotoData = "";
@@ -231,13 +243,9 @@
     return demo;
   }
 
-  function saveProducts() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-    } catch (error) {
-      console.warn("Não foi possível salvar os produtos.", error);
-      showToast("O navegador não conseguiu salvar todos os dados. Tente usar uma foto menor.");
-    }
+  async function saveProducts() {
+    const response=await window.ZUZCompanyData.saveProducts(products);
+    products=response.products.map(normalizeProduct);
   }
 
   function additionalCostTotal(product) {
@@ -779,7 +787,7 @@
     els.pricingExplanation.className = "pricing-explanation";
     els.simulationStatus.className = "simulation-status";
 
-    if (pricing.costItems.length < 2) {
+    if (pricing.costItems.length < 1) {
       els.pricingExplanation.innerHTML =
         '<i class="bx bx-info-circle"></i><span>Cadastre pelo menos 2 custos para formar um preço bruto mais completo.</span>';
       els.simulationStatus.textContent =
@@ -879,8 +887,9 @@
     currentPhotoData = "";
     renderPhotoPreview();
 
-    addCostItemRow();
-    addCostItemRow();
+    const names=window.ZUZCostSuggestions||[];
+    addCostItemRow(names[0]||"");
+    if(names[1])addCostItemRow(names[1]);
     updatePricingAndSimulation();
   }
 
@@ -932,7 +941,7 @@
     openModal();
   }
 
-  function saveForm(event) {
+  async function saveForm(event) {
     event.preventDefault();
     clearFormErrors();
 
@@ -959,7 +968,7 @@
     if (pricing.costItems.length < 2) {
       if (els.costError) {
         els.costError.textContent =
-          "Cadastre pelo menos 2 custos com nome e valor maior que zero.";
+          "Cadastre ao menos um custo com nome e valor maior que zero.";
       }
 
       const incomplete = allCosts.find(item => !item.label || item.value <= 0);
@@ -1004,7 +1013,8 @@
       showToast("Produto cadastrado.");
     }
 
-    saveProducts();
+    try { await saveProducts(); }
+    catch(error){els.formMessage.textContent=error.message;return;}
     closeModal();
     renderAll();
   }
@@ -1034,7 +1044,7 @@
     document.body.style.overflow = "";
   }
 
-  function confirmDelete() {
+  async function confirmDelete() {
     if (!pendingDeleteId) {
       return;
     }
@@ -1042,7 +1052,8 @@
     const product = products.find(item => item.id === pendingDeleteId);
     products = products.filter(item => item.id !== pendingDeleteId);
 
-    saveProducts();
+    try { await saveProducts(); }
+    catch(error){showToast(error.message);return;}
     closeDeleteConfirm();
     renderAll();
 

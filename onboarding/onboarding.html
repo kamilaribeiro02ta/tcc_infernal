@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZUZ | Configurar empresa</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/design-system.css">
+<link rel="stylesheet" href="onboarding.css"></head>
+<body>
+<main class="onboard-shell">
+<header><a class="logo" href="../index.html">ZUZ<span>.</span></a><span>Configuração empresarial</span></header>
+<section class="onboard-card">
+<div class="step-label" id="stepLabel">Etapa 1 de 3</div>
+<div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1" id="progress"><span id="progressFill"></span></div>
+<h1 id="title">Vamos conhecer sua empresa</h1>
+<p id="description">Essas informações personalizam a ZUZ para o seu negócio.</p>
+<form id="form" novalidate>
+<fieldset id="step1"><legend>Sobre o negócio</legend>
+<label>Nome da empresa<input id="companyName" maxlength="160" required placeholder="Ex.: Doces da Ana" autocomplete="organization"></label>
+<label>Segmento empresarial<select id="segment">
+<option value="confeitaria">Confeitaria</option><option value="alimentacao">Alimentação</option><option value="tecnologia">Tecnologia</option><option value="vestuario">Vestuário</option><option value="beleza">Beleza</option><option value="outros">Outro segmento</option>
+</select></label>
+<label id="otherSegmentWrap" hidden>Seu segmento<input id="otherSegment" maxlength="120" placeholder="Descreva seu segmento"></label>
+</fieldset>
+<fieldset id="step2" hidden><legend>Como sua empresa trabalha?</legend>
+<label>Tipo de operação<select id="operation">
+<option value="producao">Produção própria</option><option value="revenda">Revenda</option><option value="servico">Prestação de serviços</option><option value="misto">Operação mista</option>
+</select></label>
+<label>Unidade principal de cálculo<select id="costingMode">
+<option value="por_lote">Por lote / receita</option><option value="por_unidade">Por unidade</option><option value="por_hora">Por hora</option><option value="por_projeto">Por projeto</option>
+</select></label>
+</fieldset>
+<fieldset id="step3" hidden><legend>Quais gastos fazem parte do negócio?</legend>
+<p class="hint">Sugestões baseadas na operação. Desmarque o que não utiliza e acrescente outros custos.</p>
+<div id="categoryList" class="categories"></div>
+<label>Outro gasto<input id="customCategory" maxlength="120" placeholder="Ex.: Decoração personalizada"></label>
+<button id="addCategory" class="secondary" type="button">Adicionar gasto</button>
+</fieldset>
+<p class="error" id="error" role="alert" aria-live="polite"></p>
+<nav class="actions" aria-label="Etapas do cadastro">
+<button type="button" id="previous" class="secondary" hidden>Voltar</button>
+<button type="button" id="next">Continuar</button><button id="save" type="submit" hidden>Concluir configuração</button>
+</nav>
+</form>
+<a class="back-link" href="../index.html">Voltar ao início</a>
+</section></main>
+<script src="../shared/api-client.js"></script>
+<script src="../shared/business-templates.js"></script>
+<script src="onboarding.js"></script></body></html>

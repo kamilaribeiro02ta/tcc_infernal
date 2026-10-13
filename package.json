@@ -5,13 +5,15 @@
   "description": "ZUZ - Precificação inteligente para pequenos negócios",
   "main": "local-server.js",
   "scripts": {
-    "start": "node local-server.js",
-    "dev": "node --watch local-server.js"
+    "start": "node --env-file-if-exists=.env local-server.js",
+    "dev": "node --env-file-if-exists=.env --watch local-server.js",
+    "test:core": "node --test tests/*.test.js"
   },
   "engines": {
     "node": "24.x"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
   }
 }

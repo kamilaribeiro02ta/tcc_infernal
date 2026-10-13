@@ -1,9 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   "use strict";
 
-  const USERS_KEY = "zuz-users";
-  const SESSION_KEY = "zuz-session";
-  const PROFILE_KEY = "zuz-profile";
 
   const authPage = document.querySelector(".auth-page");
   const loginPanel = document.getElementById("loginPanel");
@@ -29,40 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupEmailError = document.getElementById("signupEmailError");
   const signupPasswordError = document.getElementById("signupPasswordError");
   const signupStatus = document.getElementById("signupStatus");
-
-  function getUsers() {
-    try {
-      const parsed = JSON.parse(localStorage.getItem(USERS_KEY));
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveUsers(users) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  }
-
-  function getSession() {
-    try {
-      return JSON.parse(localStorage.getItem(SESSION_KEY));
-    } catch {
-      return null;
-    }
-  }
-
-  async function hashPassword(value) {
-    if (!window.crypto?.subtle) {
-      return value;
-    }
-
-    const data = new TextEncoder().encode(value);
-    const digest = await crypto.subtle.digest("SHA-256", data);
-
-    return Array.from(new Uint8Array(digest))
-      .map(byte => byte.toString(16).padStart(2, "0"))
-      .join("");
-  }
 
   function setStatus(element, message = "", type = "") {
     element.textContent = message;
@@ -147,40 +110,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 720);
   }
 
-  function saveAuthenticatedProfile(user) {
-    const existingProfile = (() => {
-      try {
-        return JSON.parse(localStorage.getItem(PROFILE_KEY));
-      } catch {
-        return null;
-      }
-    })();
-
-    const sameUser = existingProfile?.email?.toLowerCase() === user.email.toLowerCase();
-
-    const profile = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      createdAt: user.createdAt || new Date().toISOString(),
-      photo: sameUser ? existingProfile?.photo || "" : "",
-      banner: sameUser ? existingProfile?.banner || "" : ""
-    };
-
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-    localStorage.setItem(
-      SESSION_KEY,
-      JSON.stringify({
-        userId: user.id,
-        email: user.email,
-        loggedInAt: new Date().toISOString()
-      })
-    );
-
-    localStorage.setItem("zuz-logged-in", "true");
-    localStorage.removeItem("zuz-explicit-logout");
-  }
-
   document.querySelectorAll("[data-password-target]").forEach(button => {
     button.addEventListener("click", () => {
       const input = document.getElementById(button.dataset.passwordTarget);
@@ -200,133 +129,60 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", () => showMode(button.dataset.switchMode));
   });
 
-  loginForm.addEventListener("submit", async event => {
-    event.preventDefault();
-    clearLoginErrors();
 
-    const email = loginEmail.value.trim().toLowerCase();
-    const password = loginPassword.value;
-    let valid = true;
-
-    if (!email) {
-      loginEmailError.textContent = "Digite seu email.";
-      valid = false;
-    } else if (!loginEmail.validity.valid) {
-      loginEmailError.textContent = "Digite um email válido.";
-      valid = false;
+  function cacheProfile(user) {
+    // Guarda o perfil para a interface antiga; o backend valida a sessão real.
+    const oldId=localStorage.getItem("zuz-last-account")||"unassigned";
+    if(oldId!==user.id){
+      for(const key of ["zuz-pricing-products-v2","zuz-business-settings-v1","zuz-company-events","zuz-company-tasks","zuz-company-team","zuz-company-owner"]){
+        const old=localStorage.getItem(key);
+        if(old!==null){
+          localStorage.setItem("zuz-legacy:"+oldId+":"+key,old);
+          localStorage.removeItem(key);
+        }
+        const own=localStorage.getItem("zuz-legacy:"+user.id+":"+key);
+        if(own!==null)localStorage.setItem(key,own);
+      }
+      localStorage.setItem("zuz-last-account",user.id);
     }
-
-    if (!password) {
-      loginPasswordError.textContent = "Digite sua senha.";
-      valid = false;
-    } else if (password.length < 8) {
-      loginPasswordError.textContent = "A senha precisa ter pelo menos 8 caracteres.";
-      valid = false;
-    }
-
-    if (!valid) return;
-
-    setStatus(loginStatus, "Verificando sua conta...");
-
-    const users = getUsers();
-    const user = users.find(item => String(item.email || "").toLowerCase() === email);
-
-    if (!user) {
-      setStatus(loginStatus, "Conta não encontrada. Crie uma conta para continuar.", "is-error");
-      loginEmail.focus();
-      return;
-    }
-
-    const passwordHash = await hashPassword(password);
-    const passwordMatches = user.passwordHash === passwordHash || user.passwordHash === password;
-
-    if (!passwordMatches) {
-      setStatus(loginStatus, "Senha incorreta.", "is-error");
-      loginPassword.focus();
-      return;
-    }
-
-    saveAuthenticatedProfile(user);
-    setStatus(loginStatus, "Login realizado com sucesso.", "is-success");
-
-    window.setTimeout(() => {
-      window.location.href = "../perfil/perfil.html";
-    }, 180);
-  });
-
-  signupForm.addEventListener("submit", async event => {
-    event.preventDefault();
-    clearSignupErrors();
-
-    const first = firstName.value.trim();
-    const last = lastName.value.trim();
-    const email = signupEmail.value.trim().toLowerCase();
-    const password = signupPassword.value;
-    let valid = true;
-
-    if (!first) {
-      firstNameError.textContent = "Digite seu nome.";
-      valid = false;
-    }
-
-    if (!last) {
-      lastNameError.textContent = "Digite seu sobrenome.";
-      valid = false;
-    }
-
-    if (!email) {
-      signupEmailError.textContent = "Digite seu email.";
-      valid = false;
-    } else if (!signupEmail.validity.valid) {
-      signupEmailError.textContent = "Digite um email válido.";
-      valid = false;
-    }
-
-    if (!password) {
-      signupPasswordError.textContent = "Crie uma senha.";
-      valid = false;
-    } else if (password.length < 8) {
-      signupPasswordError.textContent = "Use pelo menos 8 caracteres.";
-      valid = false;
-    }
-
-    if (!valid) return;
-
-    const users = getUsers();
-
-    if (users.some(user => String(user.email || "").toLowerCase() === email)) {
-      signupEmailError.textContent = "Já existe uma conta com este email.";
-      signupEmail.focus();
-      return;
-    }
-
-    setStatus(signupStatus, "Criando sua conta...");
-
-    const user = {
-      id: "usr_" + Date.now().toString(36),
-      name: first + " " + last,
-      email,
-      createdAt: new Date().toISOString(),
-      passwordHash: await hashPassword(password)
-    };
-
-    users.push(user);
-    saveUsers(users);
-    saveAuthenticatedProfile(user);
-
-    setStatus(signupStatus, "Conta criada com sucesso.", "is-success");
-
-    window.setTimeout(() => {
-      window.location.href = "../perfil/perfil.html";
-    }, 220);
-  });
-
-  const existingSession = getSession();
-  if (existingSession?.email) {
-    window.location.replace("../perfil/perfil.html");
-    return;
+    let last={};
+    try {last=JSON.parse(localStorage.getItem("zuz-profile")||"{}");}catch{}
+    const own=last.id===user.id;
+    localStorage.setItem("zuz-profile",JSON.stringify({id:user.id,name:user.name,email:user.email,
+      photo:own?last.photo||"":"",banner:own?last.banner||"":""}));
+    localStorage.setItem("zuz-session",JSON.stringify({userId:user.id,email:user.email}));
+    localStorage.removeItem("zuz-explicit-logout");
   }
-
-  const requestedMode = new URLSearchParams(window.location.search).get("mode");
-  showMode(requestedMode === "signup" ? "signup" : "login", false, false);
+  loginForm.addEventListener("submit",async event=>{
+    event.preventDefault();clearLoginErrors();
+    const email=loginEmail.value.trim().toLowerCase(),password=loginPassword.value;
+    if(!loginEmail.validity.valid || !email){loginEmailError.textContent="Informe um e-mail válido.";return;}
+    if(!password){loginPasswordError.textContent="Informe sua senha.";return;}
+    setStatus(loginStatus,"Entrando...");
+    try{
+      const result=await window.ZUZAPI.request("POST","/auth/login",{email,password});
+      cacheProfile(result.user);
+      window.location.href=result.company?"../perfil/perfil.html":"../onboarding/onboarding.html";
+    }catch(e){setStatus(loginStatus,e.message,"is-error");}
+  });
+  signupForm.addEventListener("submit",async event=>{
+    event.preventDefault();clearSignupErrors();
+    const first=firstName.value.trim(),last=lastName.value.trim(),email=signupEmail.value.trim().toLowerCase(),password=signupPassword.value;
+    if(!first){firstNameError.textContent="Digite seu nome.";return;}
+    if(!last){lastNameError.textContent="Digite seu sobrenome.";return;}
+    if(!signupEmail.validity.valid || !email){signupEmailError.textContent="Informe um e-mail válido.";return;}
+    if(password.length<8){signupPasswordError.textContent="Use pelo menos 8 caracteres.";return;}
+    setStatus(signupStatus,"Criando sua conta...");
+    try{
+      const result=await window.ZUZAPI.request("POST","/auth/signup",{name:first+" "+last,email,password});
+      cacheProfile(result.user);
+      window.location.href="../onboarding/onboarding.html";
+    }catch(e){setStatus(signupStatus,e.message,"is-error");}
+  });
+  window.ZUZAPI.request("GET","/me").then(({user,company})=>{
+    cacheProfile(user);
+    window.location.replace(company?"../perfil/perfil.html":"../onboarding/onboarding.html");
+  }).catch(()=>{});
+  const requestedMode=new URLSearchParams(window.location.search).get("mode");
+  showMode(requestedMode==="signup"?"signup":"login",false,false);
 });

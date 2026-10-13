@@ -1,0 +1,67 @@
+-- Execute este arquivo no SQL Editor do Supabase antes de iniciar a aplicação.
+-- O acesso aos dados empresariais é feito exclusivamente pelo backend autenticado.
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE TABLE IF NOT EXISTS zuz_users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  full_name VARCHAR(160) NOT NULL,
+  email VARCHAR(254) NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS zuz_sessions (
+  token_hash CHAR(64) PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES zuz_users(id) ON DELETE CASCADE,
+  expires_at TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_zuz_sessions_user ON zuz_sessions(user_id);
+CREATE TABLE IF NOT EXISTS zuz_companies (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  owner_id UUID NOT NULL UNIQUE REFERENCES zuz_users(id) ON DELETE CASCADE,
+  name VARCHAR(160) NOT NULL,
+  segment VARCHAR(120) NOT NULL DEFAULT 'outro',
+  operation_type VARCHAR(24) NOT NULL DEFAULT 'producao'
+    CHECK (operation_type IN ('producao','revenda','servico','misto')),
+  costing_mode VARCHAR(32) NOT NULL DEFAULT 'por_unidade',
+  onboarding_status VARCHAR(24) NOT NULL DEFAULT 'completed',
+  settings JSONB NOT NULL DEFAULT '{}'::jsonb,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS zuz_cost_categories (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id UUID NOT NULL REFERENCES zuz_companies(id) ON DELETE CASCADE,
+  label VARCHAR(120) NOT NULL,
+  cost_type VARCHAR(32) NOT NULL DEFAULT 'direto'
+    CHECK (cost_type IN ('direto','indireto','fixo','variavel','percentual')),
+  unit VARCHAR(32) NOT NULL DEFAULT 'reais',
+  UNIQUE (company_id, label)
+);
+CREATE INDEX IF NOT EXISTS idx_zuz_categories_company ON zuz_cost_categories(company_id);
+CREATE TABLE IF NOT EXISTS zuz_products (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id UUID NOT NULL REFERENCES zuz_companies(id) ON DELETE CASCADE,
+  name VARCHAR(180) NOT NULL,
+  operation_type VARCHAR(24) NOT NULL CHECK (operation_type IN ('producao','revenda','servico','misto')),
+  category VARCHAR(120) NOT NULL DEFAULT 'Sem categoria',
+  costing_mode VARCHAR(32) NOT NULL DEFAULT 'por_unidade',
+  inputs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  direct_cost NUMERIC(14,2) NOT NULL DEFAULT 0 CHECK (direct_cost >= 0),
+  sale_price NUMERIC(14,2) NOT NULL DEFAULT 0 CHECK (sale_price >= 0),
+  target_margin NUMERIC(6,2) NOT NULL DEFAULT 30 CHECK (target_margin BETWEEN 0 AND 90),
+  units INTEGER NOT NULL DEFAULT 1 CHECK (units >= 1),
+  payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_zuz_products_company ON zuz_products(company_id);
+
+ALTER TABLE zuz_products ADD COLUMN IF NOT EXISTS payload JSONB NOT NULL DEFAULT '{}'::jsonb;
+
+-- As tabelas ficam na schema public do Supabase, mas NÃO são acessíveis diretamente
+-- pelas chaves públicas da API do Supabase. O backend usa somente a conexão privada.
+ALTER TABLE zuz_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE zuz_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE zuz_companies ENABLE ROW LEVEL SECURITY;
+ALTER TABLE zuz_cost_categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE zuz_products ENABLE ROW LEVEL SECURITY;
+-- Nenhuma policy é criada: acesso via PostgREST para anon/authenticated é negado.
