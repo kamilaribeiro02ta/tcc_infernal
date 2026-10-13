@@ -16,7 +16,7 @@ const cookie = req => {
   return raw ? raw.slice(SESSION.length + 1) : "";
 };
 const cookieAttrs = req => `HttpOnly; SameSite=Lax; Path=/; ${process.env.NODE_ENV === "production" || req.secure ? "Secure; " : ""}Max-Age=${MAX_AGE}`;
-const asyncRoute = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next);
+const asyncRoute = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 async function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
   const digest = await scrypt(password, salt, 64);
   return `${salt}:${digest.toString("hex")}`;
