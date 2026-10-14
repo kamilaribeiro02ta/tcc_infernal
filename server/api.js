@@ -5,6 +5,7 @@ const { promisify } = require("util");
 const { query, getPool } = require("./database");
 const catalog = require("../shared/business-templates");
 const pricing = require("../shared/pricing-core");
+const { predictPrice } = require("../shared/price-prediction");
 const scrypt = promisify(crypto.scrypt);
 const SESSION = "zuz_auth";
 const MAX_AGE = 7 * 24 * 60 * 60;
@@ -46,6 +47,44 @@ const safeUser = u => ({ id: u.id, name: u.full_name, email: u.email });
 async function getCompany(userId) {
   const r = await query("SELECT * FROM zuz_companies WHERE owner_id=$1", [userId]);
   return r.rows[0] || null;
+}
+function productSnapshot(product, settings) {
+  const costs = Array.isArray(product.additionalCosts) ? product.additionalCosts : [];
+  const rawDirect = product.baseCost ?? product.direct_cost ?? product.directCost ?? 0;
+  const direct = Number(rawDirect) + costs.reduce((sum, item) => sum + Number(item.value || 0), 0);
+  const salePrice = Number(product.salePrice ?? product.sale_price ?? 0);
+  const targetMargin = Number(product.targetMargin ?? product.target_margin ?? settings.defaultMargin ?? 30);
+  const units = Number(product.units ?? 1);
+  return pricing.calculate({
+    unitDirectCost: direct, salePrice, targetMargin, units,
+    category: product.category, productId: product.id,
+    productName: product.name, settings
+  });
+}
+async function appendRecommendation(client, companyId, product, settings) {
+  const calculation = productSnapshot(product, settings);
+  const snapshot = {
+    productId: String(product.id), productName: String(product.name),
+    salePrice: calculation.salePrice, directCost: calculation.directCost,
+    units: calculation.units, targetMargin: calculation.targetMargin,
+    technicalPrice: calculation.technicalPrice,
+    suggestedPrice: calculation.suggestedPrice,
+    recommendedRange: calculation.recommendedRange, recommendationMethod: calculation.recommendationMethod,
+    explanation: calculation.explanation, warnings: calculation.warnings,
+    market: calculation.market, fixedAllocation: calculation.fixedAllocation
+  };
+  const fingerprint = crypto.createHash("sha256").update(JSON.stringify({
+    name: product.name, category: product.category, snapshot, settings: pricing.normalize(settings)
+  })).digest("hex");
+  const previous = await client.query(
+    "SELECT fingerprint FROM zuz_pricing_history WHERE company_id=$1 AND product_id=$2 ORDER BY id DESC LIMIT 1",
+    [companyId, String(product.id)]
+  );
+  if (previous.rows[0]?.fingerprint === fingerprint) return;
+  await client.query(
+    "INSERT INTO zuz_pricing_history(company_id,product_id,product_name,fingerprint,snapshot) VALUES($1,$2,$3,$4,$5)",
+    [companyId,String(product.id),String(product.name),fingerprint,JSON.stringify(snapshot)]
+  );
 }
 function createApi() {
   const router = express.Router();
@@ -127,10 +166,77 @@ function createApi() {
   router.put("/company/settings", asyncRoute(async (req,res) => {
     const company=await getCompany(req.user.id);
     if (!company) fail(404,"Configure sua empresa antes de salvar os custos.");
-    const settings=req.body.settings;
-    if (!settings || typeof settings!=="object" || Array.isArray(settings) || JSON.stringify(settings).length>32000) fail(400,"Configurações inválidas.");
-    const result=await query("UPDATE zuz_companies SET settings=$1::jsonb,updated_at=NOW() WHERE id=$2 AND owner_id=$3 RETURNING settings",[JSON.stringify(settings),company.id,req.user.id]);
-    res.json({ settings:result.rows[0].settings });
+    const input=req.body.settings;
+    if (!input || typeof input!=="object" || Array.isArray(input) || JSON.stringify(input).length>32000)
+      fail(400,"Configurações inválidas.");
+    const settings=pricing.normalize(input);
+    if (settings.taxesPct+settings.sellingFeesPct+settings.defaultMargin>=100)
+      fail(400,"A soma das taxas e da margem padrão deve ser inferior a 100%.");
+    const client=await getPool().connect();
+    try {
+      await client.query("BEGIN");
+      const result=await client.query(
+        "UPDATE zuz_companies SET settings=$1::jsonb,updated_at=NOW() WHERE id=$2 AND owner_id=$3 RETURNING settings",
+        [JSON.stringify(settings),company.id,req.user.id]);
+      const products=await client.query("SELECT * FROM zuz_products WHERE company_id=$1",[company.id]);
+      for(const row of products.rows)
+        await appendRecommendation(client,company.id,row.payload && Object.keys(row.payload).length?row.payload:row,settings);
+      await client.query("COMMIT");
+      res.json({settings:result.rows[0].settings});
+    } catch(error) {
+      await client.query("ROLLBACK");
+      if (error instanceof RangeError) fail(400,error.message);
+      throw error;
+    } finally {client.release();}
+  }));
+  // Histórico autenticado e isolado pelo identificador da empresa.
+  router.get("/pricing/history", asyncRoute(async (req,res) => {
+    const company=await getCompany(req.user.id);
+    if(!company)fail(404,"Configure sua empresa.");
+    const limit=Math.max(1,Math.min(100,Number.parseInt(req.query.limit,10)||30));
+    const productId=normalText(req.query.productId,100);
+    const rows=productId
+      ? await query("SELECT id,product_id,product_name,snapshot,created_at FROM zuz_pricing_history WHERE company_id=$1 AND product_id=$2 ORDER BY id DESC LIMIT $3",[company.id,productId,limit])
+      : await query("SELECT id,product_id,product_name,snapshot,created_at FROM zuz_pricing_history WHERE company_id=$1 ORDER BY id DESC LIMIT $2",[company.id,limit]);
+    res.json({history:rows.rows.map(row=>({...row,snapshot:JSON.parse(row.snapshot)}))});
+  }));
+
+  // Registro explicito de unidades efetivamente vendidas em um mes.
+  router.put("/pricing/sales", asyncRoute(async (req,res) => {
+    const company=await getCompany(req.user.id);
+    if(!company)fail(404,"Configure sua empresa.");
+    const productId=normalText(req.body.productId,100);
+    const period=normalText(req.body.period,7);
+    const price=Number(req.body.averagePrice);
+    const units=Number(req.body.soldUnits);
+    if(!/^\\d{4}-(0[1-9]|1[0-2])$/.test(period) || !Number.isFinite(price) ||
+       price<=0 || !Number.isSafeInteger(units) || units<0 || units>1000000000)
+      fail(400,"Informe mês, preço médio e unidades realmente vendidas.");
+    const row=await query("SELECT id FROM zuz_products WHERE id=$1 AND company_id=$2",[productId,company.id]);
+    if(!row.rows.length)fail(404,"Produto não encontrado.");
+    await query(`INSERT INTO zuz_sales_observations(company_id,product_id,period,average_price,sold_units)
+       VALUES($1,$2,$3,$4,$5) ON CONFLICT(company_id,product_id,period)
+       DO UPDATE SET average_price=excluded.average_price,sold_units=excluded.sold_units`,
+       [company.id,productId,period,price,units]);
+    res.json({ok:true});
+  }));
+
+  router.get("/pricing/prediction", asyncRoute(async (req,res) => {
+    const company=await getCompany(req.user.id);
+    if(!company)fail(404,"Configure sua empresa.");
+    const productId=normalText(req.query.productId,100);
+    const rows=await query("SELECT * FROM zuz_products WHERE id=$1 AND company_id=$2",[productId,company.id]);
+    if(!rows.rows.length)fail(404,"Produto não encontrado.");
+    const product=rows.rows[0].payload && Object.keys(rows.rows[0].payload).length
+      ? rows.rows[0].payload : rows.rows[0];
+    const current=productSnapshot(product,company.settings);
+    const history=await query(
+      "SELECT period,average_price,sold_units FROM zuz_sales_observations WHERE company_id=$1 AND product_id=$2 ORDER BY period",
+      [company.id,productId]);
+    res.json(predictPrice(history.rows,{
+      directCost:current.directCost,variableRatePct:current.variableRatePct,
+      fixedTotal:current.fixedTotal,technicalPrice:current.technicalPrice
+    }));
   }));
   router.post("/pricing/calculate", asyncRoute(async (req,res) => {
     const company=await getCompany(req.user.id);
@@ -162,9 +268,10 @@ function createApi() {
         VALUES($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10,$11,$12::jsonb)`,
         [p.id,company.id,p.name,company.operation_type,normalText(p.payload.category||"Sem categoria"),company.costing_mode,
          JSON.stringify(p.payload.additionalCosts||[]),p.direct,p.sale,p.margin,p.units,JSON.stringify(p.payload)]);
+        await appendRecommendation(client,company.id,p.payload,company.settings);
       }
       await client.query("COMMIT");
-    }catch(e){await client.query("ROLLBACK");throw e;}
+    }catch(e){await client.query("ROLLBACK");if(e instanceof RangeError)fail(400,e.message);throw e;}
     finally{client.release();}
     res.json({ok:true,products:verified.map(p=>p.payload)});
   }));
