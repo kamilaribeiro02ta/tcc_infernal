@@ -29,6 +29,20 @@ Após se cadastrar, conclua o onboarding da empresa para usar Produtos, Simulaç
 npm run test:core
 ```
 
+Para verificar a API local, acesse `http://localhost:3000/api/health`. A resposta deve indicar `"database": "sqlite"`.
+
+**Checklist manual antes de publicar:**
+
+- [x] Cadastro de conta no ambiente local com SQLite (confirmado no VS Code)
+- [ ] Sair da conta e entrar novamente
+- [ ] Concluir a configuração da empresa
+- [ ] Cadastrar e reabrir um produto na página Produtos
+- [ ] Selecionar o produto em Simulações
+- [ ] Confirmar os dados na página Análises
+- [ ] Reiniciar o servidor e conferir se os dados continuam disponíveis
+
+O cadastro deve ser testado pela porta `3000`, nunca pelo Live Server (porta `5500`).
+
 Para alterar a porta, use o arquivo opcional `.env` com `PORT=3000`.
 Nenhum `DATABASE_URL` ou SQL Editor é necessário.
 
