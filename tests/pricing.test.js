@@ -28,7 +28,7 @@ test("mesma formula de margem com impostos, taxas e rateio",()=>{
     monthlyUnits:100,fixedCosts:[{label:"Aluguel",value:1000}],
     taxesPct:10,sellingFeesPct:5
   },unitDirectCost:100,salePrice:200,units:100,targetMargin:30});
-  assert.equal(result.technicalPrice,200);
+  assert.ok(Math.abs(result.technicalPrice-200)<1e-8);
   assert.equal(result.fixedAllocation,10);
   assert.equal(result.unitBaseCost,110);
   assert.equal(result.contributionMargin,70);
