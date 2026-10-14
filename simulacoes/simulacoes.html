@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../shared/sidebar.css"><link rel="stylesheet" href="../shared/design-system.css"><link rel="stylesheet" href="../shared/app-shell.css?v=20261010-icon-pop3">
-<link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010-products-bg7"><link rel="stylesheet" href="simulacoes.css?v=20261010-refine4">
+<link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010-products-bg7"><link rel="stylesheet" href="simulacoes.css?v=20261014-all-features">
 <link rel="icon" type="image/png" href="../imagens/Vector%201%20%281%29.png?v=20261010"></head>
 <body><div class="page workspace-shell">
     <aside class="sidebar">
@@ -65,11 +65,110 @@
         </span>
       </button>
     </aside>
-<main class="workspace-page sim" id="conteudo"><header class="workspace-heading"><span class="workspace-kicker">SIMULAÇÃO DE CENÁRIOS</span><h1>Teste o <span class="simulation-title-serif">preço</span> antes de decidir.</h1><p>Compare diferentes margens, preços e quantidades sem alterar o produto cadastrado.</p></header>
-<div class="simulation-layout">
-<section class="workspace-panel simulation-input"><div class="workspace-section-head"><span>01 / PARÂMETROS</span><h2>Configurar cenário</h2></div><label>Produto<select id="product"></select></label><div class="workspace-fields"><label>Margem desejada (%)<input id="margin" type="number" min="0" max="90" step=".1"></label><label>Preço de venda (R$)<input id="price" type="number" min="0" step=".01"></label><label>Quantidade estimada<input id="units" type="number" min="1" step="1" value="100"></label></div><button class="workspace-primary" id="use" type="button">Aplicar sugestão ZUZ</button><p id="simulationStatus" class="workspace-status" role="status" aria-live="polite"></p><a class="workspace-aux-link" href="../produtos/produtos.html">Gerenciar produtos <i class="bx bx-right-arrow-alt" aria-hidden="true"></i></a></section>
-<aside class="workspace-panel simulation-output"><span class="workspace-kicker">02 / RESULTADOS</span><p class="workspace-result-label">Preço sugerido</p><h2 id="suggested">R$ 0,00</h2><div class="workspace-metrics"><div><span>Custo completo</span><strong id="cost">—</strong></div><div><span>Preço técnico</span><strong id="technical">—</strong></div><div><span>Margem líquida</span><strong id="net">—</strong></div><div><span>Margem de contribuição</span><strong id="contribution">—</strong></div><div><span>Ponto de equilíbrio</span><strong id="breakEven">—</strong></div><div><span>Resultado estimado</span><strong id="profit">—</strong></div></div><p class="workspace-range">Faixa de análise <strong id="range">—</strong></p><p class="workspace-help">Os valores são estimativas calculadas a partir dos custos informados e das configurações do negócio.</p></aside>
-</div></main>
+<main class="workspace-page sim" id="conteudo">
+  <header class="workspace-heading">
+    <span class="workspace-kicker">SIMULAÇÃO DE CENÁRIOS</span>
+    <h1>Teste o <span class="simulation-title-serif">preço</span> antes de decidir.</h1>
+    <p>Compare possibilidades para o seu negócio sem alterar os produtos cadastrados.</p>
+  </header>
+
+  <section class="workspace-panel sim-product-bar" aria-label="Produto de referência">
+    <label for="product">Produto selecionado<select id="product"></select></label>
+    <div class="sim-original" id="originalProduct">Selecione um produto para começar.</div>
+    <button type="button" class="workspace-secondary" id="resetAll">Restaurar cenários</button>
+  </section>
+
+  <div class="simulation-layout">
+    <section class="workspace-panel simulation-input" aria-labelledby="settingsTitle">
+      <div class="workspace-section-head"><span>01 / PARÂMETROS</span><h2 id="settingsTitle">Configurar cenário</h2></div>
+      <div id="scenarioTabs" class="sim-tabs" role="tablist" aria-label="Cenário em edição"></div>
+      <div class="workspace-fields sim-input-grid">
+        <label for="price">Preço de venda (R$)<input id="price" type="number" min="0" max="100000000" step=".01" inputmode="decimal"></label>
+        <label for="units">Vendas estimadas (un.)<input id="units" type="number" min="1" max="1000000" step="1" inputmode="numeric"></label>
+        <label for="margin">Margem desejada (%)<input id="margin" type="number" min="0" max="90" step=".1" inputmode="decimal"></label>
+        <label for="changeMode">Alterar custos<select id="changeMode"><option value="variable">Custos variáveis</option><option value="fixed">Custos fixos mensais</option></select></label>
+        <label for="changePct" class="sim-full-field">Variação de custos (%)<input id="changePct" type="number" min="-100" max="500" step=".5" value="0"><span class="sim-field-note">Use valores negativos para simular redução.</span></label>
+      </div>
+      <div class="sim-controls">
+        <label for="priceSlider">Ajustar preço <span id="priceSliderLabel">—</span></label>
+        <input aria-label="Ajuste rápido do preço" type="range" id="priceSlider" min="0" max="200" step="1">
+        <label for="unitsSlider">Ajustar volume <span id="unitsSliderLabel">—</span></label>
+        <input aria-label="Ajuste rápido do volume" type="range" id="unitsSlider" min="1" max="1000" step="1">
+      </div>
+      <div class="sim-actions">
+        <button class="workspace-primary" id="use" type="button">Aplicar sugestão ZUZ</button>
+        <button class="workspace-secondary" id="resetScenario" type="button">Restaurar este cenário</button>
+      </div>
+      <p id="simulationStatus" class="workspace-status" role="status" aria-live="polite"></p>
+      <a class="workspace-aux-link" href="../produtos/produtos.html">Gerenciar produtos <i class="bx bx-right-arrow-alt" aria-hidden="true"></i></a>
+    </section>
+
+    <aside class="workspace-panel simulation-output" aria-labelledby="resultTitle">
+      <span class="workspace-kicker">02 / RESULTADO DO CENÁRIO</span>
+      <p class="workspace-result-label" id="resultTitle">Preço sugerido pelos parâmetros</p>
+      <h2 id="suggested">—</h2>
+      <div class="workspace-metrics">
+        <div><span>Custo unitário com rateio</span><strong id="cost">—</strong></div>
+        <div><span>Preço técnico</span><strong id="technical">—</strong></div>
+        <div><span>Margem unitária estimada</span><strong id="net">—</strong></div>
+        <div><span>Contribuição por unidade</span><strong id="contribution">—</strong></div>
+        <div><span>Ponto de equilíbrio</span><strong id="breakEven">—</strong></div>
+        <div><span>Receita simulada</span><strong id="revenue">—</strong></div>
+        <div class="sim-metric-prominent"><span>Resultado mensal estimado</span><strong id="profit">—</strong></div>
+      </div>
+      <p class="workspace-range">Faixa de análise <strong id="range">—</strong></p>
+      <p class="workspace-help">Os valores dependem dos custos, das taxas e da quantidade informada. A faixa não representa um preço máximo de mercado.</p>
+    </aside>
+  </div>
+
+  <section class="workspace-panel sim-section" aria-labelledby="chartTitle">
+    <div class="sim-heading-row"><div><span class="workspace-kicker">03 / VISUALIZAÇÃO</span><h2 id="chartTitle">O impacto de cada decisão</h2><p>Receita e custos em diferentes volumes de vendas.</p></div><div class="sim-legend"><span><i class="sim-dot is-revenue"></i> Receita</span><span><i class="sim-dot is-cost"></i> Custos</span></div></div>
+    <div class="sim-chart-shell"><svg id="chart" viewBox="0 0 820 300" role="img" aria-label="Gráfico de receita e custos por quantidade vendida" preserveAspectRatio="xMidYMid meet"></svg></div>
+    <p id="chartDescription" class="sim-muted" aria-live="polite">Modifique um cenário para visualizar seu impacto.</p>
+  </section>
+
+  <section class="workspace-panel sim-section" aria-labelledby="comparisonTitle">
+    <div class="sim-heading-row"><div><span class="workspace-kicker">04 / COMPARAÇÃO</span><h2 id="comparisonTitle">Três caminhos, uma decisão</h2><p>Os volumes são hipóteses editáveis, não previsões automáticas.</p></div></div>
+    <div id="comparisonCards" class="sim-comparison-grid"></div>
+  </section>
+
+  <div class="sim-bottom-grid">
+    <section class="workspace-panel sim-section" aria-labelledby="goalTitle">
+      <span class="workspace-kicker">05 / METAS</span><h2 id="goalTitle">Quanto preciso vender?</h2>
+      <p>Descubra o volume necessário para alcançar uma meta mensal.</p>
+      <div class="workspace-fields sim-input-grid">
+        <label for="goalType">Tipo de meta<select id="goalType"><option value="revenue">Faturamento</option><option value="profit">Resultado após custos</option></select></label>
+        <label for="goalAmount">Valor da meta (R$)<input id="goalAmount" type="number" min="0" step=".01" value="5000"></label>
+      </div>
+      <div class="sim-insight"><span>Unidades necessárias</span><strong id="goalUnits">—</strong><p id="goalDetail" class="sim-muted"></p></div>
+    </section>
+    <section class="workspace-panel sim-section" aria-labelledby="marketTitle">
+      <span class="workspace-kicker">06 / CONCORRÊNCIA</span><h2 id="marketTitle">Referências do mercado</h2>
+      <p>Compare com preços informados pela empresa. Verifique se produtos e unidades são equivalentes.</p>
+      <div id="marketStats" class="sim-market-stats"></div>
+      <div id="referenceList" class="sim-reference-list"></div>
+      <div class="sim-add-reference"><label for="referenceName">Referência<input id="referenceName" placeholder="Ex.: loja da região" maxlength="90"></label><label for="referencePrice">Preço (R$)<input id="referencePrice" type="number" min=".01" step=".01" placeholder="0,00"></label><button type="button" id="addReference" class="workspace-secondary">Adicionar</button></div>
+      <p class="sim-muted">Referências adicionadas aqui são temporárias, a menos que a simulação seja salva no histórico.</p>
+    </section>
+  </div>
+
+  <div class="sim-bottom-grid">
+    <section class="workspace-panel sim-section" aria-labelledby="historyTitle">
+      <div class="sim-heading-row"><div><span class="workspace-kicker">07 / HISTÓRICO</span><h2 id="historyTitle">Simulações salvas</h2></div></div>
+      <label for="simulationName">Nome da simulação<input id="simulationName" maxlength="100" placeholder="Ex.: Preço para as festas"></label>
+      <div class="sim-actions"><button type="button" class="workspace-primary" id="saveSimulation">Salvar simulação</button></div>
+      <p class="sim-muted">Salvar não altera o cadastro original do produto.</p>
+      <div id="historyList" class="sim-history-list" aria-live="polite"></div>
+    </section>
+    <section class="workspace-panel sim-section sim-assistant" aria-labelledby="aiTitle">
+      <span class="workspace-kicker">08 / ASSISTÊNCIA</span><h2 id="aiTitle">Converse com a ZUZ</h2>
+      <p>Peça explicações ou uma nova hipótese. Qualquer mudança proposta exige sua confirmação.</p>
+      <div id="aiMessages" class="sim-chat" role="log" aria-live="polite"><p class="sim-chat-entry">Pergunte, por exemplo: "E se eu aumentar o preço em 15%?"</p></div>
+      <form id="aiForm" class="sim-chat-form"><label for="aiInput" class="sim-visually-hidden">Pergunta para a ZUZ</label><input id="aiInput" maxlength="600" placeholder="Pergunte sobre o cenário..." autocomplete="off" required><button type="submit" class="workspace-primary" id="askAI" aria-label="Enviar pergunta"><i class="bx bx-send" aria-hidden="true"></i></button></form>
+      <div id="aiProposal" class="sim-ai-proposal" hidden></div>
+    </section>
+  </div>
+</main>
 </div>
-<script src="../shared/pricing-core.js"></script><script src="../shared/api-client.js"></script><script src="../shared/company-data.js"></script><script src="../shared/pricing-engine.js"></script><script src="simulacoes.js?v=20261010"></script><script src="../shared/site.js?v=20261010-theme-wave1"></script>
+<script src="../shared/pricing-core.js"></script><script src="../shared/api-client.js"></script><script src="../shared/company-data.js"></script><script src="../shared/pricing-engine.js"></script><script src="../shared/simulation-core.js"></script><script src="simulacoes.js?v=20261014-all-features"></script><script src="../shared/site.js?v=20261010-theme-wave1"></script>
 </body></html>
