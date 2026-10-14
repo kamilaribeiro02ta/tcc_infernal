@@ -78,10 +78,22 @@ body.dark .brand-logo { filter: none; }
 .onboard-intro h1 { margin: 18px 0 14px; color: var(--on-text); max-width: 950px; font-size: clamp(34px, 4.25vw, 59px); line-height: 1.12; letter-spacing: -.056em; font-weight: 700; }
 .onboard-intro h1 span { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 500; letter-spacing: -.05em; }
 .onboard-intro > p { margin: 0; color: var(--on-muted); max-width: 640px; font-size: 13px; line-height: 1.85; }
-.onboard-workspace { display: grid; grid-template-columns: minmax(260px, .85fr) minmax(0, 1.65fr); border: 1px solid var(--on-line); border-radius: 25px; background: var(--on-surface); box-shadow: var(--on-raised-shadow); overflow: hidden; scroll-margin-top: 88px; }
+/* Layout aberto: as duas colunas fazem parte da página, sem card envolvente. */
+.onboard-workspace {
+  display: grid;
+  grid-template-columns: minmax(260px, .85fr) minmax(0, 1.65fr);
+  column-gap: clamp(42px, 5vw, 82px);
+  align-items: stretch;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  scroll-margin-top: 88px;
+}
 
 /* Coluna editorial / andamento */
-.onboard-journey { padding: clamp(28px, 3vw, 47px); display: flex; flex-direction: column; background: var(--on-soft); border-right: 1px solid var(--on-line); }
+.onboard-journey { padding: 50px 0 0; display: flex; flex-direction: column; background: transparent; border: 0; }
 .journey-kicker { font-size: 10px; font-weight: 800; letter-spacing: .16em; color: var(--on-purple); }
 .journey-top h2 { margin: 17px 0 9px; max-width: 290px; font-size: clamp(25px, 2.5vw, 33px); line-height: 1.17; letter-spacing: -.045em; color: var(--on-text); }
 .journey-top p { max-width: 275px; margin: 0; font-size: 12px; line-height: 1.8; color: var(--on-muted); }
@@ -102,7 +114,7 @@ body.dark .brand-logo { filter: none; }
 .journey-note p { margin: 0; max-width: 238px; font-size: 11px; line-height: 1.75; }
 
 /* Formulário */
-.onboard-form-panel { padding: clamp(28px, 3.5vw, 52px); min-width: 0; }
+.onboard-form-panel { padding: 50px 0 0; min-width: 0; background: transparent; }
 .step-topline { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
 .step-label { font-size: 11px; font-weight: 700; letter-spacing: .10em; text-transform: uppercase; color: var(--on-purple); }
 .step-count { font-size: 12px; font-weight: 500; color: var(--on-muted); letter-spacing: .04em; white-space: nowrap; }
@@ -167,8 +179,8 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .privacy-note i { font-size: 15px; }
 .sr-only { position: absolute !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; overflow: hidden !important; clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important; }
 @media (max-width: 1190px) {
-  .onboard-workspace { grid-template-columns: minmax(228px,.8fr) minmax(0,1.8fr); }
-  .onboard-form-panel, .onboard-journey { padding: 28px; }
+  .onboard-workspace { grid-template-columns: minmax(228px,.8fr) minmax(0,1.8fr); column-gap: 42px; }
+  .onboard-form-panel, .onboard-journey { padding: 42px 0 0; }
   .choice-grid-segments { gap: 9px; }
 }
 @media (max-width: 992px) {
@@ -181,8 +193,8 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 }
 @media (max-width: 740px) {
   .onboard-intro { margin: 10px 0 28px; }
-  .onboard-workspace { grid-template-columns: 1fr; }
-  .onboard-journey { padding: 23px; border-right: 0; border-bottom: 1px solid var(--on-line); }
+  .onboard-workspace { grid-template-columns: 1fr; row-gap: 28px; }
+  .onboard-journey { padding: 0 0 24px; border: 0; border-bottom: 1px solid var(--on-line); }
   .journey-top h2 { font-size: 24px; margin: 6px 0; }
   .journey-top p, .journey-note { display: none; }
   .journey-steps { display: flex; gap: 8px; margin: 19px 0 0; }
@@ -190,7 +202,7 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
   .journey-number { flex: 0 0 30px; width: 30px; height: 30px; font-size: 10px; }
   .journey-steps li strong { font-size: 10px; }
   .journey-steps li small, .journey-steps li > i { display: none !important; }
-  .onboard-form-panel { padding: 28px 24px; }
+  .onboard-form-panel { padding: 0; }
 }
 @media (max-width: 530px) {
   .onboard-main { padding: 0 14px 45px; }
@@ -202,10 +214,10 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
   .theme-icon-wrap { width: 34px; height: 34px; }
   .onboard-intro h1 { font-size: 35px; margin-top: 12px; }
   .onboard-intro p { font-size: 12px; }
-  .onboard-workspace { border-radius: 18px; }
-  .onboard-journey { padding: 20px 17px; }
+  .onboard-workspace { row-gap: 24px; }
+  .onboard-journey { padding: 0 0 20px; }
   .journey-top h2 { font-size: 22px; }
-  .onboard-form-panel { padding: 25px 17px; }
+  .onboard-form-panel { padding: 0; }
   .progress { margin-bottom: 27px; }
   .step-heading { margin-bottom: 26px; }
   .step-heading h2 { font-size: 26px; }
