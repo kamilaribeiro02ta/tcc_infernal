@@ -86,7 +86,7 @@ function registerSimulationRoutes(router,{asyncRoute,getCompany}){
     const company=await getCompany(req.user.id);
     if(!company)fail(404,"Configure sua empresa primeiro.");
     const rows=await query("SELECT id,name,product_id,snapshot,created_at FROM zuz_simulations WHERE company_id=$1 ORDER BY created_at DESC,id DESC LIMIT 60",[company.id]);
-    res.json({simulations:rows.rows.map(r=>({id:r.id,name:r.name,productId:r.product_id,createdAt:r.created_at,snapshot:JSON.parse(r.snapshot)}))});
+    res.json({simulations:rows.rows.map(r=>({id:r.id,name:r.name,productId:r.product_id,createdAt:r.created_at,snapshot:typeof r.snapshot === "string" ? JSON.parse(r.snapshot) : r.snapshot}))});
   }));
   router.post("/simulations",asyncRoute(async(req,res)=>{
     const company=await getCompany(req.user.id);
