@@ -36,7 +36,17 @@ function propose(message,s){
     ||text.match(/(\d+)\s*unidades?\s*a\s*mais/);
   if(less)next.units=Math.max(1,s.units-Number(less[1]));
   else if(more)next.units=Math.min(1000000,s.units+Number(more[1]));
-  if(next.price===s.price&&next.units===s.units)return null;
+  const costUp=find("aument\\w*|subir|elevar","custos?|mat[eé]ria.prima|embalagem|aluguel");
+  const costDown=find("reduz\\w*|diminu\\w*|baixar","custos?|mat[eé]ria.prima|embalagem|aluguel");
+  if(costUp||costDown){
+    const pct=Number((costUp||costDown)[1].replace(",","."));
+    if(pct>=0&&pct<=100){
+      next.changePct=(costUp?1:-1)*pct;
+      next.changeMode=/fixos?|aluguel|mensais?/.test(text)?"fixed":"variable";
+    }
+  }
+  if(next.price===s.price&&next.units===s.units&&
+    next.changePct===s.changePct&&next.changeMode===s.changeMode)return null;
   return simulation.validate(next);
 }
 async function explain(message,product,report,proposal,proposed){
