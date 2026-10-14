@@ -119,6 +119,18 @@ function registerSimulationRoutes(router,{asyncRoute,getCompany}){
       [id,company.id,productId,name,serialized]);
     res.status(201).json({id,name,ok:true});
   }));
+  router.patch("/simulations/:id",asyncRoute(async(req,res)=>{
+    const company=await getCompany(req.user.id);
+    if(!company)fail(404,"Configure sua empresa primeiro.");
+    const name=safeText(req.body?.name,100);
+    if(!name)fail(400,"Dê um nome válido para a simulação.");
+    const found=await query("SELECT id FROM zuz_simulations WHERE id=$1 AND company_id=$2",
+      [req.params.id,company.id]);
+    if(!found.rowCount)fail(404,"Simulação não encontrada.");
+    await query("UPDATE zuz_simulations SET name=$1 WHERE id=$2 AND company_id=$3",
+      [name,req.params.id,company.id]);
+    res.json({ok:true,name});
+  }));
   router.delete("/simulations/:id",asyncRoute(async(req,res)=>{
     const company=await getCompany(req.user.id);
     if(!company)fail(404,"Configure sua empresa primeiro.");
