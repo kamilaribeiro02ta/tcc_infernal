@@ -1943,21 +1943,27 @@
       .join("");
 
     els.manageList.querySelectorAll("[data-manage-delete]").forEach(button => {
-      button.addEventListener("click", () => {
-        removeProduct(button.dataset.manageDelete);
+      button.addEventListener("click", async () => {
+        await removeProduct(button.dataset.manageDelete);
         renderManageList();
       });
     });
   }
 
-  function removeProduct(productId) {
+  async function removeProduct(productId) {
     const product = products.find(item => item.id === productId);
     if (!product) return;
-
+    const previous = products.slice();
     products = products.filter(item => item.id !== productId);
-    saveProducts();
-    renderAll();
-    showToast("Produto removido: " + product.name);
+    try {
+      await saveProducts();
+      renderAll();
+      showToast("Produto removido: " + product.name);
+    } catch (error) {
+      products = previous;
+      renderAll();
+      showToast("Não foi possível remover: " + error.message);
+    }
   }
 
   function showToast(message) {
@@ -2054,6 +2060,7 @@
       return;
     }
 
+    const previousProducts = products.slice();
     products.push(normalizeProduct({
       id: id(),
       name,
@@ -2075,7 +2082,7 @@
       renderAll();
       showToast("Produto cadastrado com sucesso.");
     } catch (error) {
-      products = (await window.ZUZCompanyData.load()).products.map(normalizeProduct);
+      products = previousProducts;
       els.productFormError.textContent = "Não foi possível salvar: " + error.message;
     }
   });
