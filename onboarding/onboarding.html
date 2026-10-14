@@ -1,48 +1,174 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ZUZ | Configurar empresa</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../shared/design-system.css">
-<link rel="stylesheet" href="onboarding.css"></head>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Personalize o espaço da sua empresa na ZUZ.">
+  <title>ZUZ | Configurar empresa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="../imagens/Vector%201%20%281%29.png">
+  <link rel="stylesheet" href="../shared/sidebar.css">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <link rel="stylesheet" href="../shared/app-shell.css">
+  <link rel="stylesheet" href="onboarding.css">
+</head>
 <body>
-<main class="onboard-shell">
-<header><a class="logo" href="../index.html">ZUZ<span>.</span></a><span>Configuração empresarial</span></header>
-<section class="onboard-card">
-<div class="step-label" id="stepLabel">Etapa 1 de 3</div>
-<div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1" id="progress"><span id="progressFill"></span></div>
-<h1 id="title">Vamos conhecer sua empresa</h1>
-<p id="description">Essas informações personalizam a ZUZ para o seu negócio.</p>
-<form id="form" novalidate>
-<fieldset id="step1"><legend>Sobre o negócio</legend>
-<label>Nome da empresa<input id="companyName" maxlength="160" required placeholder="Ex.: Doces da Ana" autocomplete="organization"></label>
-<label>Segmento empresarial<select id="segment">
-<option value="confeitaria">Confeitaria</option><option value="alimentacao">Alimentação</option><option value="tecnologia">Tecnologia</option><option value="vestuario">Vestuário</option><option value="beleza">Beleza</option><option value="outros">Outro segmento</option>
-</select></label>
-<label id="otherSegmentWrap" hidden>Seu segmento<input id="otherSegment" maxlength="120" placeholder="Descreva seu segmento"></label>
-</fieldset>
-<fieldset id="step2" hidden><legend>Como sua empresa trabalha?</legend>
-<label>Tipo de operação<select id="operation">
-<option value="producao">Produção própria</option><option value="revenda">Revenda</option><option value="servico">Prestação de serviços</option><option value="misto">Operação mista</option>
-</select></label>
-<label>Unidade principal de cálculo<select id="costingMode">
-<option value="por_lote">Por lote / receita</option><option value="por_unidade">Por unidade</option><option value="por_hora">Por hora</option><option value="por_projeto">Por projeto</option>
-</select></label>
-</fieldset>
-<fieldset id="step3" hidden><legend>Quais gastos fazem parte do negócio?</legend>
-<p class="hint">Sugestões baseadas na operação. Desmarque o que não utiliza e acrescente outros custos.</p>
-<div id="categoryList" class="categories"></div>
-<label>Outro gasto<input id="customCategory" maxlength="120" placeholder="Ex.: Decoração personalizada"></label>
-<button id="addCategory" class="secondary" type="button">Adicionar gasto</button>
-</fieldset>
-<p class="error" id="error" role="alert" aria-live="polite"></p>
-<nav class="actions" aria-label="Etapas do cadastro">
-<button type="button" id="previous" class="secondary" hidden>Voltar</button>
-<button type="button" id="next">Continuar</button><button id="save" type="submit" hidden>Concluir configuração</button>
-</nav>
-</form>
-<a class="back-link" href="../index.html">Voltar ao início</a>
-</section></main>
+<div class="onboard-app">
+  <aside class="sidebar" aria-label="Menu principal">
+    <a href="../perfil/perfil.html" class="login-block" aria-label="Abrir minha conta">
+      <div class="avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" fill="white"></circle><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"></path></svg>
+      </div>
+      <div class="login-text"><div class="login-title">Minha conta</div><div class="login-subtitle">Perfil ZUZ</div></div>
+    </a>
+    <nav class="nav-menu" aria-label="Navegação principal">
+      <a href="../index.html" class="nav-item"><span class="nav-dot"></span>Início</a>
+      <a href="../introducao/intro.html" class="nav-item"><span class="nav-dot"></span>Sobre</a>
+      <a href="../produtos/produtos.html" class="nav-item"><span class="nav-dot"></span>Produtos</a>
+      <a href="../custos/custos.html" class="nav-item"><span class="nav-dot"></span>Custos</a>
+      <a href="../simulacoes/simulacoes.html" class="nav-item"><span class="nav-dot"></span>Simulações</a>
+      <a href="../garfico/grafico.html" class="nav-item"><span class="nav-dot"></span>Análises</a>
+    </nav>
+    <div class="onboard-sidebar-footer"><span class="sidebar-footer-mark">ZUZ / SETUP</span><p>Um espaço pensado para as decisões do seu negócio.</p></div>
+  </aside>
+
+  <main class="onboard-main">
+    <header class="onboard-topbar">
+      <a href="../index.html" class="brand-link" aria-label="ZUZ, voltar ao início">
+        <img src="../imagens/logo-zuz-hero.png" alt="ZUZ" class="brand-logo">
+      </a>
+      <span class="topbar-context"><span class="context-dot"></span>Configuração inicial</span>
+    </header>
+
+    <button type="button" class="onboard-theme-toggle" id="themeToggle" aria-label="Ativar modo escuro" aria-pressed="false">
+      <span class="theme-icon-wrap" aria-hidden="true">
+        <i class="bx bx-sun" id="iconSun"></i>
+        <i class="bx bx-moon" id="iconMoon" style="display:none"></i>
+      </span>
+      <span id="themeLabel">Modo Claro</span>
+    </button>
+
+    <div class="onboard-content">
+      <div class="onboard-intro">
+        <span class="eyebrow"><span class="eyebrow-line"></span>BOAS-VINDAS À ZUZ</span>
+        <h1>Seu negócio, <span>do seu jeito.</span></h1>
+        <p>Algumas informações para organizar seus custos e preparar uma experiência feita para sua empresa.</p>
+      </div>
+
+      <section class="onboard-workspace" aria-label="Configuração da empresa">
+        <aside class="onboard-journey" aria-label="Progresso da configuração">
+          <div class="journey-top">
+            <span class="journey-kicker">SEU ESPAÇO</span>
+            <h2>Comece pelo essencial.</h2>
+            <p>Três passos simples para deixar tudo pronto.</p>
+          </div>
+          <ol class="journey-steps">
+            <li data-progress-step="1" class="is-current" aria-current="step">
+              <span class="journey-number">01</span>
+              <div><strong>Seu negócio</strong><small>Identidade e segmento</small></div>
+              <i class="bx bx-check" aria-hidden="true"></i>
+            </li>
+            <li data-progress-step="2">
+              <span class="journey-number">02</span>
+              <div><strong>Operação</strong><small>Como você trabalha</small></div>
+              <i class="bx bx-check" aria-hidden="true"></i>
+            </li>
+            <li data-progress-step="3">
+              <span class="journey-number">03</span>
+              <div><strong>Custos</strong><small>O que entra na conta</small></div>
+              <i class="bx bx-check" aria-hidden="true"></i>
+            </li>
+          </ol>
+          <div class="journey-note">
+            <i class="bx bx-edit-alt" aria-hidden="true"></i>
+            <p>Você poderá ajustar essas informações sempre que precisar.</p>
+          </div>
+        </aside>
+
+        <div class="onboard-form-panel">
+          <div class="step-topline">
+            <span class="step-label" id="stepLabel">Etapa 1 de 3</span>
+            <span class="step-count"><strong id="stepNumber">01</strong> / 03</span>
+          </div>
+          <div class="progress" role="progressbar" aria-label="Progresso da configuração" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1" id="progress">
+            <span id="progressFill"></span>
+          </div>
+          <div class="step-heading">
+            <h2 id="title" tabindex="-1">Vamos conhecer sua empresa.</h2>
+            <p id="description">Comece contando um pouco sobre o seu negócio.</p>
+          </div>
+
+          <form id="form" novalidate>
+            <fieldset id="step1">
+              <legend class="sr-only">Sobre o negócio</legend>
+              <label class="input-field" for="companyName">
+                <span>Nome da empresa</span>
+                <input id="companyName" maxlength="160" required placeholder="Ex.: Doces da Ana" autocomplete="organization">
+              </label>
+              <div class="field-group-label" id="segmentLabel">Em qual segmento você atua?</div>
+              <div class="choice-grid choice-grid-segments" role="radiogroup" aria-labelledby="segmentLabel">
+                <label class="choice-card"><input type="radio" name="segment" value="confeitaria" checked><span class="choice-icon"><i class="bx bx-cake"></i></span><span class="choice-name">Confeitaria</span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+                <label class="choice-card"><input type="radio" name="segment" value="alimentacao"><span class="choice-icon"><i class="bx bx-restaurant"></i></span><span class="choice-name">Alimentação</span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+                <label class="choice-card"><input type="radio" name="segment" value="tecnologia"><span class="choice-icon"><i class="bx bx-chip"></i></span><span class="choice-name">Tecnologia</span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+                <label class="choice-card"><input type="radio" name="segment" value="vestuario"><span class="choice-icon"><i class="bx bx-closet"></i></span><span class="choice-name">Vestuário</span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+                <label class="choice-card"><input type="radio" name="segment" value="beleza"><span class="choice-icon"><i class="bx bx-spa"></i></span><span class="choice-name">Beleza</span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+                <label class="choice-card"><input type="radio" name="segment" value="outros"><span class="choice-icon"><i class="bx bx-grid-alt"></i></span><span class="choice-name">Outro segmento</span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+              </div>
+              <label class="input-field other-field" id="otherSegmentWrap" for="otherSegment" hidden>
+                <span>Qual é o seu segmento?</span>
+                <input id="otherSegment" maxlength="120" placeholder="Descreva o segmento da empresa">
+              </label>
+            </fieldset>
+
+            <fieldset id="step2" hidden>
+              <legend class="sr-only">Como sua empresa trabalha</legend>
+              <div class="field-group-label" id="operationLabel">Como sua empresa gera receita?</div>
+              <div class="choice-grid operation-grid" role="radiogroup" aria-labelledby="operationLabel">
+                <label class="choice-card choice-detailed"><input type="radio" name="operation" value="producao" checked><span class="choice-icon"><i class="bx bx-package"></i></span><span class="choice-copy"><strong>Produção própria</strong><small>Você cria ou fabrica produtos.</small></span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+                <label class="choice-card choice-detailed"><input type="radio" name="operation" value="revenda"><span class="choice-icon"><i class="bx bx-store-alt"></i></span><span class="choice-copy"><strong>Revenda</strong><small>Você compra e revende produtos.</small></span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+                <label class="choice-card choice-detailed"><input type="radio" name="operation" value="servico"><span class="choice-icon"><i class="bx bx-briefcase-alt-2"></i></span><span class="choice-copy"><strong>Serviços</strong><small>Seu trabalho é o principal produto.</small></span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+                <label class="choice-card choice-detailed"><input type="radio" name="operation" value="misto"><span class="choice-icon"><i class="bx bx-layer"></i></span><span class="choice-copy"><strong>Operação mista</strong><small>Combine produtos e serviços.</small></span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+              </div>
+
+              <div class="field-group-label spaced" id="costingLabel">Como prefere calcular seus custos?</div>
+              <div class="choice-grid mode-grid" role="radiogroup" aria-labelledby="costingLabel">
+                <label class="choice-card choice-compact"><input type="radio" name="costingMode" value="por_lote"><span>Por lote / receita</span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+                <label class="choice-card choice-compact"><input type="radio" name="costingMode" value="por_unidade" checked><span>Por unidade</span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+                <label class="choice-card choice-compact"><input type="radio" name="costingMode" value="por_hora"><span>Por hora</span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+                <label class="choice-card choice-compact"><input type="radio" name="costingMode" value="por_projeto"><span>Por projeto</span><i class="bx bx-check-circle choice-check" aria-hidden="true"></i></label>
+              </div>
+            </fieldset>
+
+            <fieldset id="step3" hidden>
+              <legend class="sr-only">Custos do negócio</legend>
+              <p class="hint">Selecione os custos que fazem parte do seu dia a dia. Você também pode adicionar gastos específicos.</p>
+              <div id="categoryList" class="categories" aria-label="Categorias de custos sugeridas"></div>
+              <div class="field-group-label spaced">Não encontrou um custo?</div>
+              <div class="custom-cost-row">
+                <label class="input-field" for="customCategory"><span class="sr-only">Novo gasto</span><input id="customCategory" maxlength="120" placeholder="Ex.: Decoração personalizada"></label>
+                <button id="addCategory" class="secondary add-category" type="button"><i class="bx bx-plus" aria-hidden="true"></i> Adicionar</button>
+              </div>
+            </fieldset>
+
+            <p class="error" id="error" role="alert" aria-live="polite"></p>
+            <nav class="actions" aria-label="Etapas do cadastro">
+              <button type="button" id="previous" class="secondary" hidden><i class="bx bx-left-arrow-alt" aria-hidden="true"></i> Voltar</button>
+              <button type="button" id="next" class="primary">Continuar <i class="bx bx-right-arrow-alt" aria-hidden="true"></i></button>
+              <button id="save" type="submit" class="primary" hidden>Concluir configuração <i class="bx bx-check" aria-hidden="true"></i></button>
+            </nav>
+          </form>
+          <p class="privacy-note"><i class="bx bx-lock-alt" aria-hidden="true"></i> Suas informações ficam associadas à sua conta.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
 <script src="../shared/api-client.js"></script>
 <script src="../shared/business-templates.js"></script>
-<script src="onboarding.js"></script></body></html>
+<script src="../shared/site.js"></script>
+<script src="onboarding.js"></script>
+</body>
+</html>
