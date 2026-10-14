@@ -299,14 +299,15 @@ function createApi() {
     if (!name || !validOps.has(op) || !Number.isFinite(direct) || direct<0 || !Number.isFinite(sale) || sale<0 || !Number.isInteger(units) || units<1 || !Number.isFinite(margin) || margin<0 || margin>90) fail(400,"Revise os dados do produto.");
     const inputs=Array.isArray(req.body.inputs)?req.body.inputs:[];
     if (inputs.length>100 || JSON.stringify(inputs).length>16000) fail(400,"Quantidade de custos inválida.");
-    const row=await query(`INSERT INTO zuz_products(company_id,name,operation_type,category,costing_mode,inputs,direct_cost,sale_price,target_margin,units)
-      VALUES($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9,$10) RETURNING *`,
-      [company.id,name,op,normalText(req.body.category||"Sem categoria"),normalText(req.body.costingMode||company.costing_mode,32),JSON.stringify(inputs),direct,sale,margin,units]);
-    const created=row.rows[0];
-    // Mantém o mesmo histórico para produtos inseridos pela API simplificada.
     const client=await getPool().connect();
+    let created;
     try {
       await client.query("BEGIN");
+      const row=await client.query(`INSERT INTO zuz_products(company_id,name,operation_type,category,costing_mode,inputs,direct_cost,sale_price,target_margin,units)
+        VALUES($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9,$10) RETURNING *`,
+        [company.id,name,op,normalText(req.body.category||"Sem categoria"),
+        normalText(req.body.costingMode||company.costing_mode,32),JSON.stringify(inputs),direct,sale,margin,units]);
+      created=row.rows[0];
       await appendRecommendation(client,company.id,created,company.settings);
       await client.query("COMMIT");
     } catch(error) {
