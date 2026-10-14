@@ -49,7 +49,7 @@ async function getCompany(userId) {
 }
 function createApi() {
   const router = express.Router();
-  router.get("/health", (_req, res) => res.json({ ok: true, app: "ZUZ", databaseConfigured: Boolean(process.env.DATABASE_URL) }));
+  router.get("/health", (_req, res) => res.json({ ok: true, app: "ZUZ", databaseConfigured: true, database: "sqlite" }));
   router.post("/auth/signup", asyncRoute(async (req, res) => {
     const name = normalText(req.body.name, 160);
     const email = normalText(req.body.email, 254).toLowerCase();
@@ -61,7 +61,7 @@ function createApi() {
     let created;
     try {
       created = await query("INSERT INTO zuz_users(full_name,email,password_hash) VALUES($1,$2,$3) RETURNING id,full_name,email", [name,email,hash]);
-    } catch (e) { if (e.code === "23505") fail(409, "Já existe uma conta com esse e-mail."); throw e; }
+    } catch (e) { if (e.code === "SQLITE_CONSTRAINT_UNIQUE" || e.code === "SQLITE_CONSTRAINT_PRIMARYKEY") fail(409, "Já existe uma conta com esse e-mail."); throw e; }
     const user = created.rows[0]; await session(req,res,user);
     res.status(201).json({ user: safeUser(user), company: null });
   }));
@@ -113,7 +113,7 @@ function createApi() {
     const client=await getPool().connect();
     try {
       await client.query("BEGIN");
-      await client.query("DELETE FROM zuz_cost_categories WHERE company_id=$1 AND NOT (label=ANY($2::text[]))",[company.id,unique]);
+      await client.query("DELETE FROM zuz_cost_categories WHERE company_id=$1 AND label NOT IN (SELECT value FROM json_each($2))",[company.id,JSON.stringify(unique)]);
       for (const label of unique) {
         const type=/taxa|comiss|tributo|imposto/i.test(label)?"percentual":/aluguel|internet|assinatura|licença/i.test(label)?"fixo":"direto";
         const unit=type==="percentual"?"percentual":"reais";
