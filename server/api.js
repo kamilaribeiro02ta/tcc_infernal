@@ -169,15 +169,18 @@ function createApi() {
     const input=req.body.settings;
     if (!input || typeof input!=="object" || Array.isArray(input) || JSON.stringify(input).length>32000)
       fail(400,"Configurações inválidas.");
-    const settings=pricing.normalize(input);
+    const operationType=normalText(input.operationType ?? company.operation_type,24);
+    if(!validOps.has(operationType))fail(400,"Tipo de operação inválido.");
+    const segment=normalText(input.segment ?? company.segment,120);
+    const settings=pricing.normalize({...company.settings,...input,segment,operationType});
     if (settings.taxesPct+settings.sellingFeesPct+settings.defaultMargin>=100)
       fail(400,"A soma das taxas e da margem padrão deve ser inferior a 100%.");
     const client=await getPool().connect();
     try {
       await client.query("BEGIN");
       const result=await client.query(
-        "UPDATE zuz_companies SET settings=$1::jsonb,updated_at=NOW() WHERE id=$2 AND owner_id=$3 RETURNING settings",
-        [JSON.stringify(settings),company.id,req.user.id]);
+        "UPDATE zuz_companies SET settings=$1::jsonb,segment=$2,operation_type=$3,updated_at=NOW() WHERE id=$4 AND owner_id=$5 RETURNING settings",
+        [JSON.stringify(settings),segment,operationType,company.id,req.user.id]);
       const products=await client.query("SELECT * FROM zuz_products WHERE company_id=$1",[company.id]);
       for(const row of products.rows)
         await appendRecommendation(client,company.id,row.payload && Object.keys(row.payload).length?row.payload:row,settings);
