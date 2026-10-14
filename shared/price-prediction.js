@@ -20,8 +20,11 @@ function predictPrice(observations, { directCost = 0, variableRatePct = 0, fixed
   if (new Set(units).size < 2)
     return unavailable("As quantidades vendidas não variaram; não há evidência para estimar a demanda.");
   const model = new SLR(prices, units);
-  const scores = model.score(prices, units);
-  if (!Number.isFinite(model.slope) || model.slope >= 0 || !Number.isFinite(scores.r2) || scores.r2 < 0.5)
+  const meanUnits = units.reduce((sum, value) => sum + value, 0) / units.length;
+  const sumSquares = units.reduce((sum, value) => sum + (value - meanUnits) ** 2, 0);
+  const residual = units.reduce((sum, value, index) => sum + (value - model.predict(prices[index])) ** 2, 0);
+  const r2 = sumSquares > 0 ? 1 - residual / sumSquares : NaN;
+  if (!Number.isFinite(model.slope) || model.slope >= 0 || !Number.isFinite(r2) || r2 < 0.5)
     return unavailable("Os dados ainda não sustentam uma relação negativa suficientemente consistente entre preço e demanda.");
 
   const minPrice = Math.min(...prices), maxPrice = Math.max(...prices);
@@ -39,7 +42,7 @@ function predictPrice(observations, { directCost = 0, variableRatePct = 0, fixed
   }
   return {
     ready: true, status: "experimental", samples: observationsValid.length,
-    r2: scores.r2, slope: model.slope, observedRange: { min: minPrice, max: maxPrice },
+    r2, slope: model.slope, observedRange: { min: minPrice, max: maxPrice },
     recommendation: best,
     disclaimer: "Estimativa estatística exploratória baseada em vendas observadas. Correlação não prova causalidade; não extrapola a faixa amostrada."
   };
