@@ -244,6 +244,25 @@
         setInputValues();render();status("Cenários recuperados e recalculados com os dados atuais. Cadastro preservado.","success");
         window.scrollTo({top:0,behavior:"smooth"});
       }));
+      actions.append(makeButton("Renomear",async()=>{
+        const name=window.prompt("Novo nome da simulação:",entry.name);
+        if(name===null)return;
+        if(!name.trim()){status("Informe um nome válido.","error");return;}
+        try{
+          await api.request("PATCH","/simulations/"+encodeURIComponent(entry.id),{name:name.trim()});
+          await refreshHistory();
+        }catch(error){status(error.message,"error");}
+      }));
+      actions.append(makeButton("Duplicar",async()=>{
+        if(!products.some(p=>String(p.id)===String(entry.productId))){
+          status("Não é possível duplicar: o produto não existe mais.","error");return;
+        }
+        try{
+          await api.request("POST","/simulations",{name:entry.name+" (cópia)",
+            productId:entry.productId,snapshot:entry.snapshot});
+          await refreshHistory();status("Cópia salva sem alterar o produto.","success");
+        }catch(error){status(error.message,"error");}
+      }));
       actions.append(makeButton("Excluir",async()=>{
         if(!window.confirm("Excluir esta simulação salva? Os produtos não serão afetados."))return;
         try{await api.request("DELETE","/simulations/"+encodeURIComponent(entry.id));await refreshHistory();}
