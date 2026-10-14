@@ -262,12 +262,21 @@ function createApi() {
     const client=await getPool().connect();
     try{
       await client.query("BEGIN");
-      await client.query("DELETE FROM zuz_products WHERE company_id=$1",[company.id]);
+      // Preserva os produtos existentes para não apagar vendas reais vinculadas a eles.
+      await client.query("DELETE FROM zuz_products WHERE company_id=$1 AND id NOT IN (SELECT value FROM json_each($2))",
+        [company.id,JSON.stringify(verified.map(product=>product.id))]);
       for(const p of verified){
+        const current=await client.query("SELECT company_id FROM zuz_products WHERE id=$1",[p.id]);
+        if(current.rowCount && current.rows[0].company_id!==company.id)
+          fail(400,"Identificador de produto inválido.");
         await client.query(`INSERT INTO zuz_products(id,company_id,name,operation_type,category,costing_mode,inputs,direct_cost,sale_price,target_margin,units,payload)
-        VALUES($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10,$11,$12::jsonb)`,
-        [p.id,company.id,p.name,company.operation_type,normalText(p.payload.category||"Sem categoria"),company.costing_mode,
-         JSON.stringify(p.payload.additionalCosts||[]),p.direct,p.sale,p.margin,p.units,JSON.stringify(p.payload)]);
+          VALUES($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10,$11,$12::jsonb)
+          ON CONFLICT(id) DO UPDATE SET name=excluded.name,operation_type=excluded.operation_type,
+          category=excluded.category,costing_mode=excluded.costing_mode,inputs=excluded.inputs,
+          direct_cost=excluded.direct_cost,sale_price=excluded.sale_price,
+          target_margin=excluded.target_margin,units=excluded.units,payload=excluded.payload`,
+          [p.id,company.id,p.name,company.operation_type,normalText(p.payload.category||"Sem categoria"),company.costing_mode,
+           JSON.stringify(p.payload.additionalCosts||[]),p.direct,p.sale,p.margin,p.units,JSON.stringify(p.payload)]);
         await appendRecommendation(client,company.id,p.payload,company.settings);
       }
       await client.query("COMMIT");
