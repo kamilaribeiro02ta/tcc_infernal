@@ -9,7 +9,7 @@
     "addReference","simulationName","saveSimulation","historyList","aiMessages","aiForm",
     "aiInput","askAI","aiProposal"];
   const E=Object.fromEntries(ids.map(id=>[id,document.getElementById(id)]));
-  const money=v=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(v);
+  const money=v=>Number.isFinite(v)?new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(v):"—";
   const integer=v=>new Intl.NumberFormat("pt-BR",{maximumFractionDigits:0}).format(v);
   let workspace;
   try{workspace=await window.ZUZCompanyData.load();}
@@ -101,7 +101,7 @@
     E.revenue.textContent=money(result.revenue);
     E.profit.textContent=money(result.profit);
     E.profit.className=result.profit<0?"is-negative":"is-positive";
-    E.range.textContent=money(result.recommendedRange.low)+" a "+money(result.recommendedRange.high);
+    E.range.textContent=Number.isFinite(result.recommendedRange.high)?money(result.recommendedRange.low)+" a "+money(result.recommendedRange.high):"A partir de "+money(result.recommendedRange.low)+" · sem teto validado";
   }
   function drawChart(result){
     const points=core.scenarioChartPoints(result,16),top=Math.max(1,...points.map(p=>Math.max(p.revenue,p.costs)))*1.12;
@@ -117,7 +117,7 @@
       const yy=y(top*i/4);
       svg+='<line x1="'+x0+'" y1="'+yy+'" x2="'+(x0+w)+'" y2="'+yy+'" stroke="currentColor" opacity=".11"/>';
       svg+='<text x="60" y="'+(yy+4)+'" text-anchor="end" fill="currentColor" opacity=".65" font-size="11">'+
-        (top*i/4>=1000?(top*i/4000).toFixed(1)+" mil":Math.round(top*i/4))+'</text>';
+        (top*i/4>=1000000?(top*i/4000000).toFixed(1)+" mi":top*i/4>=1000?(top*i/4000).toFixed(1)+" mil":Math.round(top*i/4))+'</text>';
     }
     for(let i=0;i<=4;i++){
       const xx=x(maxUnits*i/4);
@@ -155,7 +155,7 @@
     });
   }
   function renderGoal(result){
-    const kind=E.goalType.value,target=Number(E.goalAmount.value);
+    const kind=E.goalType.value,target=E.goalAmount.value;
     try{
       const units=core.goal(result,target,kind);
       E.goalUnits.textContent=units===null?"Não atingível":integer(units)+" un.";
@@ -166,7 +166,9 @@
   }
   function renderMarket(result){
     E.marketStats.replaceChildren();E.referenceList.replaceChildren();
-    const prices=references.map(x=>Number(x.price)).filter(v=>Number.isFinite(v)&&v>0);
+    const current=product();
+    const comparable=references.filter(x=>!x.productId||String(x.productId)===String(current?.id));
+    const prices=comparable.map(x=>Number(x.price)).filter(v=>Number.isFinite(v)&&v>0);
     if(prices.length){
       const mean=prices.reduce((a,b)=>a+b,0)/prices.length;
       [["Menor",Math.min(...prices)],["Média",mean],["Maior",Math.max(...prices)]].forEach(pair=>{
@@ -235,9 +237,9 @@
           status("Este produto não está mais cadastrado. Os valores antigos continuam no histórico.","error");return;
         }
         E.product.value=String(entry.productId);
-        scenarios=entry.snapshot.scenarios.map(x=>({...x}));
-        references=(entry.snapshot.references||[]).map(x=>({...x}));
-        selected=scenarios.some(s=>s.id===entry.snapshot.selected)?entry.snapshot.selected:"equilibrado";
+        scenarios=Array.isArray(entry.snapshot?.scenarios)?entry.snapshot.scenarios.map(x=>({...x})):core.defaults(product());
+        references=(entry.snapshot?.references||[]).map(x=>({...x}));
+        selected=scenarios.some(s=>s.id===entry.snapshot?.selected)?entry.snapshot.selected:"equilibrado";
         const p=product();
         E.originalProduct.textContent="Preço cadastrado: "+money(Number(p.salePrice)||0)+
           " · Custo direto: "+money(core.directCost(p))+" · recalculando com custos atuais";
@@ -275,7 +277,7 @@
     for(const key of ["price","units","margin","changeMode","changePct"]){
       E[key].addEventListener(key==="changeMode"?"change":"input",()=>{
         if(!active())return;
-        active()[key]=key==="changeMode"?E[key].value:E[key].value;
+        active()[key]=E[key].value;
         render();
       });
     }
@@ -300,7 +302,7 @@
         status("Informe a descrição e um preço válido para a referência.","error");return;
       }
       if(references.length>=30){status("Limite de 30 referências por simulação.","error");return;}
-      references.push({name:name.slice(0,90),price});
+      references.push({name:name.slice(0,90),price,productId:String(product().id),productName:product().name||""});
       E.referenceName.value="";E.referencePrice.value="";render();status("Referência adicionada somente à simulação.","success");
     });
     E.saveSimulation.addEventListener("click",async()=>{
