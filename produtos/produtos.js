@@ -1023,9 +1023,10 @@
 
     try { await saveProducts(); }
     catch(error){products=previous;els.formMessage.textContent=error.message;return;}
+    const message = editingId ? "Produto atualizado." : "Produto cadastrado.";
     closeModal();
     renderAll();
-    showToast(editingId ? "Produto atualizado." : "Produto cadastrado.");
+    showToast(message);
   }
 
   function openDeleteConfirm(productId) {
