@@ -1,0 +1,3 @@
+# Dependencia Python opcional para otimizacao de precos com restricoes.
+# Instalar com: py -m pip install -r requirements-optimization.txt
+ortools
