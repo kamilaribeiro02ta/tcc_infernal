@@ -6,3 +6,9 @@ npm-debug.log*
 .env
 .env.*
 !.env.example
+
+# Banco SQLite local - nunca publicar
+/data/
+*.db
+*.db-wal
+*.db-shm
