@@ -245,3 +245,24 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
 .sim .sim-context-copy{font-size:12.5px;line-height:1.7;color:var(--sim-muted);margin:-8px 0 18px}
 .sim .sim-input-grid .sim-field-note{display:block;color:var(--sim-muted);font-size:11px;line-height:1.55;margin-top:6px;font-weight:400}
 @media(max-width:600px){.sim .sim-guide-actions{flex-direction:column}.sim .sim-guide-actions button{width:100%}}
+
+/* Ajuda flutuante: permanece disponível ao navegar, sem exigir retorno ao topo. */
+.sim .sim-guide{position:fixed;z-index:60;bottom:22px;right:22px;top:auto;left:auto;width:min(370px,calc(100vw - 40px));max-height:min(74vh,620px);overflow:auto;margin:0;padding:18px 20px;border-radius:18px;box-shadow:0 16px 48px rgba(23,15,44,.18);background:var(--sim-panel);border:1px solid var(--sim-border)}
+.sim .sim-guide.is-minimized{width:auto;max-width:calc(100vw - 40px);padding:10px 16px;border-radius:999px;overflow:visible}
+.sim .sim-guide.is-minimized .sim-guide-top>.workspace-kicker{display:none}
+.sim .sim-guide.is-minimized .sim-guide-toggle{font-size:13px;text-decoration:none;padding:2px 6px}
+.sim .sim-guide h2{font-size:20px;line-height:1.2;margin:14px 0 8px}
+.sim .sim-guide p{font-size:12px;line-height:1.6}
+.sim .sim-guide-actions{margin-top:14px}
+.sim .sim-guide-progress{margin-top:12px}
+.sim .sim-guide-top .workspace-kicker{font-size:10px}
+.sim .sim-guide .workspace-primary{padding:9px 13px;font-size:12px}
+.sim .sim-guide .workspace-secondary{padding:9px 13px;font-size:12px}
+.sim .sim-guide #guideContent[hidden]{display:none}
+.sim #product,.sim #scenarioTabs,.sim #price,.sim #resultTitle,.sim #settingsTitle{scroll-margin-top:110px}
+@media(max-width:700px){
+ .sim .sim-guide{bottom:12px;right:12px;width:min(360px,calc(100vw - 24px));max-height:min(56vh,460px);padding:16px;box-shadow:0 10px 34px rgba(23,15,44,.2)}
+ .sim .sim-guide.is-minimized{padding:8px 12px}
+ .sim .sim-guide-actions{flex-direction:row}
+ .sim .sim-guide-actions button{width:auto;flex:1;min-width:0}
+}
