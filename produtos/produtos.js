@@ -254,22 +254,26 @@
       : 0;
   }
 
+  function pricingFor(product) {
+    return window.ZUZPricing.calculate({
+      unitDirectCost: numberValue(product.baseCost) + additionalCostTotal(product),
+      salePrice: product.salePrice, targetMargin: product.targetMargin,
+      units: product.units, category: product.category, productId: product.id,
+      productName: product.name
+    });
+  }
+
   function unitCost(product) {
-    return numberValue(product.baseCost) + additionalCostTotal(product);
+    const result = pricingFor(product);
+    return result.unitBaseCost + result.salePrice * result.variableRatePct / 100;
   }
 
   function unitMarginValue(product) {
-    return numberValue(product.salePrice) - unitCost(product);
+    return pricingFor(product).unitProfit;
   }
 
   function marginPct(product) {
-    const price = numberValue(product.salePrice);
-
-    if (price <= 0) {
-      return 0;
-    }
-
-    return (unitMarginValue(product) / price) * 100;
+    return pricingFor(product).netMarginPct;
   }
 
   function projectedRevenue(product) {
@@ -277,7 +281,8 @@
   }
 
   function projectedResult(product) {
-    return unitMarginValue(product) * Math.max(1, numberValue(product.units));
+    // Projeção individual: usa o rateio unitário, sem reaplicar o custo fixo total.
+    return unitMarginValue(product) * Math.max(0, numberValue(product.units));
   }
 
   function marginClass(value) {
@@ -742,23 +747,24 @@
     const costItems = validCostItemsFromForm();
     const directCost = costItems.reduce((sum, item) => sum + item.value, 0);
     const salePrice = Math.max(0, numberValue(els.salePriceInput.value));
-    const settings = window.ZUZPricing ? window.ZUZPricing.loadSettings() : null;
-    const targetMargin = Math.min(90, Math.max(0, numberValue(els.targetMarginInput.value || settings?.defaultMargin || 30)));
+    const settings = window.ZUZPricing.loadSettings();
+    const targetMargin = Math.min(90, Math.max(0, numberValue(els.targetMarginInput.value === "" ? settings.defaultMargin : els.targetMarginInput.value)));
     const units = Math.max(1, Math.round(numberValue(els.unitsInput.value || 100)));
-    if (window.ZUZPricing) {
-      const result = window.ZUZPricing.calculate({unitDirectCost:directCost,salePrice,targetMargin,units,settings});
-      return {costItems,totalCost:result.unitBaseCost,directCost,salePrice,targetMargin,units,currentMargin:result.netMarginPct,
-        suggestedPrice:result.suggestedPrice,technicalPrice:result.technicalPrice,fixedAllocation:result.fixedAllocation,
-        variableRatePct:result.variableRatePct,contributionMargin:result.contributionMargin,breakEvenUnits:result.breakEvenUnits,
-        range:result.recommendedRange,market:result.market,investment:result.investment,revenue:result.revenue,
-        unitProfit:result.unitProfit,profit:result.profit};
-    }
-    const currentMargin=salePrice>0?((salePrice-directCost)/salePrice)*100:0;
-    const suggestedPrice=directCost>0?directCost/(1-targetMargin/100):0;
-    return {costItems,totalCost:directCost,directCost,salePrice,targetMargin,units,currentMargin,suggestedPrice,
-      technicalPrice:suggestedPrice,fixedAllocation:0,variableRatePct:0,contributionMargin:salePrice-directCost,breakEvenUnits:0,
-      range:{low:suggestedPrice,high:suggestedPrice*1.1},market:{count:0},investment:directCost*units,revenue:salePrice*units,
-      unitProfit:salePrice-directCost,profit:(salePrice-directCost)*units};
+    const result = window.ZUZPricing.calculate({
+      unitDirectCost: directCost, salePrice, targetMargin, units, settings,
+      category: selectedCategory(), productId: editingId || undefined,
+      productName: els.nameInput.value.trim()
+    });
+    return {
+      costItems, totalCost: result.unitBaseCost, directCost, salePrice, targetMargin, units,
+      currentMargin: result.netMarginPct, suggestedPrice: result.suggestedPrice,
+      technicalPrice: result.technicalPrice, fixedAllocation: result.fixedAllocation,
+      variableRatePct: result.variableRatePct, contributionMargin: result.contributionMargin,
+      breakEvenUnits: result.breakEvenUnits, range: result.recommendedRange,
+      market: result.market, reason: result.explanation, warnings: result.warnings,
+      investment: result.investment, revenue: result.revenue, unitProfit: result.unitProfit,
+      profit: result.profit
+    };
   }
 
   function updatePricingAndSimulation() {
@@ -773,6 +779,9 @@
 
     els.feedbackMargin.textContent = percent(pricing.currentMargin);
     els.feedbackSuggested.textContent = currency(pricing.suggestedPrice);
+    els.feedbackSuggested.title = pricing.range.high === null
+      ? "Mínimo técnico: " + currency(pricing.range.low) + ". " + pricing.reason
+      : "Referência: " + currency(pricing.range.low) + " a " + currency(pricing.range.high) + ". " + pricing.reason;
 
     els.simulationInvestment.textContent = currency(pricing.investment);
     els.simulationRevenue.textContent = currency(pricing.revenue);
@@ -825,7 +834,7 @@
 
     els.pricingExplanation.classList.add("good");
     els.pricingExplanation.innerHTML =
-      '<i class="bx bx-check-circle"></i><span>O preço atual atende à margem desejada.</span>';
+      '<i class="bx bx-check-circle"></i><span>O preço atual atende à margem desejada. Consulte a justificativa da faixa no preço sugerido.</span>';
     els.simulationStatus.classList.add("good");
     els.simulationStatus.textContent =
       "A projeção está positiva e atende à margem definida.";
