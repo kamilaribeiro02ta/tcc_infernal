@@ -204,3 +204,28 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
 
 .sim .sim-history-row{flex-wrap:wrap}
 .sim .sim-history-row .sim-row-actions{flex-wrap:wrap;justify-content:flex-end;max-width:100%}
+
+/* Revisão de hierarquia: parâmetros, resultados e comparações primeiro; ferramentas avançadas depois. */
+.sim {max-width:1280px;margin-inline:auto;padding-bottom:76px}
+.sim .workspace-heading{margin-bottom:30px}
+.sim .workspace-heading h1{max-width:850px;text-wrap:balance}
+.sim .sim-product-bar{box-shadow:none;margin-bottom:20px}
+.sim .simulation-layout{grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:20px;align-items:start}
+.sim .simulation-input,.sim .simulation-output,.sim .sim-section{box-shadow:none;border-radius:18px}
+.sim .simulation-output{position:sticky;top:24px}
+.sim .workspace-section-head{margin-bottom:20px}
+.sim .sim-section{margin-top:20px}
+.sim .sim-bottom-grid{gap:20px}
+.sim .sim-bottom-grid .sim-section{margin-top:20px}
+.sim .simulation-output > h2{font-size:clamp(36px,4vw,54px);margin-bottom:22px}
+.sim .workspace-metrics>div{padding:12px 0}
+.sim .sim-compare-card{min-height:170px;padding:20px;gap:8px;background:var(--sim-panel)}
+.sim .sim-compare-card.is-active{box-shadow:inset 0 0 0 1px var(--sim-accent)}
+.sim .sim-compare-card strong{font-size:clamp(20px,2.2vw,27px)}
+.sim .sim-history-row{align-items:flex-start;flex-wrap:wrap}
+.sim .sim-row-actions{flex-wrap:wrap;justify-content:flex-end}
+.sim .sim-row-actions button{min-height:36px;padding:7px 12px}
+.sim .sim-chart-shell{overflow-x:auto}
+.sim .sim-chart-shell svg{min-width:520px}
+@media(max-width:980px){.sim .simulation-layout{grid-template-columns:minmax(0,1fr)}.sim .simulation-output{position:static}.sim .sim-bottom-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){.sim .sim-comparison-grid{grid-template-columns:minmax(0,1fr)}.sim .sim-product-bar{padding:20px}.sim .sim-add-reference{grid-template-columns:minmax(0,1fr) minmax(100px,.5fr)}.sim .sim-add-reference button{grid-column:1/-1}.sim .sim-history-row{display:block}.sim .sim-row-actions{justify-content:flex-start;margin-top:12px}.sim .sim-input-grid{grid-template-columns:minmax(0,1fr)}}

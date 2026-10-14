@@ -54,3 +54,20 @@ test("parametros invalidos sao rejeitados",()=>{
   assert.throws(()=>simulation.calculate(product(),{...settings(),taxesPct:85},{...s,margin:20}),RangeError);
   assert.equal(simulation.goal({...simulation.calculate(product(),settings(),s),contributionMargin:-2},5000,"profit"),null);
 });
+
+test("campos numéricos vazios nunca viram zero silenciosamente",()=>{
+  const base=simulation.defaults(product())[1];
+  for(const field of ["price","units","margin","changePct"]){
+    assert.throws(()=>simulation.calculate(product(),settings(),{...base,[field]:""}),RangeError);
+  }
+  const result=simulation.calculate(product(),settings(),base);
+  assert.throws(()=>simulation.goal(result,"","revenue"),RangeError);
+  assert.equal(simulation.goal(result,0,"revenue"),0);
+});
+test("referências de produto são isoladas no mecanismo de precificação",()=>{
+  const s=simulation.defaults(product())[1];
+  const cfg={...settings(),competitors:[{name:"Outro produto",price:900,productId:"produto-diferente"}]};
+  const result=simulation.calculate(product(),cfg,s);
+  assert.equal(result.market.count,0);
+  assert.equal(result.recommendedRange.high,null);
+});
