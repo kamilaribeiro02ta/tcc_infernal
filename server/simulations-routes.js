@@ -19,8 +19,11 @@ function references(value){
 function propose(message,s){
   const text=message.toLowerCase();
   const next={...s};
-  const find=(verb,subject)=>text.match(new RegExp(verb+".{0,35}"+subject+".{0,25}?(\\d+(?:[,.]\\d+)?)\\s*%","i"))
-    ||text.match(new RegExp(subject+".{0,35}"+verb+".{0,15}?(\\d+(?:[,.]\\d+)?)\\s*%","i"));
+  const find=(verb,subject)=>{
+    const action="(?:"+verb+")",field="(?:"+subject+")";
+    return text.match(new RegExp(action+".{0,35}"+field+".{0,25}?(\\d+(?:[,.]\\d+)?)\\s*%","i"))
+      ||text.match(new RegExp(field+".{0,35}"+action+".{0,15}?(\\d+(?:[,.]\\d+)?)\\s*%","i"));
+  };
   const priceUp=find("aument\\w*|subir|elevar|reajust\\w*","pre[cç]o");
   const priceDown=find("reduz\\w*|diminu\\w*|baixar","pre[cç]o");
   if(priceUp||priceDown){
@@ -86,9 +89,16 @@ function registerSimulationRoutes(router,{asyncRoute,getCompany}){
     if(!data||!Array.isArray(data.scenarios)||data.scenarios.length!==3)fail(400,"Envie três cenários válidos.");
     const scenarios=data.scenarios.map(s=>simulation.validate(s));
     const refs=references(data.references);
-    for(const s of scenarios)simulation.calculate(product,company.settings,s,refs.length?refs:undefined);
+    let results;
+    try{
+      results=scenarios.map(s=>{
+        const r=simulation.calculate(product,company.settings,s,refs);
+        return {id:s.id,label:s.label,price:r.salePrice,units:r.units,revenue:r.revenue,
+          profit:r.profit,cost:r.unitBaseCost,breakEven:r.breakEvenUnits};
+      });
+    }catch(error){if(error instanceof RangeError)fail(400,error.message);throw error;}
     const snapshot={version:1,productName:safeText(product.name),productCost:simulation.directCost(product),
-      scenarios,selected:scenarios.some(s=>s.id===data.selected)?data.selected:"equilibrado",
+      scenarios,results,selected:scenarios.some(s=>s.id===data.selected)?data.selected:"equilibrado",
       references:refs,originalSettings:company.settings};
     const serialized=JSON.stringify(snapshot);
     if(serialized.length>32000)fail(400,"A simulação excede o limite de armazenamento.");
@@ -115,10 +125,10 @@ function registerSimulationRoutes(router,{asyncRoute,getCompany}){
     let scenario,report;
     try{
       scenario=simulation.validate(ctx.scenario);
-      report=simulation.calculate(product,company.settings,scenario,references(ctx.references).length?references(ctx.references):undefined);
+      report=simulation.calculate(product,company.settings,scenario,Array.isArray(ctx.references)?references(ctx.references):undefined);
     }catch(error){if(error instanceof RangeError)fail(400,error.message);throw error;}
     let proposal=propose(message,scenario),proposed=null;
-    if(proposal){try{proposed=simulation.calculate(product,company.settings,proposal);}catch{proposal=null;}}
+    if(proposal){try{proposed=simulation.calculate(product,company.settings,proposal,Array.isArray(ctx.references)?references(ctx.references):undefined);}catch{proposal=null;}}
     const response=await explain(message,product,report,proposal,proposed);
     res.json({...response,proposal,metrics:{result:report.profit,revenue:report.revenue,breakEven:report.breakEvenUnits}});
   }));
