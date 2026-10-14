@@ -244,7 +244,7 @@
         E.originalProduct.textContent="Preço cadastrado: "+money(Number(p.salePrice)||0)+
           " · Custo direto: "+money(core.directCost(p))+" · recalculando com custos atuais";
         setInputValues();render();status("Cenários recuperados e recalculados com os dados atuais. Cadastro preservado.","success");
-        window.scrollTo({top:0,behavior:"smooth"});
+        document.getElementById("settingsTitle")?.scrollIntoView({behavior:"smooth",block:"center"});
       }));
       actions.append(makeButton("Renomear",async()=>{
         const name=window.prompt("Novo nome da simulação:",entry.name);
@@ -296,7 +296,8 @@
   function setGuideOpen(open){
     E.guideContent.hidden=!open;
     E.guideToggle.setAttribute("aria-expanded",String(open));
-    E.guideToggle.textContent=open?"Ocultar guia":"Como usar simulações";
+    E.guideToggle.textContent=open?"Minimizar":"Abrir guia";
+    E.simGuide.classList.toggle("is-minimized",!open);
   }
   function bindGuide(){
     paintGuide();
