@@ -201,3 +201,6 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
 @media(max-width:850px){.sim .sim-comparison-grid{grid-template-columns:minmax(0,1fr)}.sim .sim-compare-card{min-height:0}}
 @media(max-width:600px){.sim .sim-section{padding:22px 17px}.sim .sim-product-bar{padding:18px}.sim .sim-input-grid{grid-template-columns:minmax(0,1fr)}.sim .sim-market-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.sim .sim-add-reference{grid-template-columns:1fr 1fr}.sim .sim-add-reference button{grid-column:1 / -1}.sim .sim-legend{width:100%}}
 @media(prefers-reduced-motion:reduce){.sim .sim-tab,.sim .sim-compare-card{transition:none}}
+
+.sim .sim-history-row{flex-wrap:wrap}
+.sim .sim-history-row .sim-row-actions{flex-wrap:wrap;justify-content:flex-end;max-width:100%}
