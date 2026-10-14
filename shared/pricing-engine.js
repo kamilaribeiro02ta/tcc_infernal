@@ -16,7 +16,8 @@
       if (!window.ZUZAPI) throw new Error("Conecte-se ao servidor da ZUZ para salvar as configurações.");
       const result = await window.ZUZAPI.request("PUT", "/company/settings", { settings: normalized });
       const confirmed = core.normalize(result.settings);
-      localStorage.setItem(KEY, JSON.stringify(confirmed));
+      try { localStorage.setItem(KEY, JSON.stringify(confirmed)); }
+      catch (error) { console.warn("Configurações salvas no banco; cache local indisponível.", error); }
       window.dispatchEvent(new CustomEvent("zuz:business-settings", { detail: confirmed }));
       return confirmed;
     };
