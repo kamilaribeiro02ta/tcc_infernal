@@ -209,7 +209,7 @@ function createApi() {
     const period=normalText(req.body.period,7);
     const price=Number(req.body.averagePrice);
     const units=Number(req.body.soldUnits);
-    if(!/^\\d{4}-(0[1-9]|1[0-2])$/.test(period) || !Number.isFinite(price) ||
+    if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(period) || !Number.isFinite(price) ||
        price<=0 || !Number.isSafeInteger(units) || units<0 || units>1000000000)
       fail(400,"Informe mês, preço médio e unidades realmente vendidas.");
     const row=await query("SELECT id FROM zuz_products WHERE id=$1 AND company_id=$2",[productId,company.id]);
