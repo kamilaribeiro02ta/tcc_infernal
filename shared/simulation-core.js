@@ -1,0 +1,65 @@
+(function(root,factory){
+  const api=factory(typeof module==="object"&&module.exports?require("./pricing-core"):root.ZUZPricingCore);
+  if(typeof module==="object"&&module.exports)module.exports=api;
+  if(root)root.ZUZSimulationCore=api;
+})(typeof globalThis!=="undefined"?globalThis:this,function(pricing){
+  "use strict";
+  const numeric=(v,fallback=0)=>v===""||v===null||v===undefined?fallback:Number(v);
+  const finite=(v,name,min,max)=>{
+    if(!Number.isFinite(v)||v<min||v>max)throw new RangeError(name+" fora do intervalo permitido.");
+    return v;
+  };
+  function directCost(product){
+    const base=Number(product?.baseCost??product?.direct_cost??0);
+    const extra=Array.isArray(product?.additionalCosts)?product.additionalCosts.reduce((sum,item)=>sum+Math.max(0,Number(item.value)||0),0):0;
+    return Math.max(0,Number.isFinite(base)?base:0)+extra;
+  }
+  function defaults(product={}){
+    const p=Math.max(0,Number(product.salePrice)||0);
+    const units=Math.max(1,Math.round(Number(product.units)||100));
+    const margin=Number(product.targetMargin??30);
+    return [
+      {id:"conservador",label:"Conservador",price:+(p*0.93).toFixed(2),units:Math.max(1,Math.round(units*1.1)),margin,changePct:0,changeMode:"variable"},
+      {id:"equilibrado",label:"Equilibrado",price:p,units,margin,changePct:0,changeMode:"variable"},
+      {id:"premium",label:"Premium",price:+(p*1.12).toFixed(2),units:Math.max(1,Math.round(units*.8)),margin,changePct:0,changeMode:"variable"}
+    ];
+  }
+  function validate(scenario){
+    if(!scenario||typeof scenario!=="object")throw new RangeError("Cenário inválido.");
+    const price=finite(numeric(scenario.price),"Preço",0,100000000);
+    const units=finite(numeric(scenario.units),"Quantidade",1,1000000);
+    const margin=finite(numeric(scenario.margin),"Margem",0,90);
+    const changePct=finite(numeric(scenario.changePct),"Variação de custos",-100,500);
+    if(!Number.isInteger(units))throw new RangeError("Quantidade deve ser inteira.");
+    const changeMode=scenario.changeMode==="fixed"?"fixed":"variable";
+    return {id:String(scenario.id||"equilibrado"),label:String(scenario.label||"Cenário"),price,units,margin,changePct,changeMode};
+  }
+  function calculate(product,settings,scenario,competitors){
+    const s=validate(scenario);
+    const original=pricing.normalize(settings||{});
+    const copied={...original,fixedCosts:original.fixedCosts.map(c=>({...c})),competitors:(competitors||original.competitors).map(c=>({...c}))};
+    const multiplier=1+s.changePct/100;
+    const direct=directCost(product)*(s.changeMode==="variable"?multiplier:1);
+    if(s.changeMode==="fixed")copied.fixedCosts=copied.fixedCosts.map(c=>({...c,value:c.value*multiplier}));
+    const output=pricing.calculate({unitDirectCost:direct,salePrice:s.price,targetMargin:s.margin,units:s.units,settings:copied});
+    return {...output,scenario:s,appliedSettings:copied,variableCost:direct,variableContribution:output.contributionMargin};
+  }
+  function goal(result,target,kind){
+    const amount=finite(numeric(target),"Meta",0,1000000000);
+    if(kind==="revenue")return result.salePrice>0?Math.ceil(amount/result.salePrice):null;
+    if(result.contributionMargin<=0)return null;
+    return Math.max(0,Math.ceil((amount+result.fixedTotal)/result.contributionMargin));
+  }
+  function scenarioChartPoints(result,steps=10){
+    const high=Math.max(10,result.units*2,result.breakEvenUnits||0);
+    const values=[];
+    for(let i=0;i<=steps;i++){
+      const units=Math.round(i*high/steps);
+      const revenue=result.salePrice*units;
+      const costs=result.fixedTotal+(result.variableCost+result.salePrice*result.variableRatePct/100)*units;
+      values.push({units,revenue,costs,profit:revenue-costs});
+    }
+    return values;
+  }
+  return {directCost,defaults,validate,calculate,goal,scenarioChartPoints};
+});
