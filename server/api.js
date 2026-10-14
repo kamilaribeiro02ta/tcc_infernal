@@ -299,7 +299,19 @@ function createApi() {
     const row=await query(`INSERT INTO zuz_products(company_id,name,operation_type,category,costing_mode,inputs,direct_cost,sale_price,target_margin,units)
       VALUES($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9,$10) RETURNING *`,
       [company.id,name,op,normalText(req.body.category||"Sem categoria"),normalText(req.body.costingMode||company.costing_mode,32),JSON.stringify(inputs),direct,sale,margin,units]);
-    res.status(201).json({ product:row.rows[0] });
+    const created=row.rows[0];
+    // Mantém o mesmo histórico para produtos inseridos pela API simplificada.
+    const client=await getPool().connect();
+    try {
+      await client.query("BEGIN");
+      await appendRecommendation(client,company.id,created,company.settings);
+      await client.query("COMMIT");
+    } catch(error) {
+      await client.query("ROLLBACK");
+      if(error instanceof RangeError)fail(400,error.message);
+      throw error;
+    } finally {client.release();}
+    res.status(201).json({ product:created });
   }));
   router.use((err,req,res,_next)=>{
     console.error("Erro API ZUZ:",err.message);
