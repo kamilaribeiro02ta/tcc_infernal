@@ -212,7 +212,7 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
 .sim .sim-product-bar{box-shadow:none;margin-bottom:20px}
 .sim .simulation-layout{grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:20px;align-items:start}
 .sim .simulation-input,.sim .simulation-output,.sim .sim-section{box-shadow:none;border-radius:18px}
-.sim .simulation-output{position:sticky;top:24px}
+.sim .simulation-output{position:static;top:auto}
 .sim .workspace-section-head{margin-bottom:20px}
 .sim .sim-section{margin-top:20px}
 .sim .sim-bottom-grid{gap:20px}
