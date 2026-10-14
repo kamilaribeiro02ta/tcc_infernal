@@ -7,7 +7,7 @@
     "simulationStatus","use","chart","chartDescription","comparisonCards","goalType","goalAmount",
     "goalUnits","goalDetail","marketStats","referenceList","referenceName","referencePrice",
     "addReference","simulationName","saveSimulation","historyList","aiMessages","aiForm",
-    "aiInput","askAI","aiProposal"];
+    "aiInput","askAI","aiProposal","simGuide","guideToggle","guideContent","guideCounter","guideProgressLabel","guideProgressBar","guideHeading","guideText","guideNext","guideSkip"];
   const E=Object.fromEntries(ids.map(id=>[id,document.getElementById(id)]));
   const money=v=>Number.isFinite(v)?new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(v):"—";
   const integer=v=>new Intl.NumberFormat("pt-BR",{maximumFractionDigits:0}).format(v);
@@ -273,6 +273,49 @@
       row.append(summary,actions);E.historyList.append(row);
     });
   }
+  // Ajuda progressiva: acessível a qualquer momento e sem impedir a edição dos campos.
+  const guideSteps=[
+    {title:"Escolha o produto",text:"Comece escolhendo o produto que deseja testar. O preço cadastrado será usado como referência, mas não será alterado.",button:"Ir para o produto",target:"product"},
+    {title:"Selecione um cenário",text:"Conservador testa um preço menor, Equilibrado parte do valor cadastrado e Premium testa um valor maior. São hipóteses: selecione uma delas para editar.",button:"Ver cenários",target:"scenarioTabs"},
+    {title:"Ajuste preço e vendas",text:"Mude primeiro o preço e as unidades estimadas. O resultado ao lado é recalculado automaticamente. Depois, se quiser, experimente margem e custos.",button:"Editar o preço",target:"price"},
+    {title:"Entenda os resultados",text:"Receita é o total vendido; resultado mensal desconta os custos variáveis e os fixos informados. Ponto de equilíbrio é a quantidade mínima para cobrir os custos. Compare os três cenários antes de decidir.",button:"Ver o resultado",target:"resultTitle"}
+  ];
+  let guideStep=0;
+  const guideKey="zuz.simulacoes.guia.v1";
+  function guideStore(value){try{localStorage.setItem(guideKey,value);}catch{}}
+  function guideRead(){try{return localStorage.getItem(guideKey);}catch{return null;}}
+  function paintGuide(){
+    const step=guideSteps[guideStep];
+    E.guideCounter.textContent="Passo "+(guideStep+1)+" de "+guideSteps.length;
+    E.guideProgressLabel.textContent=step.title;
+    E.guideProgressBar.style.width=(100*(guideStep+1)/guideSteps.length)+"%";
+    E.guideHeading.textContent=step.title;
+    E.guideText.textContent=step.text;
+    E.guideNext.textContent=step.button+(guideStep===guideSteps.length-1?" · Concluir":"");
+  }
+  function setGuideOpen(open){
+    E.guideContent.hidden=!open;
+    E.guideToggle.setAttribute("aria-expanded",String(open));
+    E.guideToggle.textContent=open?"Ocultar guia":"Como usar simulações";
+  }
+  function bindGuide(){
+    paintGuide();
+    setGuideOpen(guideRead()!=="closed");
+    E.guideToggle.addEventListener("click",()=>{
+      const opening=E.guideContent.hidden;
+      setGuideOpen(opening);
+      guideStore(opening?"open":"closed");
+    });
+    E.guideSkip.addEventListener("click",()=>{setGuideOpen(false);guideStore("closed");});
+    E.guideNext.addEventListener("click",()=>{
+      const step=guideSteps[guideStep];
+      const target=document.getElementById(step.target);
+      if(target){target.scrollIntoView({behavior:"smooth",block:"center"});if(step.target==="price"||step.target==="product")target.focus({preventScroll:true});}
+      if(guideStep===guideSteps.length-1){setGuideOpen(false);guideStore("closed");guideStep=0;}
+      else guideStep++;
+      paintGuide();
+    });
+  }
   function bind(){
     for(const key of ["price","units","margin","changeMode","changePct"]){
       E[key].addEventListener(key==="changeMode"?"change":"input",()=>{
@@ -348,6 +391,7 @@
       finally{E.askAI.disabled=false;}
     });
   }
+  bindGuide();
   bind();
   if(!products.length){
     E.product.append(node("option","Nenhum produto cadastrado"));
