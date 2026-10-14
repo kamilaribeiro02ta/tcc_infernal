@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const { promisify } = require("util");
 const { query, getPool } = require("./database");
 const catalog = require("../shared/business-templates");
+const { registerSimulationRoutes } = require("./simulations-routes");
 const pricing = require("../shared/pricing-core");
 const { predictPrice } = require("../shared/price-prediction");
 const scrypt = promisify(crypto.scrypt);
@@ -317,6 +318,7 @@ function createApi() {
     } finally {client.release();}
     res.status(201).json({ product:created });
   }));
+  registerSimulationRoutes(router,{asyncRoute,getCompany});
   router.use((err,req,res,_next)=>{
     console.error("Erro API ZUZ:",err.message);
     res.status(err.status || 500).json({ error:err.status?err.message:"Erro interno. Confira a configuração do servidor." });
