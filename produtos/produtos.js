@@ -1014,18 +1014,18 @@
       date
     });
 
+    const previous = products.slice();
     if (editingId) {
       products = products.map(product => product.id === editingId ? normalized : product);
-      showToast("Produto atualizado.");
     } else {
       products.push(normalized);
-      showToast("Produto cadastrado.");
     }
 
     try { await saveProducts(); }
-    catch(error){els.formMessage.textContent=error.message;return;}
+    catch(error){products=previous;els.formMessage.textContent=error.message;return;}
     closeModal();
     renderAll();
+    showToast(editingId ? "Produto atualizado." : "Produto cadastrado.");
   }
 
   function openDeleteConfirm(productId) {
@@ -1059,10 +1059,11 @@
     }
 
     const product = products.find(item => item.id === pendingDeleteId);
+    const previous = products.slice();
     products = products.filter(item => item.id !== pendingDeleteId);
 
     try { await saveProducts(); }
-    catch(error){showToast(error.message);return;}
+    catch(error){products=previous;showToast(error.message);return;}
     closeDeleteConfirm();
     renderAll();
 
