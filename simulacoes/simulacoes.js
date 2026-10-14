@@ -210,7 +210,8 @@
     }catch(error){E.historyList.replaceChildren(node("p","Não foi possível carregar o histórico: "+error.message,"sim-muted"));}
   }
   function showSaved(entry){
-    const panel=node("div",undefined,"sim-insight");
+    E.historyList.querySelectorAll(".sim-saved-preview").forEach(el=>el.remove());
+    const panel=node("div",undefined,"sim-insight sim-saved-preview");
     panel.append(node("strong",entry.name),node("p","Valores guardados na data "+new Date(entry.createdAt).toLocaleString("pt-BR")+".","sim-muted"));
     const saved=entry.snapshot?.results||[];
     if(saved.length){
@@ -308,13 +309,15 @@
         if(response.proposal){
           const suggestion=response.proposal;
           E.aiProposal.hidden=false;
-          E.aiProposal.append(node("p","A ZUZ propôs preço de "+money(suggestion.price)+" e volume de "+
-            integer(suggestion.units)+" un. Deseja usar esses valores neste cenário?"));
+          E.aiProposal.append(node("p","A ZUZ propôs preço de "+money(suggestion.price)+", volume de "+
+            integer(suggestion.units)+" un. e variação de custos de "+suggestion.changePct+
+            "% ("+(suggestion.changeMode==="fixed"?"custos fixos":"custos variáveis")+"). Deseja usar estes valores somente no cenário?"));
           const targetId=selected;
           const button=makeButton("Aplicar somente neste cenário",()=>{
             const target=scenarios.find(s=>s.id===targetId);
             if(!target)return;
             target.price=suggestion.price;target.units=suggestion.units;
+            target.changePct=suggestion.changePct;target.changeMode=suggestion.changeMode;
             selectScenario(targetId);E.aiProposal.hidden=true;
             status("Proposta aplicada à simulação. Produto original preservado.","success");
           });
