@@ -12,3 +12,6 @@ npm-debug.log*
 *.db
 *.db-wal
 *.db-shm
+
+# Ambiente virtual Python
+.venv/
