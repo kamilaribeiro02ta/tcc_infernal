@@ -26,10 +26,10 @@
   }
   function validate(scenario){
     if(!scenario||typeof scenario!=="object")throw new RangeError("Cenário inválido.");
-    const price=finite(numeric(scenario.price),"Preço",0,100000000);
-    const units=finite(numeric(scenario.units),"Quantidade",1,1000000);
-    const margin=finite(numeric(scenario.margin),"Margem",0,90);
-    const changePct=finite(numeric(scenario.changePct),"Variação de custos",-100,500);
+    const price=finite(numeric(scenario.price,NaN),"Preço",0,100000000);
+    const units=finite(numeric(scenario.units,NaN),"Quantidade",1,1000000);
+    const margin=finite(numeric(scenario.margin,NaN),"Margem",0,90);
+    const changePct=finite(numeric(scenario.changePct,NaN),"Variação de custos",-100,500);
     if(!Number.isInteger(units))throw new RangeError("Quantidade deve ser inteira.");
     const changeMode=scenario.changeMode==="fixed"?"fixed":"variable";
     return {id:String(scenario.id||"equilibrado"),label:String(scenario.label||"Cenário"),price,units,margin,changePct,changeMode};
@@ -41,17 +41,19 @@
     const multiplier=1+s.changePct/100;
     const direct=directCost(product)*(s.changeMode==="variable"?multiplier:1);
     if(s.changeMode==="fixed")copied.fixedCosts=copied.fixedCosts.map(c=>({...c,value:c.value*multiplier}));
-    const output=pricing.calculate({unitDirectCost:direct,salePrice:s.price,targetMargin:s.margin,units:s.units,settings:copied});
+    const output=pricing.calculate({unitDirectCost:direct,salePrice:s.price,targetMargin:s.margin,units:s.units,settings:copied,productId:String(product?.id??""),productName:String(product?.name??""),category:String(product?.category??"")});
     return {...output,scenario:s,appliedSettings:copied,variableCost:direct,variableContribution:output.contributionMargin};
   }
   function goal(result,target,kind){
-    const amount=finite(numeric(target),"Meta",0,1000000000);
+    const amount=finite(numeric(target,NaN),"Meta",0,1000000000);
+    if(amount===0&&kind==="revenue")return 0;
     if(kind==="revenue")return result.salePrice>0?Math.ceil(amount/result.salePrice):null;
+    if(kind!=="profit")throw new RangeError("Tipo de meta inválido.");
     if(result.contributionMargin<=0)return null;
     return Math.max(0,Math.ceil((amount+result.fixedTotal)/result.contributionMargin));
   }
   function scenarioChartPoints(result,steps=10){
-    const high=Math.max(10,result.units*2,result.breakEvenUnits||0);
+    const high=Math.min(2000000,Math.max(10,result.units*2,Number.isFinite(result.breakEvenUnits)?result.breakEvenUnits:0));
     const values=[];
     for(let i=0;i<=steps;i++){
       const units=Math.round(i*high/steps);
