@@ -2,7 +2,7 @@
 const express = require("express");
 const crypto = require("crypto");
 const { promisify } = require("util");
-const { query, getPool } = require("./database");
+const { query, getPool, provider } = require("./database");
 const catalog = require("../shared/business-templates");
 const { registerSimulationRoutes } = require("./simulations-routes");
 const pricing = require("../shared/pricing-core");
@@ -89,7 +89,7 @@ async function appendRecommendation(client, companyId, product, settings) {
 }
 function createApi() {
   const router = express.Router();
-  router.get("/health", (_req, res) => res.json({ ok: true, app: "ZUZ", databaseConfigured: true, database: "sqlite" }));
+  router.get("/health", (_req, res) => res.json({ ok: true, app: "ZUZ", databaseConfigured: true, database: provider }));
   router.post("/auth/signup", asyncRoute(async (req, res) => {
     const name = normalText(req.body.name, 160);
     const email = normalText(req.body.email, 254).toLowerCase();
@@ -101,7 +101,7 @@ function createApi() {
     let created;
     try {
       created = await query("INSERT INTO zuz_users(full_name,email,password_hash) VALUES($1,$2,$3) RETURNING id,full_name,email", [name,email,hash]);
-    } catch (e) { if (e.code === "SQLITE_CONSTRAINT_UNIQUE" || e.code === "SQLITE_CONSTRAINT_PRIMARYKEY") fail(409, "Já existe uma conta com esse e-mail."); throw e; }
+    } catch (e) { if (e.code === "23505" || e.code === "SQLITE_CONSTRAINT_UNIQUE" || e.code === "SQLITE_CONSTRAINT_PRIMARYKEY") fail(409, "Já existe uma conta com esse e-mail."); throw e; }
     const user = created.rows[0]; await session(req,res,user);
     res.status(201).json({ user: safeUser(user), company: null });
   }));
@@ -153,7 +153,7 @@ function createApi() {
     const client=await getPool().connect();
     try {
       await client.query("BEGIN");
-      await client.query("DELETE FROM zuz_cost_categories WHERE company_id=$1 AND label NOT IN (SELECT value FROM json_each($2))",[company.id,JSON.stringify(unique)]);
+      await client.query(provider === "postgresql" ? "DELETE FROM zuz_cost_categories WHERE company_id=$1 AND NOT (label = ANY($2::text[]))" : "DELETE FROM zuz_cost_categories WHERE company_id=$1 AND label NOT IN (SELECT value FROM json_each($2))",[company.id,provider === "postgresql" ? unique : JSON.stringify(unique)]);
       for (const label of unique) {
         const type=/taxa|comiss|tributo|imposto/i.test(label)?"percentual":/aluguel|internet|assinatura|licença/i.test(label)?"fixo":"direto";
         const unit=type==="percentual"?"percentual":"reais";
@@ -202,7 +202,7 @@ function createApi() {
     const rows=productId
       ? await query("SELECT id,product_id,product_name,snapshot,created_at FROM zuz_pricing_history WHERE company_id=$1 AND product_id=$2 ORDER BY id DESC LIMIT $3",[company.id,productId,limit])
       : await query("SELECT id,product_id,product_name,snapshot,created_at FROM zuz_pricing_history WHERE company_id=$1 ORDER BY id DESC LIMIT $2",[company.id,limit]);
-    res.json({history:rows.rows.map(row=>({...row,snapshot:JSON.parse(row.snapshot)}))});
+    res.json({history:rows.rows.map(row=>({...row,snapshot:typeof row.snapshot === "string" ? JSON.parse(row.snapshot) : row.snapshot}))});
   }));
 
   // Registro explicito de unidades efetivamente vendidas em um mes.
@@ -267,8 +267,8 @@ function createApi() {
     try{
       await client.query("BEGIN");
       // Preserva os produtos existentes para não apagar vendas reais vinculadas a eles.
-      await client.query("DELETE FROM zuz_products WHERE company_id=$1 AND id NOT IN (SELECT value FROM json_each($2))",
-        [company.id,JSON.stringify(verified.map(product=>product.id))]);
+      await client.query(provider === "postgresql" ? "DELETE FROM zuz_products WHERE company_id=$1 AND NOT (id = ANY($2::uuid[]))" : "DELETE FROM zuz_products WHERE company_id=$1 AND id NOT IN (SELECT value FROM json_each($2))",
+        [company.id,provider === "postgresql" ? verified.map(product=>product.id) : JSON.stringify(verified.map(product=>product.id))]);
       for(const p of verified){
         const current=await client.query("SELECT company_id FROM zuz_products WHERE id=$1",[p.id]);
         if(current.rowCount && current.rows[0].company_id!==company.id)
