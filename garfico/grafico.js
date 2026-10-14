@@ -186,20 +186,28 @@
     return String(day).padStart(2, "0") + "/" + String(month).padStart(2, "0") + "/" + year;
   }
 
+  function productPricing(product) {
+    const extras = Array.isArray(product.additionalCosts)
+      ? product.additionalCosts.reduce((sum, item) => sum + numberValue(item.value), 0) : 0;
+    return window.ZUZPricing.calculate({
+      unitDirectCost: Math.max(0, numberValue(product.baseCost) + extras),
+      salePrice: product.salePrice, targetMargin: product.targetMargin,
+      units: product.units, category: product.category,
+      productId: product.id, productName: product.name
+    });
+  }
+
   function totalUnitCost(product) {
-    const extras=Array.isArray(product.additionalCosts)?product.additionalCosts.reduce((sum,item)=>sum+numberValue(item.value),0):0;
-    const direct=Math.max(0,numberValue(product.baseCost)+extras);
-    return window.ZUZPricing?window.ZUZPricing.calculate({unitDirectCost:direct,salePrice:product.salePrice,targetMargin:product.targetMargin,units:product.units}).unitBaseCost:direct;
+    const p = productPricing(product);
+    return p.unitBaseCost + p.salePrice * p.variableRatePct / 100;
   }
 
   function productMarginValue(product) {
-    return numberValue(product.salePrice) - totalUnitCost(product);
+    return productPricing(product).unitProfit;
   }
 
   function productMarginPct(product) {
-    const salePrice = numberValue(product.salePrice);
-    if (salePrice <= 0) return 0;
-    return (productMarginValue(product) / salePrice) * 100;
+    return productPricing(product).netMarginPct;
   }
 
   function productRevenue(product) {
@@ -207,7 +215,8 @@
   }
 
   function productCostTotal(product) {
-    return totalUnitCost(product) * Math.max(0, numberValue(product.units));
+    // Custos variáveis por produto; custos fixos entram uma única vez no mês.
+    return productPricing(product).periodVariableCosts;
   }
 
   function createDemoProducts() {
@@ -337,15 +346,16 @@
   }
 
   function saveProducts() {
-    return window.ZUZCompanyData.saveProducts(products)
-      .catch(error=>showToast("Não foi possível salvar: "+error.message));
+    return window.ZUZCompanyData.saveProducts(products);
   }
 
   function monthMetrics(monthIndex) {
     const monthProducts = products.filter(product => monthFromDate(product.date) === monthIndex);
 
     const revenue = monthProducts.reduce((sum, product) => sum + productRevenue(product), 0);
-    const costs = monthProducts.reduce((sum, product) => sum + productCostTotal(product), 0);
+    const variableCosts = monthProducts.reduce((sum, product) => sum + productCostTotal(product), 0);
+    const fixedCosts = window.ZUZPricing.fixedCostsTotal();
+    const costs = variableCosts + fixedCosts;
     const margin = revenue - costs;
     const units = monthProducts.reduce((sum, product) => sum + Math.max(0, numberValue(product.units)), 0);
     const marginPct = revenue > 0 ? (margin / revenue) * 100 : 0;
@@ -1808,30 +1818,21 @@
   function pricingFromForm() {
     const baseCost = Math.max(0, numberValue(els.baseCostInput.value));
     const extras = additionalCostsFromForm();
-    const totalCost = baseCost + extras.reduce((sum, item) => sum + item.value, 0);
-    const targetMargin = clamp(numberValue(els.targetMarginInput.value), 0, 95);
+    const directCost = baseCost + extras.reduce((sum, item) => sum + item.value, 0);
+    const targetMargin = clamp(numberValue(els.targetMarginInput.value), 0, 90);
     const salePrice = Math.max(0, numberValue(els.salePriceInput.value));
     const units = Math.max(0, Math.round(numberValue(els.unitsSoldInput.value)));
-
-    const suggestedPrice = targetMargin >= 100
-      ? 0
-      : totalCost / (1 - targetMargin / 100);
-
-    const unitMargin = salePrice - totalCost;
-    const marginPct = salePrice > 0 ? (unitMargin / salePrice) * 100 : 0;
-    const revenue = salePrice * units;
-
+    const result = window.ZUZPricing.calculate({
+      unitDirectCost: directCost, salePrice, targetMargin, units,
+      category: els.productCategoryInput.value.trim(),
+      productName: els.productNameInput.value.trim()
+    });
     return {
-      baseCost,
-      extras,
-      totalCost,
-      targetMargin,
-      salePrice,
-      units,
-      suggestedPrice,
-      unitMargin,
-      marginPct,
-      revenue
+      baseCost, extras, totalCost: result.unitBaseCost + salePrice * result.variableRatePct / 100,
+      targetMargin, salePrice, units, suggestedPrice: result.suggestedPrice,
+      unitMargin: result.unitProfit, marginPct: result.netMarginPct,
+      revenue: result.revenue, range: result.recommendedRange,
+      reason: result.explanation
     };
   }
 
@@ -1846,6 +1847,9 @@
     els.previewMarginPct.textContent = percent(pricing.marginPct);
     els.previewRevenue.textContent = currency(pricing.revenue);
     els.suggestedPrice.textContent = currency(pricing.suggestedPrice);
+    els.suggestedPrice.title = pricing.range.high === null
+      ? "Mínimo técnico: " + currency(pricing.range.low) + ". " + pricing.reason
+      : "Faixa de referência: " + currency(pricing.range.low) + " a " + currency(pricing.range.high) + ". " + pricing.reason;
 
     els.previewStatus.className = "preview-status";
 
@@ -1939,21 +1943,27 @@
       .join("");
 
     els.manageList.querySelectorAll("[data-manage-delete]").forEach(button => {
-      button.addEventListener("click", () => {
-        removeProduct(button.dataset.manageDelete);
+      button.addEventListener("click", async () => {
+        await removeProduct(button.dataset.manageDelete);
         renderManageList();
       });
     });
   }
 
-  function removeProduct(productId) {
+  async function removeProduct(productId) {
     const product = products.find(item => item.id === productId);
     if (!product) return;
-
+    const previous = products.slice();
     products = products.filter(item => item.id !== productId);
-    saveProducts();
-    renderAll();
-    showToast("Produto removido: " + product.name);
+    try {
+      await saveProducts();
+      renderAll();
+      showToast("Produto removido: " + product.name);
+    } catch (error) {
+      products = previous;
+      renderAll();
+      showToast("Não foi possível remover: " + error.message);
+    }
   }
 
   function showToast(message) {
@@ -2018,7 +2028,7 @@
     input.addEventListener("input", updatePricingPreview);
   });
 
-  els.productForm.addEventListener("submit", event => {
+  els.productForm.addEventListener("submit", async event => {
     event.preventDefault();
 
     const name = els.productNameInput.value.trim();
@@ -2050,6 +2060,7 @@
       return;
     }
 
+    const previousProducts = products.slice();
     products.push(normalizeProduct({
       id: id(),
       name,
@@ -2065,10 +2076,15 @@
     selectedMonth = monthFromDate(date);
     els.monthFilter.value = String(selectedMonth);
 
-    saveProducts();
-    closeModal(els.modalProduct);
-    renderAll();
-    showToast("Produto cadastrado com sucesso.");
+    try {
+      await saveProducts();
+      closeModal(els.modalProduct);
+      renderAll();
+      showToast("Produto cadastrado com sucesso.");
+    } catch (error) {
+      products = previousProducts;
+      els.productFormError.textContent = "Não foi possível salvar: " + error.message;
+    }
   });
 
   document.querySelectorAll("[data-close]").forEach(button => {

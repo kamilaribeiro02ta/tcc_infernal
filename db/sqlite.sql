@@ -48,3 +48,30 @@ CREATE TABLE IF NOT EXISTS zuz_products (
  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_zuz_products_company ON zuz_products(company_id);
+
+-- Historico imutavel de calculos por produto, preservado mesmo apos exclusao.
+CREATE TABLE IF NOT EXISTS zuz_pricing_history (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ company_id TEXT NOT NULL REFERENCES zuz_companies(id) ON DELETE CASCADE,
+ product_id TEXT NOT NULL,
+ product_name TEXT NOT NULL,
+ fingerprint TEXT NOT NULL,
+ snapshot TEXT NOT NULL,
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_zuz_pricing_history_company_product
+ ON zuz_pricing_history(company_id,product_id,id DESC);
+
+-- Somente vendas efetivamente realizadas; projeções não treinam regressão.
+CREATE TABLE IF NOT EXISTS zuz_sales_observations (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ company_id TEXT NOT NULL REFERENCES zuz_companies(id) ON DELETE CASCADE,
+ product_id TEXT NOT NULL REFERENCES zuz_products(id) ON DELETE CASCADE,
+ period TEXT NOT NULL,
+ average_price REAL NOT NULL CHECK(average_price > 0),
+ sold_units INTEGER NOT NULL CHECK(sold_units >= 0),
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ UNIQUE(company_id,product_id,period)
+);
+CREATE INDEX IF NOT EXISTS idx_zuz_sales_observations_company_product
+ ON zuz_sales_observations(company_id,product_id,period);
