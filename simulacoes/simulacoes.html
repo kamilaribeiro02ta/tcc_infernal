@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../shared/sidebar.css"><link rel="stylesheet" href="../shared/design-system.css"><link rel="stylesheet" href="../shared/app-shell.css?v=20261010-icon-pop3">
-<link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010-products-bg7"><link rel="stylesheet" href="simulacoes.css?v=20261014-ux-math">
+<link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010-products-bg7"><link rel="stylesheet" href="simulacoes.css?v=20261014-guided">
 <link rel="icon" type="image/png" href="../imagens/Vector%201%20%281%29.png?v=20261010"></head>
 <body><div class="page workspace-shell">
     <aside class="sidebar">
@@ -72,6 +72,16 @@
     <p>Compare possibilidades para o seu negócio sem alterar os produtos cadastrados.</p>
   </header>
 
+  <section class="sim-guide" id="simGuide" aria-labelledby="guideHeading">
+    <div class="sim-guide-top"><span class="workspace-kicker">GUIA DE PRIMEIROS PASSOS</span><button type="button" id="guideToggle" class="sim-guide-toggle" aria-expanded="true" aria-controls="guideContent">Ocultar guia</button></div>
+    <div id="guideContent">
+      <div class="sim-guide-progress"><span id="guideCounter">Passo 1 de 4</span><span id="guideProgressLabel">Conheça a simulação</span></div>
+      <div class="sim-guide-track" aria-hidden="true"><span id="guideProgressBar"></span></div>
+      <h2 id="guideHeading">Vamos simular juntos?</h2>
+      <p id="guideText">Escolha um produto cadastrado abaixo. Você poderá testar preços sem modificar o cadastro.</p>
+      <div class="sim-guide-actions"><button type="button" class="workspace-primary" id="guideNext">Começar pelo produto</button><button type="button" class="workspace-secondary" id="guideSkip">Já sei usar</button></div>
+    </div>
+  </section>
   <section class="workspace-panel sim-product-bar" aria-label="Produto de referência">
     <label for="product">Produto selecionado<select id="product"></select></label>
     <div class="sim-original" id="originalProduct">Selecione um produto para começar.</div>
@@ -81,13 +91,14 @@
   <div class="simulation-layout">
     <section class="workspace-panel simulation-input" aria-labelledby="settingsTitle">
       <div class="workspace-section-head"><span>01 / PARÂMETROS</span><h2 id="settingsTitle">Configurar cenário</h2></div>
+      <p class="sim-context-copy">Escolha uma estratégia e altere os números para ver o que aconteceria com o preço e o resultado do mês. Nada é salvo no produto original.</p>
       <div id="scenarioTabs" class="sim-tabs" role="tablist" aria-label="Cenário em edição"></div>
       <div class="workspace-fields sim-input-grid">
-        <label for="price">Preço de venda (R$)<input id="price" type="number" min="0" max="100000000" step=".01" inputmode="decimal"></label>
-        <label for="units">Vendas estimadas (un.)<input id="units" type="number" min="1" max="1000000" step="1" inputmode="numeric"></label>
-        <label for="margin">Margem desejada (%)<input id="margin" type="number" min="0" max="90" step=".1" inputmode="decimal"></label>
-        <label for="changeMode">Alterar custos<select id="changeMode"><option value="variable">Custos variáveis</option><option value="fixed">Custos fixos mensais</option></select></label>
-        <label for="changePct" class="sim-full-field">Variação de custos (%)<input id="changePct" type="number" min="-100" max="500" step=".5" value="0"><span class="sim-field-note">Use valores negativos para simular redução.</span></label>
+        <label for="price">Preço de venda (R$)<input id="price" type="number" min="0" max="100000000" step=".01" inputmode="decimal"><span class="sim-field-note">Quanto você cobraria por uma unidade do produto.</span></label>
+        <label for="units">Vendas estimadas (un.)<input id="units" type="number" min="1" max="1000000" step="1" inputmode="numeric"><span class="sim-field-note">Quantas unidades você imagina vender no mês. É uma hipótese, não uma previsão.</span></label>
+        <label for="margin">Margem desejada (%)<input id="margin" type="number" min="0" max="90" step=".1" inputmode="decimal"><span class="sim-field-note">Percentual de margem usado para calcular o preço técnico sugerido, considerando também taxas e custos.</span></label>
+        <label for="changeMode">Alterar custos<select id="changeMode"><option value="variable">Custos variáveis</option><option value="fixed">Custos fixos mensais</option></select><span class="sim-field-note">Escolha quais gastos você quer aumentar ou reduzir nesta hipótese.</span></label>
+        <label for="changePct" class="sim-full-field">Variação de custos (%)<input id="changePct" type="number" min="-100" max="500" step=".5" value="0"><span class="sim-field-note">Use valores negativos para simular redução.</span><span class="sim-field-note">Ex.: 10 significa aumento de 10%; -10 significa redução de 10%.</span></label>
       </div>
       <div class="sim-controls">
         <label for="priceSlider">Ajustar preço <span id="priceSliderLabel">—</span></label>
@@ -170,5 +181,5 @@
   </div>
 </main>
 </div>
-<script src="../shared/pricing-core.js"></script><script src="../shared/api-client.js"></script><script src="../shared/company-data.js"></script><script src="../shared/pricing-engine.js"></script><script src="../shared/simulation-core.js"></script><script src="simulacoes.js?v=20261014-ux-math"></script><script src="../shared/site.js?v=20261010-theme-wave1"></script>
+<script src="../shared/pricing-core.js"></script><script src="../shared/api-client.js"></script><script src="../shared/company-data.js"></script><script src="../shared/pricing-engine.js"></script><script src="../shared/simulation-core.js"></script><script src="simulacoes.js?v=20261014-guided"></script><script src="../shared/site.js?v=20261010-theme-wave1"></script>
 </body></html>
