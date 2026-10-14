@@ -75,3 +75,13 @@ CREATE TABLE IF NOT EXISTS zuz_sales_observations (
 );
 CREATE INDEX IF NOT EXISTS idx_zuz_sales_observations_company_product
  ON zuz_sales_observations(company_id,product_id,period);
+
+CREATE TABLE IF NOT EXISTS zuz_simulations (
+ id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+ company_id TEXT NOT NULL REFERENCES zuz_companies(id) ON DELETE CASCADE,
+ product_id TEXT,
+ name TEXT NOT NULL,
+ snapshot TEXT NOT NULL,
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_zuz_simulations_company ON zuz_simulations(company_id,created_at DESC);
