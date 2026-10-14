@@ -1,6 +1,6 @@
 # Simulações ZUZ — implementação
 
-A página \`simulacoes/simulacoes.html\` usa o design compartilhado da ZUZ e contém sete recursos:
+A página `simulacoes/simulacoes.html` usa o design compartilhado da ZUZ e contém sete recursos:
 
 1. Gráfico SVG dinâmico: receita, custos e ponto de equilíbrio por volume.
 2. Três cenários editáveis, independentes e hipotéticos.
@@ -12,20 +12,20 @@ A página \`simulacoes/simulacoes.html\` usa o design compartilhado da ZUZ e con
 
 ## Executar localmente
 
-- Usar Node.js 24, \`npm install\` e \`npm run dev\`.
-- Acessar o servidor pela porta definida em \`PORT\` (padrão 3000); não abrir o HTML como arquivo local.
+- Usar Node.js 24, `npm install` e `npm run dev`.
+- Acessar o servidor pela porta definida em `PORT` (padrão 3000); não abrir o HTML como arquivo local.
 - Criar conta, concluir o perfil econômico, cadastrar um produto e acessar **Simulações**.
-- A tabela \`zuz_simulations\` é criada automaticamente pela inicialização do SQLite a partir de \`db/sqlite.sql\`.
-- Executar \`npm run test:core\` para validar cálculos existentes e testes adicionais em \`tests/simulation.test.js\`.
+- A tabela `zuz_simulations` é criada automaticamente pela inicialização do SQLite a partir de `db/sqlite.sql`.
+- Executar `npm run test:core` para validar cálculos existentes e testes adicionais em `tests/simulation.test.js`.
 
 ## IA externa (opcional)
 
 Sem configuração externa, o chat usa análise determinística dos cálculos validados no backend e identifica o resultado como "Análise calculada pela ZUZ". Para habilitar geração de explicações por um modelo, configurar no ambiente do servidor:
 
-\`\`\`env
+```env
 OPENAI_API_KEY=configure_sua_chave_no_servidor
 OPENAI_MODEL=gpt-4.1-mini
-\`\`\`
+```
 
 Nunca colocar a chave no HTML, no repositório ou no frontend. A aplicação utiliza o endpoint Responses da API e, se ele estiver indisponível, volta à análise calculada.
 
