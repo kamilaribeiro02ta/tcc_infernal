@@ -2237,3 +2237,119 @@ body:not(.dark) .about-objective-visual::after {
   line-height: 0;
   letter-spacing: -0.075em;
 }
+
+
+/* ZUZ | Sobre: Zuni roxa e cards no padrão visual da Início (2026-10-15) */
+/* A tonalidade cinza do modo claro ficava concentrada atrás do mascote.
+   Agora o desfoque de fundo é roxo, sem alterar a própria imagem. */
+body:not(.dark) .about-work-page .about-objective-visual {
+  background:
+    radial-gradient(
+      ellipse 75% 69% at 50% 53%,
+      rgba(128, 78, 236, .29) 0%,
+      rgba(154, 105, 245, .20) 37%,
+      rgba(169, 128, 249, .09) 60%,
+      transparent 82%
+    );
+}
+
+body:not(.dark) .about-work-page .about-objective-visual .prototype-light {
+  background:
+    radial-gradient(
+      circle,
+      rgba(143, 75, 255, .65) 0%,
+      rgba(121, 63, 232, .45) 30%,
+      rgba(151, 91, 248, .22) 53%,
+      transparent 77%
+    );
+  filter: blur(40px);
+  opacity: 1;
+}
+
+body:not(.dark) .about-work-page .about-objective-visual::before {
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(118, 59, 226, .22) 0%,
+      rgba(147, 89, 245, .13) 45%,
+      transparent 77%
+    );
+}
+
+body:not(.dark) .about-work-page .about-objective-visual::after {
+  background: rgba(116, 55, 202, .26);
+}
+
+body:not(.dark) .about-work-page .about-objective-visual img {
+  filter:
+    drop-shadow(0 25px 32px rgba(83, 43, 148, .26))
+    drop-shadow(0 0 24px rgba(138, 70, 247, .18));
+}
+
+/* Mesmo modelo dos .metric-card e .solution-card da página Início:
+   cinza suave no claro, vidro escuro no dark, bordas/sombras e interações
+   equivalentes. Mantém as informações da equipe e os links de fontes. */
+.about-work-page .team-card,
+.about-work-page .about-reference-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  transition:
+    transform .22s ease,
+    border-color .22s ease,
+    background .22s ease,
+    box-shadow .22s ease;
+}
+
+body:not(.dark) .about-work-page .team-card,
+body:not(.dark) .about-work-page .about-reference-card {
+  border: 1px solid #dedbe4 !important;
+  background: #e9e7ec;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow:
+    0 10px 28px rgba(35, 29, 48, .07),
+    inset 0 1px 0 rgba(255, 255, 255, .62);
+}
+
+body.dark .about-work-page .team-card,
+body.dark .about-work-page .about-reference-card {
+  border: 1px solid rgba(255, 255, 255, .11);
+  background: rgba(255, 255, 255, .065);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+  backdrop-filter: blur(22px) saturate(145%);
+  box-shadow:
+    0 22px 52px rgba(0, 0, 0, .28),
+    inset 0 1px 0 rgba(255, 255, 255, .10),
+    inset 0 -1px 0 rgba(255, 255, 255, .03);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body:not(.dark) .about-work-page .team-card:hover,
+  body:not(.dark) .about-work-page .about-reference-card:hover {
+    transform: translateY(-3px);
+    border-color: #d5d1dc !important;
+    background: #e4e1e8;
+    box-shadow:
+      0 16px 36px rgba(35, 29, 48, .10),
+      inset 0 1px 0 rgba(255, 255, 255, .68);
+  }
+
+  body.dark .about-work-page .team-card:hover,
+  body.dark .about-work-page .about-reference-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(170, 145, 255, .24);
+    background: rgba(255, 255, 255, .085);
+    box-shadow:
+      0 26px 64px rgba(0, 0, 0, .34),
+      0 0 0 1px rgba(146, 117, 255, .05),
+      inset 0 1px 0 rgba(255, 255, 255, .12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-work-page .team-card,
+  .about-work-page .about-reference-card {
+    transition: none;
+  }
+}
