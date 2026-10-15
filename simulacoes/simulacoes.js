@@ -7,7 +7,7 @@
     "simulationStatus","use","chart","chartDescription","comparisonCards","goalType","goalAmount",
     "goalUnits","goalDetail","marketStats","referenceList","referenceName","referencePrice",
     "addReference","simulationName","saveSimulation","historyList","aiMessages","aiForm",
-    "aiInput","askAI","aiProposal","simGuide","guideToggle","guideContent","guideCounter","guideProgressLabel","guideProgressBar","guideHeading","guideText","guideNext","guideSkip"];
+    "aiInput","askAI","aiProposal","simGuide","guideToggle","guideContent","guideCounter","guideProgressLabel","guideProgressBar","guideHeading","guideText","guideNext","guideBack","guideJump","guideSkip","guideOpenFromSettings"];
   const E=Object.fromEntries(ids.map(id=>[id,document.getElementById(id)]));
   const money=v=>Number.isFinite(v)?new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(v):"—";
   const integer=v=>new Intl.NumberFormat("pt-BR",{maximumFractionDigits:0}).format(v);
@@ -105,7 +105,12 @@
   }
   function drawChart(result){
     const points=core.scenarioChartPoints(result,16),top=Math.max(1,...points.map(p=>Math.max(p.revenue,p.costs)))*1.12;
-    const x0=72,y0=20,w=714,h=220,maxUnits=points[points.length-1].units||1;
+    const shellWidth=E.chart.parentElement?.clientWidth || window.innerWidth;
+    const compact=shellWidth<560;
+    const chartWidth=compact?430:820,chartHeight=compact?285:300;
+    E.chart.setAttribute("viewBox","0 0 "+chartWidth+" "+chartHeight);
+    const x0=compact?60:72,y0=20,w=compact?345:714,h=compact?205:220,
+      maxUnits=points[points.length-1].units||1;
     const x=n=>x0+(n/maxUnits)*w;
     const y=n=>y0+h-(n/top)*h;
     const plot=key=>points.map(p=>x(p.units).toFixed(2)+","+y(p[key]).toFixed(2)).join(" ");
@@ -119,19 +124,20 @@
       svg+='<text x="60" y="'+(yy+4)+'" text-anchor="end" fill="currentColor" opacity=".65" font-size="11">'+
         (top*i/4>=1000000?(top*i/4000000).toFixed(1)+" mi":top*i/4>=1000?(top*i/4000).toFixed(1)+" mil":Math.round(top*i/4))+'</text>';
     }
-    for(let i=0;i<=4;i++){
-      const xx=x(maxUnits*i/4);
+    const xTicks=compact?2:4;
+    for(let i=0;i<=xTicks;i++){
+      const xx=x(maxUnits*i/xTicks);
       svg+='<text x="'+xx+'" y="264" text-anchor="middle" fill="currentColor" opacity=".65" font-size="11">'+
-        integer(Math.round(maxUnits*i/4))+'</text>';
+        integer(Math.round(maxUnits*i/xTicks))+'</text>';
     }
     svg+='<polyline fill="none" stroke="'+revenueColor.trim()+'" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" points="'+plot("revenue")+'"/>';
     svg+='<polyline fill="none" stroke="'+costColor.trim()+'" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" points="'+plot("costs")+'"/>';
     if(result.contributionMargin>0&&result.breakEvenUnits<=maxUnits){
       const xx=x(result.breakEvenUnits);
       svg+='<line x1="'+xx+'" y1="'+y0+'" x2="'+xx+'" y2="'+(y0+h)+'" stroke="currentColor" opacity=".3" stroke-dasharray="5 5"/>';
-      svg+='<text x="'+Math.min(xx+6,735)+'" y="18" font-size="11" fill="currentColor">Equilíbrio: '+integer(result.breakEvenUnits)+' un.</text>';
+      svg+='<text x="'+Math.min(xx+6,compact?275:735)+'" y="18" font-size="11" fill="currentColor">Equilíbrio: '+integer(result.breakEvenUnits)+' un.</text>';
     }
-    svg+='<text x="430" y="295" text-anchor="middle" font-size="12" fill="currentColor" opacity=".75">Unidades vendidas</text>';
+    svg+='<text x="'+(compact?chartWidth/2:430)+'" y="'+(chartHeight-5)+'" text-anchor="middle" font-size="12" fill="currentColor" opacity=".75">Unidades vendidas</text>';
     E.chart.innerHTML=svg;
     E.chartDescription.textContent="Cenário "+result.scenario.label+": "+integer(result.units)+" unidades, "+
       money(result.revenue)+" de receita e "+money(result.profit)+" de resultado mensal estimado.";
@@ -291,7 +297,9 @@
     E.guideProgressBar.style.width=(100*(guideStep+1)/guideSteps.length)+"%";
     E.guideHeading.textContent=step.title;
     E.guideText.textContent=step.text;
-    E.guideNext.textContent=step.button+(guideStep===guideSteps.length-1?" · Concluir":"");
+    E.guideNext.textContent=guideStep===guideSteps.length-1?"Concluir guia":"Próximo";
+    E.guideBack.disabled=guideStep===0;
+    E.guideJump.textContent=step.button;
   }
   function setGuideOpen(open){
     E.guideContent.hidden=!open;
@@ -301,20 +309,47 @@
   }
   function bindGuide(){
     paintGuide();
-    setGuideOpen(guideRead()!=="closed");
+    // Sem janelas sobrepostas: o guia começa recolhido e abre apenas por escolha.
+    setGuideOpen(guideRead()==="open");
+    const show=scroll=>{
+      setGuideOpen(true);
+      guideStore("open");
+      if(scroll){
+        E.simGuide.scrollIntoView({
+          behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",
+          block:"start"
+        });
+      }
+    };
     E.guideToggle.addEventListener("click",()=>{
       const opening=E.guideContent.hidden;
       setGuideOpen(opening);
       guideStore(opening?"open":"closed");
     });
-    E.guideSkip.addEventListener("click",()=>{setGuideOpen(false);guideStore("closed");});
-    E.guideNext.addEventListener("click",()=>{
-      const step=guideSteps[guideStep];
-      const target=document.getElementById(step.target);
-      if(target){target.scrollIntoView({behavior:"smooth",block:"center"});if(step.target==="price"||step.target==="product")target.focus({preventScroll:true});}
-      if(guideStep===guideSteps.length-1){setGuideOpen(false);guideStore("closed");guideStep=0;}
-      else guideStep++;
+    E.guideOpenFromSettings?.addEventListener("click",()=>show(true));
+    E.guideSkip.addEventListener("click",()=>{
+      setGuideOpen(false);guideStore("closed");
+    });
+    E.guideBack.addEventListener("click",()=>{
+      guideStep=Math.max(0,guideStep-1);
       paintGuide();
+    });
+    E.guideNext.addEventListener("click",()=>{
+      if(guideStep===guideSteps.length-1){
+        setGuideOpen(false);
+        guideStore("closed");
+        guideStep=0;
+      }else{
+        guideStep++;
+      }
+      paintGuide();
+    });
+    E.guideJump.addEventListener("click",()=>{
+      const step=guideSteps[guideStep],target=document.getElementById(step.target);
+      if(!target)return;
+      const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"});
+      if(target.matches("input,select"))target.focus({preventScroll:true});
     });
   }
   function bind(){
@@ -394,6 +429,13 @@
   }
   bindGuide();
   bind();
+  // Rotação do celular, redimensionamento de janela e split-screen atualizam
+  // a geometria do gráfico sem alterar os valores da simulação.
+  let resizeFrame=0;
+  window.addEventListener("resize",()=>{
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame=requestAnimationFrame(()=>{if(lastResult)drawChart(lastResult);});
+  },{passive:true});
   if(!products.length){
     E.product.append(node("option","Nenhum produto cadastrado"));
     status("Cadastre um produto em Produtos antes de simular.");
