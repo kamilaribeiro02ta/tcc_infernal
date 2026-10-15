@@ -439,7 +439,7 @@
   if(!products.length){
     E.product.append(node("option","Nenhum produto cadastrado"));
     status("Cadastre um produto em Produtos antes de simular.");
-    document.querySelectorAll(".sim button,.sim input,.sim select").forEach(el=>{if(!el.closest("#simGuide")&&!el.matches("#guideOpenFromSettings"))el.disabled=true;});
+    document.querySelectorAll(".sim button,.sim input,.sim select").forEach(el=>{if(!el.closest("#simGuide")&&!el.matches("#guideOpenFromSettings")&&!el.matches(".sim-help-trigger")&&!el.closest(".sim-tutorial"))el.disabled=true;});
     E.historyList.append(node("p","Cadastre um produto para criar simulações.","sim-muted"));
     return;
   }
