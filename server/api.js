@@ -125,6 +125,18 @@ function createApi() {
     req.user = user; next();
   }));
   router.get("/me", asyncRoute(async (req,res) => res.json({ user:safeUser(req.user),company:await getCompany(req.user.id) })));
+  // Atualiza a identidade autenticada no banco, permitindo que o nome apareça
+  // corretamente em outros dispositivos (em vez de existir apenas no localStorage).
+  router.put("/me", asyncRoute(async (req,res) => {
+    const name=normalText(req.body?.name,160);
+    if(name.length<2) fail(400,"Informe um nome com pelo menos 2 caracteres.");
+    const result=await query(
+      "UPDATE zuz_users SET full_name=$1 WHERE id=$2 RETURNING id,full_name,email",
+      [name,req.user.id]
+    );
+    if(!result.rows[0]) fail(404,"Conta não encontrada.");
+    res.json({user:safeUser(result.rows[0])});
+  }));
   router.get("/templates", (_req,res) => res.json(catalog));
   router.get("/company", asyncRoute(async (req,res) => {
     const company=await getCompany(req.user.id);
