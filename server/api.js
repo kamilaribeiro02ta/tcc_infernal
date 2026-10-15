@@ -6,7 +6,9 @@ const { query, getPool, provider } = require("./database");
 const catalog = require("../shared/business-templates");
 const { registerSimulationRoutes } = require("./simulations-routes");
 const pricing = require("../shared/pricing-core");
-const { predictPrice } = require("../shared/price-prediction");
+// O motor estatístico só é carregado ao consultar previsões;
+// falha nele não pode bloquear cadastro, login e sessão.
+const predictPrice = (...args) => require("../shared/price-prediction").predictPrice(...args);
 const scrypt = promisify(crypto.scrypt);
 const SESSION = "zuz_auth";
 const MAX_AGE = 7 * 24 * 60 * 60;
@@ -89,7 +91,12 @@ async function appendRecommendation(client, companyId, product, settings) {
 }
 function createApi() {
   const router = express.Router();
-  router.get("/health", (_req, res) => res.json({ ok: true, app: "ZUZ", databaseConfigured: true, database: provider }));
+  router.get("/health", asyncRoute(async (_req, res) => {
+    // Um retorno positivo só deve ocorrer quando o banco responder de verdade.
+    await query("SELECT 1 AS alive");
+    res.setHeader("Cache-Control", "no-store");
+    res.json({ ok: true, app: "ZUZ", databaseConfigured: true, database: provider });
+  }));
   router.post("/auth/signup", asyncRoute(async (req, res) => {
     const name = normalText(req.body.name, 160);
     const email = normalText(req.body.email, 254).toLowerCase();
