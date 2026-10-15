@@ -246,23 +246,388 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
 .sim .sim-input-grid .sim-field-note{display:block;color:var(--sim-muted);font-size:11px;line-height:1.55;margin-top:6px;font-weight:400}
 @media(max-width:600px){.sim .sim-guide-actions{flex-direction:column}.sim .sim-guide-actions button{width:100%}}
 
-/* Ajuda flutuante: permanece disponível ao navegar, sem exigir retorno ao topo. */
-.sim .sim-guide{position:fixed;z-index:60;bottom:22px;right:22px;top:auto;left:auto;width:min(370px,calc(100vw - 40px));max-height:min(74vh,620px);overflow:auto;margin:0;padding:18px 20px;border-radius:18px;box-shadow:0 16px 48px rgba(23,15,44,.18);background:var(--sim-panel);border:1px solid var(--sim-border)}
-.sim .sim-guide.is-minimized{width:auto;max-width:calc(100vw - 40px);padding:10px 16px;border-radius:999px;overflow:visible}
-.sim .sim-guide.is-minimized .sim-guide-top>.workspace-kicker{display:none}
-.sim .sim-guide.is-minimized .sim-guide-toggle{font-size:13px;text-decoration:none;padding:2px 6px}
-.sim .sim-guide h2{font-size:20px;line-height:1.2;margin:14px 0 8px}
-.sim .sim-guide p{font-size:12px;line-height:1.6}
-.sim .sim-guide-actions{margin-top:14px}
-.sim .sim-guide-progress{margin-top:12px}
-.sim .sim-guide-top .workspace-kicker{font-size:10px}
-.sim .sim-guide .workspace-primary{padding:9px 13px;font-size:12px}
-.sim .sim-guide .workspace-secondary{padding:9px 13px;font-size:12px}
-.sim .sim-guide #guideContent[hidden]{display:none}
-.sim #product,.sim #scenarioTabs,.sim #price,.sim #resultTitle,.sim #settingsTitle{scroll-margin-top:110px}
-@media(max-width:700px){
- .sim .sim-guide{bottom:12px;right:12px;width:min(360px,calc(100vw - 24px));max-height:min(56vh,460px);padding:16px;box-shadow:0 10px 34px rgba(23,15,44,.2)}
- .sim .sim-guide.is-minimized{padding:8px 12px}
- .sim .sim-guide-actions{flex-direction:row}
- .sim .sim-guide-actions button{width:auto;flex:1;min-width:0}
+/* Responsividade: a página cresce dentro do workspace, sem colunas comprimidas,
+   rolagem horizontal forçada ou painéis fixos sobre o formulário. */
+.workspace-shell > .workspace-page.sim {
+  flex: 1 1 0%;
+  width: 0;
+  max-width: none;
+  min-width: 0;
+  min-height: 100dvh;
+  margin: 0;
+  padding: clamp(26px, 3vw, 48px) clamp(18px, 3.2vw, 48px) 76px;
+  overflow-x: clip;
+}
+.sim > .workspace-heading,
+.sim > .sim-guide,
+.sim > .sim-product-bar,
+.sim > .simulation-layout,
+.sim > .sim-section,
+.sim > .sim-bottom-grid {
+  width: min(100%, 1180px);
+  min-width: 0;
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sim > * { box-sizing: border-box; }
+.sim .simulation-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  align-items: start;
+  gap: clamp(16px, 2.2vw, 26px);
+}
+.sim .simulation-layout > *,
+.sim .sim-bottom-grid > *,
+.sim .sim-section,
+.sim .sim-section > *,
+.sim .sim-product-bar > *,
+.sim .sim-heading-row > *,
+.sim .sim-history-row > *,
+.sim .sim-reference-row > * {
+  min-width: 0;
+}
+.sim .simulation-input,
+.sim .simulation-output {
+  align-self: start;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  position: static !important;
+}
+.sim .workspace-metrics > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 14px;
+}
+.sim .workspace-metrics > div span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.sim .workspace-metrics > div strong {
+  min-width: 0;
+  max-width: 100%;
+  text-align: end;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.sim .workspace-range {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  justify-content: space-between;
+}
+.sim .workspace-range strong { min-width: 0; overflow-wrap: anywhere; }
+.sim .simulation-output > h2,
+.sim .sim-compare-card strong,
+.sim .sim-insight strong {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.sim .sim-compare-card {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.sim .sim-comparison-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 245px), 1fr));
+}
+.sim .sim-bottom-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+.sim .sim-bottom-grid .sim-section {
+  width: 100%;
+  margin-top: 20px;
+}
+.sim .sim-market-stats > *,
+.sim .sim-market-stats strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.sim .sim-reference-row,
+.sim .sim-history-row {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.sim .sim-reference-row > span,
+.sim .sim-history-row > div:first-child {
+  flex: 1 1 170px;
+  overflow-wrap: anywhere;
+}
+.sim .sim-row-actions {
+  width: 100%;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.sim .sim-row-actions button { min-height: 42px; }
+.sim .sim-add-reference { grid-template-columns: minmax(0, 1fr) minmax(0, 110px); }
+.sim .sim-add-reference > button { grid-column: 1 / -1; justify-self: start; }
+.sim .sim-chat-form,
+.sim .sim-chat-form > input { min-width: 0; }
+.sim .sim-chat-form > button { flex: 0 0 48px; }
+
+/* O gráfico adapta o viewBox ao tamanho da tela no JavaScript.
+   Não há tela horizontal escondendo informações do gráfico. */
+.sim .sim-chart-shell {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 8px 0 0;
+}
+.sim .sim-chart-shell svg {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+/* Guia integrado ao fluxo de leitura, nunca sobre o conteúdo.
+   Apenas os botões são visíveis quando minimizado. */
+.sim .sim-guide {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  width: min(100%, 1180px);
+  max-width: 1180px;
+  max-height: none;
+  overflow: visible;
+  margin: 0 auto 18px;
+  padding: 18px clamp(17px, 2.2vw, 26px);
+  border-radius: 16px;
+  box-shadow: none;
+}
+.sim .sim-guide.is-minimized {
+  position: static;
+  width: min(100%, 1180px);
+  max-width: 1180px;
+  min-height: 54px;
+  max-height: none;
+  border-radius: 15px;
+  padding: 11px 18px;
+  overflow: visible;
+}
+.sim .sim-guide.is-minimized .sim-guide-top > .workspace-kicker {
+  display: block;
+}
+.sim .sim-guide.is-minimized .sim-guide-toggle {
+  min-height: 34px;
+  text-decoration: none;
+  padding: 5px 8px;
+}
+.sim .sim-guide-top {
+  flex-wrap: wrap;
+}
+.sim .sim-guide-progress {
+  flex-wrap: wrap;
+  gap: 5px 12px;
+}
+.sim .sim-guide h2 {
+  margin: 16px 0 8px;
+  font-size: clamp(19px, 2vw, 25px);
+}
+.sim .sim-guide-actions {
+  margin-top: 18px;
+  align-items: center;
+}
+.sim .sim-guide-actions .workspace-primary,
+.sim .sim-guide-actions .workspace-secondary {
+  margin: 0;
+  min-height: 42px;
+  font-size: 12px;
+  width: auto;
+}
+.sim .sim-guide-actions #guideJump {
+  background: transparent;
+}
+.sim #product,
+.sim #scenarioTabs,
+.sim #price,
+.sim #resultTitle,
+.sim #settingsTitle {
+  scroll-margin-top: 28px;
+}
+
+@media (max-width: 1360px) {
+  .sim .simulation-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sim .simulation-input,
+  .sim .simulation-output { width: 100%; }
+  .sim .sim-bottom-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sim .sim-bottom-grid .sim-section {
+    margin-top: 18px;
+  }
+}
+@media (max-width: 992px) {
+  .workspace-shell > .workspace-page.sim {
+    flex: 0 0 auto;
+    width: 100%;
+    min-height: 0;
+    overflow: visible;
+    padding: 30px clamp(16px, 3vw, 24px) 64px;
+  }
+  .sim .sim-product-bar {
+    align-items: stretch;
+    gap: 14px;
+  }
+  .sim .sim-product-bar > label {
+    max-width: none;
+    flex: 1 1 100%;
+  }
+  .sim .sim-product-bar .sim-original {
+    flex: 1 1 100%;
+    padding-bottom: 0;
+    overflow-wrap: anywhere;
+  }
+  .sim .sim-product-bar > .workspace-secondary {
+    align-self: flex-start;
+  }
+}
+@media (max-width: 700px) {
+  .workspace-shell > .workspace-page.sim {
+    padding: 22px 12px 52px;
+  }
+  .sim .workspace-heading { margin-bottom: 22px; }
+  .sim .workspace-heading h1 { font-size: clamp(29px, 7.5vw, 38px); }
+  .sim .sim-guide {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .sim .sim-guide.is-minimized {
+    padding: 10px 14px;
+  }
+  .sim .sim-guide-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+  .sim .sim-guide-actions button {
+    width: 100% !important;
+    min-width: 0;
+    white-space: normal;
+  }
+  .sim .sim-guide-actions #guideJump {
+    grid-column: 1 / -1;
+  }
+  .sim .sim-product-bar,
+  .sim .simulation-input,
+  .sim .simulation-output,
+  .sim .sim-section {
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+  .sim .sim-product-bar {
+    margin-bottom: 16px;
+  }
+  .sim .simulation-layout {
+    gap: 16px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sim .sim-section,
+  .sim .sim-bottom-grid .sim-section {
+    margin-top: 16px;
+  }
+  .sim .sim-bottom-grid {
+    gap: 0;
+  }
+  .sim .sim-input-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .sim .sim-full-field {
+    grid-column: auto;
+  }
+  .sim .sim-tabs { gap: 3px; padding: 4px; }
+  .sim .sim-tab {
+    min-width: 0;
+    padding: 9px 5px;
+    font-size: clamp(10px, 2.8vw, 12px);
+    overflow-wrap: anywhere;
+  }
+  .sim .sim-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+  }
+  .sim .sim-actions > .workspace-primary,
+  .sim .sim-actions > .workspace-secondary {
+    margin: 0;
+    width: 100%;
+    min-height: 44px;
+    white-space: normal;
+  }
+  .sim .simulation-output > h2 {
+    font-size: clamp(34px, 9vw, 47px);
+  }
+  .sim .workspace-metrics > div {
+    grid-template-columns: minmax(0, 1fr) minmax(0, .62fr);
+    align-items: center;
+  }
+  .sim .workspace-range {
+    display: block;
+  }
+  .sim .workspace-range strong {
+    display: block;
+    margin-top: 6px;
+    text-align: left;
+  }
+  .sim .sim-heading-row {
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .sim .sim-legend {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .sim .sim-comparison-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .sim .sim-compare-card {
+    min-height: auto;
+    padding: 16px;
+  }
+  .sim .sim-market-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sim .sim-add-reference {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sim .sim-add-reference button {
+    grid-column: 1;
+    width: 100%;
+  }
+  .sim .sim-row-actions {
+    gap: 8px;
+  }
+  .sim .sim-row-actions button {
+    flex: 1 1 auto;
+  }
+  .sim .sim-history-row,
+  .sim .sim-reference-row {
+    padding: 12px;
+  }
+  .sim .sim-chat {
+    max-height: 280px;
+    min-height: 160px;
+  }
+}
+@media (max-width: 370px) {
+  .sim .sim-market-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sim .sim-guide-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sim .sim-guide-track span { transition: none; }
 }
