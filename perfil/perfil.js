@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  try { await window.ZUZAPI.request("GET","/me"); }
+  let authenticated;
+  try { authenticated = await window.ZUZAPI.request("GET","/me"); }
   catch { window.location.replace("../Login/login.html"); return; }
 
   const PROFILE_KEY =
@@ -15,6 +16,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   const BUSINESS_OWNER_KEY =
     "zuz-company-owner";
 
+  // O cookie HttpOnly, confirmado em /me, é a fonte de verdade da sessão.
+  // Reconstrói o cache visual no celular mesmo quando o localStorage está vazio.
+  const serverUser = authenticated.user;
+  try {
+    let previous = {};
+    try { previous = JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}") || {}; } catch {}
+    const sameAccount = previous.id === serverUser.id;
+    const profile = {
+      ...(sameAccount ? previous : {}),
+      id: serverUser.id,
+      name: serverUser.name,
+      email: serverUser.email
+    };
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      userId: serverUser.id, email: serverUser.email
+    }));
+    localStorage.removeItem("zuz-explicit-logout");
+  } catch (error) {
+    // Armazenamento indisponível não invalida uma sessão confirmada pelo servidor.
+    console.warn("Não foi possível atualizar o cache local do perfil.", error);
+  }
+
   let calendarCursor =
     new Date();
 
@@ -29,71 +53,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const logoutBtn =
     document.getElementById("logoutBtn");
-
-  function hasLocalSession() {
-    try {
-      const session =
-        JSON.parse(
-          localStorage.getItem(
-            SESSION_KEY
-          )
-        );
-
-      if (session?.email) {
-        return true;
-      }
-
-      const explicitLogout =
-        localStorage.getItem(
-          "zuz-explicit-logout"
-        ) === "true";
-
-      const savedProfile =
-        JSON.parse(
-          localStorage.getItem(
-            PROFILE_KEY
-          )
-        );
-
-      if (
-        !explicitLogout &&
-        savedProfile?.email
-      ) {
-        localStorage.setItem(
-          SESSION_KEY,
-          JSON.stringify({
-            userId:
-              savedProfile.id ||
-              "legacy-user",
-            email:
-              savedProfile.email,
-            loggedInAt:
-              new Date().toISOString()
-          })
-        );
-
-        localStorage.setItem(
-          "zuz-logged-in",
-          "true"
-        );
-
-        return true;
-      }
-
-      return false;
-    }
-    catch {
-      return false;
-    }
-  }
-
-  if (!hasLocalSession()) {
-    window.location.replace(
-      "../Login/login.html"
-    );
-
-    return;
-  }
 
   logoutBtn?.addEventListener(
     "click",
@@ -948,45 +907,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   profileForm?.addEventListener(
     "submit",
-    event => {
-
+    async event => {
       event.preventDefault();
+      const name = officialNameInput?.value.trim();
+      if (!name) return;
 
-
-      const name =
-        officialNameInput
-          ?.value
-          .trim();
-
-
-      if (!name) {
-
-        return;
-
-      }
-
-
-      const profile =
-        getProfile();
-
-
-      profile.name =
-        name;
-
-
-      if (
-        saveProfile(
-          profile
-        )
-      ) {
-
+      const submit = profileForm.querySelector('[type="submit"]');
+      if (submit) submit.disabled = true;
+      try {
+        const response = await window.ZUZAPI.request("PUT", "/me", { name });
+        const profile = getProfile();
+        profile.name = response.user.name;
+        profile.email = response.user.email;
+        profile.id = response.user.id;
+        saveProfile(profile);
         renderProfile();
-
-
         closeProfileModalFunction();
-
+      } catch (error) {
+        alert(error.message || "Não foi possível salvar o perfil.");
+      } finally {
+        if (submit) submit.disabled = false;
       }
-
     }
   );
 
