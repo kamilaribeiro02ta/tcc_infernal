@@ -541,3 +541,17 @@ body.dark .sidebar #iconMoon {
   body:not(.dark) .sidebar #iconSun,
   body.dark .sidebar #iconMoon { animation: none !important; }
 }
+
+/* Página Sobre no celular: o conteúdo deve participar da rolagem da página.
+   O layout horizontal do desktop pode usar flex: 1 1 0, mas numa
+   .page vertical isso comprime o <main> à altura disponível e
+   overflow: hidden oculta todas as seções depois do hero. */
+@media (max-width: 992px) {
+  .page > main.about-work-page {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+}
