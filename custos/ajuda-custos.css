@@ -247,3 +247,12 @@
 @media(prefers-reduced-motion:reduce) {
   .cost-page .cost-help-trigger {transition:none;}
 }
+
+/* Feedback numérico discreto junto aos campos que afetam o cálculo. */
+.cost-page .cost-field-impact {
+  margin:8px 0 0;
+  padding-left:10px;
+  border-left:2px solid var(--guide-accent);
+  color:var(--guide-muted);
+  font:400 11px/1.6 Poppins,sans-serif;
+}
