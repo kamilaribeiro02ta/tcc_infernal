@@ -158,8 +158,16 @@
     const parent=label.parentElement;
     parent.insertBefore(wrapper,label);
     wrapper.append(label);
-    wrapper.insertBefore(elem("div","sim-context-heading"),label);
-    wrapper.querySelector(".sim-context-heading").append(trigger(topic));
+    const heading=elem("div","sim-context-heading");
+    const titleNode=Array.from(label.childNodes).find(n=>n.nodeType===3&&n.textContent.trim());
+    if(titleNode){
+      const accessibleLabel=elem("label","sim-context-label",titleNode.textContent.trim());
+      accessibleLabel.htmlFor=id;
+      titleNode.remove();
+      heading.append(accessibleLabel);
+    }
+    heading.append(trigger(topic));
+    wrapper.insertBefore(heading,label);
     wrapper.append(makeSlot());
   }
   function decorateSliders(id,topic){
