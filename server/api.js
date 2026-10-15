@@ -6,6 +6,7 @@ const { query, getPool, provider } = require("./database");
 const catalog = require("../shared/business-templates");
 const { registerSimulationRoutes } = require("./simulations-routes");
 const { askCostsGuide } = require("./costs-assistant");
+const { askSimulationGuide } = require("./simulations-help");
 const pricing = require("../shared/pricing-core");
 // O motor estatístico só é carregado ao consultar previsões;
 // falha nele não pode bloquear cadastro, login e sessão.
@@ -146,6 +147,17 @@ function createApi() {
     res.json({user:safeUser(result.rows[0])});
   }));
   // Orientação solicitada pelo usuário: não modifica os dados da empresa.
+  // Ajuda didática de Simulações. Não executa alterações no banco de dados.
+  router.post("/help/simulations", asyncRoute(async (req,res) => {
+    const result=await askSimulationGuide({
+      topic:req.body?.topic,
+      message:req.body?.message,
+      context:req.body?.context
+    });
+    res.setHeader("Cache-Control","no-store");
+    res.json(result);
+  }));
+
   router.post("/help/costs", asyncRoute(async (req,res) => {
     const result=await askCostsGuide({
       topic:req.body?.topic,
