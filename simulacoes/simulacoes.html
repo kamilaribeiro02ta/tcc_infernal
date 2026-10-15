@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../shared/sidebar.css"><link rel="stylesheet" href="../shared/design-system.css"><link rel="stylesheet" href="../shared/app-shell.css?v=20261010-icon-pop3">
-<link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010-products-bg7"><link rel="stylesheet" href="simulacoes.css?v=20261014-floating-guide">
+<link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010-products-bg7"><link rel="stylesheet" href="simulacoes.css?v=20261015-responsive-v1">
 <link rel="icon" type="image/png" href="../imagens/Vector%201%20%281%29.png?v=20261010"></head>
 <body><div class="page workspace-shell">
     <aside class="sidebar">
@@ -72,14 +72,14 @@
     <p>Compare possibilidades para o seu negócio sem alterar os produtos cadastrados.</p>
   </header>
 
-  <section class="sim-guide" id="simGuide" aria-labelledby="guideHeading">
-    <div class="sim-guide-top"><span class="workspace-kicker">ASSISTENTE DE SIMULAÇÕES</span><button type="button" id="guideToggle" class="sim-guide-toggle" aria-expanded="true" aria-controls="guideContent">Minimizar</button></div>
-    <div id="guideContent">
+  <section class="sim-guide is-minimized" id="simGuide" aria-label="Guia opcional de simulações">
+    <div class="sim-guide-top"><span class="workspace-kicker">ASSISTENTE DE SIMULAÇÕES</span><button type="button" id="guideToggle" class="sim-guide-toggle" aria-expanded="false" aria-controls="guideContent">Abrir guia</button></div>
+    <div id="guideContent" hidden>
       <div class="sim-guide-progress"><span id="guideCounter">Passo 1 de 4</span><span id="guideProgressLabel">Conheça a simulação</span></div>
       <div class="sim-guide-track" aria-hidden="true"><span id="guideProgressBar"></span></div>
       <h2 id="guideHeading">Vamos simular juntos?</h2>
       <p id="guideText">Escolha um produto cadastrado abaixo. Você poderá testar preços sem modificar o cadastro.</p>
-      <div class="sim-guide-actions"><button type="button" class="workspace-primary" id="guideNext">Mostrar onde começar</button><button type="button" class="workspace-secondary" id="guideSkip">Já sei usar</button></div>
+      <div class="sim-guide-actions"><button type="button" class="workspace-secondary" id="guideBack">Voltar</button><button type="button" class="workspace-primary" id="guideNext">Próximo</button><button type="button" class="workspace-secondary" id="guideJump">Ir para esta etapa</button><button type="button" class="workspace-secondary" id="guideSkip">Fechar ajuda</button></div>
     </div>
   </section>
   <section class="workspace-panel sim-product-bar" aria-label="Produto de referência">
@@ -90,7 +90,7 @@
 
   <div class="simulation-layout">
     <section class="workspace-panel simulation-input" aria-labelledby="settingsTitle">
-      <div class="workspace-section-head"><span>01 / PARÂMETROS</span><h2 id="settingsTitle">Configurar cenário</h2></div>
+      <div class="workspace-section-head sim-settings-heading"><div><span>01 / PARÂMETROS</span><h2 id="settingsTitle">Configurar cenário</h2></div><button id="guideOpenFromSettings" class="sim-guide-inline-trigger" type="button" aria-controls="guideContent"><i class="bx bx-help-circle" aria-hidden="true"></i> Como usar</button></div>
       <p class="sim-context-copy">Escolha uma estratégia e altere os números para ver o que aconteceria com o preço e o resultado do mês. Nada é salvo no produto original.</p>
       <div id="scenarioTabs" class="sim-tabs" role="tablist" aria-label="Cenário em edição"></div>
       <div class="workspace-fields sim-input-grid">
@@ -181,5 +181,5 @@
   </div>
 </main>
 </div>
-<script src="../shared/pricing-core.js"></script><script src="../shared/api-client.js"></script><script src="../shared/company-data.js"></script><script src="../shared/pricing-engine.js"></script><script src="../shared/simulation-core.js"></script><script src="simulacoes.js?v=20261014-floating-guide"></script><script src="../shared/site.js?v=20261010-theme-wave1"></script>
+<script src="../shared/pricing-core.js"></script><script src="../shared/api-client.js"></script><script src="../shared/company-data.js"></script><script src="../shared/pricing-engine.js"></script><script src="../shared/simulation-core.js"></script><script src="simulacoes.js?v=20261015-responsive-v1"></script><script src="../shared/site.js?v=20261010-theme-wave1"></script>
 </body></html>
