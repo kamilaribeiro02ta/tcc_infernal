@@ -631,3 +631,48 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
 @media (prefers-reduced-motion: reduce) {
   .sim .sim-guide-track span { transition: none; }
 }
+
+/* Acesso ao guia próximo do formulário, mesmo depois de sair do cabeçalho. */
+.sim .sim-settings-heading {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.sim .sim-settings-heading > div {min-width:0;flex:1 1 210px;}
+.sim .sim-settings-heading > div > span {
+  display:block;
+  color:var(--sim-accent);
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.09em;
+}
+.sim .sim-guide-inline-trigger {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  flex:0 0 auto;
+  min-height:40px;
+  padding:8px 12px;
+  border:1px solid var(--sim-border);
+  border-radius:10px;
+  background:var(--sim-field);
+  color:var(--sim-accent);
+  font:600 11px/1.3 Poppins,sans-serif;
+  cursor:pointer;
+}
+.sim .sim-guide-inline-trigger i {font-size:17px;}
+.sim .sim-guide-inline-trigger:hover {
+  border-color:var(--sim-accent);
+}
+.sim .sim-guide-inline-trigger:focus-visible {
+  outline:2px solid var(--sim-accent);
+  outline-offset:2px;
+}
+@media(max-width:700px){
+  .sim .sim-settings-heading {align-items:center;}
+  .sim .sim-settings-heading > div {flex:1 1 170px;}
+  .sim .sim-guide-inline-trigger {padding:7px 10px;}
+}
