@@ -5,6 +5,7 @@ const { promisify } = require("util");
 const { query, getPool, provider } = require("./database");
 const catalog = require("../shared/business-templates");
 const { registerSimulationRoutes } = require("./simulations-routes");
+const { askCostsGuide } = require("./costs-assistant");
 const pricing = require("../shared/pricing-core");
 // O motor estatístico só é carregado ao consultar previsões;
 // falha nele não pode bloquear cadastro, login e sessão.
@@ -143,6 +144,16 @@ function createApi() {
     );
     if(!result.rows[0]) fail(404,"Conta não encontrada.");
     res.json({user:safeUser(result.rows[0])});
+  }));
+  // Orientação solicitada pelo usuário: não modifica os dados da empresa.
+  router.post("/help/costs", asyncRoute(async (req,res) => {
+    const result=await askCostsGuide({
+      topic:req.body?.topic,
+      message:req.body?.message,
+      context:req.body?.context
+    });
+    res.setHeader("Cache-Control","no-store");
+    res.json(result);
   }));
   router.get("/templates", (_req,res) => res.json(catalog));
   router.get("/company", asyncRoute(async (req,res) => {
