@@ -371,3 +371,62 @@
 @media(prefers-reduced-motion:reduce){
   .sim .sim-help-trigger {transition:none;}
 }
+
+
+/* Fix 2026-10-15: market reference field titles stay readable on narrow phones. */
+.sim .sim-context-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  column-gap: 10px;
+}
+.sim .sim-context-heading > .sim-context-label {
+  display: block;
+  flex: none;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  font-weight: 500;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+.sim .sim-context-heading > .sim-help-trigger {
+  justify-self: end;
+}
+.sim .sim-add-reference {
+  width: 100%;
+  min-width: 0;
+}
+.sim .sim-add-reference > .sim-context-field {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.sim .sim-add-reference > .sim-context-field > label,
+.sim .sim-add-reference > .sim-context-field input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+@media (max-width: 700px) {
+  .sim .sim-add-reference {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    align-items: stretch;
+  }
+  .sim .sim-add-reference > .sim-context-field,
+  .sim .sim-add-reference > #addReference {
+    grid-column: 1 / -1;
+  }
+  .sim .sim-add-reference > #addReference {
+    width: 100%;
+    justify-self: stretch;
+  }
+}
