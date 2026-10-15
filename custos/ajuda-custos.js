@@ -222,6 +222,9 @@
     const topic=active.topic, item=T[topic], index=progress.get(topic)||0;
     const current=item.steps[index];
     panel.replaceChildren();
+    if(desktopQuery.matches && card?.parentElement?.classList.contains("cost-aside")) {
+      card.parentElement.scrollTop=0;
+    }
     const head=el("div","cost-tutorial-head");
     const heading=el("div","");
     heading.append(el("span","cost-tutorial-kicker","GUIA CONTEXTUAL"),el("h3","",item.name));
@@ -312,6 +315,12 @@
     root.setAttribute("aria-label","Prévia dos cálculos");
     root.innerHTML='<span class="cost-preview-eyebrow">PRÉVIA EM TEMPO REAL</span><h3>O impacto dos seus números</h3><div class="cost-preview-values"><div><span>Custos fixos mensais</span><strong id="costPreviewFixed">—</strong></div><div><span>Parcela fixa por unidade</span><strong id="costPreviewUnit">—</strong></div><div><span>Taxas sobre R$ 100 de venda</span><strong id="costPreviewFees">—</strong></div></div><p id="costPreviewNote" class="cost-preview-note"></p><p class="cost-preview-disclaimer">Esta é uma prévia das premissas, não um preço de venda. Para calcular o preço, inclua os custos diretos do produto.</p>';
     summary.insertAdjacentElement("afterend",root);
+    // Indicações compactas ao lado dos campos evitam retornar ao resumo no celular.
+    const unitHint=el("p","cost-field-impact");
+    const rateHint=el("p","cost-field-impact");
+    unitHint.hidden=true;rateHint.hidden=true;
+    $("monthlyUnits").insertAdjacentElement("afterend",unitHint);
+    $("sellingFeesPct").insertAdjacentElement("afterend",rateHint);
     const refresh=()=>{
       const fixedInputs=[...$("fixedRows").querySelectorAll(".row .b")];
       const positive=fixedInputs.filter(x=>x.value.trim()!==""&&Number.isFinite(Number(x.value))&&Number(x.value)>=0);
@@ -330,6 +339,12 @@
       else if(margin+taxes+fees>=100)note="Margem e taxas somam 100% ou mais: revise antes de formar preços.";
       else note="Exemplo: para cada R$ 100 vendidos, os percentuais informados representam "+money(taxes+fees)+" em tributos e taxas.";
       $("costPreviewNote").textContent=note;
+      const showUnit=positive.length>0 && Number.isInteger(volume) && volume>0;
+      unitHint.hidden=!showUnit;
+      if(showUnit) unitHint.textContent="Parcela fixa estimada: "+money(fixed/volume)+" por unidade.";
+      const showRate=validRates && taxes+fees>0;
+      rateHint.hidden=!showRate;
+      if(showRate) rateHint.textContent="Exemplo: em R$ 100 de venda, os percentuais acima representam "+money(taxes+fees)+".";
     };
     $("form").addEventListener("input",refresh);
     $("form").addEventListener("change",refresh);
