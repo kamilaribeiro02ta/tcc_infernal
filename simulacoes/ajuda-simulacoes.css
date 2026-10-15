@@ -1,0 +1,366 @@
+/* ZUZ | Simulações: sistema Entender, coerente com a ajuda da página Custos.
+   Todo o conteúdo é solicitado pelo usuário, sem caixas flutuantes. */
+.sim {
+  --help-purple:var(--sim-accent,#6a3df0);
+  --help-border:var(--sim-border,#e4ddec);
+  --help-bg:var(--sim-panel,#fff);
+  --help-muted:var(--sim-muted,#6d657c);
+  --help-wash:color-mix(in srgb,var(--help-purple) 7%,var(--help-bg));
+}
+.sim [hidden] { display:none !important; }
+.sim .sim-context-field {
+  position:relative;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+}
+.sim .sim-context-field > label {
+  width:100%;
+  min-width:0;
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.sim .sim-context-field input,
+.sim .sim-context-field select {
+  display:block;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+}
+.sim .sim-context-field .sim-field-note {display:block;}
+.sim .sim-input-grid > .sim-context-field {
+  min-width:0;
+  grid-column:auto;
+}
+.sim .sim-input-grid > .sim-context-field.sim-full-field {grid-column:1 / -1;}
+.sim .sim-product-bar > .sim-context-field {
+  flex:1 1 260px;
+  max-width:400px;
+}
+.sim .sim-product-bar .sim-original {min-width:0;overflow-wrap:anywhere;}
+.sim .sim-context-heading {
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  min-height:28px;
+  margin:0 0 4px;
+  gap:10px;
+}
+.sim .sim-context-section-heading {
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  min-width:0;
+}
+.sim .sim-context-section-heading > span {
+  color:var(--help-muted);
+  font:500 11px/1.6 Poppins,sans-serif;
+}
+.sim .sim-help-trigger {
+  display:inline-flex;
+  flex:0 0 auto;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  min-height:29px;
+  padding:5px 8px;
+  border:1px solid transparent;
+  background:transparent;
+  color:var(--help-purple);
+  border-radius:8px;
+  font:500 11px/1.25 Poppins,sans-serif;
+  white-space:nowrap;
+  cursor:pointer;
+  transition:background .18s ease,border-color .18s ease;
+}
+.sim .sim-help-trigger .bx {font-size:16px;}
+.sim .sim-help-trigger:hover,
+.sim .sim-help-trigger[aria-expanded="true"] {
+  background:var(--help-wash);
+  border-color:color-mix(in srgb,var(--help-purple) 22%,transparent);
+}
+.sim .sim-help-trigger:focus-visible,
+.sim .sim-tutorial button:focus-visible,
+.sim .sim-tutorial textarea:focus-visible {
+  outline:2px solid var(--help-purple);
+  outline-offset:2px;
+}
+.sim .sim-help-slot {
+  display:block;
+  min-width:0;
+  max-width:100%;
+  margin:10px 0 0;
+}
+.sim .sim-context-area > .sim-tabs {margin-top:8px;}
+.sim .sim-context-area > .sim-context-section-heading {
+  justify-content:space-between;
+  margin:2px 0 9px;
+}
+.sim .sim-context-area > .sim-tabs {margin-bottom:16px;}
+.sim .sim-controls {gap:12px;}
+.sim .sim-controls > .sim-context-slider {
+  width:100%;
+  min-width:0;
+}
+.sim .sim-context-slider > label {
+  display:flex;
+  flex-direction:row;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:8px;
+  margin:2px 0 9px;
+}
+.sim .sim-context-slider > input[type="range"] {
+  width:100%;
+  margin:4px 0 12px;
+  padding:0;
+  min-height:7px;
+  height:7px;
+  border:0;
+  background:transparent !important;
+  accent-color:var(--help-purple);
+}
+.sim .sim-context-metric {
+  min-width:0;
+  grid-template-columns:minmax(0,1fr) minmax(0,auto);
+}
+.sim .sim-context-metric-title {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:3px 7px;
+  min-width:0;
+}
+.sim .sim-context-metric-title > span {
+  display:inline-block;
+  min-width:0;
+  flex:1 1 110px;
+  overflow-wrap:anywhere;
+}
+.sim .sim-context-metric-title > .sim-help-trigger {
+  min-width:27px;
+  min-height:27px;
+  padding:4px;
+}
+.sim .sim-context-metric > .sim-help-slot {grid-column:1 / -1;}
+.sim .simulation-output > .sim-context-result-head {
+  width:100%;
+  min-width:0;
+}
+.sim .sim-context-result-head > h2 {
+  margin:6px 0 22px;
+  color:var(--sim-ink);
+  font-weight:600;
+  letter-spacing:-.06em;
+  font-size:clamp(36px,4vw,54px);
+  font-variant-numeric:tabular-nums;
+  overflow-wrap:anywhere;
+}
+.sim .sim-context-result-title {justify-content:flex-start;margin:0;}
+.sim .sim-context-section-heading + .sim-help-slot {margin-bottom:14px;}
+.sim .sim-heading-row > .sim-context-section-heading {
+  margin-left:auto;
+}
+.sim .sim-section > .sim-context-section-heading {margin:8px 0 0;justify-content:flex-start;}
+.sim .sim-add-reference > .sim-context-field {min-width:0;}
+.sim .sim-add-reference .sim-context-field:nth-child(2) {min-width:0;}
+.sim .sim-add-reference button#addReference {grid-column:1 / -1;justify-self:start;}
+.sim .sim-tutorial {
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  padding:clamp(16px,2.4vw,22px);
+  border:1px solid color-mix(in srgb,var(--help-purple) 21%,var(--help-border));
+  border-radius:16px;
+  background:var(--help-bg);
+  color:var(--sim-ink);
+  box-shadow:0 12px 30px rgba(66,40,111,.07);
+  text-align:left;
+}
+.sim .sim-tutorial-header {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.sim .sim-tutorial-header > div {min-width:0;}
+.sim .sim-tutorial-eyebrow {
+  display:block;
+  font:700 9px/1.4 Poppins,sans-serif;
+  letter-spacing:.10em;
+  color:var(--help-purple);
+}
+.sim .sim-tutorial h3 {
+  margin:6px 0 8px;
+  font:600 clamp(16px,1.8vw,19px)/1.4 Poppins,sans-serif;
+  letter-spacing:-.02em;
+  color:var(--sim-ink);
+  overflow-wrap:anywhere;
+}
+.sim .sim-tutorial-close {
+  flex:0 0 auto;
+  min-height:30px;
+  width:30px;
+  border:1px solid transparent;
+  border-radius:9px;
+  background:transparent;
+  color:var(--help-muted);
+  font:400 23px/1 Poppins,sans-serif;
+  cursor:pointer;
+}
+.sim .sim-tutorial-count {
+  margin-top:12px;
+  font:400 11px/1.5 Poppins,sans-serif;
+  color:var(--help-muted);
+}
+.sim .sim-tutorial-progress {
+  display:block;
+  width:100%;
+  height:5px;
+  margin:8px 0 19px;
+  appearance:none;
+  border:0;
+  border-radius:99px;
+  overflow:hidden;
+  background:var(--help-wash);
+  accent-color:var(--help-purple);
+}
+.sim .sim-tutorial-progress::-webkit-progress-bar {
+  border-radius:99px;
+  background:var(--help-wash);
+}
+.sim .sim-tutorial-progress::-webkit-progress-value {
+  border-radius:99px;
+  background:var(--help-purple);
+}
+.sim .sim-tutorial-progress::-moz-progress-bar {
+  border-radius:99px;
+  background:var(--help-purple);
+}
+.sim .sim-tutorial-subtitle,
+.sim .sim-tutorial-ask h4 {
+  font:600 13px/1.45 Poppins,sans-serif;
+  margin:0 0 9px;
+  color:var(--sim-ink);
+}
+.sim .sim-tutorial-body,
+.sim .sim-tutorial-example,
+.sim .sim-tutorial-ask .sim-tutorial-small {
+  margin:0 0 12px;
+  color:var(--help-muted);
+  font:400 12px/1.75 Poppins,sans-serif;
+  overflow-wrap:anywhere;
+}
+.sim .sim-tutorial-example {
+  padding:11px 12px;
+  margin-bottom:16px;
+  border-left:3px solid var(--help-purple);
+  border-radius:0 9px 9px 0;
+  background:var(--help-wash);
+  color:var(--sim-ink);
+}
+.sim .sim-tutorial-nav {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin-bottom:18px;
+}
+.sim .sim-tutorial button:not(.sim-tutorial-close) {
+  min-height:39px;
+  padding:9px 11px;
+  border-radius:9px;
+  font:600 11px/1.3 Poppins,sans-serif;
+  cursor:pointer;
+  white-space:normal;
+}
+.sim .sim-tutorial button:disabled {
+  opacity:.5;
+  cursor:not-allowed;
+}
+.sim .sim-tutorial-secondary {
+  border:1px solid var(--help-border);
+  background:transparent;
+  color:var(--help-purple);
+}
+.sim .sim-tutorial-next,
+.sim .sim-tutorial-send {
+  border:1px solid var(--help-purple);
+  background:var(--help-purple);
+  color:#fff;
+}
+.sim .sim-tutorial-ask {
+  border-top:1px solid var(--help-border);
+  padding-top:15px;
+}
+.sim .sim-tutorial-question {
+  width:100%;
+  display:block;
+  min-height:74px;
+  max-height:180px;
+  padding:11px 12px;
+  border:1px solid var(--help-border);
+  border-radius:9px;
+  background:var(--sim-field);
+  color:var(--sim-ink);
+  resize:vertical;
+  font:400 12px/1.6 Poppins,sans-serif;
+}
+.sim .sim-tutorial-send {width:100%;margin-top:9px;}
+.sim .sim-tutorial-answer {
+  margin-top:12px;
+  padding:12px;
+  border:1px solid var(--help-border);
+  border-radius:10px;
+  background:var(--help-wash);
+  min-width:0;
+}
+.sim .sim-tutorial-answer > strong {
+  display:block;
+  margin-bottom:7px;
+  color:var(--help-purple);
+  font:600 11px Poppins,sans-serif;
+}
+.sim .sim-tutorial-answer > p {
+  white-space:pre-line;
+  margin:0;
+  color:var(--sim-ink);
+  font:400 12px/1.75 Poppins,sans-serif;
+  overflow-wrap:anywhere;
+}
+.sim .sim-tutorial .sim-tutorial-apply {
+  display:block;
+  margin-top:10px;
+  width:100%;
+  border:1px solid var(--help-purple) !important;
+  background:var(--help-bg);
+  color:var(--help-purple);
+}
+.sim .sim-tutorial-answer .sim-tutorial-applied {margin-top:10px;}
+@media(max-width:1360px) {
+  .sim .sim-product-bar > .sim-context-field {max-width:none;}
+}
+@media(max-width:992px) {
+  .sim .sim-product-bar > .sim-context-field {flex:1 1 100%;}
+}
+@media(max-width:700px) {
+  .sim .sim-context-heading {margin:0 0 4px;}
+  .sim .sim-context-field > label {gap:7px;}
+  .sim .sim-tutorial {padding:16px;border-radius:14px;}
+  .sim .sim-context-section-heading {justify-content:flex-start;}
+  .sim .sim-heading-row > .sim-context-section-heading {margin:0;}
+  .sim .sim-context-result-head > h2 {font-size:clamp(34px,9vw,47px);}
+  .sim .sim-tutorial-nav {gap:8px;}
+  .sim .sim-add-reference > .sim-context-field {width:100%;}
+  .sim .sim-market-stats {grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-width:370px){
+  .sim .sim-market-stats {grid-template-columns:minmax(0,1fr);}
+}
+@media(prefers-reduced-motion:reduce){
+  .sim .sim-help-trigger {transition:none;}
+}
