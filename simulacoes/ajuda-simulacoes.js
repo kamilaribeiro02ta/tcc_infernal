@@ -161,10 +161,14 @@
     const heading=elem("div","sim-context-heading");
     const titleNode=Array.from(label.childNodes).find(n=>n.nodeType===3&&n.textContent.trim());
     if(titleNode){
-      const accessibleLabel=elem("label","sim-context-label",titleNode.textContent.trim());
-      accessibleLabel.htmlFor=id;
+      // O texto do campo é um título visual independente. Uma segunda
+      // tag <label> dentro do layout flex encolhia até uma letra por linha
+      // no mobile. aria-labelledby preserva a identificação acessível.
+      const fieldTitle=elem("span","sim-context-label",titleNode.textContent.trim());
+      fieldTitle.id="sim-context-label-"+id;
+      input.setAttribute("aria-labelledby",fieldTitle.id);
       titleNode.remove();
-      heading.append(accessibleLabel);
+      heading.append(fieldTitle);
     }
     heading.append(trigger(topic));
     wrapper.insertBefore(heading,label);
