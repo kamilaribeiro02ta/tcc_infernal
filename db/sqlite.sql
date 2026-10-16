@@ -85,3 +85,48 @@ CREATE TABLE IF NOT EXISTS zuz_simulations (
  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_zuz_simulations_company ON zuz_simulations(company_id,created_at DESC);
+
+
+-- Catálogo mundial isolado dos custos financeiros de cada empresa.
+-- As fontes são mantidas separadas por source e price_type.
+CREATE TABLE IF NOT EXISTS zuz_market_catalog (
+ id TEXT PRIMARY KEY,
+ source TEXT NOT NULL,
+ external_id TEXT NOT NULL,
+ kind TEXT NOT NULL CHECK(kind IN ('product','service')),
+ name TEXT NOT NULL,
+ brand TEXT,
+ model TEXT,
+ barcode TEXT,
+ category TEXT,
+ unit TEXT,
+ attributes TEXT NOT NULL DEFAULT '{}',
+ updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ UNIQUE(source,external_id)
+);
+CREATE INDEX IF NOT EXISTS idx_zuz_market_catalog_name ON zuz_market_catalog(name COLLATE NOCASE);
+CREATE INDEX IF NOT EXISTS idx_zuz_market_catalog_barcode ON zuz_market_catalog(barcode);
+CREATE INDEX IF NOT EXISTS idx_zuz_market_catalog_category ON zuz_market_catalog(kind,category);
+CREATE TABLE IF NOT EXISTS zuz_market_prices (
+ id TEXT PRIMARY KEY,
+ catalog_id TEXT NOT NULL REFERENCES zuz_market_catalog(id) ON DELETE CASCADE,
+ source TEXT NOT NULL,
+ source_ref TEXT NOT NULL,
+ seller TEXT,
+ price REAL NOT NULL CHECK(price>0),
+ currency TEXT NOT NULL DEFAULT 'BRL',
+ unit TEXT,
+ region TEXT,
+ condition TEXT NOT NULL DEFAULT 'new',
+ price_type TEXT NOT NULL CHECK(price_type IN ('retail','public_purchase','wholesale')),
+ url TEXT,
+ observed_at TEXT NOT NULL,
+ fetched_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ UNIQUE(source,source_ref)
+);
+CREATE INDEX IF NOT EXISTS idx_zuz_market_prices_lookup ON zuz_market_prices(catalog_id,price_type,observed_at DESC);
+CREATE TABLE IF NOT EXISTS zuz_market_cache (
+ cache_key TEXT PRIMARY KEY,
+ payload TEXT NOT NULL,
+ fetched_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
