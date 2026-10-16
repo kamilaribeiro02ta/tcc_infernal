@@ -28,6 +28,7 @@ function init(anchor,mode){
   if(name){
    search.placeholder="Digite o nome e clique em Pesquisar";
    name.addEventListener("input",()=>{
+    search.value=name.value.trim();
     if(window.ZUZMarketSelected&&name.value.trim()!==window.ZUZMarketSelected.name.slice(0,60)){
      window.ZUZMarketSelected=null;selected=null;
     }
@@ -35,7 +36,7 @@ function init(anchor,mode){
   }
  }
  async function run(){
-  const input=mode==="simulations"?(document.getElementById("product")?.selectedOptions[0]?.textContent||""):mode==="products"?(document.getElementById("nameInput")?.value||search.value):search.value;
+  const input=mode==="simulations"?(document.getElementById("product")?.selectedOptions[0]?.textContent||""):mode==="products"?(search.value||document.getElementById("nameInput")?.value||""):search.value;
   const term=input.trim().slice(0,72);
   if(term.length<3){message("Informe ao menos 3 caracteres para pesquisar.");return;}
   search.value=term;results.replaceChildren();details.replaceChildren();details.hidden=true;
