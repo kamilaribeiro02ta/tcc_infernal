@@ -24,6 +24,13 @@ function init(anchor,mode){
  const message=t=>{status.textContent=t;};
  search.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();run();}});
  if(mode==="products"){
+  const modal=document.getElementById("productModal");
+  if(modal)new MutationObserver(()=>{
+    if(!modal.classList.contains("open"))return;
+    selected=null;results.replaceChildren();details.replaceChildren();details.hidden=true;
+    search.value=document.getElementById("nameInput")?.value||"";
+    message("A pesquisa é opcional. Seus custos permanecem privados.");
+  }).observe(modal,{attributes:true,attributeFilter:["class"]});
   const name=document.getElementById("nameInput");
   if(name){
    search.placeholder="Digite o nome e clique em Pesquisar";
