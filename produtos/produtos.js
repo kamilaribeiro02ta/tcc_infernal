@@ -924,7 +924,7 @@
     }
 
     editingId = product.id;
-    window.ZUZMarketSelected = product.catalogItemId ? {id:product.catalogItemId,barcode:product.barcode,brand:product.brand,model:product.model,type:product.marketItemType} : null;
+    window.ZUZMarketSelected = product.catalogItemId ? {id:product.catalogItemId,name:product.name,barcode:product.barcode,brand:product.brand,model:product.model,type:product.marketItemType} : null;
     els.modalKicker.textContent = "Editar produto";
     els.modalTitle.textContent = product.name;
 
@@ -1013,7 +1013,7 @@
       name,
       category,
       image: currentPhotoData,
-      catalogItemId: window.ZUZMarketSelected?.id || (editingId ? products.find(p=>p.id===editingId)?.catalogItemId : "") || "",
+      catalogItemId: window.ZUZMarketSelected?.id || "",
       barcode: window.ZUZMarketSelected?.barcode || "",
       brand: window.ZUZMarketSelected?.brand || "",
       model: window.ZUZMarketSelected?.model || "",
