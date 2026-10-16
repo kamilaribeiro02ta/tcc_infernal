@@ -34,6 +34,17 @@ Fontes de documentação:
 - RLS foi habilitado nas tabelas públicas e o acesso é mediado pelo backend. Não fornecer credenciais PostgreSQL ao navegador.
 - `DATABASE_URL` deve estar configurada **no ambiente server-side** na Vercel. Não utilizar SQLite efêmero em Vercel.
 
+### Popular o catálogo global com dados públicos
+
+O índice começa vazio e é preenchido por buscas e por importação oficial paginada. Para importar materiais e serviços de Compras.gov.br, em ambiente com acesso à internet e `DATABASE_URL` configurada para o banco escolhido:
+
+```bash
+npm run market:import -- --kind=service --pages=10 --start=1
+npm run market:import -- --kind=product --pages=10 --start=1
+```
+
+O parâmetro `--start` permite continuar em outra página e `--pages` aceita no máximo 200 por execução. O processo é idempotente e nunca importa dados de usuários. Ele **não foi executado nesta entrega**, pois a sessão de desenvolvimento não tem acesso HTTP direto ao endpoint externo; portanto, não existe promessa de milhões de produtos já carregados.
+
 ## Endpoints (todos exigem autenticação)
 
 - `GET /api/market/catalog?q=<termo-ou-codigo>`: busca local e consulta pública; retorna lista de candidatos e eventuais erros de fonte.
