@@ -1,0 +1,26 @@
+/* Extensao funcional discreta, usando somente a identidade visual da ZUZ. */
+.zuz-market{box-sizing:border-box;min-width:0;width:100%;margin:18px 0 4px;padding:16px;border:1px solid var(--border,var(--sidebar-border,#e9e6ef));border-radius:14px;background:var(--surface-soft,var(--card-bg,#fff));color:var(--text-primary,#17131f);font:inherit}
+.zuz-market *{box-sizing:border-box}
+.zuz-market__title{display:flex;align-items:center;gap:8px;margin:0 0 6px;font:600 14px Poppins,sans-serif;color:inherit}
+.zuz-market__hint,.zuz-market__status,.zuz-market__fine{display:block;margin:0 0 10px;color:var(--text-secondary,#686171);font:400 12px/1.6 Poppins,sans-serif}
+.zuz-market__search{display:flex;gap:8px;align-items:stretch}
+.zuz-market__input{flex:1;min-width:0;max-width:100%;min-height:42px;padding:10px 12px;border-radius:10px;border:1px solid var(--border,var(--sidebar-border,#e9e6ef));background:var(--surface,var(--card-bg,#fff));color:var(--text-primary,#17131f);font:400 13px Poppins,sans-serif}
+.zuz-market__btn{border:0;border-radius:10px;min-height:42px;padding:10px 14px;background:var(--purple,#6a3df0);color:#fff;font:600 12px Poppins,sans-serif;cursor:pointer}
+.zuz-market__btn:disabled{opacity:.6;cursor:wait}
+.zuz-market__option{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;border:1px solid var(--border,var(--sidebar-border,#e9e6ef));border-radius:10px;background:var(--surface,var(--card-bg,#fff));color:var(--text-primary,#17131f);padding:10px 12px;margin-top:7px;font:500 12px Poppins,sans-serif;cursor:pointer}
+.zuz-market__option:hover,.zuz-market__option:focus-visible{border-color:var(--purple,#6a3df0);outline-offset:2px}
+.zuz-market__option small{color:var(--text-secondary,#686171);font-weight:400;line-height:1.5}
+.zuz-market__data{margin-top:12px;padding-top:12px;border-top:1px solid var(--border,var(--sidebar-border,#e9e6ef))}
+.zuz-market__stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.zuz-market__stat{min-width:0;padding:10px;border:1px solid var(--border,var(--sidebar-border,#e9e6ef));border-radius:10px}
+.zuz-market__stat small{display:block;color:var(--text-secondary,#686171);font-size:10px;line-height:1.4}
+.zuz-market__stat strong{display:block;font-size:clamp(13px,1.6vw,17px);line-height:1.7;white-space:nowrap}
+.zuz-market__source{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:8px 0;border-top:1px solid var(--border,var(--sidebar-border,#e9e6ef));font-size:12px}
+.zuz-market__source div{min-width:0;display:grid;gap:2px}
+.zuz-market__source small{color:var(--text-secondary,#686171);overflow-wrap:anywhere}
+.zuz-market__source a,.zuz-market__fine a{color:var(--purple,#6a3df0);text-decoration:underline}
+.zuz-market__action{margin-top:10px}
+.zuz-market__status{min-height:17px;margin:10px 0 0}
+.zuz-market__input:focus-visible,.zuz-market__btn:focus-visible{outline:2px solid var(--purple,#6a3df0);outline-offset:2px}
+body.dark .zuz-market{background:var(--surface-soft,#211a31);color:var(--text-primary,#f3f1fa)}
+@media(max-width:520px){.zuz-market{padding:12px}.zuz-market__search{flex-wrap:wrap}.zuz-market__input{flex-basis:100%}.zuz-market__btn{width:100%}.zuz-market__source{align-items:flex-start;flex-direction:column}}
