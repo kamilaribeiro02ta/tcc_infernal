@@ -90,7 +90,7 @@ async function fetchOpenPrices(item){
  const data=await getJson(url);
  return (data.items||[]).flat().map(x=>{
   const price=pos(x.price),date=iso(x.date),reference=String(x.id??"");
-  if(!price||!date||x.currency!=="BRL"||x.product_code!==item.barcode||x.price_per!=="UNIT"||!/^\d+$/.test(reference))return null;
+  if(!price||!date||x.currency!=="BRL"||x.product_code!==item.barcode||x.price_per!=="UNIT"||x.price_is_discounted===true||!/^\d+$/.test(reference))return null;
   return {source:"openprices",sourceRef:reference,price,date,type:"retail",unit:"un",condition:"new",
     seller:txt(x.location?.osm_name||x.location?.osm_display_name),region:txt(x.location?.osm_address_city||x.location?.osm_address_country),
     url:"https://prices.openfoodfacts.org/api/v1/prices/"+reference};
@@ -162,7 +162,10 @@ function registerMarketRoutes(router,{asyncRoute,getCompany}){
   let result;try{result=pricing.calculate({unitDirectCost:cost,targetMargin:margin,settings:company.settings||{},salePrice:Math.max(0,Number(input.salePrice)||0),units:1});}
   catch(e){err(400,e.message);}
   const minimum=(cost+result.fixedAllocation)/(1-result.variableRatePct/100);
-  const comparable=market?.quotes.filter(x=>!x.stale&&x.price_type==="retail"&&x.unit==="un"&&x.condition==="new")||[];
+  const recent=market?.quotes.filter(x=>!x.stale&&x.price_type==="retail"&&x.unit==="un"&&x.condition==="new"&&x.seller)||[];
+  const bySeller=new Map();
+  for(const row of recent)if(!bySeller.has(row.seller.toLowerCase()))bySeller.set(row.seller.toLowerCase(),row);
+  const comparable=[...bySeller.values()];
   const reference=item?.barcode&&comparable.length>=3?median(comparable.map(x=>x.price)):null;
   res.setHeader("Cache-Control","private, no-store");
   res.json({directCost:cost,minimumSustainablePrice:minimum,technicalPrice:result.technicalPrice,
