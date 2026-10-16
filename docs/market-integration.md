@@ -27,8 +27,9 @@ Fontes de documentação:
 ## PostgreSQL e SQLite
 
 - Esquema PostgreSQL aditivo em `db/migrations/001-market-postgresql.sql`.
+- Índices GIN de busca por nome, marca, modelo e categoria em `db/migrations/002-market-search-indexes.sql`, utilizando `pg_trgm`.
 - As tabelas equivalentes já estão em `db/sqlite.sql`; ao iniciar o servidor local, o SQLite cria as novas tabelas sem descartar as anteriores.
-- A migração de mercado foi aplicada no projeto Neon de produção já existente. Em **novos bancos PostgreSQL**, aplicar primeiro `db/schema.sql` e depois `db/migrations/001-market-postgresql.sql`.
+- A migração de mercado foi aplicada no projeto Neon de produção já existente. Em **novos bancos PostgreSQL**, aplicar primeiro `db/schema.sql` e depois `db/migrations/001-market-postgresql.sql` e `db/migrations/002-market-search-indexes.sql`.
 - Tabelas `zuz_market_catalog`, `zuz_market_prices`, `zuz_market_cache` não contêm `company_id`, custos, margens, faturamento ou informações internas de outras empresas. São exclusivamente dados públicos e cache.
 - Os produtos e resultados privados continuam armazenados nas tabelas de empresas existentes com controle autenticado por `company_id`.
 - RLS foi habilitado nas tabelas públicas e o acesso é mediado pelo backend. Não fornecer credenciais PostgreSQL ao navegador.
