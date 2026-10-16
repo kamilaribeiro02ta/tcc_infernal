@@ -83,7 +83,7 @@ function init(anchor,mode){
   const h=make("strong","zuz-market__title",item.name);details.append(h);
   const attribution=make("p","zuz-market__fine","Catálogo: "+sourceName(item.source)+". "+(data.note||""));details.append(attribution);
   if(data.warnings?.length)details.append(make("p","zuz-market__fine",data.warnings.join(" ")));
-  if(!data.quotes?.length){details.append(make("p","zuz-market__fine","Não foram encontrados preços públicos para este item. A precificação manual continua disponível."));message("Sem preços verificáveis para o item.");return;}
+  if(!data.quotes?.length){details.append(make("p","zuz-market__fine","Não foram encontrados preços públicos para este item. A precificação manual continua disponível."));message("Sem preços verificáveis para o item.");if(mode==="products")addRecommendation(item,details);return;}
   message(data.quotes.length+" referência(s) consultada(s). Verifique unidade, tipo e data.");
   for(const group of data.groups.slice(0,4)){
    const type=group.type==="public_purchase"?"Contratação pública":group.type==="retail"?"Preço de varejo":"Atacado";
