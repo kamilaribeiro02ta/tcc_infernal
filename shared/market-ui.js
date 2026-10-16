@@ -125,10 +125,13 @@ function init(anchor,mode){
  function addSimulationImport(item,data,container){
   const selectedId=document.getElementById("product")?.value;
   if(!selectedId)return;
-  const selectBarcode=item.barcode||"",records=data.quotes.filter(x=>!x.stale&&x.price_type==="retail"&&x.unit==="un"&&x.condition==="new");
+  const selectBarcode=item.barcode||"",observations=data.quotes.filter(x=>!x.stale&&x.price_type==="retail"&&x.unit==="un"&&x.condition==="new"&&x.seller);
+  const distinct=new Map();for(const quote of observations)if(!distinct.has(quote.seller.toLowerCase()))distinct.set(quote.seller.toLowerCase(),quote);
+  const records=[...distinct.values()];
   const b=button("Usar preços públicos no cenário","zuz-market__btn zuz-market__action",async()=>{
    try{
     const snapshot=await api.request("GET","/company");
+    if(document.getElementById("product")?.value!==selectedId){message("O produto da simulação mudou. Faça uma nova pesquisa.");return;}
     const original=snapshot.products?.find(x=>String(x.id)===selectedId);
     if(!original?.barcode||original.barcode!==selectBarcode||records.length<3){
      message("Para incorporar preços ao cenário, vincule primeiro este produto ao mesmo código de barras em Produtos e tenha pelo menos 3 cotações recentes.");
