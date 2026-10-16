@@ -49,3 +49,7 @@ Nenhum `DATABASE_URL` ou SQL Editor é necessário.
 ### Observações
 
 Agenda, tarefas e alguns recursos do Perfil ainda possuem dados locais no navegador. As páginas de Produtos, Simulações e Análises utilizam o backend associado à conta autenticada.
+
+## Referências públicas de mercado
+
+A busca opcional de catálogo e cotações públicas aparece nas páginas **Produtos**, **Custos** e **Simulações**. O cálculo manual permanece disponível; cotações externas nunca substituem os custos de cada empresa. Para bancos PostgreSQL novos, aplicar também `db/migrations/001-market-postgresql.sql` após `db/schema.sql`. Consulte [fontes, limitações e testes](docs/market-integration.md).
