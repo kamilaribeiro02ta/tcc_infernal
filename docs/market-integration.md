@@ -26,19 +26,19 @@ Fontes de documentação:
 
 ## PostgreSQL e SQLite
 
-- Esquema PostgreSQL aditivo em \`db/migrations/001-market-postgresql.sql\`.
-- As tabelas equivalentes já estão em \`db/sqlite.sql\`; ao iniciar o servidor local, o SQLite cria as novas tabelas sem descartar as anteriores.
-- A migração de mercado foi aplicada no projeto Neon de produção já existente. Em **novos bancos PostgreSQL**, aplicar primeiro \`db/schema.sql\` e depois \`db/migrations/001-market-postgresql.sql\`.
-- Tabelas \`zuz_market_catalog\`, \`zuz_market_prices\`, \`zuz_market_cache\` não contêm \`company_id\`, custos, margens, faturamento ou informações internas de outras empresas. São exclusivamente dados públicos e cache.
-- Os produtos e resultados privados continuam armazenados nas tabelas de empresas existentes com controle autenticado por \`company_id\`.
+- Esquema PostgreSQL aditivo em `db/migrations/001-market-postgresql.sql`.
+- As tabelas equivalentes já estão em `db/sqlite.sql`; ao iniciar o servidor local, o SQLite cria as novas tabelas sem descartar as anteriores.
+- A migração de mercado foi aplicada no projeto Neon de produção já existente. Em **novos bancos PostgreSQL**, aplicar primeiro `db/schema.sql` e depois `db/migrations/001-market-postgresql.sql`.
+- Tabelas `zuz_market_catalog`, `zuz_market_prices`, `zuz_market_cache` não contêm `company_id`, custos, margens, faturamento ou informações internas de outras empresas. São exclusivamente dados públicos e cache.
+- Os produtos e resultados privados continuam armazenados nas tabelas de empresas existentes com controle autenticado por `company_id`.
 - RLS foi habilitado nas tabelas públicas e o acesso é mediado pelo backend. Não fornecer credenciais PostgreSQL ao navegador.
-- \`DATABASE_URL\` deve estar configurada **no ambiente server-side** na Vercel. Não utilizar SQLite efêmero em Vercel.
+- `DATABASE_URL` deve estar configurada **no ambiente server-side** na Vercel. Não utilizar SQLite efêmero em Vercel.
 
 ## Endpoints (todos exigem autenticação)
 
-- \`GET /api/market/catalog?q=<termo-ou-codigo>\`: busca local e consulta pública; retorna lista de candidatos e eventuais erros de fonte.
-- \`GET /api/market/quotes?id=<id-do-catalogo>\`: recupera cotações e estatísticas segregadas por natureza, condição e unidade.
-- \`POST /api/market/recommend\`: \`{ "directCost": 50, "targetMargin": 30, "itemId": "opcional" }\`; retorna custo informado, mínimo sustentável, preço técnico, sugestão e justificativa. Todos os cálculos são determinísticos com \`shared/pricing-core.js\`.
+- `GET /api/market/catalog?q=<termo-ou-codigo>`: busca local e consulta pública; retorna lista de candidatos e eventuais erros de fonte.
+- `GET /api/market/quotes?id=<id-do-catalogo>`: recupera cotações e estatísticas segregadas por natureza, condição e unidade.
+- `POST /api/market/recommend`: `{ "directCost": 50, "targetMargin": 30, "itemId": "opcional" }`; retorna custo informado, mínimo sustentável, preço técnico, sugestão e justificativa. Todos os cálculos são determinísticos com `shared/pricing-core.js`.
 
 ## Regras de confiabilidade
 
@@ -53,11 +53,11 @@ Fontes de documentação:
 
 Executar na máquina do projeto:
 
-\`\`\`bash
+```bash
 npm install
 npm run test:core
 npm start
-\`\`\`
+```
 
 Após iniciar, validar login, cadastro, edição, histórico e exclusão de produtos; buscar por GTIN alimentício real; consultar CATMAT/CATSER pelo código; confirmar a ausência de dados para categoria sem cotação; verificar confirmação antes de aplicar preço e testar mobile / temas claro e escuro.
 
