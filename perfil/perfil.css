@@ -3835,3 +3835,39 @@ body.dark .day-drawer-backdrop {
   position: relative;
   z-index: 1;
 }
+
+
+/* ZUZ 2026-10-16 | Calendário da equipe: linhas nítidas */
+/* Linhas de dois pixels inteiros ficam perceptíveis no celular. */
+.task-calendar-grid {
+  border: 2px solid var(--line);
+}
+.task-calendar-grid .calendar-day,
+.task-calendar-grid .calendar-day.is-empty {
+  border-right: 2px solid var(--line);
+  border-bottom: 2px solid var(--line);
+}
+.task-calendar-grid .calendar-day:nth-child(7n) {
+  border-right: 0;
+}
+body:not(.dark) .task-calendar-grid { border-color: #c7b7e9; }
+body:not(.dark) .task-calendar-grid .calendar-day,
+body:not(.dark) .task-calendar-grid .calendar-day.is-empty {
+  border-right-color: #d4c7ec;
+  border-bottom-color: #d4c7ec;
+}
+body.dark .task-calendar-grid { border-color: #5a4c78; }
+body.dark .task-calendar-grid .calendar-day,
+body.dark .task-calendar-grid .calendar-day.is-empty {
+  border-right-color: #514366;
+  border-bottom-color: #514366;
+}
+.task-calendar-grid .calendar-day { font-size: 11px; }
+.calendar-weekdays span { font-size: 11px; }
+@media (max-width: 760px) {
+  .calendar-panel {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}
