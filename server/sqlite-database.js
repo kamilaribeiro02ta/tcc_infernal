@@ -33,7 +33,7 @@ function execute(sql, params = []) {
   const values = bindings.map(v => typeof v === "boolean" ? Number(v) : v);
   const rows = stmt.columns().length ? stmt.all(...values) : (stmt.run(...values), []);
   for (const row of rows) {
-    for (const key of ["settings", "inputs", "payload"]) {
+    for (const key of ["settings", "inputs", "payload", "attributes"]) {
       if (typeof row[key] === "string") {
         try { row[key] = JSON.parse(row[key]); } catch {}
       }
