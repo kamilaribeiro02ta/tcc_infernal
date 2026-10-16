@@ -67,7 +67,7 @@ async function searchGovernment(term){
  return r.flatMap(x=>x.status==="fulfilled"?x.value:[]);
 }
 async function catalog(term){
- const r=await query("SELECT * FROM zuz_market_catalog WHERE barcode=$1 OR lower(name) LIKE $2 OR lower(brand) LIKE $2 ORDER BY name LIMIT 20",[term,"%"+term.toLowerCase().replace(/[%_]/g,"")+"%"]);
+ const r=await query("SELECT * FROM zuz_market_catalog WHERE barcode=$1 OR lower(name) LIKE $2 OR lower(brand) LIKE $2 OR lower(model) LIKE $2 OR lower(category) LIKE $2 ORDER BY name LIMIT 20",[term,"%"+term.toLowerCase().replace(/[%_]/g,"")+"%"]);
  const stored=r.rows.map(dto),key="search:"+hash("term",term.toLowerCase());
  const hit=await cacheGet(key,12*3600000);if(hit)return {items:unique(stored.concat(hit.items)),cached:true,warnings:[]};
  const ext=await Promise.allSettled([searchFood(term),searchGovernment(term)]);
