@@ -5,6 +5,7 @@ const { promisify } = require("util");
 const { query, getPool, provider } = require("./database");
 const catalog = require("../shared/business-templates");
 const { registerSimulationRoutes } = require("./simulations-routes");
+const { registerMarketRoutes } = require("./market");
 const { askCostsGuide } = require("./costs-assistant");
 const { askSimulationGuide } = require("./simulations-help");
 const pricing = require("../shared/pricing-core");
@@ -133,6 +134,7 @@ function createApi() {
     if (!user) fail(401,"Faça login para continuar.");
     req.user = user; next();
   }));
+  registerMarketRoutes(router,{asyncRoute,getCompany});
   router.get("/me", asyncRoute(async (req,res) => res.json({ user:safeUser(req.user),company:await getCompany(req.user.id) })));
   // Atualiza a identidade autenticada no banco, permitindo que o nome apareça
   // corretamente em outros dispositivos (em vez de existir apenas no localStorage).
