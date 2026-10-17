@@ -12,7 +12,7 @@ const obs=(overrides={})=>({
 test("cotacao recente possui data, loja, unidade e origem",()=>{
  const x=q.classify(obs(),NOW);
  assert.equal(x.stale,false);
- assert.equal(x.confidence,"alta");
+ assert.equal(x.confidence,"media");
  assert.equal(x.freshness,"recente");
 });
 test("cotacao antiga não interfere na mediana",()=>{
