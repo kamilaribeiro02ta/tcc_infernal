@@ -8,7 +8,8 @@
     "start": "node --env-file-if-exists=.env local-server.js",
     "dev": "node --env-file-if-exists=.env --watch local-server.js",
     "test:core": "node --test tests/*.test.js",
-    "market:import": "node --env-file-if-exists=.env scripts/import-compras-catalog.js"
+    "market:import": "node --env-file-if-exists=.env scripts/import-compras-catalog.js",
+    "market:sync": "node --env-file-if-exists=.env scripts/sync-market-prices.js"
   },
   "engines": {
     "node": "24.x"
