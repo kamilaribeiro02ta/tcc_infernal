@@ -35,7 +35,7 @@ async function cacheGet(key,ttl){
 async function cacheSet(key,obj){
  await query("INSERT INTO zuz_market_cache(cache_key,payload,fetched_at) VALUES($1,$2::jsonb,CURRENT_TIMESTAMP) ON CONFLICT(cache_key) DO UPDATE SET payload=excluded.payload,fetched_at=CURRENT_TIMESTAMP",[key,JSON.stringify(obj)]);
 }
-const dto=r=>({id:r.id,source:r.source,sourceId:r.external_id,type:r.kind,name:r.name,brand:r.brand||"",model:r.model||"",barcode:r.barcode||"",category:r.category||"",unit:r.unit||"",attributes:r.attributes||{}});
+const dto=r=>({id:r.id,source:r.source,sourceId:r.external_id,type:r.kind,name:r.commercial_name||r.name,fullName:r.name,brand:r.brand||"",model:r.model||"",barcode:r.barcode||"",category:r.category||"",unit:r.unit||"",attributes:r.attributes||{},isHistorical:!!r.is_historical,updatedAt:r.updated_at||null});
 async function upsert(item){
  const sql="INSERT INTO zuz_market_catalog(id,source,external_id,kind,name,brand,model,barcode,category,unit,attributes,updated_at) "+
  "VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,CURRENT_TIMESTAMP) "+
@@ -79,11 +79,12 @@ async function catalog(term){
 }
 function unique(items){return [...new Map(items.map(i=>[i.id,i])).values()].slice(0,25);}
 async function storeQuote(item,q){
- const sql="INSERT INTO zuz_market_prices(id,catalog_id,source,source_ref,seller,price,currency,unit,region,condition,price_type,url,observed_at,fetched_at) "+
- "VALUES($1,$2,$3,$4,$5,$6,'BRL',$7,$8,$9,$10,$11,$12,CURRENT_TIMESTAMP) "+
+ const sql="INSERT INTO zuz_market_prices(id,catalog_id,source,source_ref,seller,price,currency,unit,region,condition,price_type,url,observed_at,fetched_at,gtin,offer_title,last_checked_at) "+
+ "VALUES($1,$2,$3,$4,$5,$6,'BRL',$7,$8,$9,$10,$11,$12,CURRENT_TIMESTAMP,$13,$14,CURRENT_TIMESTAMP) "+
  "ON CONFLICT(source,source_ref) DO UPDATE SET seller=excluded.seller,price=excluded.price,unit=excluded.unit,"+
- "region=excluded.region,condition=excluded.condition,price_type=excluded.price_type,url=excluded.url,observed_at=excluded.observed_at,fetched_at=CURRENT_TIMESTAMP";
- await query(sql,[hash(q.source,q.sourceRef),item.id,q.source,q.sourceRef,q.seller||null,q.price,q.unit||null,q.region||null,q.condition||"new",q.type,safeUrl(q.url),q.date]);
+ "region=excluded.region,condition=excluded.condition,price_type=excluded.price_type,url=excluded.url,observed_at=excluded.observed_at,fetched_at=CURRENT_TIMESTAMP,"+
+ "gtin=excluded.gtin,offer_title=excluded.offer_title,last_checked_at=CURRENT_TIMESTAMP";
+ await query(sql,[hash(q.source,q.sourceRef),item.id,q.source,q.sourceRef,q.seller||null,q.price,q.unit||null,q.region||null,q.condition||"new",q.type,safeUrl(q.url),q.date,item.barcode||null,item.commercial_name||item.name]);
  await query("INSERT INTO zuz_market_price_history(quote_id,source,source_ref,price,observed_at) "+
   "VALUES($1,$2,$3,$4,$5) ON CONFLICT(quote_id,observed_at,price) DO NOTHING",
   [hash(q.source,q.sourceRef),q.source,q.sourceRef,q.price,q.date]);

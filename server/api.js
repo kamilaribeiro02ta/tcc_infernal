@@ -158,28 +158,66 @@ function createApi() {
   }));
   registerMarketRoutes(router,{asyncRoute,getCompany});
 
-  // Pesquisa comercial: itens históricos ficam ocultos por padrão.
+  // Mercado: resultados atuais e técnicos são exibidos separadamente, nunca tratados como ofertas equivalentes.
   router.get("/market/v2/search",asyncRoute(async(req,res)=>{
-    const term=normalText(req.query.q,80),kind=["product","service"].includes(req.query.kind)?req.query.kind:null;
-    const historical=req.query.historical==="true";
-    if(term.length<2)fail(400,"Digite pelo menos dois caracteres.");
-    if(provider!=="postgresql")fail(503,"Pesquisa avançada disponível com PostgreSQL.");
+    const term=normalText(req.query.q,80);
+    if(term.length<2)fail(400,"Digite ao menos dois caracteres.");
+    if(provider!=="postgresql")fail(503,"Pesquisa de catálogo disponível com PostgreSQL.");
+    const kind=["product","service"].includes(req.query.kind)?req.query.kind:null;
+    const includeArchive=req.query.historical!=="false";
     const warnings=[];
-    let rows=(await query("SELECT * FROM zuz_market_search_v2($1,$2,$3,$4,$5)",[term,kind,null,historical,30])).rows;
-    if(!historical&&kind!=="service"&&rows.length<8){
-      try{const imported=await require("./market").catalog(term);warnings.push(...(imported.warnings||[]));
-        rows=(await query("SELECT * FROM zuz_market_search_v2($1,$2,$3,$4,$5)",[term,kind,null,false,30])).rows;
-      }catch(e){warnings.push("Uma fonte externa está indisponível. Exibindo apenas itens já armazenados.");}
+    let current=(await query("SELECT * FROM zuz_market_search_v2($1,$2,$3,FALSE,30)",[term,kind,null])).rows;
+    if(kind!=="service"&&current.length<12){
+      try{
+        const data=await require("./market-discovery").lookup(term);
+        warnings.push(...data.warnings);
+        current=(await query("SELECT * FROM zuz_market_search_v2($1,$2,$3,FALSE,30)",[term,kind,null])).rows;
+      }catch(error){
+        warnings.push("Um catálogo externo está indisponível. Exibindo os itens já armazenados.");
+      }
     }
-    const seen=new Set(),items=[];
-    for(const row of rows){
-      const family=String(row.display_name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
-      const key=row.is_historical?row.source+":"+family:row.item_id;
-      if(!seen.has(key)){items.push(row);seen.add(key);}
-      if(items.length>=14)break;
+    // Não confundir coincidência só na categoria com o termo buscado.
+    const normalized=require("./market-discovery").norm;
+    const wanted=normalized(term);
+    current=current.filter(x=>{
+      const line=normalized([x.display_name,x.brand,x.model,x.barcode].filter(Boolean).join(" "));
+      return line.includes(wanted)||x.barcode===term;
+    }).slice(0,20);
+    let archived=[];
+    if(includeArchive){
+      const contains="%"+term.toLowerCase().replace(/[\\%_]/g,"")+"%";
+      const r=await query(
+        "SELECT id AS item_id,kind,LEFT(SPLIT_PART(name,',',1),140) AS display_name,name AS full_name,"+
+        "brand,model,barcode,category,source,external_id AS source_id,TRUE AS is_historical,FALSE AS has_price,20 AS match_score "+
+        "FROM zuz_market_catalog WHERE source='catmat_archive_2018' AND unaccent(lower(name)) LIKE unaccent($1) "+
+        "AND ($2::text IS NULL OR kind=$2) ORDER BY CASE WHEN unaccent(lower(name)) LIKE unaccent($3) THEN 0 ELSE 1 END,LENGTH(name) LIMIT 100",
+        [contains,kind,term.toLowerCase().replace(/[\\%_]/g,"")+"%"]);
+      const seen=new Set();
+      for(const x of r.rows){
+        const key=normalized(x.full_name);
+        if(seen.has(key))continue;
+        seen.add(key);archived.push(x);
+        if(archived.length>=35)break;
+      }
     }
     res.setHeader("Cache-Control","private, no-store");
-    res.json({items,warnings,scope:historical?"com_historico":"comercial_atual"});
+    res.json({items:current.concat(archived),commercial:current,archived,warnings,
+      totals:{commercial:current.length,archived:archived.length},
+      note:"Itens históricos são apenas referências técnicas. Fontes de catálogo não garantem preços."});
+  }));
+  router.get("/market/v2/item",asyncRoute(async(req,res)=>{
+    const id=normalText(req.query.id,50);
+    if(!/^[a-f0-9]{32}$/.test(id))fail(400,"Identificador inválido.");
+    const r=await query("SELECT id,source,external_id,kind,name,commercial_name,brand,model,barcode,category,unit,attributes,is_historical,updated_at FROM zuz_market_catalog WHERE id=$1",[id]);
+    if(!r.rows.length)fail(404,"Item não encontrado.");
+    const x=r.rows[0];
+    const prices=await query("SELECT COUNT(*)::int AS count FROM zuz_market_prices WHERE catalog_id=$1",[id]);
+    res.setHeader("Cache-Control","private, no-store");
+    res.json({item:{id:x.id,source:x.source,sourceId:x.external_id,type:x.kind,
+      name:x.commercial_name||x.name,fullName:x.name,brand:x.brand,model:x.model,
+      barcode:x.barcode,category:x.category,unit:x.unit,attributes:x.attributes||{},
+      isHistorical:!!x.is_historical,updatedAt:x.updated_at,
+      priceCount:prices.rows[0]?.count||0}});
   }));
 
   router.get("/me", asyncRoute(async (req,res) => res.json({ user:safeUser(req.user),company:await getCompany(req.user.id) })));

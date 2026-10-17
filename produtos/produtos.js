@@ -1226,5 +1226,50 @@
     }
   });
 
+  // Importação assistida de catálogo público; nunca preenche custos ou valores de venda.
+  function setMarketProduct(item){
+    if(!item||typeof item!=="object"||!/^[a-f0-9]{32}$/.test(item.id||""))return;
+    if(!els.productModal.classList.contains("open"))openNewModal();
+    const name=String(item.name||"").trim().slice(0,60);
+    if(!name)return;
+    const source=String(item.source||"");
+    const generic=String(item.category||"").toLowerCase();
+    let category="Outros";
+    if(source==="openfoodfacts"||/alimento|massas|aliment|comida|pasta|food|bebida/.test(generic))category="Alimentos e bebidas";
+    else if(source==="openbeautyfacts"||/absorvente|higiene|sabonete|perfume|cosmét|cosmet|desodorante/.test(name.toLowerCase()+" "+generic))category="Beleza e cuidados";
+    else if(source==="openpetfoodfacts")category="Outros";
+    else if(item.type==="service")category="Serviços";
+    else if(/eletr|informat|celular|telefone|computador|televis/.test(generic+" "+name.toLowerCase()))category="Eletrônicos";
+    else if(/vestu|roupa|camisa|calca|calça/.test(generic))category="Vestuário";
+    else if(/acessório|acessorio|fone de ouvido|cabo usb/.test(generic))category="Acessórios";
+    else if(/limpeza|vassoura/.test(generic+" "+name.toLowerCase()))category="Casa e decoração";
+    els.nameInput.value=name;
+    setCategoryFormValue(category);
+    const image=String(item.imageUrl||"");
+    if(/^https:\/\/images\.openfoodfacts\.org\/images\//.test(image)){
+      currentPhotoData=image;
+      renderPhotoPreview();
+    }
+    window.ZUZMarketSelected={
+      id:item.id,name,barcode:/^\d{8,14}$/.test(item.barcode||"")?item.barcode:"",
+      brand:String(item.brand||"").slice(0,120),
+      model:String(item.model||"").slice(0,120),
+      type:item.type==="service"?"service":"product"
+    };
+    els.formMessage.textContent=(item.isHistorical?
+      "Registro técnico antigo vinculado. Confira as especificações antes de cadastrar. ":
+      "Dados do catálogo vinculados ao formulário. ")+
+      "Os custos e o preço de venda precisam ser informados por você.";
+    updatePricingAndSimulation();
+  }
+  window.addEventListener("zuz:market:prefill",event=>setMarketProduct(event.detail));
+  try{
+    const pending=sessionStorage.getItem("zuz:market-import");
+    if(pending){
+      sessionStorage.removeItem("zuz:market-import");
+      const item=JSON.parse(pending);
+      if(item?.id)setTimeout(()=>setMarketProduct(item),0);
+    }
+  }catch(error){console.warn("Não foi possível restaurar os dados públicos selecionados.",error);}
   renderAll();
 })();
