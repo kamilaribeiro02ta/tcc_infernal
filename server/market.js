@@ -2,11 +2,12 @@
 const crypto=require("node:crypto");
 const {query}=require("./database");
 const pricing=require("../shared/pricing-core");
+const quality=require("./market-quality");
 const hash=(a,b)=>crypto.createHash("sha256").update(a+":"+b).digest("hex").slice(0,32);
 const txt=(x,n=180)=>String(x??"").trim().slice(0,n);
 const pos=x=>{const n=Number(typeof x==="string"?x.replace(",","."):x);return Number.isFinite(n)&&n>0&&n<1e8?n:null;};
-const iso=x=>{const d=new Date(x);return x&&Number.isFinite(d.getTime())?d.toISOString():null;};
-const median=xs=>{const a=[...xs].sort((x,y)=>x-y),m=Math.floor(a.length/2);return a.length?(a.length%2?a[m]:(a[m-1]+a[m])/2):null;};
+const iso=x=>{const d=new Date(x);return x&&Number.isFinite(d.getTime())&&d.getTime()<=Date.now()+86400000?d.toISOString():null;};
+const median=quality.median;
 const expired=x=>!iso(x)||Date.now()-new Date(x).getTime()>90*86400000;
 const err=(status,message)=>{const e=new Error(message);e.status=status;throw e;};
 const attempts=new Map();
@@ -90,7 +91,7 @@ async function fetchOpenPrices(item){
  const data=await getJson(url);
  return (data.items||[]).flat().map(x=>{
   const price=pos(x.price),date=iso(x.date),reference=String(x.id??"");
-  if(!price||!date||x.currency!=="BRL"||x.product_code!==item.barcode||x.price_per!=="UNIT"||x.price_is_discounted===true||!/^\d+$/.test(reference))return null;
+  if(!price||!date||x.currency!=="BRL"||x.product_code!==item.barcode||x.price_per!=="UNIT"||x.price_is_discounted===true||x.duplicate_of||!/^\d+$/.test(reference))return null;
   return {source:"openprices",sourceRef:reference,price,date,type:"retail",unit:"un",condition:"new",
     seller:txt(x.location?.osm_name||x.location?.osm_display_name),region:txt(x.location?.osm_address_city||x.location?.osm_address_country),
     url:"https://prices.openfoodfacts.org/api/v1/prices/"+reference};
@@ -106,23 +107,15 @@ async function fetchGovQuotes(item){
  const d=await getJson(url);
  return (d.resultado||[]).map(x=>{
   const price=pos(x.precoUnitario),date=iso(x.dataCompra||x.dataResultado);
-  const ref=txt(x.idCompra)+":"+txt(x.idItemCompra||x.idCompraItem);
-  if(!price||!date||!x.idCompra||(!x.idItemCompra&&!x.idCompraItem))return null;
-  return {source:"comprasgov",sourceRef:ref,price,date,type:"public_purchase",unit:txt(x.siglaUnidadeMedida||x.nomeUnidadeMedida,40),
-    region:txt(x.estado,20),seller:txt(x.nomeFornecedor||x.nomeOrgao),condition:"new",url};
+  const ref=txt(x.idCompra)+":"+txt(x.idItemCompra??x.numeroItemCompra);
+  if(!price||!date||!x.idCompra||!ref.split(":")[1]||String(x.codigoItemCatalogo)!==String(code))return null;
+  return {source:"comprasgov",sourceRef:ref,price,date,type:"public_purchase",
+    unit:txt(x.siglaUnidadeFornecimento||x.siglaUnidadeMedida||x.nomeUnidadeFornecimento||x.nomeUnidadeMedida,40),
+    region:txt(x.estado||x.municipio,120),seller:txt(x.nomeFornecedor||x.nomeUasg||x.nomeOrgao),
+    condition:"new",url};
  }).filter(Boolean);
 }
-function groupsOf(quotes){
- const groups=new Map();
- for(const q of quotes.filter(x=>!x.stale)){
-  const key=[q.price_type,q.unit||"unidade não informada",q.condition].join("|");
-  if(!groups.has(key))groups.set(key,[]);groups.get(key).push(q);
- }
- return [...groups].map(([key,rows])=>{
-  const prices=rows.map(x=>x.price);
-  return {key,type:rows[0].price_type,unit:rows[0].unit||null,count:prices.length,min:Math.min(...prices),median:median(prices),max:Math.max(...prices)};
- });
-}
+function groupsOf(quotes){return quality.summarize(quotes);}
 async function quotesFor(item){
  const key="quotes:"+item.id,ttl=item.source==="comprasgov"?7*86400000:12*3600000;
  let warnings=[],hit=await cacheGet(key,ttl);
@@ -132,9 +125,11 @@ async function quotesFor(item){
   await cacheSet(key,{checked:true,count:list.length});
  }catch(e){warnings.push("Fonte externa indisponível. Mostrando apenas registros já consultados.");}
  const result=await query("SELECT source,seller,price,currency,unit,region,condition,price_type,url,observed_at FROM zuz_market_prices WHERE catalog_id=$1 ORDER BY observed_at DESC LIMIT 100",[item.id]);
- const quotes=result.rows.map(x=>({...x,price:Number(x.price),stale:expired(x.observed_at)}));
- return {quotes,groups:groupsOf(quotes),warnings,
-  matching:item.barcode?"codigo_de_barras":item.source==="comprasgov"?"codigo_catalogo":"sem_equivalencia",
+ const match=item.barcode?"codigo_de_barras":item.source==="comprasgov"?"codigo_catalogo":"sem_equivalencia";
+ const quotes=result.rows.map(x=>quality.classify({...x,matching:match}));
+ const found=quotes.filter(x=>!x.stale).length;
+ return {quotes,groups:groupsOf(quotes),warnings,summary:{total:quotes.length,current:found,stale:quotes.length-found},
+  matching:match,
   note:item.source==="comprasgov"?"Compra pública não representa preço de varejo.":"Preço colaborativo: confirme data e condições."};
 }
 function registerMarketRoutes(router,{asyncRoute,getCompany}){
@@ -162,10 +157,14 @@ function registerMarketRoutes(router,{asyncRoute,getCompany}){
   let result;try{result=pricing.calculate({unitDirectCost:cost,targetMargin:margin,settings:company.settings||{},salePrice:Math.max(0,Number(input.salePrice)||0),units:1});}
   catch(e){err(400,e.message);}
   const minimum=(cost+result.fixedAllocation)/(1-result.variableRatePct/100);
-  const recent=market?.quotes.filter(x=>!x.stale&&x.price_type==="retail"&&x.unit==="un"&&x.condition==="new"&&x.seller)||[];
-  const bySeller=new Map();
-  for(const row of recent)if(!bySeller.has(row.seller.toLowerCase()))bySeller.set(row.seller.toLowerCase(),row);
-  const comparable=[...bySeller.values()];
+  const perRegion=new Map();
+  for(const row of market?.quotes||[]){
+    const region=String(row.region||"sem_regiao").toLowerCase();
+    if(!perRegion.has(region))perRegion.set(region,[]);
+    perRegion.get(region).push(row);
+  }
+  const candidates=[...perRegion.values()].map(rows=>quality.reliableRetail(rows)).sort((a,b)=>b.length-a.length);
+  const comparable=candidates[0]||[];
   const reference=item?.barcode&&comparable.length>=3?median(comparable.map(x=>x.price)):null;
   res.setHeader("Cache-Control","private, no-store");
   res.json({directCost:cost,minimumSustainablePrice:minimum,technicalPrice:result.technicalPrice,
