@@ -5,7 +5,7 @@ const api=window.ZUZAPI;
 const money=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number(n)||0);
 const make=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;};
 const button=(text,cls,fn)=>{const e=make("button",cls,text);e.type="button";e.addEventListener("click",fn);return e;};
-const sourceName=s=>s==="openfoodfacts"?"Open Food Facts":s==="comprasgov"?"Compras.gov.br":s==="openprices"?"Open Prices":s;
+const sourceName=s=>s==="openfoodfacts"?"Open Food Facts":s==="comprasgov"?"Compras.gov.br":s==="openprices"?"Open Prices":s==="catmat_archive_2018"?"CATMAT (acervo 2018)":s;
 function init(anchor,mode){
  if(!anchor)return;
  const root=make("div","zuz-market");
@@ -43,7 +43,7 @@ function init(anchor,mode){
   }
  }
  async function run(){
-  const input=mode==="simulations"?(document.getElementById("product")?.selectedOptions[0]?.textContent||""):mode==="products"?(search.value||document.getElementById("nameInput")?.value||""):search.value;
+  const input=mode==="simulations"?(search.value||document.getElementById("product")?.selectedOptions[0]?.textContent||""):mode==="products"?(search.value||document.getElementById("nameInput")?.value||""):search.value;
   const term=input.trim().slice(0,72);
   if(term.length<3){message("Informe ao menos 3 caracteres para pesquisar.");return;}
   search.value=term;results.replaceChildren();details.replaceChildren();details.hidden=true;
@@ -82,14 +82,16 @@ function init(anchor,mode){
   details.replaceChildren();
   const h=make("strong","zuz-market__title",item.name);details.append(h);
   const attribution=make("p","zuz-market__fine","Catálogo: "+sourceName(item.source)+". "+(data.note||""));details.append(attribution);
+  if(item.source==="catmat_archive_2018")details.append(make("p","zuz-market__fine","Cadastro histórico de 2018: a descrição não representa a disponibilidade atual no mercado."));
   if(data.warnings?.length)details.append(make("p","zuz-market__fine",data.warnings.join(" ")));
   if(!data.quotes?.length){details.append(make("p","zuz-market__fine","Não foram encontrados preços públicos para este item. A precificação manual continua disponível."));message("Sem preços verificáveis para o item.");if(mode==="products")addRecommendation(item,details);return;}
-  message(data.quotes.length+" referência(s) consultada(s). Verifique unidade, tipo e data.");
+  message((data.summary?.current??0)+" referência(s) recentes de "+data.quotes.length+" armazenada(s). Valores antigos são identificados.");
+  if(!data.groups?.length)details.append(make("p","zuz-market__fine","Não há cotações recentes para comparação; o preço deve ser calculado com os custos informados."));
   for(const group of data.groups.slice(0,4)){
    const type=group.type==="public_purchase"?"Contratação pública":group.type==="retail"?"Preço de varejo":"Atacado";
-   const heading=make("p","zuz-market__fine",type+" · "+(group.unit||"unidade não informada")+" · "+group.count+" registro(s) recentes");
+   const heading=make("p","zuz-market__fine",type+" · "+(group.unit||"unidade não informada")+" · "+(group.region||"região não informada")+" · "+group.count+" cotação(ões) · "+group.distinctStores+" estabelecimento(s)");
    const grid=make("div","zuz-market__stats");
-   for(const [label,n] of [["Menor",group.min],["Mediana",group.median],["Maior",group.max]]){
+   for(const [label,n] of [["Menor",group.min],["Média",group.average],["Mediana",group.median],["Maior",group.max]]){
     const box=make("div","zuz-market__stat");
     box.append(make("small","",label),make("strong","",money(n)));grid.append(box);
    }
@@ -99,13 +101,17 @@ function init(anchor,mode){
   for(const q of records){
    const line=make("div","zuz-market__source"),left=make("div");
    const d=new Date(q.observed_at),date=Number.isFinite(d.getTime())?d.toLocaleDateString("pt-BR"):"data não informada";
-   left.append(make("strong","",(q.seller||sourceName(q.source))+" · "+money(q.price)),
-    make("small","",(q.price_type==="public_purchase"?"Compra pública":"Varejo")+" · "+(q.unit||"unidade não definida")+" · "+date+(q.stale?" · antiga":"")));
+   const label=q.confidence==="alta"?"Alta":q.confidence==="media"?"Média":"Baixa";
+   const kind=q.price_type==="public_purchase"?"Compra pública":"Varejo";
+   left.append(make("strong","",(q.seller||"Estabelecimento não identificado")+" · "+money(q.price)),
+    make("small","",sourceName(q.source)+" · "+kind+" · "+(q.unit||"unidade não definida")+
+     " · "+(q.region||"região não informada")+" · preço de "+date+" · "+(q.stale?"Desatualizado":"Recente")),
+    make("small","","Confiabilidade "+label+(q.reasons?.length?" — "+q.reasons.join("; "):"")));
    line.append(left);
    if(q.url&&/^https:\/\//.test(q.url)){const a=make("a","","Consultar origem");a.href=q.url;a.rel="noopener noreferrer";a.target="_blank";line.append(a);}
    details.append(line);
   }
-  if(data.quotes.some(q=>q.stale))details.append(make("p","zuz-market__fine","Algumas observações têm mais de 90 dias e não entram nas estatísticas recentes."));
+  if(data.quotes.some(q=>q.stale))details.append(make("p","zuz-market__fine","Registros fora da janela de atualização não participam das estatísticas: 30 dias para varejo e 180 dias para compras públicas."));
   if(mode==="products")addRecommendation(item,details);
   if(mode==="simulations")addSimulationImport(item,data,details);
  }
@@ -132,9 +138,10 @@ function init(anchor,mode){
  function addSimulationImport(item,data,container){
   const selectedId=document.getElementById("product")?.value;
   if(!selectedId)return;
-  const selectBarcode=item.barcode||"",observations=data.quotes.filter(x=>!x.stale&&x.price_type==="retail"&&x.unit==="un"&&x.condition==="new"&&x.seller);
+  const selectBarcode=item.barcode||"",observations=data.quotes.filter(x=>!x.stale&&x.matching==="codigo_de_barras"&&x.confidence!=="baixa"&&x.price_type==="retail"&&x.unit==="un"&&x.condition==="new"&&x.seller);
   const distinct=new Map();for(const quote of observations)if(!distinct.has(quote.seller.toLowerCase()))distinct.set(quote.seller.toLowerCase(),quote);
-  const records=[...distinct.values()];
+  const regionBuckets=new Map();for(const quote of distinct.values()){const region=(quote.region||"sem_regiao").toLowerCase();if(!regionBuckets.has(region))regionBuckets.set(region,[]);regionBuckets.get(region).push(quote);}
+  const records=[...regionBuckets.values()].sort((a,b)=>b.length-a.length)[0]||[];
   const b=button("Usar preços públicos no cenário","zuz-market__btn zuz-market__action",async()=>{
    try{
     const snapshot=await api.request("GET","/company");
