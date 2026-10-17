@@ -54,7 +54,7 @@ O parâmetro `--start` permite continuar em outra página e `--pages` aceita no 
 
 ## Regras de confiabilidade
 
-- Estatísticas de preço consideram registros de até 90 dias, exibindo cotações antigas separadamente.
+- Estatísticas de varejo consideram registros de até 30 dias e as de compra pública até 180 dias, exibindo cotações mais antigas separadamente.
 - Só usar mediana de varejo na sugestão quando há GTIN igual e pelo menos três lojas distintas; nunca usar preço público governamental como varejo.
 - Dados incompletos retornam ausência de referência, **sem preenchimento fictício**.
 - Cachê global por consulta: catálogo 12h; cotações Open Prices 12h; cotações Compras.gov.br 7 dias.
