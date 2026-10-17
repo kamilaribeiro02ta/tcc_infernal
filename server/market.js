@@ -129,10 +129,10 @@ async function fetchGovQuotes(item){
  }).filter(Boolean);
 }
 function groupsOf(quotes){return quality.summarize(quotes);}
-async function quotesFor(item){
+async function quotesFor(item,{force=false}={}){
  const key="quotes:"+item.id,ttl=item.source==="comprasgov"?7*86400000:12*3600000;
  let warnings=[],hit=await cacheGet(key,ttl);
- if(!hit)try{
+ if(!hit||force)try{
   const list=["comprasgov","catmat_archive_2018"].includes(item.source)?await fetchGovQuotes(item):await fetchOpenPrices(item);
   for(const q of list.slice(0,50))await storeQuote(item,q);
   await cacheSet(key,{checked:true,count:list.length});
@@ -188,4 +188,27 @@ function registerMarketRoutes(router,{asyncRoute,getCompany}){
    warnings:result.warnings});
  }));
 }
-module.exports={registerMarketRoutes,median,groupsOf};
+async function syncCatalogPrices({source="comprasgov",limit=15,offset=0,force=false,onProgress=()=>{}}={}){
+ const allowed=["comprasgov","catmat_archive_2018","openfoodfacts"];
+ if(!allowed.includes(source)||!Number.isInteger(limit)||limit<1||limit>50||!Number.isInteger(offset)||offset<0)err(400,"Parâmetros de importação inválidos.");
+ const r=await query("SELECT * FROM zuz_market_catalog WHERE source=$1 ORDER BY external_id LIMIT $2 OFFSET $3",[source,limit,offset]);
+ const summary={source,requested:limit,processed:0,pricesAvailable:0,errors:0,details:[]};
+ for(const row of r.rows){
+  try{
+   const result=await quotesFor(row,{force});
+   const n=result.quotes.length;
+   summary.details.push({id:row.external_id,name:row.name.slice(0,80),quotes:n,warnings:result.warnings});
+   summary.pricesAvailable+=n;
+   if(result.warnings.length)summary.errors++;
+  }catch(error){
+   summary.errors++;
+   summary.details.push({id:row.external_id,name:row.name.slice(0,80),quotes:0,error:String(error.message||error).slice(0,120)});
+  }
+  summary.processed++;
+  onProgress(summary.details.at(-1));
+  // Importação controlada: não sobrecarregar as APIs públicas.
+  await new Promise(resolve=>setTimeout(resolve,650));
+ }
+ return summary;
+}
+module.exports={registerMarketRoutes,median,groupsOf,syncCatalogPrices};
