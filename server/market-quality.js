@@ -28,7 +28,8 @@ function classify(row,now=Date.now()){
  if(publicRef)reasons.push("Compra governamental não representa preço de varejo");
  if(source==="openprices")reasons.push("Dado colaborativo; confirme a evidência na fonte");
  const usable=validSource&&dated&&unit&&Number(row.price)>0&&Number.isFinite(Number(row.price));
- const strong=usable&&fresh&&linkValid&&clearIdentity&&(strongMatch||publicRef);
+ // Fonte colaborativa é, por padrão, média até validar comprovante; fonte oficial pode ser alta.
+ const strong=usable&&fresh&&linkValid&&clearIdentity&&publicRef;
  const medium=usable&&fresh&&linkValid;
  return {...row,ageDays:age===null?null:Math.floor(age),stale,
   freshness:fresh?"recente":dated?"desatualizada":"sem_data",
