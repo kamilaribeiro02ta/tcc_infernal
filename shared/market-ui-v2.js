@@ -51,7 +51,8 @@ function widget(parent,mode){
    const input=document.getElementById("nameInput");if(input){input.value=name;input.dispatchEvent(new Event("input",{bubbles:true}));}
   }
   try{
-   const result=await api.request("GET","/market/quotes?id="+encodeURIComponent(item.item_id));
+   const qs=new URLSearchParams({id:item.item_id});if(filter){if(filter.region)qs.set("region",filter.region);if(filter.minimum)qs.set("minimum",filter.minimum);if(filter.maximum)qs.set("maximum",filter.maximum);}
+   const result=await api.request("GET","/market/quotes?"+qs);
    if(token!==serial)return;render(item,result);
   }catch(e){if(token===serial)empty(details,"Fonte indisponível. A precificação manual continua funcionando.");}
  }
@@ -60,13 +61,25 @@ function widget(parent,mode){
   details.append(el("h4","zuz-v2-title",String(item.display_name||"Item identificado").slice(0,110)));
   details.append(el("p","zuz-v2-help","Catálogo: "+source(item.source)+(item.is_historical?" · dado histórico de 2018":"")));
   for(const warning of result.warnings||[])details.append(el("p","zuz-v2-warning",warning));
+  if(result.availableRegions?.length){
+   const filters=el("form","zuz-v2-form");
+   const region=el("select","zuz-v2-input");region.setAttribute("aria-label","Filtrar região");
+   for(const name of ["",...result.availableRegions]){const o=el("option","",name||"Todas as regiões");o.value=name;region.append(o);}
+   region.value=result.filters?.region||"";
+   const minimum=el("input","zuz-v2-input");minimum.type="number";minimum.step=".01";minimum.min="0";minimum.placeholder="Preço mínimo";minimum.setAttribute("aria-label","Preço mínimo");minimum.value=result.filters?.minimum??"";
+   const maximum=el("input","zuz-v2-input");maximum.type="number";maximum.step=".01";maximum.min="0";maximum.placeholder="Preço máximo";maximum.setAttribute("aria-label","Preço máximo");maximum.value=result.filters?.maximum??"";
+   const apply=el("button","zuz-v2-btn","Filtrar");apply.type="submit";
+   filters.append(region,minimum,maximum,apply);details.append(filters);
+   filters.addEventListener("submit",e=>{e.preventDefault();select(item,{region:region.value,minimum:minimum.value,maximum:maximum.value})});
+  }
+
   if(!result.quotes?.length){details.append(el("p","zuz-v2-help","Item identificado, mas não há preços comerciais verificáveis. Continue com seus custos manuais."));return;}
   for(const group of (result.groups||[]).slice(0,5)){
    if(group.count<3||group.distinctStores<3){
     details.append(el("p","zuz-v2-help","Dados insuficientes para média representativa ("+group.count+" observações, "+group.distinctStores+" lojas)."));continue;
    }
    const box=el("div","zuz-v2-stats");
-   box.append(el("p","zuz-v2-help",(group.region||"Região não informada")+" · "+group.unit+" · "+group.distinctStores+" lojas"));
+   box.append(el("p","zuz-v2-help",(group.type==="public_purchase"?"Compra pública (não é preço de varejo)":"Varejo")+" · "+(group.region||"Região não informada")+" · "+group.unit+" · "+group.distinctStores+" lojas"));
    const grid=el("div","zuz-v2-grid");
    for(const [label,value] of [["Mínimo",group.min],["Média",group.average],["Mediana",group.median],["Máximo",group.max]]){
     const cell=el("div","zuz-v2-cell");cell.append(el("small","",label),el("strong","",reais(value)));grid.append(cell);

@@ -84,6 +84,9 @@ async function storeQuote(item,q){
  "ON CONFLICT(source,source_ref) DO UPDATE SET seller=excluded.seller,price=excluded.price,unit=excluded.unit,"+
  "region=excluded.region,condition=excluded.condition,price_type=excluded.price_type,url=excluded.url,observed_at=excluded.observed_at,fetched_at=CURRENT_TIMESTAMP";
  await query(sql,[hash(q.source,q.sourceRef),item.id,q.source,q.sourceRef,q.seller||null,q.price,q.unit||null,q.region||null,q.condition||"new",q.type,safeUrl(q.url),q.date]);
+ await query("INSERT INTO zuz_market_price_history(quote_id,source,source_ref,price,observed_at) "+
+  "VALUES($1,$2,$3,$4,$5) ON CONFLICT(quote_id,observed_at,price) DO NOTHING",
+  [hash(q.source,q.sourceRef),q.source,q.sourceRef,q.price,q.date]);
 }
 async function fetchOpenPrices(item){
  if(!item.barcode)return [];
@@ -137,7 +140,7 @@ async function quotesFor(item,{force=false}={}){
   for(const q of list.slice(0,50))await storeQuote(item,q);
   await cacheSet(key,{checked:true,count:list.length});
  }catch(e){warnings.push("Fonte externa indisponível. Mostrando apenas registros já consultados.");}
- const result=await query("SELECT source,seller,price,currency,unit,region,condition,price_type,url,observed_at FROM zuz_market_prices WHERE catalog_id=$1 ORDER BY observed_at DESC LIMIT 100",[item.id]);
+ const result=await query("SELECT source,seller,price,currency,unit,region,condition,price_type,url,observed_at,fetched_at,last_checked_at,gtin FROM zuz_market_prices WHERE catalog_id=$1 ORDER BY observed_at DESC LIMIT 100",[item.id]);
  const match=item.barcode?"codigo_de_barras":["comprasgov","catmat_archive_2018"].includes(item.source)?"codigo_catalogo":"sem_equivalencia";
  const quotes=result.rows.map(x=>quality.classify({...x,matching:match}));
  const found=quotes.filter(x=>!x.stale).length;
@@ -154,7 +157,16 @@ function registerMarketRoutes(router,{asyncRoute,getCompany}){
   throttle(req.user.id);const id=txt(req.query.id,40);if(!/^[a-f0-9]{32}$/.test(id))err(400,"Referência inválida.");
   const r=await query("SELECT * FROM zuz_market_catalog WHERE id=$1",[id]);
   if(!r.rows.length)err(404,"Item não encontrado.");
-  res.setHeader("Cache-Control","private, no-store");res.json({item:dto(r.rows[0]),...await quotesFor(r.rows[0])});
+  const data=await quotesFor(r.rows[0]);
+  const all=data.quotes,region=txt(req.query.region,120);
+  const price=x=>{if(x===undefined)return null;if(!/^\d+(?:\.\d{1,2})?$/.test(String(x))||Number(x)>10000000)err(400,"Faixa de preço inválida");return Number(x);};
+  const min=price(req.query.minimum),max=price(req.query.maximum);
+  if(min!==null&&max!==null&&min>max)err(400,"Faixa de preço inválida");
+  const quotes=all.filter(q=>(!region||q.region===region)&&(min===null||q.price>=min)&&(max===null||q.price<=max));
+  res.setHeader("Cache-Control","private, no-store");
+  res.json({item:dto(r.rows[0]),...data,quotes,groups:groupsOf(quotes),
+   availableRegions:[...new Set(all.map(q=>q.region).filter(Boolean))].sort(),
+   filters:{region,minimum:min,maximum:max}});
  }));
  router.post("/market/recommend",asyncRoute(async(req,res)=>{
   throttle(req.user.id);const company=await getCompany(req.user.id);
