@@ -74,3 +74,46 @@ npm start
 Após iniciar, validar login, cadastro, edição, histórico e exclusão de produtos; buscar por GTIN alimentício real; consultar CATMAT/CATSER pelo código; confirmar a ausência de dados para categoria sem cotação; verificar confirmação antes de aplicar preço e testar mobile / temas claro e escuro.
 
 **Limitação desta entrega:** o teste de sintaxe e um teste de fluxo usando respostas controladas passaram, mas não foi executado um teste de navegação no navegador nem consulta efetiva a APIs externas no ambiente Vercel. Não considerar a funcionalidade validada em produção antes dessas verificações.
+
+
+## Etapa 2 — preços reais, confiabilidade e atualização
+
+A pesquisa passou a separar **preços públicos de compras governamentais** de **preços colaborativos de varejo**. Nenhum valor público substitui automaticamente os custos privados de empresas.
+
+- **Atualidade:** preços de varejo entram nas estatísticas por até 30 dias após a data observada; compras públicas, até 180 dias. Cotações mais antigas continuam visíveis, marcadas como desatualizadas.
+- **Comparabilidade:** não se misturam unidades, regiões, condições ou tipos de preço. Só cotações com GTIN idêntico, unidade compatível e ao menos 3 estabelecimentos distintos da mesma região podem influenciar a recomendação de varejo.
+- **Confiabilidade:** alta/média/baixa é uma classificação determinística baseada em identificação da fonte, data, loja, unidade, URL e correspondência. Compra pública pode ser confiável como registro oficial, mas **não é referência de preço de venda varejista**.
+- **Métricas:** mínimo, média, mediana, máximo, número de cotações e estabelecimentos distintos.
+- **Catálogo CATMAT histórico (2018):** consultar seus preços no Compras.gov.br somente se o código e a família forem validados no catálogo oficial atual. O item histórico permanece identificado como acervo, não como produto moderno disponível em lojas.
+- **Limites de cobertura:** as APIs públicas podem ficar indisponíveis, o Open Prices tem cobertura desigual no Brasil e ainda não há integração autorizada do Mercado Livre configurada. Não inventar ofertas.
+
+### Sincronizar referências no PostgreSQL
+
+O processo exige acesso à internet para consultar as APIs e a variável server-side `DATABASE_URL` apontando para o Neon. O script interrompe a execução em SQLite, para evitar popular o banco errado.
+
+```bash
+npm run market:sync -- --source=comprasgov --limit=10 --offset=0
+npm run market:sync -- --source=catmat_archive_2018 --limit=30 --offset=0
+npm run market:sync -- --source=openfoodfacts --limit=30 --offset=0
+```
+
+Limite máximo: 50 itens por chamada. Use `--offset` para avançar no catálogo e `--force=true` para revalidar resultados antes de expirar o cache; respeite os limites de uso das fontes.
+
+### Sincronização recorrente na Vercel
+
+Em `vercel.json`, há um agendamento diário às **07:00 UTC** para `/api/market/cron`. A rota exige variável server-side `CRON_SECRET` com pelo menos 16 caracteres e comparação segura do cabeçalho `Authorization: Bearer …`. Sem `CRON_SECRET`, a rota retorna 401 e nenhuma importação ocorre. O cron só entra em operação em um deploy **Production** configurado e ativo na Vercel; apenas modificar o repositório não o ativa.
+
+A rotina processa apenas 3 itens por execução para reduzir o risco de timeout e respeitar a API. Para carregar um catálogo amplo inicialmente, executar o script acima em lotes. A rotina incremental **não** substitui esse carregamento inicial.
+
+### Verificar números reais, sem dados fictícios
+
+```sql
+SELECT price_type,source,COUNT(*) AS total,
+       MAX(observed_at) AS data_mais_recente
+FROM zuz_market_prices GROUP BY price_type,source
+ORDER BY total DESC;
+```
+
+**Validação pendente:** executar o importador em ambiente com saída de rede, confirmar respostas reais dos provedores, verificar a implantação na Vercel e realizar testes de navegação/mobile. Somente esses testes permitem declarar a etapa operacional em produção. Não apresentar preços de exemplo como se fossem cotações reais.
+
+Documentação oficial: https://manual-api-compras.readthedocs.io/pt-br/latest/ · https://prices.openfoodfacts.org/api/docs · https://vercel.com/docs/cron-jobs/manage-cron-jobs
