@@ -129,6 +129,28 @@ function createApi() {
     res.setHeader("Set-Cookie", `${SESSION}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0`);
     res.json({ ok: true });
   }));
+  // Vercel Cron: rota administrativa separada do login, bloqueada por chave do servidor.
+  router.get("/market/cron",asyncRoute(async(req,res)=>{
+    const secret=process.env.CRON_SECRET;
+    const authorization=String(req.headers.authorization||"");
+    const expected=secret?"Bearer "+secret:"";
+    const auth=Buffer.from(authorization),valid=Buffer.from(expected);
+    if(!secret||secret.length<16||auth.length!==valid.length||!crypto.timingSafeEqual(auth,valid))
+      return res.status(401).json({error:"Cron não autorizado."});
+    const source=new Date().getUTCDay()===0?"comprasgov":"catmat_archive_2018";
+    const {syncCatalogPrices}=require("./market");
+    const r=await query("SELECT COUNT(*)::int AS total FROM zuz_market_catalog WHERE source=$1",[source]);
+    const count=Number(r.rows[0]?.total)||0;
+    if(!count)return res.json({ok:true,processed:0,reason:"Sem itens para sincronizar."});
+    const limit=3;
+    const offset=(Math.floor(Date.now()/86400000)*limit)%count;
+    const result=await syncCatalogPrices({source,limit,offset});
+    res.setHeader("Cache-Control","no-store");
+    res.status(result.errors===result.processed&&result.processed>0?502:200).json({
+      ok:result.errors<result.processed,source,processed:result.processed,
+      quotesAvailable:result.pricesAvailable,sourceFailures:result.errors
+    });
+  }));
   router.use(asyncRoute(async (req,res,next) => {
     const user = await getUser(req);
     if (!user) fail(401,"Faça login para continuar.");
