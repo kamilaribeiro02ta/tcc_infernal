@@ -157,6 +157,31 @@ function createApi() {
     req.user = user; next();
   }));
   registerMarketRoutes(router,{asyncRoute,getCompany});
+
+  // Pesquisa comercial: itens históricos ficam ocultos por padrão.
+  router.get("/market/v2/search",asyncRoute(async(req,res)=>{
+    const term=normalText(req.query.q,80),kind=["product","service"].includes(req.query.kind)?req.query.kind:null;
+    const historical=req.query.historical==="true";
+    if(term.length<2)fail(400,"Digite pelo menos dois caracteres.");
+    if(provider!=="postgresql")fail(503,"Pesquisa avançada disponível com PostgreSQL.");
+    const warnings=[];
+    let rows=(await query("SELECT * FROM zuz_market_search_v2($1,$2,$3,$4,$5)",[term,kind,null,historical,30])).rows;
+    if(!historical&&kind!=="service"&&rows.length<8){
+      try{const imported=await require("./market").catalog(term);warnings.push(...(imported.warnings||[]));
+        rows=(await query("SELECT * FROM zuz_market_search_v2($1,$2,$3,$4,$5)",[term,kind,null,false,30])).rows;
+      }catch(e){warnings.push("Uma fonte externa está indisponível. Exibindo apenas itens já armazenados.");}
+    }
+    const seen=new Set(),items=[];
+    for(const row of rows){
+      const family=String(row.display_name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+      const key=row.is_historical?row.source+":"+family:row.item_id;
+      if(!seen.has(key)){items.push(row);seen.add(key);}
+      if(items.length>=14)break;
+    }
+    res.setHeader("Cache-Control","private, no-store");
+    res.json({items,warnings,scope:historical?"com_historico":"comercial_atual"});
+  }));
+
   router.get("/me", asyncRoute(async (req,res) => res.json({ user:safeUser(req.user),company:await getCompany(req.user.id) })));
   // Atualiza a identidade autenticada no banco, permitindo que o nome apareça
   // corretamente em outros dispositivos (em vez de existir apenas no localStorage).

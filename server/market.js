@@ -211,4 +211,4 @@ async function syncCatalogPrices({source="comprasgov",limit=15,offset=0,force=fa
  }
  return summary;
 }
-module.exports={registerMarketRoutes,median,groupsOf,syncCatalogPrices};
+module.exports={registerMarketRoutes,median,groupsOf,syncCatalogPrices,catalog};
