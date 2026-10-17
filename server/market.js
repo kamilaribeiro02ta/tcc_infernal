@@ -98,8 +98,21 @@ async function fetchOpenPrices(item){
  }).filter(Boolean);
 }
 async function fetchGovQuotes(item){
- const code=item.attributes?.catalogCode;
- if(item.source!=="comprasgov"||!/^\d+$/.test(String(code||"")))return [];
+ const archived=item.source==="catmat_archive_2018";
+ const code=item.attributes?.catalogCode||(archived?item.external_id:null);
+ if(!["comprasgov","catmat_archive_2018"].includes(item.source)||!/^\d+$/.test(String(code||"")))return [];
+ if(archived){
+  // Uma entrada de 2018 só pode receber preços de 2026 depois de validação no catálogo oficial.
+  const endpoint="https://dadosabertos.compras.gov.br/modulo-material/4_consultarItemMaterial?"+
+   new URLSearchParams({codigoItem:String(code),tamanhoPagina:"10"});
+  const current=await getJson(endpoint);
+  const official=(current.resultado||[]).find(x=>String(x.codigoItem)===String(code)&&x.statusItem!==false);
+  const normalize=x=>String(x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
+  const oldFamily=normalize(String(item.name||"").split(",")[0]);
+  const newName=normalize(official?.descricaoItem);
+  if(!official||!oldFamily||oldFamily.length<5||!newName.startsWith(oldFamily))
+   return []; // O código antigo pode ter sido revogado ou alterado; não presumir equivalência.
+ }
  const isService=item.kind==="service";
  const route=isService?"3_consultarServico":"1_consultarMaterial";
  const params=isService?{codigoItemCatalogo:code,tamanhoPagina:"50"}:{tipo:"codigoItemCatalogo",codigo:code,tamanhoPagina:"50"};
@@ -120,17 +133,17 @@ async function quotesFor(item){
  const key="quotes:"+item.id,ttl=item.source==="comprasgov"?7*86400000:12*3600000;
  let warnings=[],hit=await cacheGet(key,ttl);
  if(!hit)try{
-  const list=item.source==="comprasgov"?await fetchGovQuotes(item):await fetchOpenPrices(item);
+  const list=["comprasgov","catmat_archive_2018"].includes(item.source)?await fetchGovQuotes(item):await fetchOpenPrices(item);
   for(const q of list.slice(0,50))await storeQuote(item,q);
   await cacheSet(key,{checked:true,count:list.length});
  }catch(e){warnings.push("Fonte externa indisponível. Mostrando apenas registros já consultados.");}
  const result=await query("SELECT source,seller,price,currency,unit,region,condition,price_type,url,observed_at FROM zuz_market_prices WHERE catalog_id=$1 ORDER BY observed_at DESC LIMIT 100",[item.id]);
- const match=item.barcode?"codigo_de_barras":item.source==="comprasgov"?"codigo_catalogo":"sem_equivalencia";
+ const match=item.barcode?"codigo_de_barras":["comprasgov","catmat_archive_2018"].includes(item.source)?"codigo_catalogo":"sem_equivalencia";
  const quotes=result.rows.map(x=>quality.classify({...x,matching:match}));
  const found=quotes.filter(x=>!x.stale).length;
  return {quotes,groups:groupsOf(quotes),warnings,summary:{total:quotes.length,current:found,stale:quotes.length-found},
   matching:match,
-  note:item.source==="comprasgov"?"Compra pública não representa preço de varejo.":"Preço colaborativo: confirme data e condições."};
+  note:["comprasgov","catmat_archive_2018"].includes(item.source)?"Compra pública não representa preço de varejo; itens históricos só são consultados após confirmação do código oficial.":"Preço colaborativo: confirme data e condições."};
 }
 function registerMarketRoutes(router,{asyncRoute,getCompany}){
  router.get("/market/catalog",asyncRoute(async(req,res)=>{
