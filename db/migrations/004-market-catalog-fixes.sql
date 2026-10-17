@@ -11,5 +11,6 @@ DECLARE ddl TEXT;
 BEGIN
  SELECT pg_get_functiondef('zuz_market_search_v2(text,text,text,boolean,integer)'::regprocedure) INTO ddl;
  ddl=replace(ddl,'lower(c.name) LIKE','unaccent(lower(c.name)) LIKE');
+ ddl=replace(ddl,'input.q','unaccent(input.q)');
  EXECUTE ddl;
 END $$;
