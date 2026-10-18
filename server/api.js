@@ -170,6 +170,7 @@ function createApi() {
     const kind=["product","service"].includes(req.query.kind)?req.query.kind:null;
     const includeArchive=req.query.historical!=="false";
     const warnings=[];
+    const page=Math.min(200,Math.max(0,Number.parseInt(req.query.page,10)||0));
     let current=(await query("SELECT * FROM zuz_market_search_v2($1,$2,$3,FALSE,30)",[term,kind,null])).rows;
     if(kind!=="service"&&current.length<12){
       try{
@@ -188,14 +189,17 @@ function createApi() {
       return line.includes(wanted)||x.barcode===term;
     }).slice(0,20);
     let archived=[];
+    let archiveTotal=0;
     if(includeArchive){
       const contains="%"+term.toLowerCase().replace(/[\\%_]/g,"")+"%";
+      const tally=await query("SELECT COUNT(*)::int AS total FROM zuz_market_catalog WHERE source='catmat_archive_2018' AND unaccent(lower(name)) LIKE unaccent($1) AND ($2::text IS NULL OR kind=$2)",[contains,kind]);
+      archiveTotal=Number(tally.rows[0]?.total)||0;
       const r=await query(
         "SELECT id AS item_id,kind,LEFT(SPLIT_PART(name,',',1),140) AS display_name,name AS full_name,"+
         "brand,model,barcode,category,source,external_id AS source_id,TRUE AS is_historical,FALSE AS has_price,20 AS match_score "+
         "FROM zuz_market_catalog WHERE source='catmat_archive_2018' AND unaccent(lower(name)) LIKE unaccent($1) "+
-        "AND ($2::text IS NULL OR kind=$2) ORDER BY CASE WHEN unaccent(lower(name)) LIKE unaccent($3) THEN 0 ELSE 1 END,LENGTH(name) LIMIT 100",
-        [contains,kind,term.toLowerCase().replace(/[\\%_]/g,"")+"%"]);
+        "AND ($2::text IS NULL OR kind=$2) ORDER BY CASE WHEN unaccent(lower(name)) LIKE unaccent($3) THEN 0 ELSE 1 END,LENGTH(name) LIMIT 35 OFFSET $4",
+        [contains,kind,term.toLowerCase().replace(/[\\%_]/g,"")+"%",page*35]);
       const seen=new Set();
       for(const x of r.rows){
         const key=normalized(x.full_name);
@@ -206,7 +210,7 @@ function createApi() {
     }
     res.setHeader("Cache-Control","private, no-store");
     res.json({items:current.concat(archived),commercial:current,archived,warnings,
-      totals:{commercial:current.length,archived:archived.length},
+      totals:{commercial:current.length,archived:archived.length,archiveTotal},archivePage:page,archiveHasMore:(page+1)*35<archiveTotal,
       note:"Itens históricos são apenas referências técnicas. Fontes de catálogo não garantem preços."});
   }));
   router.get("/market/v2/item",asyncRoute(async(req,res)=>{
