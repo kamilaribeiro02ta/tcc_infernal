@@ -57,3 +57,17 @@ test("simulação valida a cotação no servidor antes da utilização",async()=
  await search(root);const d=root.find(x=>x.className==="zm-offer");d.open=true;d.handlers.toggle[0]();
  d.find(x=>x.textContent==="Usar na simulação").handlers.click[0]();await d.find(x=>x.textContent==="Confirmar").handlers.click[0]();assert.equal(events.length,1);assert.equal(events[0].type,"zuz:market:reference");
 });
+test("consulta mostra oito referências por vez sem descartar as demais",async()=>{
+ const {root}=setup(async(_,url)=>url.includes("/references")?{references:Array.from({length:12},(_,i)=>({...offer,id:String(i),unit:"un"}))}:{offers:[]});await search(root);
+ assert.equal(root.all(x=>x.className==="zm-offer").length,8);
+ root.find(x=>x.tag==="button"&&x.textContent==="Ver mais referências (4)").handlers.click[0]();assert.equal(root.all(x=>x.className==="zm-offer").length,12);
+});
+test("valores privados ausentes não viram zero e simulação exige valores explícitos",async()=>{
+ const {root}=setup(async(_,url)=>url.includes("/references")?{references:[{...offer,unit:"un"}]}:{offers:[]});await search(root);
+ const d=root.find(x=>x.className==="zm-offer");d.open=true;d.handlers.toggle[0]();
+ const finance=d.find(x=>x.className==="zm-financial-facts");assert.equal(finance.all(x=>x.tag==="dd"&&x.textContent==="Indisponível na fonte").length,4);
+ const calc=d.find(x=>x.tag==="button"&&x.textContent==="Calcular");calc.handlers.click[0]();assert.ok(d.find(x=>x.className==="zm-error").textContent.includes("três valores"));
+});
+test("registro público antigo mantém o aviso de idade visível",async()=>{
+ const {root}=setup(async(_,url)=>url.includes("/references")?{references:[{...offer,priceType:"public_purchase",stale:true}]}:{offers:[]});await search(root);assert.ok(root.find(x=>x.className==="zm-kind").textContent.includes("observação antiga"));
+});

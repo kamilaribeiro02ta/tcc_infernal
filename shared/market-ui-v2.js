@@ -11,7 +11,7 @@ const sourceNames={openfoodfacts:"Open Food Facts",openbeautyfacts:"Open Beauty 
 let instance=0;
 function mount(parent,mode){
  const root=el("section","zm-search-shell");root.setAttribute("aria-label","Pesquisa de preços de mercado");
- const head=el("header","zm-heading");head.append(el("h3","zm-title","Pesquisar preços"),el("p","zm-subtitle","Compare referências de mercado antes de definir seu preço."));
+ const head=el("header","zm-heading");head.append(el("h3","zm-title","Descubra os preços de mercado"),el("p","zm-subtitle","Pesquise um produto e abra uma referência para consultar o preço."));
  const form=el("form","zm-search-form");form.setAttribute("role","search");
  const label=el("label","zm-search-label","Produto, marca ou código de barras");
  const input=el("input","zm-search-input");input.id="zm-search-"+(++instance);input.type="search";input.minLength=3;input.maxLength=80;input.required=true;input.placeholder="Ex.: vassoura";label.htmlFor=input.id;
@@ -28,7 +28,7 @@ function mount(parent,mode){
  },"zm-secondary");
  const footer=el("div","zm-footer");footer.append(manual);
  root.append(head,form,status,warnings,results,comparison,catalog,footer);parent.append(root);
- let serial=0,controllers=[],offers=[],selected=new Set(),loading=false;
+ let serial=0,controllers=[],offers=[],selected=new Set(),loading=false,visibleCount=8;
  function busy(value){loading=value;root.setAttribute("aria-busy",String(value));cancel.hidden=!value;submit.textContent=value?"Pesquisar novamente":"Pesquisar";}
  function stop(){serial++;controllers.forEach(c=>c.abort());controllers=[];busy(false);status.textContent="Consulta interrompida. Você pode pesquisar novamente.";}
  async function request(method,path,body,limit=20000){
@@ -44,8 +44,11 @@ function mount(parent,mode){
  function fact(parent,label,value){const row=el("div","zm-fact");row.append(el("dt","",label),el("dd","",text(value)||"Indisponível na fonte"));parent.append(row);}
  function image(parent,url,title){const safe=safeURL(url);if(!safe)return;const img=el("img","zm-product-image");img.src=safe;img.alt=title;img.loading="lazy";img.referrerPolicy="no-referrer";img.addEventListener("error",()=>img.remove());parent.append(img);}
  function sourceLink(parent,url){const safe=safeURL(url);if(!safe)return;const a=el("a","zm-link","Verificar na fonte original");a.href=safe;a.target="_blank";a.rel="noopener noreferrer";parent.append(a);}
- function kind(offer){return offer.priceType==="public_purchase"?"Compra pública · não é oferta de varejo":offer.stale?"Observação antiga · confirme o preço":offer.comparison==="gtin"?"Cotação por código de barras":offer.comparison==="possivel_similar"?"Anúncio semelhante · confirme a variação":"Referência de catálogo · confirme a unidade";}
- function describe(offer){const item=offer.item||{};return [item.brand,item.model,offer.unit||item.unit,offer.region].filter(Boolean).join(" · ");}
+ function kind(offer){
+  const label=offer.priceType==="public_purchase"?"Compra pública · não é preço de loja":offer.comparison==="gtin"?"Cotação por código de barras":offer.comparison==="possivel_similar"?"Anúncio semelhante · confirme a variação":"Referência de catálogo · confirme a unidade";
+  return label+(offer.stale?" · observação antiga":"");
+ }
+ function describe(offer){const item=offer.item||{};return [offer.brand||item.brand,offer.model||item.model,offer.unit||item.unit,offer.region].filter(Boolean).join(" · ");}
  function payload(item){return {id:item.id,name:text(item.name).slice(0,60),source:item.source,barcode:item.barcode||"",brand:item.brand||"",model:item.model||"",category:item.category||"",type:item.type||"product",unit:item.unit||"",isHistorical:!!item.isHistorical,imageUrl:item.attributes?.image_url||null};}
  function useReference(offer,area){
   const confirm=el("div","zm-confirm");
@@ -77,20 +80,50 @@ function mount(parent,mode){
   confirm.append(apply,button("Cancelar",()=>action(offer,area)));area.replaceChildren(confirm);
  }
  function action(offer,area){area.replaceChildren(button(mode==="simulations"&&offer.verified?"Usar na simulação":"Usar na minha precificação",()=>useReference(offer,area),"zm-secondary"));}
+ function financialSimulation(offer){
+  const disclosure=el("details","zm-financial-simulation");disclosure.append(el("summary","","Calcular para o meu negócio"));
+  const body=el("div","zm-simulation-body");
+  body.append(el("p","zm-caption","Simulação ZUZ com seus valores. Não revela custos, impostos ou lucro do fornecedor."));
+  const fields=el("div","zm-simulation-fields"),inputs={};
+  for(const [key,title] of [["cost","Seu custo por unidade (R$)"],["tax","Sua taxa estimada de imposto (%)"],["fee","Suas outras taxas sobre a venda (%)"]]){
+   const label=el("label","",title),field=el("input","zm-simulation-input");field.type="number";field.min="0";field.max=key==="cost"?"100000000":"99";field.step="0.01";field.inputMode="decimal";field.placeholder="Informe, inclusive se for 0";inputs[key]=field;label.append(field);fields.append(label);
+  }
+  const out=el("div","zm-simulation-output");out.setAttribute("role","status");out.setAttribute("aria-live","polite");
+  const calculate=button("Calcular",()=>{
+   const values=Object.fromEntries(Object.entries(inputs).map(([key,input])=>[key,input.value.trim()===""?null:Number(input.value)]));
+   if(Object.values(values).some(value=>value===null||!Number.isFinite(value)||value<0)||values.cost>1e8||values.tax+values.fee>=100){out.replaceChildren(el("p","zm-error","Informe os três valores. As taxas somadas devem ser menores que 100%."));return;}
+   if(!window.ZUZPricingCore?.calculate){out.replaceChildren(el("p","zm-error","Cálculo indisponível. Continue pela precificação manual."));return;}
+   const result=window.ZUZPricingCore.calculate({unitDirectCost:values.cost,salePrice:offer.price,targetMargin:0,units:1,settings:{taxesPct:values.tax,sellingFeesPct:values.fee,fixedCosts:[],defaultMargin:0}});
+   const facts=el("dl","zm-facts");
+   fact(facts,"Preço da referência usado na simulação",money(offer.price));
+   fact(facts,"Imposto estimado informado",money(offer.price*values.tax/100));
+   fact(facts,"Outras taxas estimadas",money(offer.price*values.fee/100));
+   fact(facts,"Líquido após imposto e taxas",money(offer.price*(1-(values.tax+values.fee)/100)));
+   fact(facts,"Seu custo informado",money(result.directCost));fact(facts,"Resultado estimado por unidade",money(result.unitProfit));
+   out.replaceChildren(el("p","zm-simulation-heading","Simulação do seu negócio"),facts,el("p","zm-caption","O resultado considera somente o custo e as taxas informados. Inclua o rateio dos seus custos fixos no custo por unidade. Não é apuração fiscal nem lucro verificado de outra empresa."));
+  },"zm-secondary");body.append(fields,calculate,out);disclosure.append(body);return disclosure;
+ }
  function details(offer){
   const box=el("div","zm-offer-details");const item=offer.item||{},attrs=item.attributes||{};
+  box.append(el("h4","zm-detail-name",offer.title));
+  const primary=el("dl","zm-facts zm-primary-facts");
+  fact(primary,"Preço registrado",money(offer.price));fact(primary,"Unidade do preço",offer.unit);
+  fact(primary,offer.priceType==="public_purchase"?"Fornecedor / órgão informado":"Loja / fornecedor",offer.seller);
+  fact(primary,"Fonte",offer.source);fact(primary,"Data do preço",date(offer.observedAt));fact(primary,"Consulta da fonte",date(offer.queriedAt));
+  box.append(primary,el("p","zm-caption",kind(offer)));sourceLink(box,offer.url);
+  const financial=el("dl","zm-financial-facts");
+  for(const title of ["Impostos","Valor líquido","Custos de aquisição","Ganho do fornecedor"])fact(financial,title,null);
+  box.append(financial,el("p","zm-caption","Esta fonte não informa a composição financeira do fornecedor. Preço registrado não é custo nem lucro."));
+  const more=el("details","zm-reference-data");more.append(el("summary","","Identificação e condições da referência"));
   const facts=el("dl","zm-facts");
-  fact(facts,"Nome completo",offer.title);fact(facts,"Identificador da referência",offer.sourceRef||offer.id);
-  fact(facts,"Identificador do produto",item.sourceId||item.id);fact(facts,"Código de barras",item.barcode);
-  fact(facts,"Marca",item.brand);fact(facts,"Modelo / variação",item.model);fact(facts,"Categoria",item.category);
-  fact(facts,"Quantidade / embalagem",attrs.quantity||item.unit);fact(facts,"Unidade do preço",offer.unit||item.unit);
-  fact(facts,offer.priceType==="public_purchase"?"Fornecedor / órgão informado":"Loja / fornecedor",offer.seller);
-  fact(facts,"Fonte",offer.source);fact(facts,"Preço em reais",money(offer.price));
-  fact(facts,"Data do preço",date(offer.observedAt));fact(facts,"Data da consulta",date(offer.queriedAt));
-  // These fields are not supplied by the connected providers; never infer business internals.
-  for(const field of ["Desconto","Frete","Impostos","Custos de aquisição","Composição de custos","Margem do fornecedor"])fact(facts,field,null);
-  box.append(facts,el("p","zm-caption",kind(offer)),el("p","zm-caption","O preço observado não revela custos ou lucro do fornecedor. Nenhuma estimativa da ZUZ foi aplicada a esses valores."));
-  sourceLink(box,offer.url);
+  fact(facts,"Identificador da referência",offer.sourceRef||offer.id);fact(facts,"Identificador do produto",item.sourceId||item.id);fact(facts,"Código de barras",item.barcode);
+  for(const [label,value] of [["Marca",offer.brand||item.brand],["Modelo / variação",offer.model||item.model],["Categoria",item.category],["Quantidade / embalagem",attrs.quantity||item.unit],["Desconto",null],["Frete",null],["Composição de custos",null]])fact(facts,label,value);
+  if(offer.offerDescription&&offer.offerDescription!==offer.title)fact(facts,"Descrição do registro de preço",offer.offerDescription);
+  if(offer.metadata?.purchaseQuantity)fact(facts,"Quantidade da compra pública",offer.metadata.purchaseQuantity);
+  if(offer.metadata?.procurementDiscountPercent!==null&&offer.metadata?.procurementDiscountPercent!==undefined)fact(facts,"Percentual de desconto registrado na licitação",offer.metadata.procurementDiscountPercent+"% (não é imposto)");
+  more.append(facts);box.append(more);
+  if(offer.unit)box.append(financialSimulation(offer));
+  else box.append(el("p","zm-caption","A fonte não informou a unidade: confirme a quantidade antes de usar este valor em um cálculo."));
   const area=el("div","zm-product-action");action(offer,area);box.append(area);return box;
  }
  function renderComparison(){
@@ -115,7 +148,8 @@ function mount(parent,mode){
  function render(){
   const open=new Set([...results.querySelectorAll("details[open]")].map(x=>x.dataset.key));
   results.replaceChildren();
-  if(offers.length){results.append(el("p","zm-results-title",offers.length+" referência(s) com preço"));for(const o of offers){const row=offerRow(o);results.append(row);if(open.has(o.key))row.querySelector("details").open=true;}}
+  if(offers.length){results.append(el("p","zm-results-title",offers.length+" referência(s) com preço"));for(const o of offers.slice(0,visibleCount)){const row=offerRow(o);results.append(row);if(open.has(o.key))row.querySelector("details").open=true;}}
+  if(offers.length>visibleCount)results.append(button("Ver mais referências ("+(offers.length-visibleCount)+")",()=>{visibleCount+=8;render();},"zm-secondary"));
   renderComparison();
  }
  function add(rows){
@@ -126,6 +160,7 @@ function mount(parent,mode){
    const key=[o.sourceCode||o.source,o.id||o.sourceRef||o.url,o.observedAt||o.queriedAt].join("|");
    if(seen.has(key))continue;seen.add(key);offers.push({...o,key,price:Number(o.price)});
   }
+  offers.sort((a,b)=>Number(!!a.stale)-Number(!!b.stale)||(Date.parse(b.observedAt||b.queriedAt)||0)-(Date.parse(a.observedAt||a.queriedAt)||0));
   render();
  }
  function renderCatalog(items){
@@ -136,7 +171,7 @@ function mount(parent,mode){
  form.addEventListener("submit",async event=>{
   event.preventDefault();event.stopPropagation?.();const term=input.value.trim();if(term.length<3||term.length>80){status.textContent="Digite entre 3 e 80 caracteres.";input.focus();return;}
   controllers.forEach(c=>c.abort());controllers=[];const token=++serial;
-  offers=[];selected.clear();results.replaceChildren();catalog.hidden=true;comparison.hidden=true;warnings.textContent="";
+  offers=[];visibleCount=8;selected.clear();results.replaceChildren();catalog.hidden=true;comparison.hidden=true;warnings.textContent="";
   busy(true);status.textContent="Consultando referências e ofertas...";
   const messages=[],catalogItems=[];let successes=0;
   const query=encodeURIComponent(term);

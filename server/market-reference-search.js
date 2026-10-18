@@ -11,7 +11,9 @@ function normalizeReference(item,row,now=Date.now()){
  if(row.source==="comprasgov"&&(url.hostname!=="dadosabertos.compras.gov.br"||row.price_type!=="public_purchase"))return null;
  const verified=quality.verifiedRetailQuote(row,item,{now});
  const age=(now-time)/86400000;
+ const metadata=typeof row.price_metadata==="string"?JSON.parse(row.price_metadata):row.price_metadata||{};
  return {id:row.id,title:item.fullName||item.name,item,price,seller:row.seller,
+  offerDescription:row.offer_title||null,brand:row.brand||item.brand||null,model:row.model||item.model||null,metadata,
   source:sourceName(row.source),sourceCode:row.source,sourceRef:row.source_ref,url:url.href,
   currency:"BRL",unit:row.unit||null,region:row.region||null,condition:row.condition||null,
   observedAt:new Date(time).toISOString(),queriedAt:row.last_checked_at||row.fetched_at||null,

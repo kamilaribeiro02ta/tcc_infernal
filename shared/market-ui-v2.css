@@ -70,3 +70,14 @@ body.dark .zm-search-shell,html[data-theme="dark"] .zm-search-shell{--zm-purple:
  .zm-offer-details{padding:16px}
 }
 @media(prefers-reduced-motion:reduce){.zm-search-shell *{transition:none!important}}
+/* Details put price and provenance first; financial data remains explicitly unavailable. */
+.zm-detail-name{margin:0 0 16px;font-size:14px;line-height:1.6;font-weight:600;overflow-wrap:anywhere}
+.zm-financial-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:16px 0;padding:16px 0;border-top:1px solid var(--zm-line);border-bottom:1px solid var(--zm-line)}
+.zm-financial-facts dd{font-size:11px;color:var(--zm-muted)}
+.zm-reference-data,.zm-financial-simulation{margin-top:8px}
+.zm-reference-data>summary,.zm-financial-simulation>summary{min-height:44px;display:list-item;padding:8px 0;font-size:12px;line-height:1.6;cursor:pointer;color:var(--zm-purple)}
+.zm-simulation-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:16px 0}
+.zm-simulation-fields label{font-size:12px;line-height:1.6;color:var(--zm-text)}
+.zm-search-shell input.zm-simulation-input{display:block;position:static;width:100%;min-width:0;min-height:44px;margin:8px 0 0;padding:8px;border:1px solid var(--zm-line);border-radius:8px;background:var(--zm-surface);color:var(--zm-text);font:400 14px/1.5 Poppins,sans-serif}
+.zm-simulation-heading{font-size:13px;font-weight:600;margin:16px 0}
+@media(max-width:600px){.zm-simulation-fields{grid-template-columns:minmax(0,1fr)}}

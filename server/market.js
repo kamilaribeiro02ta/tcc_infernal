@@ -79,12 +79,12 @@ async function catalog(term){
 }
 function unique(items){return [...new Map(items.map(i=>[i.id,i])).values()].slice(0,25);}
 async function storeQuote(item,q){
- const sql="INSERT INTO zuz_market_prices(id,catalog_id,source,source_ref,seller,price,currency,unit,region,condition,price_type,url,observed_at,fetched_at,gtin,offer_title,last_checked_at) "+
- "VALUES($1,$2,$3,$4,$5,$6,'BRL',$7,$8,$9,$10,$11,$12,CURRENT_TIMESTAMP,$13,$14,CURRENT_TIMESTAMP) "+
+ const sql="INSERT INTO zuz_market_prices(id,catalog_id,source,source_ref,seller,price,currency,unit,region,condition,price_type,url,observed_at,fetched_at,gtin,offer_title,last_checked_at,brand,price_metadata) "+
+ "VALUES($1,$2,$3,$4,$5,$6,'BRL',$7,$8,$9,$10,$11,$12,CURRENT_TIMESTAMP,$13,$14,CURRENT_TIMESTAMP,$15,$16::jsonb) "+
  "ON CONFLICT(source,source_ref) DO UPDATE SET seller=excluded.seller,price=excluded.price,unit=excluded.unit,"+
  "region=excluded.region,condition=excluded.condition,price_type=excluded.price_type,url=excluded.url,observed_at=excluded.observed_at,fetched_at=CURRENT_TIMESTAMP,"+
- "gtin=excluded.gtin,offer_title=excluded.offer_title,last_checked_at=CURRENT_TIMESTAMP";
- await query(sql,[hash(q.source,q.sourceRef),item.id,q.source,q.sourceRef,q.seller||null,q.price,q.unit||null,q.region||null,q.condition||"new",q.type,safeUrl(q.url),q.date,item.barcode||null,item.commercial_name||item.name]);
+ "gtin=excluded.gtin,offer_title=excluded.offer_title,last_checked_at=CURRENT_TIMESTAMP,brand=excluded.brand,price_metadata=excluded.price_metadata";
+ await query(sql,[hash(q.source,q.sourceRef),item.id,q.source,q.sourceRef,q.seller||null,q.price,q.unit||null,q.region||null,q.condition||"new",q.type,safeUrl(q.url),q.date,item.barcode||null,q.offerTitle||item.commercial_name||item.name,q.brand||null,JSON.stringify(q.metadata||{})]);
  await query("INSERT INTO zuz_market_price_history(quote_id,source,source_ref,price,observed_at) "+
   "VALUES($1,$2,$3,$4,$5) ON CONFLICT(quote_id,observed_at,price) DO NOTHING",
   [hash(q.source,q.sourceRef),q.source,q.sourceRef,q.price,q.date]);
@@ -122,16 +122,24 @@ async function fetchGovQuotes(item){
  const params=isService?{codigoItemCatalogo:code,tamanhoPagina:"50"}:{tipo:"codigoItemCatalogo",codigo:code,tamanhoPagina:"50"};
  const url="https://dadosabertos.compras.gov.br/modulo-pesquisa-preco/"+route+"?"+new URLSearchParams(params);
  const d=await getJson(url);
- return (d.resultado||[]).map(x=>{
-  const price=pos(x.precoUnitario),date=iso(x.dataCompra||x.dataResultado);
-  const ref=txt(x.idCompra)+":"+txt(x.idItemCompra??x.numeroItemCompra);
-  if(!price||!date||!x.idCompra||!ref.split(":")[1]||String(x.codigoItemCatalogo)!==String(code))return null;
-  return {source:"comprasgov",sourceRef:ref,price,date,type:"public_purchase",
-    unit:txt(x.siglaUnidadeFornecimento||x.siglaUnidadeMedida||x.nomeUnidadeFornecimento||x.nomeUnidadeMedida,40),
-    region:txt(x.estado||x.municipio,120),seller:txt(x.nomeFornecedor||x.nomeUasg||x.nomeOrgao),
-    condition:"new",url};
- }).filter(Boolean);
+ return (d.resultado||[]).map(x=>parseGovQuote(x,code,url)).filter(Boolean);
 }
+function parseGovQuote(x,code,url){
+ const price=pos(x.precoUnitario),date=iso(x.dataCompra||x.dataResultado);
+ const ref=txt(x.idCompra)+":"+txt(x.idItemCompra??x.numeroItemCompra);
+ if(!price||!date||!x.idCompra||!ref.split(":")[1]||String(x.codigoItemCatalogo)!==String(code))return null;
+ const discount=Number(x.percentualMaiorDesconto);
+ return {source:"comprasgov",sourceRef:ref,price,date,type:"public_purchase",
+  unit:txt(x.siglaUnidadeFornecimento||x.siglaUnidadeMedida||x.nomeUnidadeFornecimento||x.nomeUnidadeMedida,40),
+  region:txt(x.estado||x.municipio,120),seller:txt(x.nomeFornecedor||x.nomeUasg||x.nomeOrgao),condition:"new",url,
+  brand:txt(x.marca,120)||null,offerTitle:txt(x.descricaoDetalhadaItem||x.descricaoItem,1000)||null,
+  metadata:{purchaseQuantity:pos(x.quantidade),packageCapacity:pos(x.capacidadeUnidadeFornecimento),
+   procurementDiscountPercent:x.percentualMaiorDesconto!==null&&x.percentualMaiorDesconto!==undefined&&x.percentualMaiorDesconto!==""&&Number.isFinite(discount)&&discount>=0&&discount<=100?discount:null,
+   procurementCriterion:txt(x.criterioJulgamento,160)||null,
+   sourceUpdatedAt:iso(x.dataHoraAtualizacaoItem||x.dataAtualizacaoFato),
+   purchaseDate:iso(x.dataCompra),resultDate:iso(x.dataResultado)}};
+}
+
 function groupsOf(quotes){return quality.summarize(quotes);}
 async function quotesFor(item,{force=false}={}){
  const key="quotes:"+item.id,ttl=item.source==="comprasgov"?7*86400000:12*3600000;
@@ -243,5 +251,5 @@ async function syncCatalogPrices({source="comprasgov",limit=15,offset=0,force=fa
  }
  return summary;
 }
-module.exports={registerMarketRoutes,median,groupsOf,syncCatalogPrices,catalog};
+module.exports={registerMarketRoutes,median,groupsOf,syncCatalogPrices,catalog,parseGovQuote};
 

@@ -27,3 +27,12 @@ test("dados públicos, varejo e unidades diferentes não compartilham estatísti
  const publicGroup=groups.find(g=>g.type==="public_purchase");
  assert.equal(publicGroup.median,8);
 });
+
+test("registro público preserva marca, quantidade e descrição sem criar margem ou imposto",()=>{
+ const {parseGovQuote}=require("../server/market");
+ const r=parseGovQuote({idCompra:"compra1",idItemCompra:"item1",codigoItemCatalogo:123,precoUnitario:18,dataCompra:"2026-10-16",marca:"Marca informada",quantidade:100,descricaoDetalhadaItem:"Vassoura com cabo",siglaUnidadeFornecimento:"UN",nomeFornecedor:"Fornecedor",percentualMaiorDesconto:0},"123","https://dadosabertos.compras.gov.br/");
+ assert.equal(r.brand,"Marca informada");assert.equal(r.offerTitle,"Vassoura com cabo");assert.equal(r.metadata.purchaseQuantity,100);assert.equal(r.metadata.procurementDiscountPercent,0);assert.equal(r.tax,undefined);assert.equal(r.margin,undefined);
+});
+test("unidade e desconto ausentes não são inventados no registro público",()=>{
+ const {parseGovQuote}=require("../server/market");const r=parseGovQuote({idCompra:"c",idItemCompra:"1",codigoItemCatalogo:123,precoUnitario:18,dataCompra:"2026-10-16",nomeFornecedor:"Fornecedor"},"123","https://dadosabertos.compras.gov.br/");assert.equal(r.unit,"");assert.equal(r.metadata.procurementDiscountPercent,null);assert.equal(r.metadata.purchaseQuantity,null);
+});
