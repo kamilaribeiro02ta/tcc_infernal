@@ -1262,6 +1262,22 @@
       "Os custos e o preço de venda precisam ser informados por você.";
     updatePricingAndSimulation();
   }
+  function setOfferDraft(data){
+    const name=String(data?.name||"").trim().slice(0,60);
+    if(!name)return;
+    if(!els.productModal.classList.contains("open"))openNewModal();
+    els.nameInput.value=name;
+    els.formMessage.textContent="Nome sugerido por anúncio de loja. Confirme o modelo e informe custos e preço de venda. Nenhum preço externo foi aplicado.";
+    updatePricingAndSimulation();
+  }
+  window.addEventListener("zuz:market:draft",event=>setOfferDraft(event.detail));
+  try{
+    const draft=sessionStorage.getItem("zuz:market-draft");
+    if(draft){
+      sessionStorage.removeItem("zuz:market-draft");
+      setTimeout(()=>setOfferDraft(JSON.parse(draft)),0);
+    }
+  }catch(error){console.warn("Não foi possível abrir a sugestão de produto.",error);}
   window.addEventListener("zuz:market:prefill",event=>setMarketProduct(event.detail));
   try{
     const pending=sessionStorage.getItem("zuz:market-import");
