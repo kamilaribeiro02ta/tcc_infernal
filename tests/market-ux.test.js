@@ -45,7 +45,7 @@ test("vassoura: poucas referências úteis, preço ausente claramente indicado",
  await results[0].handlers.click[0]();
  assert.equal(root.find(x=>x.className==="zm-detail").hidden,false);
  assert.ok(root.all(x=>x.textContent?.includes?.("não há cotação comercial verificável")).length);
- assert.equal(requests.filter(x=>x.includes("/market/offers")).length,0);
+ assert.equal(requests.filter(x=>x.includes("/market/offers")).length,1);
  assert.equal(requests.filter(x=>x.includes("/market/keepa")).length,0);
 });
 test("cotações confirmadas são utilizáveis na simulação sem alterar custos",async()=>{
