@@ -15,5 +15,10 @@
 .zuz-market-intel-year{display:grid;gap:4px;border:1px solid var(--zm-edge);border-radius:11px;background:var(--zm-card);padding:12px}
 .zuz-market-intel-year small,.zuz-market-intel-year span{font:400 11px/1.5 Poppins,sans-serif;color:var(--zm-muted)}
 .zuz-market-intel-year strong{font:600 17px/1.5 Poppins,sans-serif;color:var(--zm-ink)}
+.zuz-market-intel-ncm{grid-column:1/-1;border:1px solid var(--zm-edge);border-radius:11px;padding:10px;min-width:0}
+.zuz-market-intel-ncm summary{font:500 11px/1.5 Poppins,sans-serif;color:var(--purple,#6a3df0);cursor:pointer}
+.zuz-market-intel-ncm .zuz-v3-control{margin:9px 0;width:100%}
+.zuz-market-intel-ncm .zuz-v3-btn{margin-bottom:8px}
+.zuz-market-intel-ncm-results{max-height:290px;overflow:auto}
 .zuz-market-intel-links{display:flex;flex-wrap:wrap;gap:5px 14px;margin:10px 0}
 @media(max-width:540px){.zuz-market-intel-form{grid-template-columns:1fr}.zuz-market-intel-years{grid-template-columns:1fr}}
