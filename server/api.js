@@ -166,7 +166,16 @@ function createApi() {
   router.get("/market/v2/search",asyncRoute(async(req,res)=>{
     const term=normalText(req.query.q,80);
     if(term.length<2)fail(400,"Digite ao menos dois caracteres.");
-    if(provider!=="postgresql")fail(503,"Pesquisa de catálogo disponível com PostgreSQL.");
+    if(provider!=="postgresql"){
+      // O SQLite não dispõe da função SQL PostgreSQL nem do acervo público do Neon.
+      // Não retornar 503: permitir pesquisa nos itens locais com aviso transparente.
+      const kindLocal=["product","service"].includes(req.query.kind)?req.query.kind:null;
+      const like="%"+term.toLowerCase().replace(/[%_]/g,"")+"%";
+      const r=await query("SELECT c.id AS item_id,c.kind,c.name AS display_name,c.name AS full_name,c.brand,c.model,c.barcode,c.category,c.source,FALSE AS is_historical, EXISTS(SELECT 1 FROM zuz_market_prices p WHERE p.catalog_id=c.id) AS has_price FROM zuz_market_catalog c WHERE (lower(c.name) LIKE $1 OR c.barcode=$2) AND ($3 IS NULL OR c.kind=$3) ORDER BY c.name LIMIT 30",[like,term,kindLocal]);
+      const items=r.rows.map(x=>({...x,is_historical:false,has_price:!!x.has_price}));
+      res.setHeader("Cache-Control","private, no-store");
+      return res.json({items,commercial:items,archived:[],warnings:["Catálogo SQLite local: o acervo histórico do PostgreSQL Neon não é sincronizado automaticamente."],totals:{commercial:items.length,archived:0,archiveTotal:0},archivePage:0,archiveHasMore:false});
+    }
     const kind=["product","service"].includes(req.query.kind)?req.query.kind:null;
     const includeArchive=req.query.historical!=="false";
     const warnings=[];
@@ -216,6 +225,17 @@ function createApi() {
   router.get("/market/v2/item",asyncRoute(async(req,res)=>{
     const id=normalText(req.query.id,50);
     if(!/^[a-f0-9]{32}$/.test(id))fail(400,"Identificador inválido.");
+    if(provider!=="postgresql"){
+      const local=await query("SELECT * FROM zuz_market_catalog WHERE id=$1",[id]);
+      if(!local.rows.length)fail(404,"Item não encontrado.");
+      const p=await query("SELECT COUNT(*) AS count FROM zuz_market_prices WHERE catalog_id=$1",[id]);
+      const x=local.rows[0];
+      res.setHeader("Cache-Control","private, no-store");
+      return res.json({item:{id:x.id,source:x.source,sourceId:x.external_id,type:x.kind,name:x.name,fullName:x.name,
+       brand:x.brand,model:x.model,barcode:x.barcode,category:x.category,unit:x.unit,
+       attributes:typeof x.attributes==="string"?JSON.parse(x.attributes):x.attributes||{},
+       isHistorical:false,updatedAt:x.updated_at,priceCount:Number(p.rows[0]?.count)||0}});
+    }
     const r=await query("SELECT id,source,external_id,kind,name,commercial_name,brand,model,barcode,category,unit,attributes,is_historical,updated_at FROM zuz_market_catalog WHERE id=$1",[id]);
     if(!r.rows.length)fail(404,"Item não encontrado.");
     const x=r.rows[0];
