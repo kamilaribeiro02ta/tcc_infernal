@@ -37,6 +37,8 @@ async function limitedJSON(url,{timeout=8000,limit=4000000}={}){
 }
 async function keepaByProduct(code,asin){
  if(!process.env.KEEPA_API_KEY)return {enabled:false,products:[],warning:"Keepa exige assinatura e KEEPA_API_KEY."};
+ const key="keepa:"+(asin||code),old=cache.get(key);
+ if(old&&Date.now()-old.at<6*3600000)return old.data;
  const params=new URLSearchParams({key:process.env.KEEPA_API_KEY,domain:"12",history:"1",update:"72"});
  if(/^[A-Z0-9]{10}$/.test(asin||""))params.set("asin",asin);
  else if(/^\d{8,14}$/.test(code||""))params.set("code",code);
