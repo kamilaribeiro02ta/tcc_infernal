@@ -5,7 +5,7 @@ const cache=new Map();
 const clean=x=>String(x||"").trim().slice(0,120);
 const norm=x=>clean(x).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 const money=x=>{const n=Number(x);return Number.isFinite(n)&&n>0&&n<100000000?n:null;};
-const allowedUrl=x=>{try{const u=new URL(x);return ["https:","http:"].includes(u.protocol)?u.toString():null;}catch{return null;}};
+const allowedUrl=x=>{try{const u=new URL(x);return u.protocol==="https:"?u.toString():null;}catch{return null;}};
 function similar(queryText,title){
  const q=norm(queryText),name=norm(title);
  if(!q||!name)return false;
@@ -21,9 +21,9 @@ function parseShopping(json,term){
   if(!title||!price||!seller||!similar(term,title)||!url)return [];
   const key=norm(title)+"|"+norm(seller);
   if(seen.has(key))return [];seen.add(key);
-  return [{title,price,seller,url,currency:"BRL",observedAt:new Date().toISOString(),
+  return [{title,price,seller,url,currency:"BRL",observedAt:null,queriedAt:new Date().toISOString(),
    source:"Google Shopping via SerpApi",comparison:"possivel_similar",
-   warning:"Anúncio semelhante: confira marca, modelo, variante, quantidade e condições antes de comparar."}];
+   warning:"Preço anunciado na data da consulta, sem confirmação da data em que a loja atualizou a oferta. Confira marca, modelo, variante, quantidade e condições."}];
  }).slice(0,20);
 }
 async function shopping(term){
