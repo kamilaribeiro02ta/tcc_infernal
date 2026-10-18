@@ -47,13 +47,14 @@ async function loadKeepa(parent,item){
  const s=section(parent,"Keepa · histórico de preços da Amazon Brasil",
   "Quando a oferta é localizada por código de barras, é possível consultar a série histórica do mesmo item. A série não é comparável automaticamente a um produto apenas semelhante.");
  const result=DOM("div");s.append(result);
- if(!item.barcode){
+ const barcode=item.barcode||item.gtin||"";
+ if(!barcode){
   status(result,"Este item não possui GTIN/EAN identificado. A consulta Keepa por nome não foi ativada para a loja brasileira; não foi possível confirmar o mesmo produto.");
   s.append(link("Consultar informações da Keepa","https://keepa.com/api-docs/product.html"));return;
  }
  status(result,"Consultando identificação e histórico Keepa...");
  try{
-  const d=await api.request("GET","/market/keepa?gtin="+encodeURIComponent(item.barcode));
+  const d=await api.request("GET","/market/keepa?gtin="+encodeURIComponent(barcode));
   result.replaceChildren();
   if(!d.products?.length){
    status(result,d.warning||"Nenhum histórico Keepa encontrado por este código.");return;
