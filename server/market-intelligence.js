@@ -3,7 +3,7 @@
 // Banco só é aberto ao registrar as rotas. Testes de normalização são independentes.
 const cache=new Map();
 const clean=x=>String(x||"").trim().slice(0,120);
-const norm=x=>clean(x).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const norm=x=>clean(x).replace(/(\d)\+/g,"$1 plus").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 const money=x=>{const n=Number(x);return Number.isFinite(n)&&n>0&&n<100000000?n:null;};
 const allowedUrl=x=>{try{const u=new URL(x);return u.protocol==="https:"?u.toString():null;}catch{return null;}};
 function similar(queryText,title){
