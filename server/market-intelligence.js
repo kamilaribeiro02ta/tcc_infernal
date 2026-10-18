@@ -72,7 +72,7 @@ function registerMarketIntelligenceRoutes(router,{asyncRoute}){
  router.get("/market/history",asyncRoute(async(req,res)=>{
   const id=clean(req.query.id);
   if(!/^[a-f0-9]{32}$/.test(id))return res.status(400).json({error:"Produto inválido."});
-  const catalog=await query("SELECT id,name,barcode,source,is_historical FROM zuz_market_catalog WHERE id=$1",[id]);
+  const catalog=await query(provider==="postgresql"?"SELECT id,name,barcode,source,is_historical FROM zuz_market_catalog WHERE id=$1":"SELECT id,name,barcode,source FROM zuz_market_catalog WHERE id=$1",[id]);
   if(!catalog.rows.length)return res.status(404).json({error:"Produto não encontrado."});
   if(provider!=="postgresql")return res.json({years:[],requestedYears:[2018,2026],availableYears:[],hasComparable2018and2026:false,note:"Histórico de cotação por ano exige PostgreSQL. Não inferimos valores do catálogo local."});
   const r=await query("SELECT h.price,h.observed_at,p.price_type,p.currency,p.condition,p.source,p.gtin,p.unit FROM zuz_market_price_history h JOIN zuz_market_prices p ON p.id=h.quote_id WHERE p.catalog_id=$1 ORDER BY h.observed_at DESC LIMIT 500",[id]);
