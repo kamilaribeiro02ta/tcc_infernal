@@ -81,9 +81,9 @@ function flattenNCM(payload){
   const x=stack.pop();
   if(!x||typeof x!=="object"||visited.has(x))continue;visited.add(x);
   if(Array.isArray(x)){for(let i=x.length-1;i>=0;i--)stack.push(x[i]);continue;}
-  const code=String(x.codigo||x.codigoNcm||x.codNcm||"").replace(/\D/g,"");
+  const code=String(x.Codigo||x.codigo||x.codigoNcm||x.codNcm||"").replace(/\D/g,"");
   if(code.length===8){
-   const description=clean(x.descricao||x.descricaoConcatenada||x.description,230);
+   const description=clean(String(x.Descricao||x.descricao||x.descricaoConcatenada||x.description||"").replace(/<[^>]+>/g," "),230);
    if(description)matches.push({code,description});
   }
   for(const [k,v] of Object.entries(x))if(v&&typeof v==="object"&&k!=="metadata")stack.push(v);
