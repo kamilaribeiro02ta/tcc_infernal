@@ -95,12 +95,17 @@ function marketBox(parent,mode){
   lastProductTrigger=trigger||document.activeElement||null;
   sheetBackdrop.hidden=false;detail.hidden=false;detail.scrollTop=0;
   root.classList?.add("zm-selected");
+  lastProductTrigger?.setAttribute?.("aria-expanded","true");
+  lastProductTrigger?.classList?.add("is-active");
   detail.focus?.({preventScroll:true});
+  root.setAttribute("aria-hidden","true");
  }
  function closeSheet(){
   sequence++;chosen=null;sheetBackdrop.hidden=true;detail.hidden=true;
-  root.classList?.remove("zm-selected");
+  root.classList?.remove("zm-selected");root.setAttribute("aria-hidden","false");
   detail.replaceChildren();
+  lastProductTrigger?.setAttribute?.("aria-expanded","false");
+  lastProductTrigger?.classList?.remove("is-active");
   lastProductTrigger?.focus?.({preventScroll:true});
  }
  sheetBackdrop.addEventListener("click",closeSheet);
@@ -297,6 +302,7 @@ function marketBox(parent,mode){
   e?.preventDefault();
   const term=input.value.trim();
   if(term.length<2){inform("Digite pelo menos dois caracteres para pesquisar.");input.focus();return;}
+  if(!detail.hidden)closeSheet();
   const token=++sequence;currentTerm=term;chosen=null;
   root.classList?.remove("zm-selected");welcome.hidden=true;
   sheetBackdrop.hidden=true;
@@ -593,7 +599,10 @@ function marketBox(parent,mode){
     if(token===sequence)empty(priceContent,"Não foi possível consultar preços agora. Você ainda pode cadastrar e precificar manualmente.");
    }
   }catch{
-   if(token===sequence)empty(detail,"Não conseguimos abrir este produto. Tente selecionar outro resultado.");
+   if(token===sequence)detail.replaceChildren(
+    btn("Voltar aos produtos",closeSheet,"zm-back"),
+    make("p","zm-empty","Não conseguimos abrir este produto agora. Escolha outra opção ou tente novamente.")
+   );
   }
  }
  form.addEventListener("submit",search);
