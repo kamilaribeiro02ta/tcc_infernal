@@ -158,11 +158,14 @@
     </section>
     <section class="workspace-panel sim-section" aria-labelledby="marketTitle">
       <span class="workspace-kicker">06 / CONCORRÊNCIA</span><h2 id="marketTitle">Referências do mercado</h2>
-      <p>Compare com preços informados pela empresa. Verifique se produtos e unidades são equivalentes.</p>
-      <div id="marketStats" class="sim-market-stats"></div>
-      <div id="referenceList" class="sim-reference-list"></div>
-      <div class="sim-add-reference"><label for="referenceName">Referência<input id="referenceName" placeholder="Ex.: loja da região" maxlength="90"></label><label for="referencePrice">Preço (R$)<input id="referencePrice" type="number" min=".01" step=".01" placeholder="0,00"></label><button type="button" id="addReference" class="workspace-secondary">Adicionar</button></div>
-      <p class="sim-muted">Referências adicionadas aqui são temporárias, a menos que a simulação seja salva no histórico.</p>
+      <div id="marketSearchMount"></div>
+      <details class="sim-manual-details">
+        <summary>Minhas referências e inclusão manual</summary>
+        <div id="marketStats" class="sim-market-stats"></div>
+        <div id="referenceList" class="sim-reference-list"></div>
+        <div class="sim-add-reference"><label for="referenceName">Referência<input id="referenceName" placeholder="Ex.: loja da região" maxlength="90"></label><label for="referencePrice">Preço (R$)<input id="referencePrice" type="number" min=".01" step=".01" placeholder="0,00"></label><button type="button" id="addReference" class="workspace-secondary">Adicionar</button></div>
+        <p class="sim-muted">Referências manuais são informativas. Salve a simulação para guardá-las no histórico.</p>
+      </details>
     </section>
   </div>
 
