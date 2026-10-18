@@ -50,7 +50,9 @@ function parseIPCA(rows){
   const date=/^(\d\d)\/(\d\d)\/(\d{4})$/.exec(String(row.data||""));
   const rate=Number(String(row.valor||"").replace(",","."));
   if(!date||!Number.isFinite(rate)||rate<=-100||rate>100)return [];
-  return [{date:date[3]+"-"+date[2]+"-"+date[1],rate}];
+  const stamp=date[3]+"-"+date[2]+"-"+date[1],parsed=new Date(stamp+"T00:00:00Z");
+  if(!Number.isFinite(parsed.valueOf())||parsed.toISOString().slice(0,10)!==stamp)return [];
+  return [{date:stamp,rate}];
  }).sort((a,b)=>a.date.localeCompare(b.date));
 }
 function adjustIPCA(value,rows,from,to){
