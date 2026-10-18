@@ -5,6 +5,7 @@
 - Consulta opcional a ofertas anunciadas por **SerpApi / Google Shopping**, somente quando **SERPAPI_API_KEY** estiver presente no ambiente server-side. Não grava anúncios no banco nem afirma equivalência perfeita entre modelos. A API pode consumir créditos e sua utilização depende dos termos do provedor.
 - Ficha detalhada de produtos e ofertas similares em Produtos, Custos e Simulações.
 - Histórico de **cotações observadas** guardadas no PostgreSQL/SQLite por ano, com 2018 e 2026 explicitamente mostrados como "sem cotação" quando não há registro. O ano do catálogo não é ano da cotação. Comparação nominal de anos exige correspondência verificável do mesmo código de barras e unidade.
+- Busca opcional de códigos NCM candidatos por nome ou código na BrasilAPI (sem tratar sugestão como classificação fiscal confirmada).
 - Formulário de enquadramento tributário com operação (revenda/produção/serviço), regime, UF, NCM ou código de serviço, preço e eventual alíquota informada. Simulação é **hipotética**, não cálculo do DAS ou apuração fiscal.
 - Consulta opcional à API IBPT "De Olho no Imposto" quando **IBPT_TOKEN** está configurado e o usuário fornece CNPJ, UF, NCM/NBS e preço **voluntariamente**. A estimativa IBPT é carga aproximada incluída no preço ao consumidor, não o valor a recolher pela empresa. CNPJ não é gravado no banco nem no log.
 
@@ -15,12 +16,17 @@
 - DataForSEO, Mercado Livre, Preço da Hora, Menor Preço Nota Gaúcha, ANP e Conab exigem análise dos contratos, credenciais e dos formatos antes de operar como conectores. **Não estão ativados** nesta entrega.
 
 ## Variáveis de ambiente (somente servidor)
+- A fonte de NCM BrasilAPI não exige chave, mas pode ficar indisponível e não fornece alíquotas fiscais.
 - SERPAPI_API_KEY: ativa a pesquisa de anúncios do Google Shopping via SerpApi.
 - IBPT_TOKEN: ativa consulta opcional à API do IBPT com consentimento e identificação fornecidos pelo próprio usuário.
 - DATABASE_URL: banco PostgreSQL persistente para a Vercel.
 
 Sem SERPAPI_API_KEY os registros internos continuam encontráveis, mas ofertas comerciais externas não serão apresentadas.
 Sem IBPT_TOKEN funciona a simulação manual de taxa, mas não são inventadas alíquotas fiscais.
+
+## SQLite local
+- A pesquisa de catálogo v2 tem alternativa local sem dependência de funções PostgreSQL; no SQLite, o arquivo do banco local não contém automaticamente os registros históricos do Neon.
+- O histórico anual de preços com rastreabilidade depende de PostgreSQL; não inventar preços no ambiente local.
 
 ## Validação necessária antes de declarar produção pronta
 1. Testar npm run test:core.
