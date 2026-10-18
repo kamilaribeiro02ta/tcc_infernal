@@ -286,7 +286,8 @@ function marketBox(parent,mode){
    for(const offer of data.offers.slice(0,7)){
     const line=make("div","zm-offer");
     line.append(make("strong","",offer.title.slice(0,110)),
-      make("span","",money(offer.price)+" · "+offer.seller));
+      make("span","",money(offer.price)+" · "+offer.seller),
+      make("small","zm-quote-meta","Consultado em "+(date(offer.queriedAt)||"data não informada")+" · atualização da loja não informada"));
     const a=safeLink("Abrir anúncio",offer.url);if(a)line.append(a);target.append(line);
    }
   }).catch(()=>empty(target,"Não foi possível consultar anúncios de lojas agora."));
