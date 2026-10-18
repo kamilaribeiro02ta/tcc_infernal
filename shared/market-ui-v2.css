@@ -77,7 +77,7 @@ body.zm-market-open{overflow:hidden!important}
  background:var(--zm-purple);color:#fff;font:700 17px/1 Poppins,sans-serif}
 .zm-brand-copy{font:700 13px/1 Poppins,sans-serif;letter-spacing:.04em}
 .zm-brand-sub{font:400 11px/1.3 Poppins,sans-serif;color:var(--zm-muted);padding-left:11px;border-left:1px solid var(--zm-line)}
-.zm-close{width:36px;height:36px;display:grid;place-items:center;
+.zm-close{width:44px;height:44px;display:grid;place-items:center;
  border:0;border-radius:10px;cursor:pointer;background:transparent;color:var(--zm-muted);
  font:400 27px/1 Poppins,sans-serif;transition:background .15s,color .15s}
 .zm-close:hover{background:var(--zm-soft);color:var(--zm-text)}
@@ -118,7 +118,7 @@ body.zm-market-open{overflow:hidden!important}
 .zm-welcome-sub{font:400 12px/1.8 Poppins,sans-serif;color:var(--zm-muted);
  margin-top:8px!important;max-width:48ch}
 .zm-shortcuts{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:9px;margin-top:22px}
-.zm-shortcut{min-height:35px;padding:7px 12px;border:1px solid var(--zm-line);border-radius:999px;
+.zm-shortcut{min-height:44px;padding:7px 12px;border:1px solid var(--zm-line);border-radius:999px;
  font:500 11px/1.5 Poppins,sans-serif;background:transparent;color:var(--zm-muted);cursor:pointer}
 .zm-shortcut:hover{border-color:var(--zm-purple);color:var(--zm-purple);background:color-mix(in srgb,var(--zm-purple) 4%,transparent)}
 /* Busca: linhas densas na informação, generosas no espaçamento, sem cartões repetidos */
@@ -156,7 +156,7 @@ body.zm-market-open{overflow:hidden!important}
 .zm-optional-content{padding:3px 0 17px}
 /* Produto selecionado: conteúdo principal cabe num painel, sem scroll da página */
 .zm-detail{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:3px 0 20px;scrollbar-width:thin}
-.zm-back{display:flex;align-items:center;padding:6px 0;min-height:34px;margin:0 0 15px;
+.zm-back{display:flex;align-items:center;padding:6px 0;min-height:44px;margin:0 0 15px;
  border:0;background:transparent;color:var(--zm-purple);font:500 11px/1.5 Poppins,sans-serif;cursor:pointer}
 .zm-product-heading{margin-bottom:24px}
 .zm-selected-title{font:600 20px/1.45 Poppins,sans-serif;letter-spacing:-.035em;color:var(--zm-text)}
