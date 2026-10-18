@@ -27,7 +27,11 @@ function mountTaxes(parent,{name="",kind="product",salePrice=null,gtin=""}={}){
  const ncmButton=button("Buscar possíveis NCMs",async()=>{
   ncmList.replaceChildren(el("p","zuz-v3-muted","Consultando códigos candidatos..."));ncmButton.disabled=true;
   try{
-   const d=await api.request("GET","/market/ncm?q="+encodeURIComponent(searchNcm.value.trim()));
+   let d=await api.request("GET","/market/classif?q="+encodeURIComponent(searchNcm.value.trim()));
+   if(!d.items?.length){
+    const backup=await api.request("GET","/market/ncm?q="+encodeURIComponent(searchNcm.value.trim()));
+    d={...backup,note:"Fonte auxiliar BrasilAPI. Confirme o código no Classif oficial antes de utilizar."};
+   }
    ncmList.replaceChildren();
    if(!d.items?.length){ncmList.append(el("p","zuz-v3-muted",d.warning||"Não foram encontrados códigos candidatos. Consulte a classificação fiscal com um contador."));return;}
    ncmList.append(el("p","zuz-v3-muted",d.note));
