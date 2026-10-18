@@ -1,6 +1,6 @@
 "use strict";
 const crypto=require("node:crypto");
-const {query}=require("./database");
+const {query,provider}=require("./database");
 const pricing=require("../shared/pricing-core");
 const quality=require("./market-quality");
 const hash=(a,b)=>crypto.createHash("sha256").update(a+":"+b).digest("hex").slice(0,32);
@@ -150,6 +150,14 @@ async function quotesFor(item,{force=false}={}){
   note:["comprasgov","catmat_archive_2018"].includes(item.source)?"Compra pública não representa preço de varejo; itens históricos só são consultados após confirmação do código oficial.":"Preço colaborativo: confirme data e condições."};
 }
 function registerMarketRoutes(router,{asyncRoute,getCompany}){
+ router.get("/market/references",asyncRoute(async(req,res)=>{
+  throttle(req.user.id);
+  const term=txt(req.query.q,81);
+  if(term.length<3||term.length>80)err(400,"Digite entre 3 e 80 caracteres.");
+  const result=await require("./market-reference-search").searchReferences(term,{query,provider,refresh:quotesFor,dto});
+  res.setHeader("Cache-Control","private, no-store");
+  res.json(result);
+ }));
  router.get("/market/catalog",asyncRoute(async(req,res)=>{
   throttle(req.user.id);const q=txt(req.query.q,72);if(q.length<3)err(400,"Informe ao menos 3 caracteres.");
   res.setHeader("Cache-Control","private, no-store");res.json({query:q,...await catalog(q)});
@@ -236,3 +244,4 @@ async function syncCatalogPrices({source="comprasgov",limit=15,offset=0,force=fa
  return summary;
 }
 module.exports={registerMarketRoutes,median,groupsOf,syncCatalogPrices,catalog};
+

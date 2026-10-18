@@ -16,12 +16,15 @@ function similar(queryText,title){
 function parseShopping(json,term){
  const seen=new Set();
  return (Array.isArray(json.shopping_results)?json.shopping_results:[]).flatMap(row=>{
+  if(row.currency&&row.currency!=="BRL")return [];
+  if(typeof row.price==="string"&&/(?:US\$|USD|EUR|€|GBP|£)/i.test(row.price))return [];
   const title=clean(row.title),price=money(row.extracted_price),seller=clean(row.source);
   const url=allowedUrl(row.product_link||row.link);
   if(!title||!price||!seller||!similar(term,title)||!url)return [];
   const key=norm(title)+"|"+norm(seller);
   if(seen.has(key))return [];seen.add(key);
-  return [{title,price,seller,url,currency:"BRL",observedAt:null,queriedAt:new Date().toISOString(),
+  return [{id:"shopping:"+require("node:crypto").createHash("sha256").update(url+"|"+seller).digest("hex").slice(0,24),
+   imageUrl:allowedUrl(row.thumbnail),title,price,seller,url,currency:"BRL",observedAt:null,queriedAt:new Date().toISOString(),
    source:"Google Shopping via SerpApi",comparison:"possivel_similar",
    warning:"Preço anunciado na data da consulta, sem confirmação da data em que a loja atualizou a oferta. Confira marca, modelo, variante, quantidade e condições."}];
  }).slice(0,20);
@@ -87,3 +90,4 @@ function registerMarketIntelligenceRoutes(router,{asyncRoute}){
  }));
 }
 module.exports={registerMarketIntelligenceRoutes,similar,parseShopping,yearly};
+

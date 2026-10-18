@@ -3,218 +3,57 @@ const test=require("node:test"),assert=require("node:assert/strict");
 const fs=require("node:fs"),path=require("node:path"),vm=require("node:vm");
 const code=fs.readFileSync(path.resolve(__dirname,"../shared/market-ui-v2.js"),"utf8");
 class FakeNode{
- constructor(tag){this.tag=tag;this.className="";this.children=[];this.handlers={};this.textContent="";this.value="";this.hidden=false;this.parentElement=null;}
+ constructor(tag){this.tag=tag;this.className="";this.children=[];this.handlers={};this.textContent="";this.value="";this.hidden=false;this.parentElement=null;this.dataset={};}
  append(...items){for(const item of items){if(item instanceof FakeNode)item.parentElement=this;this.children.push(item);}}
  replaceChildren(...items){this.children=[];this.append(...items);}
  after(node){const i=this.parentElement.children.indexOf(this);this.parentElement.children.splice(i+1,0,node);node.parentElement=this.parentElement;}
  insertBefore(node,reference){const i=this.children.indexOf(reference);this.children.splice(i<0?this.children.length:i,0,node);node.parentElement=this;}
  addEventListener(type,fn){(this.handlers[type]??=[]).push(fn);}
  setAttribute(name,val){this[name]=val;}focus(){}closest(){return this.parentElement;}
+ querySelectorAll(selector){return selector==="details[open]"?this.all(x=>x.tag==="details"&&x.open):[];}
+ querySelector(selector){return this.find(x=>x.tag===selector);}
  remove(){if(this.parentElement)this.parentElement.children=this.parentElement.children.filter(x=>x!==this);}
  find(fn){if(fn(this))return this;for(const el of this.children){const found=el?.find?.(fn);if(found)return found;}return null;}
  all(fn){return [...(fn(this)?[this]:[]),...this.children.flatMap(x=>x?.all?.(fn)||[])];}
 }
-function setup(mode,request){
- const host=new FakeNode("div"),control=new FakeNode("div"),name=new FakeNode("input"),market=new FakeNode("div"),marketMount=new FakeNode("div");
- host.append(control);control.append(name);host.append(marketMount,market);
- const events=[],window={ZUZAPI:{request},location:{href:""},dispatchEvent:e=>{events.push(e);if(e.type==="zuz:market:reference")e.detail.accepted=true;}};
- const document={createElement:t=>new FakeNode(t),getElementById:id=>id==="nameInput"&&mode==="products"?name:id==="marketSearchMount"&&mode==="simulations"?marketMount:id==="marketStats"&&mode==="simulations"?market:null};
- vm.runInNewContext(code,{window,document,CustomEvent:class{constructor(type,arg){this.type=type;this.detail=arg.detail;}},URLSearchParams,sessionStorage:{setItem(){},getItem(){return null}},console,Date,Intl});
- return {root:host.find(x=>x.className==="zm-search-shell"),host,events};
+function setup(request,timer=setTimeout){
+ const host=new FakeNode("div"),mount=new FakeNode("div");host.append(mount);
+ const events=[],window={ZUZAPI:{request},location:{href:""},dispatchEvent:e=>{events.push(e);e.detail.accepted=true;}};
+ const document={createElement:t=>new FakeNode(t),getElementById:id=>id==="marketSearchMount"?mount:null};
+ vm.runInNewContext(code,{window,document,CustomEvent:class{constructor(type,arg){this.type=type;this.detail=arg.detail;}},URL,AbortController,URLSearchParams,sessionStorage:{setItem(){}},Date,Intl,setTimeout:timer,clearTimeout});
+ return {root:host.find(x=>x.className==="zm-search-shell"),host,events,window};
 }
 const ID="a".repeat(32),QID="b".repeat(32);
-async function search(root,q){
- root.find(x=>x.tag==="input"&&x.type==="search").value=q;
+const offer={id:QID,title:"Vassoura de piaçava",price:14.9,seller:"Loja A",currency:"BRL",source:"Open Prices",sourceCode:"openprices",sourceRef:"123",url:"https://prices.openfoodfacts.org/api/v1/prices/123",observedAt:"2026-10-17",queriedAt:"2026-10-18",verified:true,comparison:"gtin",item:{id:ID,name:"Vassoura",barcode:"7891234567895",attributes:{}}};
+async function search(root,term="vassoura"){
+ root.find(x=>x.className==="zm-search-input").value=term;
  await root.find(x=>x.tag==="form").handlers.submit[0]({preventDefault(){}});
 }
-test("vassoura: poucas referências úteis, preço ausente claramente indicado",async()=>{
- const requests=[],api=async(_method,url)=>{
-  requests.push(url);
-  if(url.includes("/market/v2/search"))return url.includes("historical=true")?
-   {commercial:[],archived:[{item_id:ID,display_name:"Vassoura",full_name:"VASSOURA, CERDAS AÇO, CABO MADEIRA",is_historical:true}]}:{commercial:[]};
-  if(url.includes("/market/v2/item"))return {item:{id:ID,name:"Vassoura de aço",type:"product",attributes:{},isHistorical:true}};
-  if(url.includes("/market/quotes"))return {commercial:{offers:[],summary:null},quotes:[]};
-  throw Error("Rota inesperada "+url);
- };
- const {root,host}=setup("products",api);
- assert.ok(root);
- await search(root,"vassoura");
- const results=root.all(x=>x.tag==="button"&&x.className.includes("zm-result"));
- assert.equal(results.length,1);
- assert.equal(root.all(x=>x.textContent?.includes?.("2018")).length,0);
- await results[0].handlers.click[0]();
- assert.equal(host.find(x=>x.className==="zm-detail").hidden,false);
- assert.ok(host.all(x=>x.textContent?.includes?.("Ainda não encontramos preços em lojas")).length);
- assert.equal(requests.filter(x=>x.includes("/market/offers")).length,1);
- assert.equal(requests.filter(x=>x.includes("/market/keepa")).length,0);
+test("consulta fontes em paralelo mesmo com catálogo; preços ficam na própria página",async()=>{
+ const calls=[];const {root,host,window}=setup(async(_,url)=>{calls.push(url);return url.includes("/references")?{references:[offer],catalog:[]}:{enabled:true,offers:[{...offer,id:"shop",source:"Shopping",verified:false,comparison:"possivel_similar"}]};});
+ await search(root);assert.equal(calls.length,2);assert.equal(root.all(x=>x.className==="zm-offer").length,2);assert.equal(host.all(x=>x.className==="zm-overlay").length,0);assert.equal(window.location.href,"");
+ const d=root.find(x=>x.className==="zm-offer");d.open=true;d.handlers.toggle[0]();assert.ok(d.find(x=>x.textContent==="Custos de aquisição"));assert.equal(root.all(x=>x.className==="zm-offer").length,2);
 });
-test("cotações confirmadas são utilizáveis na simulação sem alterar custos",async()=>{
- const quote={id:QID,price:24.9,seller:"Loja conferida",region:"SP",
-  observedAt:"2026-10-18T10:00:00Z",url:"https://prices.openfoodfacts.org/api/v1/prices/123"};
- const api=async(method,url)=>{
-  if(url.includes("/market/v2/search"))return {commercial:[{item_id:ID,display_name:"Biscoito Marca A 200g",brand:"Marca A",barcode:"7891234567895"}]};
-  if(url.includes("/market/v2/item"))return {item:{id:ID,name:"Biscoito Marca A 200g",type:"product",barcode:"7891234567895",attributes:{}}};
-  if(url.includes("/market/quotes"))return {commercial:{offers:[quote],summary:null},quotes:[]};
-  if(method==="POST"&&url==="/market/reference/verify")return {reference:{marketQuoteId:QID,marketProductId:ID,verified:true,price:24.9}};
-  throw Error("Rota inesperada "+url);
- };
- const {root,host,events}=setup("simulations",api);
- await search(root,"biscoito");
- const product=root.find(x=>x.tag==="button"&&x.className.includes("zm-result"));
- assert.ok(product);await product.handlers.click[0]();
- const action=host.find(x=>x.tag==="button"&&x.textContent==="Usar na simulação");
- assert.ok(action);action.handlers.click[0]();
- const confirm=host.find(x=>x.tag==="button"&&x.textContent==="Confirmar");
- assert.ok(confirm);await confirm.handlers.click[0]();
- assert.equal(events.filter(x=>x.type==="zuz:market:reference").length,1);
- assert.ok(host.all(x=>x.textContent==="Referência adicionada à simulação.").length);
+test("falha parcial preserva ofertas e oferece precificação manual",async()=>{
+ const {root}=setup(async(_,url)=>{if(url.includes("/references"))throw Error("offline");return {enabled:true,offers:[offer]};});
+ await search(root);assert.equal(root.all(x=>x.className==="zm-offer").length,1);assert.ok(root.find(x=>x.className==="zm-source-status"||x.className.includes("zm-source-status")).textContent.includes("referências salvas"));assert.ok(root.find(x=>x.textContent==="Precificar manualmente"));
 });
-
-test("produto moderno: anúncio semelhante visível, mas preço não vira média ou custo",async()=>{
- const api=async(_method,url)=>{
-  if(url.includes("/market/v2/search"))return {commercial:[]};
-  if(url.includes("/market/offers"))return {offers:[{title:"Celular Modelo X 128 GB",price:1599.9,
-   seller:"Loja de exemplo",url:"https://example.com/celular",queriedAt:"2026-10-18T12:00:00Z"}]};
-  throw Error("Rota inesperada "+url);
- };
- const {root,host,events}=setup("products",api);
- await search(root,"celular modelo x");
- const offer=root.find(x=>x.tag==="button"&&x.className.includes("zm-result"));
- assert.ok(offer);await offer.handlers.click[0]();
- assert.ok(host.all(x=>x.textContent?.includes?.("Preço anunciado")).length);
- assert.equal(host.all(x=>x.className==="zm-price-stats").length,0);
- const draft=host.find(x=>x.tag==="button"&&x.textContent==="Cadastrar com este nome");
- assert.ok(draft);draft.handlers.click[0]();
- const confirm=host.find(x=>x.tag==="button"&&x.textContent==="Confirmar");
- assert.ok(confirm);confirm.handlers.click[0]();
- assert.equal(events.filter(x=>x.type==="zuz:market:draft").length,1);
- assert.equal(events.find(x=>x.type==="zuz:market:draft").detail.price,undefined);
+test("ausência de preços não apresenta catálogo como oferta",async()=>{
+ const {root}=setup(async(_,url)=>url.includes("/references")?{references:[],catalog:[offer.item]}:{enabled:false,offers:[]});
+ await search(root);assert.equal(root.all(x=>x.className==="zm-offer").length,0);assert.ok(root.find(x=>x.className==="zm-status").textContent.includes("Não encontramos preços verificáveis"));assert.equal(root.find(x=>x.className==="zm-catalog").hidden,false);
 });
-
-test("janela focada: pesquisa acessível e fechamento sem poluir a página",async()=>{
- const calls=[];
- const api=async(_method,url)=>{
-  calls.push(url);
-  if(url.includes("/market/v2/search"))return {commercial:[]};
-  if(url.includes("/market/offers"))return {offers:[]};
-  return {archived:[]};
- };
- const {root,host}=setup("products",api);
- const launcher=host.find(x=>x.className.includes("zm-launcher"));
- assert.ok(launcher);
- const overlay=host.find(x=>x.className==="zm-overlay");
- assert.ok(overlay);
- assert.equal(overlay.hidden,true);
- const publicInput=launcher.find(x=>x.className==="zm-launch-input");
- publicInput.value="vassoura";
- await launcher.find(x=>x.tag==="button"&&x.className==="zm-launch-submit").handlers.click[0]();
- assert.equal(overlay.hidden,false);
- assert.equal(root.find(x=>x.className==="zm-welcome").hidden,true);
- const close=overlay.find(x=>x.className==="zm-close");
- close.handlers.click[0]();
- assert.equal(overlay.hidden,true);
+test("requisição que nunca responde termina e libera a interface",async()=>{
+ const {root}=setup(()=>new Promise(()=>{}),(fn)=>setTimeout(fn,5));await search(root);
+ assert.equal(root["aria-busy"],"false");assert.ok(root.find(x=>x.className==="zm-status").textContent.includes("Não foi possível concluir"));
 });
-test("detalhes fiscais e históricos permanecem recolhidos ao selecionar produto",async()=>{
- const api=async(_method,url)=>{
-  if(url.includes("/market/v2/search"))return {commercial:[{item_id:ID,display_name:"Macarrão",barcode:"7890000000001"}]};
-  if(url.includes("/market/v2/item"))return {item:{id:ID,name:"Macarrão",type:"product",barcode:"7890000000001",attributes:{}}};
-  if(url.includes("/market/quotes"))return {commercial:{offers:[],summary:null},quotes:[]};
-  throw Error("Rota inesperada "+url);
- };
- const {root,host}=setup("simulations",api);
- await search(root,"macarrão");
- const found=root.find(x=>x.className?.includes("zm-result")&&x.tag==="button");
- await found.handlers.click[0]();
- const more=host.find(x=>x.className==="zm-more");
- assert.ok(more);
- assert.equal(more.open,undefined);
- assert.equal(host.find(x=>x.className==="zm-detail").hidden,false);
+test("cancelamento ignora respostas atrasadas e nova busca preserva só resultados atuais",async()=>{
+ let finish;const pending=new Promise(resolve=>finish=resolve);let slow=true;
+ const {root}=setup(async()=>slow?pending:{enabled:true,offers:[],references:[],catalog:[]});
+ const first=search(root);root.find(x=>x.tag==="button"&&x.textContent==="Cancelar").handlers.click[0]();slow=false;await search(root,"arroz");finish({offers:[offer],references:[offer]});await first;
+ assert.equal(root.all(x=>x.className==="zm-offer").length,0);assert.equal(root["aria-busy"],"false");
 });
-
-test("ao tocar no resultado, a ficha se abre em um card e fecha pelo fundo",async()=>{
- const api=async(_method,url)=>{
-  if(url.includes("/market/v2/search"))return {commercial:[{item_id:ID,display_name:"Macarrão instantâneo",barcode:"7891234567895"}]};
-  if(url.includes("/market/v2/item"))return {item:{id:ID,name:"Macarrão instantâneo",barcode:"7891234567895",attributes:{},unit:"85 g"}};
-  if(url.includes("/market/quotes"))return {commercial:{offers:[],summary:null},quotes:[]};
-  throw Error("Rota inesperada "+url);
- };
- const {root,host}=setup("products",api);
- await search(root,"macarrão");
- const result=root.find(x=>x.tag==="button"&&x.className.includes("zm-result"));
- const backdrop=host.find(x=>x.className==="zm-sheet-backdrop");
- const sheet=host.find(x=>x.className==="zm-detail");
- assert.ok(sheet);assert.ok(backdrop);
- assert.equal(sheet.hidden,true);
- await result.handlers.click[0]();
- assert.equal(sheet.hidden,false);
- assert.equal(backdrop.hidden,false);
- assert.equal(result["aria-expanded"],"true");
- backdrop.handlers.click[0]();
- assert.equal(sheet.hidden,true);
- assert.equal(backdrop.hidden,true);
- assert.equal(result["aria-expanded"],"false");
- assert.ok(root.find(x=>x.className==="zm-results").all(x=>x.className.includes("zm-result")).length);
-});
-test("comparação apresenta média principal só quando retornada pelo backend",async()=>{
- const api=async(_method,url)=>{
-  if(url.includes("/market/v2/search"))return {commercial:[{item_id:ID,display_name:"Arroz 5 kg",barcode:"7891234567895"}]};
-  if(url.includes("/market/v2/item"))return {item:{id:ID,name:"Arroz 5 kg",barcode:"7891234567895",attributes:{}}};
-  if(url.includes("/market/quotes"))return {commercial:{summary:{average:24,min:20,max:29,offers:3,region:"SP"},offers:[
-   {id:"a",price:20,seller:"Loja A",region:"SP",observedAt:"2026-10-18",url:"https://example.com/a"},
-   {id:"b",price:23,seller:"Loja B",region:"SP",observedAt:"2026-10-18",url:"https://example.com/b"},
-   {id:"c",price:29,seller:"Loja C",region:"SP",observedAt:"2026-10-18",url:"https://example.com/c"}
-  ]},quotes:[]};
-  throw Error("Rota inesperada "+url);
- };
- const {root,host}=setup("products",api);
- await search(root,"arroz");
- await root.find(x=>x.className?.includes("zm-result")&&x.tag==="button").handlers.click[0]();
- const sheet=host.find(x=>x.className==="zm-detail");
- const main=sheet.find(x=>x.className==="zm-average-value");
- assert.ok(main);
- assert.ok(main.textContent.includes("24"));
- assert.equal(sheet.all(x=>x.className==="zm-price-stat").length,2);
-});
-
-test("Escape fecha primeiro a ficha e depois a janela de busca",async()=>{
- const api=async(_method,url)=>{
-  if(url.includes("/market/v2/search"))return {commercial:[{item_id:ID,display_name:"Produto",barcode:"7891234567895"}]};
-  if(url.includes("/market/v2/item"))return {item:{id:ID,name:"Produto",barcode:"7891234567895",attributes:{}}};
-  if(url.includes("/market/quotes"))return {commercial:{offers:[],summary:null},quotes:[]};
-  throw Error("Rota inesperada "+url);
- };
- const {root,host}=setup("products",api);
- const overlay=host.find(x=>x.className==="zm-overlay");
- const launcher=host.find(x=>x.className.includes("zm-launcher"));
- launcher.find(x=>x.className==="zm-launch-input").value="produto";
- launcher.find(x=>x.className==="zm-launch-submit").handlers.click[0]();
- await search(root,"produto");
- await root.find(x=>x.tag==="button"&&x.className.includes("zm-result")).handlers.click[0]();
- const detail=host.find(x=>x.className==="zm-detail");
- assert.equal(detail.hidden,false);
- overlay.handlers.keydown[0]({key:"Escape",preventDefault(){}});
- assert.equal(detail.hidden,true);
- assert.equal(overlay.hidden,false);
- overlay.handlers.keydown[0]({key:"Escape",preventDefault(){}});
- assert.equal(overlay.hidden,true);
-});
-test("gesto descendente fecha o card somente quando está no topo da leitura",async()=>{
- const api=async(_method,url)=>{
-  if(url.includes("/market/v2/search"))return {commercial:[{item_id:ID,display_name:"Arroz",barcode:"7891234567895"}]};
-  if(url.includes("/market/v2/item"))return {item:{id:ID,name:"Arroz",barcode:"7891234567895",attributes:{}}};
-  if(url.includes("/market/quotes"))return {commercial:{offers:[],summary:null},quotes:[]};
-  throw Error("Rota inesperada "+url);
- };
- const {root,host}=setup("products",api);
- await search(root,"arroz");
- await root.find(x=>x.tag==="button"&&x.className.includes("zm-result")).handlers.click[0]();
- const detail=host.find(x=>x.className==="zm-detail");
- detail.scrollTop=48;
- detail.handlers.touchstart[0]({touches:[{clientY:100}]});
- detail.handlers.touchend[0]({changedTouches:[{clientY:280}]});
- assert.equal(detail.hidden,false);
- detail.scrollTop=0;
- detail.handlers.touchstart[0]({touches:[{clientY:100}]});
- detail.handlers.touchend[0]({changedTouches:[{clientY:280}]});
- assert.equal(detail.hidden,true);
+test("simulação valida a cotação no servidor antes da utilização",async()=>{
+ const {root,events}=setup(async(method,url)=>method==="POST"?{reference:{marketQuoteId:QID,verified:true,price:14.9}}:url.includes("/references")?{references:[offer]}:{offers:[]});
+ await search(root);const d=root.find(x=>x.className==="zm-offer");d.open=true;d.handlers.toggle[0]();
+ d.find(x=>x.textContent==="Usar na simulação").handlers.click[0]();await d.find(x=>x.textContent==="Confirmar").handlers.click[0]();assert.equal(events.length,1);assert.equal(events[0].type,"zuz:market:reference");
 });

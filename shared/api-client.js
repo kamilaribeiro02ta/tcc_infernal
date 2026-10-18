@@ -1,11 +1,12 @@
 (function(){
   "use strict";
-  async function request(method,path,body){
+  async function request(method,path,body,options={}){
     let response;
     try {
       response=await fetch("/api"+path,{
         method,
         credentials:"same-origin",
+        signal:options.signal,
         headers:body===undefined?{}:{"Content-Type":"application/json"},
         body:body===undefined?undefined:JSON.stringify(body)
       });
@@ -31,3 +32,4 @@
   }
   window.ZUZAPI={request};
 })();
+
