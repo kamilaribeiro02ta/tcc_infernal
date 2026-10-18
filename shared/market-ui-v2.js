@@ -133,14 +133,14 @@ function marketBox(parent,mode){
   const term=input.value.trim();
   if(term.length<2){inform("Digite pelo menos dois caracteres para pesquisar.");input.focus();return;}
   const token=++sequence;currentTerm=term;chosen=null;
-  searchButton.disabled=true;detail.hidden=true;detail.replaceChildren();
+  searchButton.disabled=true;detail.hidden=true;results.hidden=false;detail.replaceChildren();
   empty(results,"Procurando produtos...");inform("");
   try{
    const query=new URLSearchParams({q:term,historical:"false"});
    const data=await api.request("GET","/market/v2/search?"+query);
    if(token!==sequence)return;
    renderList(data.commercial||[]);
-   results.append(technicalOption(term));
+   if((data.commercial||[]).length<=2)results.append(technicalOption(term));
    inform((data.commercial||[]).length?"Selecione um produto para ver os preços disponíveis.":"Nenhum produto comercial encontrado nesta busca.");
   }catch{
    if(token!==sequence)return;
@@ -277,7 +277,9 @@ function marketBox(parent,mode){
    save.disabled=true;
    try{
     const verified=await api.request("POST","/market/reference/verify",{itemId:item.id,quoteId:quote.id});
-    window.dispatchEvent(new CustomEvent("zuz:market:reference",{detail:verified.reference}));
+    const entry={...verified.reference,accepted:false};
+    window.dispatchEvent(new CustomEvent("zuz:market:reference",{detail:entry}));
+    if(!entry.accepted)throw new Error("Selecione um produto compatível na simulação antes de usar esta cotação.");
     parent.replaceChildren(make("p","zm-success","Referência adicionada à simulação."));
    }catch(error){parent.replaceChildren(make("p","zm-error",error.message||"Não foi possível validar esta cotação."));}
    finally{save.disabled=false;}
