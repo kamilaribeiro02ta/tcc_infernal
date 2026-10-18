@@ -22,6 +22,28 @@ function mountTaxes(parent,{name="",kind="product",salePrice=null,gtin=""}={}){
  const uf=field(form,"UF da operação",select([["","Selecione"],...("AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ").map(x=>[x,x]))]));
  const ncm=field(form,"NCM do produto (8 dígitos)",input("Informe código validado"));
  ncm.maxLength=8;ncm.inputMode="numeric";
+ const ncmLookup=el("div","zuz-market-intel-ncm");
+ const searchNcm=input("Pesquisar NCM por descrição ou código");searchNcm.value=name;
+ const ncmButton=button("Buscar possíveis NCMs",async()=>{
+  ncmList.replaceChildren(el("p","zuz-v3-muted","Consultando códigos candidatos..."));ncmButton.disabled=true;
+  try{
+   const d=await api.request("GET","/market/ncm?q="+encodeURIComponent(searchNcm.value.trim()));
+   ncmList.replaceChildren();
+   if(!d.items?.length){ncmList.append(el("p","zuz-v3-muted",d.warning||"Não foram encontrados códigos candidatos. Consulte a classificação fiscal com um contador."));return;}
+   ncmList.append(el("p","zuz-v3-muted",d.note));
+   for(const row of d.items){
+    const option=el("button","zuz-v3-option");option.type="button";
+    option.append(el("strong","zuz-v3-option-name",row.code+" · "+row.description),
+     el("small","zuz-v3-option-meta","Código candidato — confirmar classificação"));
+    option.addEventListener("click",()=>{ncm.value=row.code;ncmList.replaceChildren(el("p","zuz-v3-muted","NCM preenchido como candidato. Confirme antes de usar."));});
+    ncmList.append(option);
+   }
+  }catch(error){ncmList.replaceChildren(el("p","zuz-v3-muted","Busca indisponível: "+error.message));}
+  finally{ncmButton.disabled=false;}
+ });
+ const ncmList=el("div","zuz-market-intel-ncm-results");
+ ncmLookup.append(searchNcm,ncmButton,ncmList);
+ form.append(ncmLookup);
  const serviceCode=field(form,"Código do serviço (NBS/LC 116)",input("Código validado"));
  const sale=field(form,"Preço de venda (R$)",input("Ex.: 150,00","number"));
  sale.step="0.01";sale.min="0";if(Number(salePrice)>0)sale.value=String(salePrice);
