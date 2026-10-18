@@ -16,6 +16,36 @@ function references(value){
   return value.slice(0,30).map(c=>({name:safeText(c.name||"Referência",90),price:Number(c.price)}))
     .filter(c=>Number.isFinite(c.price)&&c.price>0&&c.price<=100000000);
 }
+async function verifiedReferences(value,product){
+  if(!Array.isArray(value))return [];
+  const quality=require("./market-quality"),list=[];
+  for(const submitted of value.slice(0,30)){
+    const name=safeText(submitted?.name||"Referência",90),price=Number(submitted?.price);
+    if(!Number.isFinite(price)||price<=0||price>100000000)continue;
+    if(!submitted?.marketQuoteId){
+      list.push({name,price,verified:false});continue;
+    }
+    const marketQuoteId=safeText(submitted.marketQuoteId,50),marketProductId=safeText(submitted.marketProductId,50);
+    if(!/^[a-f0-9]{32}$/.test(marketQuoteId)||!/^[a-f0-9]{32}$/.test(marketProductId))
+      fail(409,"Identificação da cotação de mercado inválida.");
+    const result=await query(
+      "SELECT p.*, c.barcode AS catalog_barcode, c.name AS catalog_name, c.commercial_name AS catalog_commercial_name "+
+      "FROM zuz_market_prices p JOIN zuz_market_catalog c ON c.id=p.catalog_id "+
+      "WHERE p.id=$1 AND p.catalog_id=$2",[marketQuoteId,marketProductId]);
+    const row=result.rows[0];
+    const checked=row&&quality.verifiedRetailQuote(row,{barcode:row.catalog_barcode});
+    if(!checked||Math.abs(price-checked.price)>.009)
+      fail(409,"Cotação expirada ou não verificável. Consulte o preço novamente.");
+    const ownCode=String(product?.barcode||product?.gtin||"").trim();
+    if(ownCode&&ownCode!==checked.gtin)
+      fail(409,"O GTIN da cotação não corresponde ao produto da empresa.");
+    list.push({name:safeText(row.catalog_commercial_name||row.catalog_name,90),
+      price:checked.price,verified:true,marketQuoteId:checked.id,marketProductId,
+      source:checked.source,seller:checked.seller,region:checked.region,
+      observedAt:checked.observedAt,url:checked.url,gtin:checked.gtin,unit:checked.unit});
+  }
+  return list;
+}
 function propose(message,s){
   const text=message.toLowerCase();
   const next={...s};
@@ -98,7 +128,7 @@ function registerSimulationRoutes(router,{asyncRoute,getCompany}){
     const data=req.body?.snapshot;
     if(!data||!Array.isArray(data.scenarios)||data.scenarios.length!==3)fail(400,"Envie três cenários válidos.");
     const scenarios=data.scenarios.map(s=>simulation.validate(s));
-    const refs=references(data.references);
+    const refs=await verifiedReferences(data.references,product);
     let results;
     try{
       results=scenarios.map(s=>{
