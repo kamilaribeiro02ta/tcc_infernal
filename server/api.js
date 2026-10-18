@@ -141,19 +141,26 @@ function createApi() {
     const auth=Buffer.from(authorization),valid=Buffer.from(expected);
     if(!secret||secret.length<16||auth.length!==valid.length||!crypto.timingSafeEqual(auth,valid))
       return res.status(401).json({error:"Cron não autorizado."});
+    // Busca até quatro categorias públicas por execução: nenhuma entrada é inventada.
+    // API do Open Food Facts limita pesquisas; uma requisição por domínio por dia.
+    const {bootstrapDaily}=require("./market-catalog-bootstrap");
+    const bootstrap=await bootstrapDaily({maxSources:4});
     const source=new Date().getUTCDay()===0?"comprasgov":"catmat_archive_2018";
     const {syncCatalogPrices}=require("./market");
-    const r=await query("SELECT COUNT(*)::int AS total FROM zuz_market_catalog WHERE source=$1",[source]);
-    const count=Number(r.rows[0]?.total)||0;
-    if(!count)return res.json({ok:true,processed:0,reason:"Sem itens para sincronizar."});
-    const limit=3;
-    const offset=(Math.floor(Date.now()/86400000)*limit)%count;
-    const result=await syncCatalogPrices({source,limit,offset});
+    let priceSync={source,processed:0,quotesAvailable:0,sourceFailures:0};
+    try{
+      const r=await query("SELECT COUNT(*)::int AS total FROM zuz_market_catalog WHERE source=$1",[source]);
+      const count=Number(r.rows[0]?.total)||0;
+      if(count>0){
+        const limit=3;
+        const offset=(Math.floor(Date.now()/86400000)*limit)%count;
+        const result=await syncCatalogPrices({source,limit,offset});
+        priceSync={source,processed:result.processed,quotesAvailable:result.pricesAvailable,sourceFailures:result.errors};
+      }
+    }catch(e){priceSync.warning="Sincronização de preços governamentais indisponível."; }
     res.setHeader("Cache-Control","no-store");
-    res.status(result.errors===result.processed&&result.processed>0?502:200).json({
-      ok:result.errors<result.processed,source,processed:result.processed,
-      quotesAvailable:result.pricesAvailable,sourceFailures:result.errors
-    });
+    res.json({ok:true,bootstrap,priceSync,
+      note:"A rotina importa produtos identificados por Open Facts, mas não inventa cotações de preço."});
   }));
   router.use(asyncRoute(async (req,res,next) => {
     const user = await getUser(req);
@@ -165,6 +172,27 @@ function createApi() {
   registerExtendedMarketRoutes(router,{asyncRoute});
   registerRTCRoutes(router,{asyncRoute});
   registerTaxContextRoutes(router,{asyncRoute});
+
+  router.get("/market/coverage",asyncRoute(async(req,res)=>{
+    const catalog=await query("SELECT source,kind,COUNT(*)::int AS items FROM zuz_market_catalog GROUP BY source,kind ORDER BY items DESC");
+    const prices=await query("SELECT source,price_type,COUNT(*)::int AS records FROM zuz_market_prices GROUP BY source,price_type");
+    let sector=[];
+    if(provider==="postgresql"){
+      try{const r=await query("SELECT source,COUNT(*)::int AS records FROM zuz_sector_public_prices GROUP BY source");sector=r.rows;}
+      catch(e){sector=[];}
+    }
+    res.setHeader("Cache-Control","private, no-store");
+    res.json({catalog:catalog.rows,prices:prices.rows,sector,
+      integrations:{
+        openFacts:{configured:true,periodicImportEnabled:!!process.env.CRON_SECRET},
+        keepa:{configured:!!process.env.KEEPA_API_KEY},
+        serpapi:{configured:!!process.env.SERPAPI_API_KEY},
+        ibpt:{configured:!!process.env.IBPT_TOKEN},
+        rtcOffline:{configured:!!process.env.RTC_OFFLINE_API_BASE_URL}
+      },
+      note:"Catálogo, observações de preços e configurações são métricas diferentes. Não confundir registros técnicos com ofertas."});
+  }));
+
 
   // Mercado: resultados atuais e técnicos são exibidos separadamente, nunca tratados como ofertas equivalentes.
   router.get("/market/v2/search",asyncRoute(async(req,res)=>{
