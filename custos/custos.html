@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="../shared/sidebar.css"><link rel="stylesheet" href="../shared/design-system.css"><link rel="stylesheet" href="../shared/app-shell.css?v=20261010-icon-pop3">
 <link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010-products-bg7"><link rel="stylesheet" href="custos.css?v=20261010-light-hover4">
 <link rel="stylesheet" href="ajuda-custos.css?v=20261015-contextual-v2">
-<link rel="icon" type="image/png" href="../imagens/Vector%201%20%281%29.png?v=20261010">  <link rel="stylesheet" href="../shared/market-ui-v2.css?v=20261018-clean-market1">
+<link rel="icon" type="image/png" href="../imagens/Vector%201%20%281%29.png?v=20261010">  <link rel="stylesheet" href="../shared/market-ui-v2.css?v=20261018-focus-ux2">
 
 </head>
 <body><div class="page workspace-shell">
@@ -81,11 +81,11 @@
     </div></section>
     <section class="workspace-panel"><div class="workspace-section-head with-action"><div><span>02 / ESTRUTURA</span><h2>Custos fixos mensais</h2></div><button class="workspace-secondary" type="button" id="addFixed">Adicionar custo</button></div><p class="workspace-help">Informe os gastos mensais da empresa. O valor será rateado pelo volume informado.</p><div id="fixedRows" class="workspace-rows"></div><div class="workspace-total"><span>Total mensal</span><strong id="fixedTotal">R$ 0,00</strong></div></section>
     <section class="workspace-panel"><div class="workspace-section-head"><span>03 / ENCARGOS</span><h2>Taxas sobre a venda</h2></div><div class="workspace-fields"><label>Tributos (%)<input id="taxesPct" type="number" min="0" max="100" step=".1" value="0"></label><label>Taxas e comissões (%)<input id="sellingFeesPct" type="number" min="0" max="100" step=".1" value="0"></label></div></section>
-    <section class="workspace-panel"><div class="workspace-section-head with-action"><div><span>04 / MERCADO</span><h2>Referências de mercado</h2></div><button class="workspace-secondary" type="button" id="addComp">Adicionar referência</button></div><p class="workspace-help">Utilize preços comparáveis apenas como referência, não como substitutos do custo.</p><div id="compRows" class="workspace-rows"></div><p id="market" class="workspace-note"></p></section>
+    <section class="workspace-panel cost-market-section" aria-label="Pesquisa e referências de mercado"><div id="marketSearchMountCosts"></div><details class="cost-manual-details"><summary>Minhas referências de preço</summary><div class="workspace-section-head with-action"><h2>Referências informadas</h2><button class="workspace-secondary" type="button" id="addComp">Adicionar referência</button></div><div id="compRows" class="workspace-rows"></div><p id="market" class="workspace-note"></p></details></section>
   </div><aside class="workspace-panel cost-summary"><span class="workspace-kicker">RESUMO DO PERFIL</span><h2>Visão financeira</h2><p id="summary" aria-live="polite"></p><button class="workspace-primary" type="submit">Salvar perfil econômico</button><p id="status" class="workspace-status" role="status" aria-live="polite"></p><a class="workspace-aux-link" href="../simulacoes/simulacoes.html">Ir para simulações <i class="bx bx-right-arrow-alt" aria-hidden="true"></i></a></aside>
 </form></main>
 </div>
 <script src="../shared/pricing-core.js"></script><script src="../shared/api-client.js"></script><script src="../shared/company-data.js"></script><script src="../shared/pricing-engine.js"></script><script src="custos.js?v=20261015-contextual-v2"></script><script src="ajuda-custos.js?v=20261015-contextual-v2"></script><script src="../shared/site.js?v=20261010-theme-wave1"></script>
-  <script src="../shared/market-ui-v2.js?v=20261018-clean-market1" defer></script>
+  <script src="../shared/market-ui-v2.js?v=20261018-focus-ux2" defer></script>
 
 </body></html>
