@@ -209,7 +209,7 @@ function createApi() {
       return res.json({items,commercial:items,archived:[],warnings:["Catálogo SQLite local: o acervo histórico do PostgreSQL Neon não é sincronizado automaticamente."],totals:{commercial:items.length,archived:0,archiveTotal:0},archivePage:0,archiveHasMore:false});
     }
     const kind=["product","service"].includes(req.query.kind)?req.query.kind:null;
-    const includeArchive=req.query.historical!=="false";
+    const includeArchive=req.query.historical==="true";
     const warnings=[];
     const page=Math.min(200,Math.max(0,Number.parseInt(req.query.page,10)||0));
     let current=(await query("SELECT * FROM zuz_market_search_v2($1,$2,$3,FALSE,30)",[term,kind,null])).rows;
@@ -227,7 +227,10 @@ function createApi() {
     const wanted=normalized(term);
     current=current.filter(x=>{
       const line=normalized([x.display_name,x.brand,x.model,x.barcode].filter(Boolean).join(" "));
-      return line.includes(wanted)||x.barcode===term;
+      const tokens=wanted.split(/\s+/).filter(word=>word.length>=2);
+      const words=line.split(/\s+/);
+      return line.includes(wanted)||x.barcode===term||
+        (tokens.length>0&&tokens.every(token=>words.some(word=>word.startsWith(token))));
     }).slice(0,20);
     let archived=[];
     let archiveTotal=0;
