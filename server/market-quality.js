@@ -74,4 +74,64 @@ function reliableRetail(rows,{region=null}={}){
   seen.add(key);return true;
  });
 }
-module.exports={classify,median,summarize,reliableRetail,ageDays};
+
+/**
+ * A referência comercial precisa corresponder ao GTIN exato e à unidade.
+ * Estatísticas só consideram lojas distintas na mesma região, nunca CATMAT ou compras públicas.
+ */
+function normalizedSeller(value){
+ return asString(value).normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  .toLocaleLowerCase("pt-BR").replace(/[^a-z0-9]+/g," ").trim();
+}
+function normalizedRegion(value){
+ return asString(value).normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  .toLocaleLowerCase("pt-BR").replace(/\s+/g," ").trim();
+}
+function verifiedRetailQuote(row,item,{now=Date.now()}={}){
+ const gtin=asString(item?.barcode),sourceRef=asString(row?.source_ref);
+ if(!/^\d{8,14}$/.test(gtin)||asString(row?.gtin)!==gtin)return null;
+ if(row?.source!=="openprices"||row.price_type!=="retail"||row.currency!=="BRL"||
+  row.condition!=="new"||asString(row.unit).toLowerCase()!=="un"||
+  !/^\d+$/.test(sourceRef))return null;
+ if(["rejected","invalid","unverified"].includes(asString(row.verification_status).toLowerCase()))return null;
+ const value=Number(row.price),age=ageDays(row.observed_at,now);
+ const seller=asString(row.seller),url=asString(row.url),region=asString(row.region);
+ if(!Number.isFinite(value)||value<=0||value>1e8||age===null||age>30||!seller||!region||
+  url!=="https://prices.openfoodfacts.org/api/v1/prices/"+sourceRef)return null;
+ return {id:asString(row.id),source:"openprices",sourceRef,seller,region,price:value,currency:"BRL",
+  unit:"un",observedAt:new Date(row.observed_at).toISOString(),
+  consultedAt:row.last_checked_at||row.fetched_at||null,url,gtin,
+  condition:"new",priceType:"retail"};
+}
+function commercialMarket(item,records,{now=Date.now()}={}){
+ const refs=new Set(),stores=new Map();
+ for(const row of records||[]){
+  const quote=verifiedRetailQuote(row,item,{now});if(!quote)continue;
+  const key=quote.source+":"+quote.sourceRef;
+  if(refs.has(key))continue;refs.add(key);
+  const storeKey=normalizedSeller(quote.seller)+"|"+normalizedRegion(quote.region);
+  const prev=stores.get(storeKey);
+  if(!prev||Date.parse(quote.observedAt)>Date.parse(prev.observedAt))stores.set(storeKey,quote);
+ }
+ const offers=[...stores.values()].sort((a,b)=>Date.parse(b.observedAt)-Date.parse(a.observedAt));
+ const regions=new Map();
+ for(const quote of offers){
+  const key=normalizedRegion(quote.region);
+  if(!regions.has(key))regions.set(key,[]);
+  regions.get(key).push(quote);
+ }
+ const eligible=[...regions.values()].filter(items=>items.length>=3);
+ eligible.sort((a,b)=>b.length-a.length||String(a[0].region).localeCompare(String(b[0].region),"pt-BR"));
+ const cohort=eligible[0]||[];
+ const prices=cohort.map(x=>x.price),sum=prices.reduce((a,b)=>a+b,0);
+ const summary=cohort.length>=3?{
+  min:Math.min(...prices),average:Math.round(sum/prices.length*100)/100,
+  median:median(prices),max:Math.max(...prices),offers:cohort.length,
+  distinctStores:cohort.length,region:cohort[0].region,unit:"un",priceType:"retail",
+  rule:"Mesmo GTIN, unidade, condição e região; até 30 dias; uma cotação recente por loja."
+ }:null;
+ return {offers,summary,hasComparablePrices:!!summary,
+  note:summary?"Referência de lojas independentes para o mesmo produto.":
+    "Sem amostra suficiente de preços comerciais comparáveis para calcular uma média."};
+}
+module.exports={classify,median,summarize,reliableRetail,ageDays,verifiedRetailQuote,commercialMarket};
