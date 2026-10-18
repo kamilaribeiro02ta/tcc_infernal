@@ -15,6 +15,9 @@ test("ofertas descartam preço ausente e resultados não correspondentes",()=>{
  ]},"iPhone 18 Plus");
  assert.equal(out.length,1);assert.equal(out[0].price,5900);
  assert.equal(out[0].comparison,"possivel_similar");
+ assert.equal(out[0].observedAt,null);
+ assert.ok(out[0].queriedAt);
+ assert.equal(parseShopping({shopping_results:[{title:"Apple iPhone 18 Plus",source:"Loja",extracted_price:5000,link:"http://example.com/1"}]},"iPhone 18 Plus").length,0);
 });
 test("linha histórica recusa compra pública e não inventa 2018",()=>{
  const arr=yearly([
