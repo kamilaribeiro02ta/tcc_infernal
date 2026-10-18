@@ -13,10 +13,12 @@ async function main(){
  const keys=source==="all"?Object.keys(SOURCES):[source];
  if(keys.some(s=>!SOURCES[s]))throw Error("Fonte inválida.");
  const jobs=[];
- for(const s of keys){
+ const pending=keys.map(s=>{
   const topics=category==="all"?SOURCES[s].topics.map(x=>x[0]):[category];
-  for(const topic of topics)for(let page=1;page<=pages;page++)jobs.push({source:s,topic,page,size,preview:dryRun});
- }
+  return topics.flatMap(topic=>Array.from({length:pages},(_,i)=>({source:s,topic,page:i+1,size,preview:dryRun})));
+ });
+ // Distribuição intercalada: não esgotar o limite com alimentos antes de consultar beleza/pets/produtos.
+ while(pending.some(x=>x.length))for(const queue of pending)if(queue.length)jobs.push(queue.shift());
  let total=0,stored=0,errors=0;
  for(const job of jobs.slice(0,max)){
   try{
