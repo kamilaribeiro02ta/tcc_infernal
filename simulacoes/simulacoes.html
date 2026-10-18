@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="../shared/sidebar.css"><link rel="stylesheet" href="../shared/design-system.css"><link rel="stylesheet" href="../shared/app-shell.css?v=20261010-icon-pop3">
 <link rel="stylesheet" href="../shared/workspace-pages.css?v=20261010-products-bg7"><link rel="stylesheet" href="simulacoes.css?v=20261015-responsive-v2">
 <link rel="stylesheet" href="ajuda-simulacoes.css?v=20261016-referencias-mobile4">
-<link rel="icon" type="image/png" href="../imagens/Vector%201%20%281%29.png?v=20261010">  <link rel="stylesheet" href="../shared/market-ui-v2.css?v=20261018-clean-market1">
+<link rel="icon" type="image/png" href="../imagens/Vector%201%20%281%29.png?v=20261010">  <link rel="stylesheet" href="../shared/market-ui-v2.css?v=20261018-focus-ux2">
 
 </head>
 <body><div class="page workspace-shell">
@@ -90,6 +90,7 @@
     <div class="sim-original" id="originalProduct">Selecione um produto para começar.</div>
     <button type="button" class="workspace-secondary" id="resetAll">Restaurar cenários</button>
   </section>
+  <div id="marketSearchMount" class="sim-market-access" aria-label="Pesquisa de preços"></div>
 
   <div class="simulation-layout">
     <section class="workspace-panel simulation-input" aria-labelledby="settingsTitle">
@@ -156,11 +157,9 @@
       </div>
       <div class="sim-insight"><span>Unidades necessárias</span><strong id="goalUnits">—</strong><p id="goalDetail" class="sim-muted"></p></div>
     </section>
-    <section class="workspace-panel sim-section" aria-labelledby="marketTitle">
-      <span class="workspace-kicker">06 / CONCORRÊNCIA</span><h2 id="marketTitle">Referências do mercado</h2>
-      <div id="marketSearchMount"></div>
+    <section class="sim-market-secondary" aria-label="Minhas referências de mercado">
       <details class="sim-manual-details">
-        <summary>Minhas referências e inclusão manual</summary>
+        <summary>Minhas referências e anotações de preços</summary>
         <div id="marketStats" class="sim-market-stats"></div>
         <div id="referenceList" class="sim-reference-list"></div>
         <div class="sim-add-reference"><label for="referenceName">Referência<input id="referenceName" placeholder="Ex.: loja da região" maxlength="90"></label><label for="referencePrice">Preço (R$)<input id="referencePrice" type="number" min=".01" step=".01" placeholder="0,00"></label><button type="button" id="addReference" class="workspace-secondary">Adicionar</button></div>
@@ -188,6 +187,6 @@
 </main>
 </div>
 <script src="../shared/pricing-core.js"></script><script src="../shared/api-client.js"></script><script src="../shared/company-data.js"></script><script src="../shared/pricing-engine.js"></script><script src="../shared/simulation-core.js"></script><script src="simulacoes.js?v=20261015-responsive-v2"></script><script src="ajuda-simulacoes.js?v=20261015-entender-v3"></script><script src="../shared/site.js?v=20261010-theme-wave1"></script>
-  <script src="../shared/market-ui-v2.js?v=20261018-clean-market1" defer></script>
+  <script src="../shared/market-ui-v2.js?v=20261018-focus-ux2" defer></script>
 
 </body></html>
