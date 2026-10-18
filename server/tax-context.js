@@ -64,7 +64,30 @@ async function ibptEstimate(body,context){
    version:r.Versao||null,note:"Carga tributária aproximada embutida no preço, NÃO corresponde ao imposto que a empresa deverá recolher."};
  }catch{return {available:false,warning:"Consulta IBPT falhou. Informe sua taxa estimada manualmente, se conhecida."};}
 }
+const ncmCache=new Map();
+async function searchNcm(term){
+ const q=clean(term,75),key=q.toLowerCase();
+ if(q.length<3)return {items:[],warning:"Informe pelo menos 3 caracteres."};
+ const hit=ncmCache.get(key);
+ if(hit&&Date.now()-hit.at<12*3600000)return hit.value;
+ const url="https://brasilapi.com.br/api/ncm/v1?"+new URLSearchParams({search:q});
+ try{
+  const response=await fetch(url,{signal:AbortSignal.timeout(6500),headers:{"Accept":"application/json"}});
+  if(!response.ok)throw Error("Erro na consulta");
+  const raw=await response.text();if(raw.length>1100000)throw Error("Resposta acima do limite");
+  const results=JSON.parse(raw);
+  const items=(Array.isArray(results)?results:[]).filter(x=>/^\d{2}\.\d{2}\.\d{2}\.\d{2}$/.test(x.codigo||"")||/^\d{8}$/.test(x.codigo||""))
+   .slice(0,12).map(x=>({code:String(x.codigo).replace(/\D/g,""),description:clean(x.descricao,180),validFrom:x.data_inicio||null,validTo:x.data_fim||null}));
+  const value={items,source:"BrasilAPI (agregador de códigos NCM)",note:"Códigos candidatos, não classificação fiscal confirmada. Verifique TIPI e descrição oficial antes de aplicar."};
+  if(ncmCache.size>100)ncmCache.clear();ncmCache.set(key,{at:Date.now(),value});
+  return value;
+ }catch{return {items:[],warning:"Consulta de códigos NCM indisponível; informe o código validado manualmente."};}
+}
 function registerTaxContextRoutes(router,{asyncRoute}){
+ router.get("/market/ncm",asyncRoute(async(req,res)=>{
+  const data=await searchNcm(req.query.q);
+  res.setHeader("Cache-Control","private, no-store");res.json(data);
+ }));
  router.post("/market/tax-context",asyncRoute(async(req,res)=>{
   if(!req.body||typeof req.body!=="object")return res.status(400).json({error:"Dados inválidos."});
   let context;
