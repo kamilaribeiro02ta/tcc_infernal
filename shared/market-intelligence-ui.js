@@ -22,7 +22,7 @@ function mountTaxes(parent,{name="",kind="product",salePrice=null,gtin=""}={}){
  const uf=field(form,"UF da operação",select([["","Selecione"],...("AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ").map(x=>[x,x]))]));
  const ncm=field(form,"NCM do produto (8 dígitos)",input("Informe código validado"));
  ncm.maxLength=8;ncm.inputMode="numeric";
- const ncmLookup=el("div","zuz-market-intel-ncm");
+ const ncmLookup=el("details","zuz-market-intel-ncm");
  const searchNcm=input("Pesquisar NCM por descrição ou código");searchNcm.value=name;
  const ncmButton=button("Buscar possíveis NCMs",async()=>{
   ncmList.replaceChildren(el("p","zuz-v3-muted","Consultando códigos candidatos..."));ncmButton.disabled=true;
@@ -42,7 +42,7 @@ function mountTaxes(parent,{name="",kind="product",salePrice=null,gtin=""}={}){
   finally{ncmButton.disabled=false;}
  });
  const ncmList=el("div","zuz-market-intel-ncm-results");
- ncmLookup.append(searchNcm,ncmButton,ncmList);
+ ncmLookup.append(el("summary","","Encontrar código NCM (opcional)"),searchNcm,ncmButton,ncmList);
  form.append(ncmLookup);
  const serviceCode=field(form,"Código do serviço (NBS/LC 116)",input("Código validado"));
  const sale=field(form,"Preço de venda (R$)",input("Ex.: 150,00","number"));
