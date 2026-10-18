@@ -44,7 +44,7 @@ test("vassoura: poucas referências úteis, preço ausente claramente indicado",
  assert.equal(root.all(x=>x.textContent?.includes?.("2018")).length,0);
  await results[0].handlers.click[0]();
  assert.equal(host.find(x=>x.className==="zm-detail").hidden,false);
- assert.ok(host.all(x=>x.textContent?.includes?.("não há cotação comercial verificável")).length);
+ assert.ok(host.all(x=>x.textContent?.includes?.("Ainda não encontramos preços em lojas")).length);
  assert.equal(requests.filter(x=>x.includes("/market/offers")).length,1);
  assert.equal(requests.filter(x=>x.includes("/market/keepa")).length,0);
 });
@@ -129,4 +129,49 @@ test("detalhes fiscais e históricos permanecem recolhidos ao selecionar produto
  assert.ok(more);
  assert.equal(more.open,undefined);
  assert.equal(host.find(x=>x.className==="zm-detail").hidden,false);
+});
+
+test("ao tocar no resultado, a ficha se abre em um card e fecha pelo fundo",async()=>{
+ const api=async(_method,url)=>{
+  if(url.includes("/market/v2/search"))return {commercial:[{item_id:ID,display_name:"Macarrão instantâneo",barcode:"7891234567895"}]};
+  if(url.includes("/market/v2/item"))return {item:{id:ID,name:"Macarrão instantâneo",barcode:"7891234567895",attributes:{},unit:"85 g"}};
+  if(url.includes("/market/quotes"))return {commercial:{offers:[],summary:null},quotes:[]};
+  throw Error("Rota inesperada "+url);
+ };
+ const {root,host}=setup("products",api);
+ await search(root,"macarrão");
+ const result=root.find(x=>x.tag==="button"&&x.className.includes("zm-result"));
+ const backdrop=host.find(x=>x.className==="zm-sheet-backdrop");
+ const sheet=host.find(x=>x.className==="zm-detail");
+ assert.ok(sheet);assert.ok(backdrop);
+ assert.equal(sheet.hidden,true);
+ await result.handlers.click[0]();
+ assert.equal(sheet.hidden,false);
+ assert.equal(backdrop.hidden,false);
+ assert.equal(result["aria-expanded"],"true");
+ backdrop.handlers.click[0]();
+ assert.equal(sheet.hidden,true);
+ assert.equal(backdrop.hidden,true);
+ assert.equal(result["aria-expanded"],"false");
+ assert.ok(root.find(x=>x.className==="zm-results").all(x=>x.className.includes("zm-result")).length);
+});
+test("comparação apresenta média principal só quando retornada pelo backend",async()=>{
+ const api=async(_method,url)=>{
+  if(url.includes("/market/v2/search"))return {commercial:[{item_id:ID,display_name:"Arroz 5 kg",barcode:"7891234567895"}]};
+  if(url.includes("/market/v2/item"))return {item:{id:ID,name:"Arroz 5 kg",barcode:"7891234567895",attributes:{}}};
+  if(url.includes("/market/quotes"))return {commercial:{summary:{average:24,min:20,max:29,offers:3,region:"SP"},offers:[
+   {id:"a",price:20,seller:"Loja A",region:"SP",observedAt:"2026-10-18",url:"https://example.com/a"},
+   {id:"b",price:23,seller:"Loja B",region:"SP",observedAt:"2026-10-18",url:"https://example.com/b"},
+   {id:"c",price:29,seller:"Loja C",region:"SP",observedAt:"2026-10-18",url:"https://example.com/c"}
+  ]},quotes:[]};
+  throw Error("Rota inesperada "+url);
+ };
+ const {root,host}=setup("products",api);
+ await search(root,"arroz");
+ await root.find(x=>x.className?.includes("zm-result")&&x.tag==="button").handlers.click[0]();
+ const sheet=host.find(x=>x.className==="zm-detail");
+ const main=sheet.find(x=>x.className==="zm-average-value");
+ assert.ok(main);
+ assert.ok(main.textContent.includes("24"));
+ assert.equal(sheet.all(x=>x.className==="zm-price-stat").length,2);
 });
