@@ -91,6 +91,11 @@ function offerInfo(info,offer){
   el("p","zuz-market-intel-strong",price(offer.price)+" · "+offer.seller),
   el("p","zuz-v3-muted","Consulta: "+iso(offer.observedAt)+" · "+offer.source),
   el("p","zuz-v3-warning",offer.warning),link("Abrir anúncio e conferir preço",offer.url));
+ const add=document.getElementById("newProductBtn");
+ if(add)card.append(button("Cadastrar este item manualmente",()=>{
+  add.click();const field=document.getElementById("nameInput");
+  if(field){field.value=offer.title.slice(0,60);field.dispatchEvent(new Event("input",{bubbles:true}));}
+ }));
  info.append(card);
  mountTaxes(info,{name:offer.title,salePrice:offer.price});
  info.scrollIntoView({behavior:"smooth",block:"nearest"});
