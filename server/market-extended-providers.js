@@ -122,6 +122,24 @@ const official={
  classif:{label:"Classif — NCM oficial",type:"classificacao_mercadoria",url:CLASSIF_URL,note:"Classificação NCM vigente não define sozinha o imposto a recolher."}
 };
 function registerExtendedMarketRoutes(router,{asyncRoute}){
+ router.get("/market/sector-prices",asyncRoute(async(req,res)=>{
+  const {query,provider}=require("./database");
+  const q=clean(req.query.q,80),source=clean(req.query.source,10);
+  if(q.length<3)return res.status(400).json({error:"Digite pelo menos três caracteres."});
+  if(source&&!["bps","sinapi"].includes(source))return res.status(400).json({error:"Fonte não reconhecida."});
+  if(provider!=="postgresql")return res.json({items:[],warning:"Importação de BPS/SINAPI disponível no PostgreSQL; o SQLite local não possui estes dados."});
+  try{
+   const term="%"+normalize(q).replace(/[%_]/g,"")+"%";
+   const rows=await query("SELECT source,source_ref,product_name,product_code,uf,unit,price,reference_date,category,provenance_url FROM zuz_sector_public_prices "+
+    "WHERE unaccent(lower(product_name)) LIKE unaccent($1) AND ($2::text IS NULL OR source=$2) "+
+    "ORDER BY reference_date DESC, product_name LIMIT 70",[term,source||null]);
+   return res.json({items:rows.rows,source:"Dados setoriais importados da fonte pública",
+    note:"BPS é aquisição em saúde; SINAPI é referência de custos de construção. Nenhum deles é cotação de loja ou preço de varejo."});
+  }catch{
+   return res.json({items:[],warning:"Tabelas setoriais não configuradas ou dados não importados. Não há preços confirmados para exibir."});
+  }
+ }));
+
  router.get("/market/keepa",asyncRoute(async(req,res)=>{
   const gtin=clean(req.query.gtin,14),asin=clean(req.query.asin,10).toUpperCase();
   try{res.json(await keepaByProduct(gtin,asin));}
