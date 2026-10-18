@@ -175,3 +175,46 @@ test("comparação apresenta média principal só quando retornada pelo backend"
  assert.ok(main.textContent.includes("24"));
  assert.equal(sheet.all(x=>x.className==="zm-price-stat").length,2);
 });
+
+test("Escape fecha primeiro a ficha e depois a janela de busca",async()=>{
+ const api=async(_method,url)=>{
+  if(url.includes("/market/v2/search"))return {commercial:[{item_id:ID,display_name:"Produto",barcode:"7891234567895"}]};
+  if(url.includes("/market/v2/item"))return {item:{id:ID,name:"Produto",barcode:"7891234567895",attributes:{}}};
+  if(url.includes("/market/quotes"))return {commercial:{offers:[],summary:null},quotes:[]};
+  throw Error("Rota inesperada "+url);
+ };
+ const {root,host}=setup("products",api);
+ const overlay=host.find(x=>x.className==="zm-overlay");
+ const launcher=host.find(x=>x.className.includes("zm-launcher"));
+ launcher.find(x=>x.className==="zm-launch-input").value="produto";
+ launcher.find(x=>x.className==="zm-launch-submit").handlers.click[0]();
+ await search(root,"produto");
+ await root.find(x=>x.tag==="button"&&x.className.includes("zm-result")).handlers.click[0]();
+ const detail=host.find(x=>x.className==="zm-detail");
+ assert.equal(detail.hidden,false);
+ overlay.handlers.keydown[0]({key:"Escape",preventDefault(){}});
+ assert.equal(detail.hidden,true);
+ assert.equal(overlay.hidden,false);
+ overlay.handlers.keydown[0]({key:"Escape",preventDefault(){}});
+ assert.equal(overlay.hidden,true);
+});
+test("gesto descendente fecha o card somente quando está no topo da leitura",async()=>{
+ const api=async(_method,url)=>{
+  if(url.includes("/market/v2/search"))return {commercial:[{item_id:ID,display_name:"Arroz",barcode:"7891234567895"}]};
+  if(url.includes("/market/v2/item"))return {item:{id:ID,name:"Arroz",barcode:"7891234567895",attributes:{}}};
+  if(url.includes("/market/quotes"))return {commercial:{offers:[],summary:null},quotes:[]};
+  throw Error("Rota inesperada "+url);
+ };
+ const {root,host}=setup("products",api);
+ await search(root,"arroz");
+ await root.find(x=>x.tag==="button"&&x.className.includes("zm-result")).handlers.click[0]();
+ const detail=host.find(x=>x.className==="zm-detail");
+ detail.scrollTop=48;
+ detail.handlers.touchstart[0]({touches:[{clientY:100}]});
+ detail.handlers.touchend[0]({changedTouches:[{clientY:280}]});
+ assert.equal(detail.hidden,false);
+ detail.scrollTop=0;
+ detail.handlers.touchstart[0]({touches:[{clientY:100}]});
+ detail.handlers.touchend[0]({changedTouches:[{clientY:280}]});
+ assert.equal(detail.hidden,true);
+});
