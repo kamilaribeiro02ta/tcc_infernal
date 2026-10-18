@@ -362,3 +362,53 @@ body.dark .zm-launch-submit:hover,body.dark .zm-primary:hover,body.dark .zm-sear
 @media(prefers-reduced-motion:reduce){
  .zm-detail,.zm-sheet-backdrop,.zm-loader-dot{animation:none!important;transition:none!important}
 }
+
+/* Informação de preço: um número principal quando existe amostra suficiente.
+   Caso contrário, estado vazio explicativo com caminho claro para cadastrar. */
+.zm-sheet-eyebrow{
+ display:block;margin:0 0 8px;color:var(--zm-purple);
+ font:600 9px/1.6 Poppins,sans-serif;letter-spacing:.16em;
+}
+.zm-detail .zm-section-title{font-size:12px;color:var(--zm-muted);font-weight:500}
+.zm-detail .zm-price-stats{
+ display:grid;grid-template-columns:1fr;gap:22px;margin:0;
+ padding:6px 0 20px;
+}
+.zm-price-highlight{display:grid;gap:6px}
+.zm-price-kicker{font:500 11px/1.5 Poppins,sans-serif;color:var(--zm-muted)}
+.zm-average-value{
+ font:600 clamp(27px,3.5vw,34px)/1.25 Poppins,sans-serif;color:var(--zm-text);
+ letter-spacing:-.05em;overflow-wrap:anywhere;
+}
+.zm-price-explanation{font:400 11px/1.6 Poppins,sans-serif;color:var(--zm-muted)}
+.zm-price-range{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;
+ padding:14px 0 0;border-top:1px solid var(--zm-line)
+}
+.zm-detail .zm-price-range .zm-price-stat strong{
+ font:600 14px/1.45 Poppins,sans-serif;letter-spacing:-.02em
+}
+.zm-price-empty{
+ display:grid;justify-items:start;align-content:start;gap:7px;
+ margin:8px 0 0;padding:21px 21px 24px;
+ border-radius:15px;
+ background:color-mix(in srgb,var(--zm-purple) 5%,var(--zm-surface));
+}
+.zm-price-empty-symbol{
+ display:grid;place-items:center;width:36px;height:36px;
+ background:color-mix(in srgb,var(--zm-purple) 11%,var(--zm-surface));color:var(--zm-purple);
+ font:500 23px/1 Poppins,sans-serif;border-radius:12px;margin-bottom:5px
+}
+.zm-price-empty-title{font:600 13px/1.5 Poppins,sans-serif;color:var(--zm-text)}
+.zm-price-empty-copy{
+ max-width:45ch;color:var(--zm-muted);
+ font:400 11px/1.8 Poppins,sans-serif;margin:0!important
+}
+.zm-detail .zm-mini-title{margin-top:14px!important}
+.zm-more-offers{margin-top:8px}
+.zm-price-line .zm-price-lead{align-items:baseline}
+@media(max-width:480px){
+ .zm-price-empty{padding:17px 17px 20px}
+ .zm-price-range{gap:12px}
+ .zm-average-value{font-size:29px}
+}
