@@ -1,6 +1,6 @@
 "use strict";
 // Dados de anúncios são transitórios: não inserimos ofertas de terceiros no banco sem licença.
-const {query}=require("./database");
+// Banco só é aberto ao registrar as rotas. Testes de normalização são independentes.
 const cache=new Map();
 const clean=x=>String(x||"").trim().slice(0,120);
 const norm=x=>clean(x).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
@@ -59,6 +59,7 @@ function yearly(rows){
  }).sort((a,b)=>a.year-b.year);
 }
 function registerMarketIntelligenceRoutes(router,{asyncRoute}){
+ const {query}=require("./database");
  router.get("/market/offers",asyncRoute(async(req,res)=>{
   const term=clean(req.query.q);
   if(term.length<3||term.length>80)return res.status(400).json({error:"Informe ao menos três caracteres."});
@@ -73,12 +74,13 @@ function registerMarketIntelligenceRoutes(router,{asyncRoute}){
   if(!/^[a-f0-9]{32}$/.test(id))return res.status(400).json({error:"Produto inválido."});
   const catalog=await query("SELECT id,name,barcode,source,is_historical FROM zuz_market_catalog WHERE id=$1",[id]);
   if(!catalog.rows.length)return res.status(404).json({error:"Produto não encontrado."});
-  const r=await query("SELECT h.price,h.observed_at,p.price_type,p.currency,p.condition,p.source,p.gtin FROM zuz_market_price_history h JOIN zuz_market_prices p ON p.id=h.quote_id WHERE p.catalog_id=$1 ORDER BY h.observed_at DESC LIMIT 500",[id]);
+  const r=await query("SELECT h.price,h.observed_at,p.price_type,p.currency,p.condition,p.source,p.gtin,p.unit FROM zuz_market_price_history h JOIN zuz_market_prices p ON p.id=h.quote_id WHERE p.catalog_id=$1 ORDER BY h.observed_at DESC LIMIT 500",[id]);
   // Apenas histórico do MESMO ID cadastrado, nunca somar preços de produtos apenas semelhantes.
-  const points=yearly(r.rows);
+  const verified=r.rows.filter(row=>!catalog.rows[0].barcode||row.gtin===catalog.rows[0].barcode);
+  const points=yearly(verified);
   res.setHeader("Cache-Control","private, no-store");
   res.json({years:points,requestedYears:[2018,2026],availableYears:points.map(p=>p.year),
-   hasComparable2018and2026:points.some(p=>p.year===2018)&&points.some(p=>p.year===2026),
+   hasComparable2018and2026:!!catalog.rows[0].barcode&&points.some(p=>p.year===2018)&&points.some(p=>p.year===2026),
    note:"Ano do catálogo não é ano de preço. Comparação 2018 × 2026 só existe com cotações reais de cada ano, identificador equivalente e mesma unidade."});
  }));
 }
