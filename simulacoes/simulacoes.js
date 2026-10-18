@@ -410,6 +410,7 @@
         seller:ref.seller,source:ref.source,region:ref.region,observedAt:ref.observedAt,url:ref.url,
         unit:ref.unit,gtin:ref.gtin
       });
+      ref.accepted=true;
       render();status("Cotação validada adicionada apenas às referências desta simulação.","success");
     });
     E.addReference.addEventListener("click",()=>{
