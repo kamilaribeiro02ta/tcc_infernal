@@ -52,12 +52,23 @@ function product(row,source){
    ingredients:clean(row.ingredients_text_pt||row.ingredients_text,420),
    allergens:Array.isArray(row.allergens_tags)?row.allergens_tags.slice(0,20):[],
    labels:Array.isArray(row.labels_tags)?row.labels_tags.slice(0,20):[],
-   source_updated_at:Number.isFinite(Number(row.last_modified_t))?new Date(Number(row.last_modified_t)*1000).toISOString():null,
+   categories_tags:Array.isArray(row.categories_tags)?row.categories_tags.slice(0,30):[],
+   additives_tags:Array.isArray(row.additives_tags)?row.additives_tags.slice(0,15):[],
+   serving_size:clean(row.serving_size,50),
+   nutrition:{
+    energy_kcal_100g:Number.isFinite(Number(row.nutriments?.["energy-kcal_100g"]))?Number(row.nutriments["energy-kcal_100g"]):null,
+    sugars_100g:Number.isFinite(Number(row.nutriments?.sugars_100g))?Number(row.nutriments.sugars_100g):null,
+    salt_100g:Number.isFinite(Number(row.nutriments?.salt_100g))?Number(row.nutriments.salt_100g):null,
+    proteins_100g:Number.isFinite(Number(row.nutriments?.proteins_100g))?Number(row.nutriments.proteins_100g):null
+   },
+   nutriscore:clean(row.nutriscore_grade,4),
+   novaGroup:Number.isFinite(Number(row.nova_group))&&Number(row.nova_group)>0?Number(row.nova_group):null,
+   source_updated_at:Number.isFinite(Number(row.last_modified_t))&&Number(row.last_modified_t)>0?new Date(Number(row.last_modified_t)*1000).toISOString():null,
    source_label:source,
    price_notice:"Catálogo de produto. A fonte não inclui preço de venda."
   }};
 }
-const FIELDS="code,product_name,product_name_pt,generic_name,generic_name_pt,brands,quantity,categories,image_front_url,image_url,ingredients_text_pt,allergens_tags,labels_tags,last_modified_t";
+const FIELDS="code,product_name,product_name_pt,generic_name,generic_name_pt,brands,quantity,categories,categories_tags,image_front_url,image_url,ingredients_text_pt,ingredients_text,allergens_tags,labels_tags,additives_tags,serving_size,nutriments,nutriscore_grade,nova_group,last_modified_t";
 function buildURL(source,topic,page,size){
  const s=SOURCES[source];if(!s)throw Error("Fonte desconhecida.");
  const t=s.topics.find(x=>x[0]===topic);if(!t)throw Error("Categoria desconhecida.");
