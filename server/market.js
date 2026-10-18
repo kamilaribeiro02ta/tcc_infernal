@@ -141,12 +141,12 @@ async function quotesFor(item,{force=false}={}){
   for(const q of list.slice(0,50))await storeQuote(item,q);
   await cacheSet(key,{checked:true,count:list.length});
  }catch(e){warnings.push("Fonte externa indisponível. Mostrando apenas registros já consultados.");}
- const result=await query("SELECT source,seller,price,currency,unit,region,condition,price_type,url,observed_at,fetched_at,last_checked_at,gtin FROM zuz_market_prices WHERE catalog_id=$1 ORDER BY observed_at DESC LIMIT 100",[item.id]);
+ const result=await query("SELECT id,source,source_ref,seller,price,currency,unit,region,condition,price_type,url,observed_at,fetched_at,last_checked_at,gtin,verification_status FROM zuz_market_prices WHERE catalog_id=$1 ORDER BY observed_at DESC LIMIT 100",[item.id]);
  const match=item.barcode?"codigo_de_barras":["comprasgov","catmat_archive_2018"].includes(item.source)?"codigo_catalogo":"sem_equivalencia";
  const quotes=result.rows.map(x=>quality.classify({...x,matching:match}));
  const found=quotes.filter(x=>!x.stale).length;
  return {quotes,groups:groupsOf(quotes),warnings,summary:{total:quotes.length,current:found,stale:quotes.length-found},
-  matching:match,
+  matching:match,commercial:quality.commercialMarket(item,result.rows),
   note:["comprasgov","catmat_archive_2018"].includes(item.source)?"Compra pública não representa preço de varejo; itens históricos só são consultados após confirmação do código oficial.":"Preço colaborativo: confirme data e condições."};
 }
 function registerMarketRoutes(router,{asyncRoute,getCompany}){
@@ -169,6 +169,24 @@ function registerMarketRoutes(router,{asyncRoute,getCompany}){
    availableRegions:[...new Set(all.map(q=>q.region).filter(Boolean))].sort(),
    filters:{region,minimum:min,maximum:max}});
  }));
+ router.post("/market/reference/verify",asyncRoute(async(req,res)=>{
+  throttle(req.user.id);
+  const itemId=txt(req.body?.itemId,50),quoteId=txt(req.body?.quoteId,50);
+  if(!/^[a-f0-9]{32}$/.test(itemId)||!/^[a-f0-9]{32}$/.test(quoteId))
+   err(400,"Selecione uma cotação válida.");
+  const catalog=await query("SELECT * FROM zuz_market_catalog WHERE id=$1",[itemId]);
+  if(!catalog.rows.length)err(404,"Produto não encontrado.");
+  const quotes=await query("SELECT id,source,source_ref,price,currency,seller,region,unit,condition,price_type,url,observed_at,fetched_at,last_checked_at,gtin,verification_status FROM zuz_market_prices WHERE id=$1 AND catalog_id=$2",[quoteId,itemId]);
+  const checked=quotes.rows[0]&&quality.verifiedRetailQuote(quotes.rows[0],catalog.rows[0]);
+  if(!checked)err(409,"Esta cotação não está validada ou está desatualizada. Consulte outra oferta.");
+  res.setHeader("Cache-Control","private, no-store");
+  res.json({reference:{marketQuoteId:checked.id,marketProductId:itemId,verified:true,price:checked.price,
+    name:txt(catalog.rows[0].commercial_name||catalog.rows[0].name,90),
+    seller:checked.seller,observedAt:checked.observedAt,consultedAt:checked.consultedAt,
+    region:checked.region,unit:checked.unit,gtin:checked.gtin,
+    source:checked.source,url:checked.url},
+    notice:"Preço de mercado confirmado nesta consulta. Não altera custos nem o preço de venda."});
+ }));
  router.post("/market/recommend",asyncRoute(async(req,res)=>{
   throttle(req.user.id);const company=await getCompany(req.user.id);
   if(!company)err(404,"Configure a empresa antes de precificar.");
@@ -183,15 +201,8 @@ function registerMarketRoutes(router,{asyncRoute,getCompany}){
   let result;try{result=pricing.calculate({unitDirectCost:cost,targetMargin:margin,settings:company.settings||{},salePrice:Math.max(0,Number(input.salePrice)||0),units:1});}
   catch(e){err(400,e.message);}
   const minimum=(cost+result.fixedAllocation)/(1-result.variableRatePct/100);
-  const perRegion=new Map();
-  for(const row of market?.quotes||[]){
-    const region=String(row.region||"sem_regiao").toLowerCase();
-    if(!perRegion.has(region))perRegion.set(region,[]);
-    perRegion.get(region).push(row);
-  }
-  const candidates=[...perRegion.values()].map(rows=>quality.reliableRetail(rows)).sort((a,b)=>b.length-a.length);
-  const comparable=candidates[0]||[];
-  const reference=item?.barcode&&comparable.length>=3?median(comparable.map(x=>x.price)):null;
+  const comparable=market?.commercial?.offers||[];
+  const reference=market?.commercial?.summary?.median??null;
   res.setHeader("Cache-Control","private, no-store");
   res.json({directCost:cost,minimumSustainablePrice:minimum,technicalPrice:result.technicalPrice,
    suggestedPrice:reference===null?result.technicalPrice:Math.max(result.technicalPrice,reference),
