@@ -67,7 +67,7 @@ function marketBox(parent,mode){
   const confirm=make("div","zm-confirm");
   confirm.append(make("p","","Usar os dados deste produto no cadastro? Seus custos e seu preço de venda não serão alterados."));
   confirm.append(btn("Confirmar",()=>useProduct(item),"zm-primary"),
-   btn("Cancelar",()=>confirm.remove(),"zm-secondary"));
+   btn("Cancelar",()=>parent.replaceChildren(btn(mode==="products"?"Usar na precificação":"Cadastrar este produto",()=>confirmProduct(item,parent),"zm-primary")),"zm-secondary"));
   parent.replaceChildren(confirm);
  }
  function resultButton(row){
@@ -105,7 +105,7 @@ function marketBox(parent,mode){
   const seen=new Set();
   for(const row of rows||[]){
    const descriptions=text(row.full_name||row.display_name||"").split(",").map(part=>part.trim()).filter(Boolean);
-   const name=descriptions.slice(0,3).join(" · ").slice(0,110);
+   const name=descriptions.slice(0,3).join(" · ").toLocaleLowerCase("pt-BR").replace(/^./,x=>x.toUpperCase()).slice(0,110);
    const key=name.toLocaleLowerCase("pt-BR");
    if(!name||seen.has(key))continue;
    seen.add(key);target.append(resultButton({...row,display_name:name}));
@@ -129,6 +129,13 @@ function marketBox(parent,mode){
   });
   return advanced;
  }
+ function manualAction(){
+  const caption=mode==="products"?"Continuar cadastro manual":"Cadastrar manualmente";
+  return btn(caption,()=>{
+   if(mode==="products"){document.getElementById("nameInput")?.focus();return;}
+   window.location.href="../produtos/produtos.html";
+  },"zm-secondary");
+ }
  async function search(e){
   e?.preventDefault();
   const term=input.value.trim();
@@ -140,9 +147,34 @@ function marketBox(parent,mode){
    const query=new URLSearchParams({q:term,historical:"false"});
    const data=await api.request("GET","/market/v2/search?"+query);
    if(token!==sequence)return;
-   renderList(data.commercial||[]);
-   if((data.commercial||[]).length<=2)results.append(technicalOption(term));
-   inform((data.commercial||[]).length?"Selecione um produto para ver os preços disponíveis.":"Nenhum produto comercial encontrado nesta busca.");
+   const commercial=data.commercial||[];
+   if(commercial.length){
+    renderList(commercial);
+    if(commercial.length<=2)results.append(technicalOption(term));
+    inform("Selecione um produto para consultar os preços.");
+   }else{
+    empty(results,"Procurando materiais relacionados...");
+    try{
+     const additional=await api.request("GET","/market/v2/search?"+new URLSearchParams({q:term,historical:"true"}));
+     if(token!==sequence)return;
+     const related=additional.archived||[];
+     if(related.length){
+      const list=make("div","zm-product-list");
+      renderTechnical(list,related);
+      results.replaceChildren(make("p","zm-results-title","Materiais relacionados"),list,
+       make("p","zm-caption","Modelos identificados em referências de materiais. Os preços comerciais serão consultados após a seleção."),
+       manualAction());
+      inform("Selecione um material ou continue o cadastro manual.");
+     }else{
+      empty(results,"Não encontramos produtos correspondentes nesta pesquisa.");
+      results.append(manualAction());inform("");
+     }
+    }catch{
+     if(token!==sequence)return;
+     empty(results,"Não encontramos produtos comerciais nesta pesquisa.");
+     results.append(manualAction());inform("");
+    }
+   }
   }catch{
    if(token!==sequence)return;
    empty(results,"Não conseguimos completar a pesquisa agora. Você pode cadastrar o produto manualmente.");
