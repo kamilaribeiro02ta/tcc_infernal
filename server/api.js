@@ -6,6 +6,8 @@ const { query, getPool, provider } = require("./database");
 const catalog = require("../shared/business-templates");
 const { registerSimulationRoutes } = require("./simulations-routes");
 const { registerMarketRoutes } = require("./market");
+const { registerMarketIntelligenceRoutes } = require("./market-intelligence");
+const { registerTaxContextRoutes } = require("./tax-context");
 const { askCostsGuide } = require("./costs-assistant");
 const { askSimulationGuide } = require("./simulations-help");
 const pricing = require("../shared/pricing-core");
@@ -157,6 +159,8 @@ function createApi() {
     req.user = user; next();
   }));
   registerMarketRoutes(router,{asyncRoute,getCompany});
+  registerMarketIntelligenceRoutes(router,{asyncRoute});
+  registerTaxContextRoutes(router,{asyncRoute});
 
   // Mercado: resultados atuais e técnicos são exibidos separadamente, nunca tratados como ofertas equivalentes.
   router.get("/market/v2/search",asyncRoute(async(req,res)=>{
