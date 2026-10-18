@@ -7,6 +7,7 @@ class FakeNode{
  append(...items){for(const item of items){if(item instanceof FakeNode)item.parentElement=this;this.children.push(item);}}
  replaceChildren(...items){this.children=[];this.append(...items);}
  after(node){const i=this.parentElement.children.indexOf(this);this.parentElement.children.splice(i+1,0,node);node.parentElement=this.parentElement;}
+ insertBefore(node,reference){const i=this.children.indexOf(reference);this.children.splice(i<0?this.children.length:i,0,node);node.parentElement=this;}
  addEventListener(type,fn){(this.handlers[type]??=[]).push(fn);}
  setAttribute(name,val){this[name]=val;}focus(){}closest(){return this.parentElement;}
  remove(){if(this.parentElement)this.parentElement.children=this.parentElement.children.filter(x=>x!==this);}
