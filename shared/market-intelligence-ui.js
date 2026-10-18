@@ -146,11 +146,35 @@ document.addEventListener("zuz:market:search",async event=>{
   }
  }catch{container.replaceChildren(el("p","zuz-v3-muted","Consulta de ofertas externas indisponível. O catálogo local permanece disponível."));}
 });
+async function itemOffers(parent,item,info){
+ const section=el("section","zuz-market-intel-panel");
+ section.append(el("h4","zuz-v3-group","Preços anunciados para produtos semelhantes"));
+ const rows=el("div");
+ rows.append(el("p","zuz-v3-muted","Pesquisando ofertas atuais quando o provedor estiver configurado..."));
+ section.append(rows);parent.append(section);
+ try{
+  const d=await api.request("GET","/market/offers?q="+encodeURIComponent(String(item.name||"").slice(0,80)));
+  rows.replaceChildren();
+  if(!d.offers?.length){
+   rows.append(el("p","zuz-v3-muted",d.warnings?.join(" ")||"Sem anúncios semelhantes retornados."));return;
+  }
+  rows.append(el("p","zuz-v3-muted","Preços atuais observados na consulta, sem comprovação de equivalência à descrição histórica do catálogo."));
+  for(const offer of d.offers.slice(0,8)){
+   const card=el("button","zuz-v3-option");card.type="button";
+   card.append(el("strong","zuz-v3-option-name",offer.title),
+    el("small","zuz-v3-option-meta",offer.seller+" · "+iso(offer.observedAt)),
+    el("small","zuz-v3-option-status",price(offer.price)));
+   card.addEventListener("click",()=>offerInfo(info,offer));
+   rows.append(card);
+  }
+ }catch{rows.replaceChildren(el("p","zuz-v3-muted","Ofertas externas indisponíveis no momento."));}
+}
 document.addEventListener("zuz:market:selected",event=>{
  const {item,info}=event.detail||{};
  if(!item||!info)return;
  const wrapper=el("div","zuz-market-intel-details");info.append(wrapper);
  timeline(wrapper,item);
+ itemOffers(wrapper,item,info);
  mountTaxes(wrapper,{name:item.name,kind:item.type,gtin:item.barcode});
 });
 })();
