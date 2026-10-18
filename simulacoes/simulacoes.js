@@ -173,26 +173,39 @@
   function renderMarket(result){
     E.marketStats.replaceChildren();E.referenceList.replaceChildren();
     const current=product();
-    const comparable=references.filter(x=>!x.productId||String(x.productId)===String(current?.id));
-    const prices=comparable.map(x=>Number(x.price)).filter(v=>Number.isFinite(v)&&v>0);
-    if(prices.length){
-      const mean=prices.reduce((a,b)=>a+b,0)/prices.length;
-      [["Menor",Math.min(...prices)],["Média",mean],["Maior",Math.max(...prices)]].forEach(pair=>{
-        const cell=node("div");cell.append(node("span",pair[0]),node("strong",money(pair[1])));E.marketStats.append(cell);
-      });
-      const delta=(result.salePrice/mean-1)*100;
-      const text=node("p","Preço simulado "+(delta>=0?"+":"")+delta.toFixed(1)+"% em relação à média informada.","sim-muted");
-      E.referenceList.append(text);
-    }else{
-      E.marketStats.append(node("p","Nenhuma referência cadastrada.","sim-muted"));
+    const matching=references.filter(x=>!x.productId||String(x.productId)===String(current?.id));
+    const byRegion=new Map(),storeKeys=new Set();
+    for(const ref of matching){
+      if(!ref.verified||!ref.marketQuoteId||!ref.marketProductId||!ref.seller||!ref.region||
+        !Number.isFinite(Number(ref.price))||Number(ref.price)<=0)continue;
+      const observed=new Date(ref.observedAt).getTime();
+      if(!Number.isFinite(observed)||observed>Date.now()+86400000||Date.now()-observed>30*86400000)continue;
+      const region=String(ref.region).trim().toLowerCase();
+      const unique=[ref.marketProductId,region,String(ref.seller).trim().toLowerCase()].join("|");
+      if(storeKeys.has(unique))continue;storeKeys.add(unique);
+      const key=ref.marketProductId+"|"+region;
+      if(!byRegion.has(key))byRegion.set(key,[]);
+      byRegion.get(key).push(Number(ref.price));
     }
-    references.forEach((ref,index)=>{
-      const line=node("div",undefined,"sim-reference-row");
-      const label=node("span");
-      label.append(node("strong",ref.name+": "),node("span",money(ref.price)));
-      const btn=makeButton("×",()=>{references.splice(index,1);render();},"Remover referência somente desta simulação");
-      btn.className="workspace-secondary";btn.style.minHeight="32px";
-      line.append(label,btn);E.referenceList.append(line);
+    const group=[...byRegion.values()].filter(x=>x.length>=3).sort((a,b)=>b.length-a.length)[0];
+    if(group){
+      const mean=group.reduce((a,b)=>a+b,0)/group.length;
+      [["Menor",Math.min(...group)],["Média",mean],["Maior",Math.max(...group)]].forEach(([label,value])=>{
+        const cell=node("div");cell.append(node("span",label),node("strong",money(value)));E.marketStats.append(cell);
+      });
+      E.referenceList.append(node("p","Média de "+group.length+" lojas para o mesmo produto e região.","sim-muted"));
+    }else{
+      E.marketStats.append(node("p","Sem três cotações de varejo equivalentes para calcular uma média confiável.","sim-muted"));
+    }
+    matching.forEach(ref=>{
+      const index=references.indexOf(ref);
+      const line=node("div",undefined,"sim-reference-row"),label=node("span");
+      const title=ref.verified?"Cotação consultada":"Referência informada";
+      label.append(node("strong",(ref.name||"Referência")+": "),node("span",money(Number(ref.price))),
+        node("small"," · "+title+(ref.verified&&ref.observedAt?" · "+new Date(ref.observedAt).toLocaleDateString("pt-BR"):"")));
+      const remove=makeButton("×",()=>{references.splice(index,1);render();},"Remover referência somente desta simulação");
+      remove.className="workspace-secondary";remove.style.minHeight="32px";
+      line.append(label,remove);E.referenceList.append(line);
     });
   }
   function render(){
@@ -375,6 +388,30 @@
     });
     E.goalType.addEventListener("change",render);
     E.goalAmount.addEventListener("input",render);
+    window.addEventListener("zuz:market:reference",event=>{
+      const ref=event.detail,current=product();
+      if(!current){status("Selecione primeiro um produto da sua empresa.","error");return;}
+      if(!ref||!ref.verified||!/^[a-f0-9]{32}$/.test(ref.marketQuoteId||"")||
+        !Number.isFinite(Number(ref.price))||Number(ref.price)<=0){
+        status("A cotação não está validada.","error");return;
+      }
+      if(references.some(x=>x.marketQuoteId===ref.marketQuoteId)){
+        status("Esta cotação já foi adicionada à simulação.","error");return;
+      }
+      if(references.length>=30){status("Limite de 30 referências nesta simulação.","error");return;}
+      const currentCode=String(current.barcode||current.gtin||"").trim();
+      if(currentCode&&currentCode!==ref.gtin){
+        status("A cotação não corresponde ao código do produto selecionado.","error");return;
+      }
+      references.push({
+        name:String(ref.name||"Produto").slice(0,90),price:Number(ref.price),
+        productId:String(current.id),productName:current.name||"",
+        verified:true,marketQuoteId:ref.marketQuoteId,marketProductId:ref.marketProductId,
+        seller:ref.seller,source:ref.source,region:ref.region,observedAt:ref.observedAt,url:ref.url,
+        unit:ref.unit,gtin:ref.gtin
+      });
+      render();status("Cotação validada adicionada apenas às referências desta simulação.","success");
+    });
     E.addReference.addEventListener("click",()=>{
       const name=E.referenceName.value.trim(),price=Number(E.referencePrice.value);
       if(!name||!Number.isFinite(price)||price<=0||price>100000000){
