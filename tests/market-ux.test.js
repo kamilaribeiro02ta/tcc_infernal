@@ -107,7 +107,7 @@ test("janela focada: pesquisa acessível e fechamento sem poluir a página",asyn
  assert.equal(overlay.hidden,true);
  const publicInput=launcher.find(x=>x.className==="zm-launch-input");
  publicInput.value="vassoura";
- await launcher.find(x=>x.tag==="form").handlers.submit[0]({preventDefault(){}});
+ await launcher.find(x=>x.tag==="button"&&x.className==="zm-launch-submit").handlers.click[0]();
  assert.equal(overlay.hidden,false);
  assert.equal(root.find(x=>x.className==="zm-welcome").hidden,true);
  const close=overlay.find(x=>x.className==="zm-close");
