@@ -69,3 +69,24 @@ test("cotações confirmadas são utilizáveis na simulação sem alterar custos
  assert.equal(events.filter(x=>x.type==="zuz:market:reference").length,1);
  assert.ok(root.all(x=>x.textContent==="Referência adicionada à simulação.").length);
 });
+
+test("produto moderno: anúncio semelhante visível, mas preço não vira média ou custo",async()=>{
+ const api=async(_method,url)=>{
+  if(url.includes("/market/v2/search"))return {commercial:[]};
+  if(url.includes("/market/offers"))return {offers:[{title:"Celular Modelo X 128 GB",price:1599.9,
+   seller:"Loja de exemplo",url:"https://example.com/celular",queriedAt:"2026-10-18T12:00:00Z"}]};
+  throw Error("Rota inesperada "+url);
+ };
+ const {root,events}=setup("products",api);
+ await search(root,"celular modelo x");
+ const offer=root.find(x=>x.tag==="button"&&x.className.includes("zm-result"));
+ assert.ok(offer);await offer.handlers.click[0]();
+ assert.ok(root.all(x=>x.textContent?.includes?.("Preço anunciado")).length);
+ assert.equal(root.all(x=>x.className==="zm-price-stats").length,0);
+ const draft=root.find(x=>x.tag==="button"&&x.textContent==="Cadastrar com este nome");
+ assert.ok(draft);draft.handlers.click[0]();
+ const confirm=root.find(x=>x.tag==="button"&&x.textContent==="Confirmar");
+ assert.ok(confirm);confirm.handlers.click[0]();
+ assert.equal(events.filter(x=>x.type==="zuz:market:draft").length,1);
+ assert.equal(events.find(x=>x.type==="zuz:market:draft").detail.price,undefined);
+});
