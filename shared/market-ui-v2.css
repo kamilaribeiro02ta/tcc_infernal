@@ -223,6 +223,14 @@ body.dark .zm-launcher,body.dark .zm-overlay,html[data-theme="dark"] .zm-overlay
 }
 body.dark .zm-dialog,html[data-theme="dark"] .zm-dialog{background:#211a30}
 body.dark .zm-launch-submit:hover,body.dark .zm-primary:hover,body.dark .zm-search-submit:hover{background:#7853ee}
+/* Posição de destaque no fluxo de Simulações, sem outra moldura por fora. */
+.sim .sim-market-access{margin:4px 0 24px;min-width:0}
+.sim .sim-market-secondary{min-width:0;margin:26px 0 0;padding:16px 0;
+ background:transparent;border:0;box-shadow:none}
+.sim .sim-market-secondary .sim-manual-details{margin:0}
+.sim .sim-market-access .zm-launcher{max-width:100%;margin:0}
+.cost-page .cost-market-section{margin-top:26px}
+.cost-page .cost-market-section .cost-manual-details{max-width:100%;padding:8px 6px 0}
 /* Produtos: bloco compacto perto do cadastro, sem empurrar os campos para baixo. */
 .zm-launcher-compact .zm-launch-form{gap:8px}
 .zm-launcher-compact .zm-launch-field,.zm-launcher-compact .zm-launch-submit{height:47px;min-height:47px}
