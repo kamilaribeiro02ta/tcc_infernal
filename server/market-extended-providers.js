@@ -149,7 +149,7 @@ function registerExtendedMarketRoutes(router,{asyncRoute}){
   try{res.json(await ipca(req.query.fromYear));}
   catch{res.json({series:[],warning:"IPCA indisponível nesta consulta; nenhuma correção inflacionária foi presumida."});}
  }));
- router.get("/market/classif",asyncRoute(async(req,res)=>res.json(await classif(req.query.q)));
+ router.get("/market/classif",asyncRoute(async(req,res)=>res.json(await classif(req.query.q))));
  router.get("/market/official-sources",(_req,res)=>res.json({sources:official}));
 }
 module.exports={registerExtendedMarketRoutes,parseKeepaHistory,keepaProduct,parseIPCA,adjustIPCA,flattenNCM,official};
