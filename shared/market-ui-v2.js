@@ -42,8 +42,76 @@ function marketBox(parent,mode){
  const status=make("p","zm-status");status.setAttribute("role","status");status.setAttribute("aria-live","polite");
  const results=make("div","zm-results");results.setAttribute("aria-label","Resultados da pesquisa");
  const detail=make("div","zm-detail");detail.hidden=true;detail.setAttribute("aria-live","polite");
- root.append(headline,form,status,results,detail);parent.append(root);
- let sequence=0,currentTerm="",chosen=null;
+ // A consulta abre um espaço focado. Nenhum catálogo ou formulário técnico é mostrado na página.
+ const launcher=make("section","zm-launcher"+(mode==="products"?" zm-launcher-compact":""));
+ const launchCopy=make("div","zm-launch-copy");
+ launchCopy.append(make("span","zm-eyebrow","ZUZ  /  MERCADO"),
+  make("h3","zm-launch-title",mode==="products"?"Consultar preços de mercado":"O mercado, sem complicação."),
+  make("p","zm-launch-subtitle",mode==="products"?
+   "Confira uma referência antes de definir seu preço.":"Busque um produto. Compare preços. Tome a sua decisão."));
+ const launchForm=make("form","zm-launch-form"),launchField=make("label","zm-launch-field");
+ launchField.append(make("span","zm-launch-icon","⌕"));
+ const launchInput=make("input","zm-launch-input");launchInput.type="search";launchInput.maxLength=80;
+ launchInput.placeholder="Produto, marca ou código de barras";
+ launchInput.setAttribute("aria-label","Pesquisar produto no mercado");
+ launchField.append(launchInput);
+ const launchSubmit=make("button","zm-launch-submit","Pesquisar");launchSubmit.type="submit";
+ launchForm.append(launchField,launchSubmit);
+ launcher.append(launchCopy,launchForm);
+ const overlay=make("div","zm-overlay");overlay.hidden=true;
+ const dialog=make("section","zm-dialog");dialog.setAttribute("role","dialog");
+ dialog.setAttribute("aria-modal","true");dialog.setAttribute("aria-label","Consulta de preços");
+ const toolbar=make("div","zm-toolbar"),brand=make("div","zm-toolbar-brand");
+ brand.append(make("span","zm-brand-mark","Z"),make("span","zm-brand-copy","ZUZ"),
+  make("span","zm-brand-sub","/ Preços de mercado"));
+ const closeButton=make("button","zm-close","×");closeButton.type="button";
+ closeButton.setAttribute("aria-label","Fechar consulta de preços");
+ toolbar.append(brand,closeButton);
+ const welcome=make("section","zm-welcome");
+ const welcomeArt=make("div","zm-welcome-art");welcomeArt.setAttribute("aria-hidden","true");
+ welcomeArt.append(make("span","zm-orbit zm-orbit-one"),make("span","zm-orbit zm-orbit-two"),
+  make("span","zm-orbit-core","↗"));
+ welcome.append(welcomeArt,make("h4","zm-welcome-title","Descubra antes de precificar."),
+  make("p","zm-welcome-sub","Encontre o produto e consulte preços reais quando estiverem disponíveis."));
+ const shortcuts=make("div","zm-shortcuts");
+ for(const example of ["Macarrão","Vassoura","Celular"]){
+  const chip=make("button","zm-shortcut",example+" ↗");chip.type="button";
+  chip.addEventListener("click",()=>{input.value=example;search();});shortcuts.append(chip);
+ }
+ welcome.append(shortcuts);
+ const dialogBody=make("div","zm-dialog-body");
+ root.append(headline,form,status,welcome,results,detail);
+ results.hidden=true;
+ dialogBody.append(root);dialog.append(toolbar,dialogBody);overlay.append(dialog);
+ parent.append(launcher);
+ (document.body||parent).append(overlay);
+ let sequence=0,currentTerm="",chosen=null,lastFocus=null;
+ function openExplorer(term=""){
+  lastFocus=document.activeElement||null;
+  overlay.hidden=false;
+  document.body?.classList?.add("zm-market-open");
+  if(term)input.value=term;
+  input.focus();
+  if(term.trim().length>=2)search();
+ }
+ function closeExplorer(){
+  sequence++;overlay.hidden=true;
+  document.body?.classList?.remove("zm-market-open");
+  lastFocus?.focus?.();
+ }
+ closeButton.addEventListener("click",closeExplorer);
+ overlay.addEventListener("click",e=>{if(e.target===overlay)closeExplorer();});
+ overlay.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){e.preventDefault();closeExplorer();return;}
+  if(e.key!=="Tab"||!dialog.querySelectorAll)return;
+  const focusable=[...dialog.querySelectorAll("button:not([disabled]),input:not([disabled]),select:not([disabled]),a[href],summary")]
+   .filter(x=>!x.closest("[hidden]")&&x.getClientRects().length);
+  if(!focusable.length)return;
+  const first=focusable[0],last=focusable[focusable.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+ });
+ launchForm.addEventListener("submit",e=>{e.preventDefault();openExplorer(launchInput.value.trim());});
  function inform(message){status.textContent=message||"";}
  function empty(el,message){el.replaceChildren(make("p","zm-empty",message));}
  function payloadOf(item){
