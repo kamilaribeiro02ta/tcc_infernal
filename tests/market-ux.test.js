@@ -15,10 +15,10 @@ class FakeNode{
  all(fn){return [...(fn(this)?[this]:[]),...this.children.flatMap(x=>x?.all?.(fn)||[])];}
 }
 function setup(mode,request){
- const host=new FakeNode("div"),control=new FakeNode("div"),name=new FakeNode("input"),market=new FakeNode("div");
- host.append(control);control.append(name);host.append(market);
+ const host=new FakeNode("div"),control=new FakeNode("div"),name=new FakeNode("input"),market=new FakeNode("div"),marketMount=new FakeNode("div");
+ host.append(control);control.append(name);host.append(marketMount,market);
  const events=[],window={ZUZAPI:{request},location:{href:""},dispatchEvent:e=>{events.push(e);if(e.type==="zuz:market:reference")e.detail.accepted=true;}};
- const document={createElement:t=>new FakeNode(t),getElementById:id=>id==="nameInput"&&mode==="products"?name:id==="marketStats"&&mode==="simulations"?market:null};
+ const document={createElement:t=>new FakeNode(t),getElementById:id=>id==="nameInput"&&mode==="products"?name:id==="marketSearchMount"&&mode==="simulations"?marketMount:id==="marketStats"&&mode==="simulations"?market:null};
  vm.runInNewContext(code,{window,document,CustomEvent:class{constructor(type,arg){this.type=type;this.detail=arg.detail;}},URLSearchParams,sessionStorage:{setItem(){},getItem(){return null}},console,Date,Intl});
  return {root:host.find(x=>x.className==="zm-search-shell"),events};
 }
