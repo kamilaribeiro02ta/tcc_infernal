@@ -149,7 +149,7 @@ function marketBox(parent,mode){
     field("Categoria",item.category),field("Marca",item.brand),field("Modelo",item.model),
     field("Código de barras (GTIN)",item.barcode),field("Código da fonte",item.sourceId),
     field("Quantidade / embalagem",item.unit||item.attributes?.quantity),
-    field("Base de dados",source(item.source)),field(item.isHistorical?"Data do acervo":"Última atualização da fonte",item.isHistorical?"2018":date(item.attributes?.last_source_update||item.updatedAt))
+    field("Base de dados",source(item.source)),field(item.isHistorical?"Data do acervo":"Última atualização da fonte",item.isHistorical?"2018":date(item.attributes?.last_source_update||item.attributes?.source_updated_at||item.updatedAt))
   ]){if(entry)grid.append(entry)}
   card.append(grid);
   if(item.fullName&&item.fullName!==item.name){
@@ -162,6 +162,20 @@ function marketBox(parent,mode){
    extra.append(DOM("summary","","Ingredientes informados na fonte"),DOM("p","",item.attributes.ingredients));
    card.append(extra);
   }
+  const nutrition=item.attributes?.nutrition;
+  if(nutrition&&typeof nutrition==="object"){
+   const values=[["Energia",nutrition.energy_kcal_100g,"kcal/100g"],["Açúcares",nutrition.sugars_100g,"g/100g"],
+    ["Proteínas",nutrition.proteins_100g,"g/100g"],["Sal",nutrition.salt_100g,"g/100g"]]
+    .filter(v=>v[1]!==null&&v[1]!==undefined&&Number.isFinite(Number(v[1]))&&Number(v[1])>=0);
+   if(values.length){
+    const n=DOM("section","zuz-v3-market");
+    n.append(DOM("h4","zuz-v3-group","Informações nutricionais da fonte"));
+    for(const [label,value,unit] of values)n.append(DOM("p","zuz-v3-muted",label+": "+Number(value).toLocaleString("pt-BR")+" "+unit));
+    card.append(n);
+   }
+  }
+  if(item.attributes?.allergens?.length)card.append(DOM("p","zuz-v3-muted","Alérgenos informados: "+item.attributes.allergens.join(", ").slice(0,260)));
+  if(item.attributes?.price_notice)card.append(DOM("p","zuz-v3-muted",item.attributes.price_notice));
   if(item.isHistorical)card.append(DOM("p","zuz-v3-warning","Registro histórico de 2018. Não significa que o produto ou seu preço esteja disponível hoje."));
   if(item.isHistorical&&/^https:\/\/github\.com\/ant-rod-silva\/catmat_compras_gov_pub/.test(String(item.attributes?.origin||""))){
    const a=DOM("a","zuz-v3-source","Consultar o repositório histórico");a.href=item.attributes.origin;a.target="_blank";a.rel="noopener noreferrer";card.append(a);
