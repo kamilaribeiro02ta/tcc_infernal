@@ -4,7 +4,7 @@
  Para SINAPI use --source=sinapi, URL oficial caixa.gov.br e um CSV exportado do XLSX.
 */
 const fs=require("node:fs"),crypto=require("node:crypto");
-const {provider,query}=require("../server/database");
+// O banco só é aberto quando a importação for executada; testes de CSV não acessam dados.
 function csvRows(input){
  const text=String(input||"").replace(/^\uFEFF/,"");
  const head=text.split(/\r?\n/,1)[0]||"";
@@ -52,6 +52,7 @@ function validate(row,header,fields,source,url){
   category:source==="bps"?"health_purchase":"construction_input",url};
 }
 async function run(){
+ const {provider,query}=require("../server/database");
  if(provider!=="postgresql")throw Error("A importação requer DATABASE_URL com PostgreSQL.");
  const {flags,fields}=argsFrom(process.argv.slice(2)),source=flags.source;
  if(!["bps","sinapi"].includes(source))throw Error("Fonte deve ser bps ou sinapi.");
