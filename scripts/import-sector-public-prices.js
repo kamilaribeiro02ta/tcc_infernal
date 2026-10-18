@@ -72,7 +72,7 @@ async function run(){
  let processed=0;
  const sql="INSERT INTO zuz_sector_public_prices(id,source,source_ref,product_name,product_code,uf,unit,price,reference_date,category,provenance_url) "+
  "VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) "+
- "ON CONFLICT(source,source_ref,reference_date,uf,unit) DO UPDATE SET price=EXCLUDED.price,product_name=EXCLUDED.product_name,provenance_url=EXCLUDED.provenance_url RETURNING id";
+ "ON CONFLICT(id) DO UPDATE SET price=EXCLUDED.price,product_name=EXCLUDED.product_name,provenance_url=EXCLUDED.provenance_url RETURNING id";
  for(const x of accepted){
   const r=await query(sql,[x.id,x.source,x.ref,x.name,x.code,x.uf,x.unit,x.price,x.date,x.category,x.url]);
   processed+=r.rows.length;
