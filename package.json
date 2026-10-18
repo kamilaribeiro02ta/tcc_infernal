@@ -10,7 +10,8 @@
     "test:core": "node --test tests/*.test.js",
     "market:import": "node --env-file-if-exists=.env scripts/import-compras-catalog.js",
     "market:sync": "node --env-file-if-exists=.env scripts/sync-market-prices.js",
-    "market:sector-import": "node --env-file-if-exists=.env scripts/import-sector-public-prices.js"
+    "market:sector-import": "node --env-file-if-exists=.env scripts/import-sector-public-prices.js",
+    "market:catalog-seed": "node --env-file-if-exists=.env scripts/bootstrap-open-facts.js"
   },
   "engines": {
     "node": "24.x"
