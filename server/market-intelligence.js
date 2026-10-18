@@ -78,7 +78,8 @@ function registerMarketIntelligenceRoutes(router,{asyncRoute}){
   const r=await query("SELECT h.price,h.observed_at,p.price_type,p.currency,p.condition,p.source,p.gtin,p.unit FROM zuz_market_price_history h JOIN zuz_market_prices p ON p.id=h.quote_id WHERE p.catalog_id=$1 ORDER BY h.observed_at DESC LIMIT 500",[id]);
   // Apenas histórico do MESMO ID cadastrado, nunca somar preços de produtos apenas semelhantes.
   const verified=r.rows.filter(row=>!catalog.rows[0].barcode||row.gtin===catalog.rows[0].barcode);
-  const points=yearly(verified);
+  const units=new Set(verified.filter(x=>x.price_type==='retail').map(x=>String(x.unit||'').trim().toLowerCase()));
+  const points=units.size===1&&!units.has('')?yearly(verified):[];
   res.setHeader("Cache-Control","private, no-store");
   res.json({years:points,requestedYears:[2018,2026],availableYears:points.map(p=>p.year),
    hasComparable2018and2026:!!catalog.rows[0].barcode&&points.some(p=>p.year===2018)&&points.some(p=>p.year===2026),
