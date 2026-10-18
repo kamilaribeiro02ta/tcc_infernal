@@ -1,0 +1,19 @@
+/* Extensão aditiva: mantém tokens, espaçamentos e tema do módulo de mercado. */
+.zuz-market-intel-offers{margin:15px 0 0;border-top:1px solid var(--zm-edge);padding-top:6px}
+.zuz-market-intel-offer{width:100%}
+.zuz-market-intel-details{margin-top:14px}
+.zuz-market-intel-panel{border-top:1px solid var(--zm-edge);padding:14px 0;margin-top:8px}
+.zuz-market-intel-panel h4{margin:0 0 6px}
+.zuz-market-intel-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}
+.zuz-market-intel-field{display:grid;min-width:0;gap:5px;font:500 11px/1.5 Poppins,sans-serif;color:var(--zm-muted)}
+.zuz-market-intel-field .zuz-v3-control{width:100%}
+.zuz-market-intel-consent{display:flex;align-items:start;gap:8px;grid-column:1/-1;font:400 11px/1.6 Poppins,sans-serif;color:var(--zm-muted)}
+.zuz-market-intel-consent input{flex:0 0 17px;width:17px;height:17px;min-height:17px;accent-color:var(--purple,#6a3df0);margin:3px 0 0}
+.zuz-market-intel-form>.zuz-v3-btn{grid-column:1/-1;justify-self:start}
+.zuz-market-intel-strong{font:600 13px/1.5 Poppins,sans-serif;color:var(--zm-ink);overflow-wrap:anywhere;margin:10px 0 4px}
+.zuz-market-intel-years{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.zuz-market-intel-year{display:grid;gap:4px;border:1px solid var(--zm-edge);border-radius:11px;background:var(--zm-card);padding:12px}
+.zuz-market-intel-year small,.zuz-market-intel-year span{font:400 11px/1.5 Poppins,sans-serif;color:var(--zm-muted)}
+.zuz-market-intel-year strong{font:600 17px/1.5 Poppins,sans-serif;color:var(--zm-ink)}
+.zuz-market-intel-links{display:flex;flex-wrap:wrap;gap:5px 14px;margin:10px 0}
+@media(max-width:540px){.zuz-market-intel-form{grid-template-columns:1fr}.zuz-market-intel-years{grid-template-columns:1fr}}
