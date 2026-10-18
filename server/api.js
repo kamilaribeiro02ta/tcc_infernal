@@ -8,6 +8,7 @@ const { registerSimulationRoutes } = require("./simulations-routes");
 const { registerMarketRoutes } = require("./market");
 const { registerMarketIntelligenceRoutes } = require("./market-intelligence");
 const { registerExtendedMarketRoutes } = require("./market-extended-providers");
+const { registerRTCRoutes } = require("./rtc-offline");
 const { registerTaxContextRoutes } = require("./tax-context");
 const { askCostsGuide } = require("./costs-assistant");
 const { askSimulationGuide } = require("./simulations-help");
@@ -162,6 +163,7 @@ function createApi() {
   registerMarketRoutes(router,{asyncRoute,getCompany});
   registerMarketIntelligenceRoutes(router,{asyncRoute});
   registerExtendedMarketRoutes(router,{asyncRoute});
+  registerRTCRoutes(router,{asyncRoute});
   registerTaxContextRoutes(router,{asyncRoute});
 
   // Mercado: resultados atuais e técnicos são exibidos separadamente, nunca tratados como ofertas equivalentes.
