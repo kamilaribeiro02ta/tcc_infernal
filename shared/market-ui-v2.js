@@ -123,7 +123,7 @@ function marketBox(parent,mode){
   const payload=payloadOf(item);
   if(mode==="products"){
    window.dispatchEvent(new CustomEvent("zuz:market:prefill",{detail:payload}));
-   inform("Produto preenchido no cadastro. Revise os dados e informe seus custos.");
+   closeExplorer();inform("Produto preenchido no cadastro. Revise os dados e informe seus custos.");
    document.getElementById("nameInput")?.focus({preventScroll:true});
    return;
   }
@@ -147,7 +147,9 @@ function marketBox(parent,mode){
   if(secondary)copy.append(make("small","zm-result-meta",secondary));
   else if(row.kind==="service")copy.append(make("small","zm-result-meta","Serviço"));
   else if(row.barcode)copy.append(make("small","zm-result-meta","Produto identificado por código"));
-  b.append(copy,make("span","zm-result-chevron","›"));
+  const avatar=make("span","zm-product-avatar",title.trim().charAt(0).toUpperCase());
+  avatar.setAttribute("aria-hidden","true");
+  b.append(avatar,copy,make("span","zm-result-chevron","›"));
   return b;
  }
  function offerButton(offer){
@@ -155,7 +157,9 @@ function marketBox(parent,mode){
   const copy=make("span","zm-result-copy");
   copy.append(make("strong","zm-result-name",text(offer.title).slice(0,110)),
     make("small","zm-result-meta",text(offer.seller)+" · "+money(offer.price)+" · conferir na loja"));
-  b.append(copy,make("span","zm-result-chevron","›"));
+  const avatar=make("span","zm-product-avatar zm-avatar-offer",text(offer.title).charAt(0).toUpperCase());
+  avatar.setAttribute("aria-hidden","true");
+  b.append(avatar,copy,make("span","zm-result-chevron","›"));
   return b;
  }
  function renderOffers(rows){
@@ -168,7 +172,7 @@ function marketBox(parent,mode){
   const payload={name:text(offer.title).slice(0,60)};
   if(mode==="products"){
    window.dispatchEvent(new CustomEvent("zuz:market:draft",{detail:payload}));
-   inform("Nome preenchido para revisão. Informe seus custos e confirme o produto.");
+   closeExplorer();inform("Nome preenchido para revisão. Informe seus custos e confirme o produto.");
    document.getElementById("nameInput")?.focus({preventScroll:true});
   }else{
    try{sessionStorage.setItem("zuz:market-draft",JSON.stringify(payload));}
@@ -177,9 +181,9 @@ function marketBox(parent,mode){
   }
  }
  function selectOffer(offer){
-  ++sequence;results.hidden=true;detail.hidden=false;detail.replaceChildren();
+  ++sequence;results.hidden=false;detail.hidden=false;root.classList?.add("zm-selected");detail.replaceChildren();
   const back=btn("← Voltar aos resultados",()=>{
-   ++sequence;results.hidden=false;detail.hidden=true;detail.replaceChildren();input.focus();
+   ++sequence;results.hidden=false;detail.hidden=true;root.classList?.remove("zm-selected");detail.replaceChildren();input.focus();
   },"zm-back");
   const head=make("div","zm-product-heading");
   head.append(make("h3","zm-selected-title",offer.title),
@@ -234,7 +238,7 @@ function marketBox(parent,mode){
  }
  function technicalOption(term){
   const advanced=make("details","zm-optional zm-technical");
-  advanced.append(make("summary","","Ver materiais relacionados"));
+  advanced.append(make("summary","","Outras opções"));
   const content=make("div","zm-optional-content");advanced.append(content);
   let loaded=false;
   advanced.addEventListener("toggle",async()=>{
@@ -251,7 +255,7 @@ function marketBox(parent,mode){
  function manualAction(){
   const caption=mode==="products"?"Continuar cadastro manual":"Cadastrar manualmente";
   return btn(caption,()=>{
-   if(mode==="products"){document.getElementById("nameInput")?.focus();return;}
+   if(mode==="products"){closeExplorer();document.getElementById("nameInput")?.focus();return;}
    window.location.href="../produtos/produtos.html";
   },"zm-secondary");
  }
@@ -260,6 +264,7 @@ function marketBox(parent,mode){
   const term=input.value.trim();
   if(term.length<2){inform("Digite pelo menos dois caracteres para pesquisar.");input.focus();return;}
   const token=++sequence;currentTerm=term;chosen=null;
+  root.classList?.remove("zm-selected");welcome.hidden=true;
   searchButton.disabled=true;detail.hidden=true;results.hidden=false;detail.replaceChildren();
   empty(results,"Procurando produtos...");inform("");
   try{
@@ -489,21 +494,21 @@ function marketBox(parent,mode){
   }
   if((response.quotes||[]).some(q=>q.price_type==="public_purchase")){
    const historical=make("details","zm-optional");
-   historical.append(make("summary","","Ver referências de compras públicas"));
+   historical.append(make("summary","","Outras referências"));
    const body=make("div","zm-optional-content");historical.append(body);
    historical.addEventListener("toggle",()=>{if(historical.open)publicPanel(response.quotes,body);});
    advanced.append(historical);
   }
  }
  async function selectProduct(row){
-  const token=++sequence;chosen=null;detail.hidden=false;results.hidden=true;
+  const token=++sequence;chosen=null;detail.hidden=false;results.hidden=false;root.classList?.add("zm-selected");
   empty(detail,"Abrindo produto...");inform("");
   try{
    const response=await api.request("GET","/market/v2/item?id="+encodeURIComponent(row.item_id));
    if(token!==sequence)return;
    const item=response.item;chosen=item;detail.replaceChildren();
    const back=btn("← Voltar aos resultados",()=>{
-    sequence++;chosen=null;detail.hidden=true;results.hidden=false;detail.replaceChildren();input.focus();
+    sequence++;chosen=null;detail.hidden=true;results.hidden=false;root.classList?.remove("zm-selected");detail.replaceChildren();input.focus();
    },"zm-back");
    const head=make("div","zm-product-heading");
    head.append(make("h3","zm-selected-title",item.name),
@@ -518,7 +523,10 @@ function marketBox(parent,mode){
    extra.append(progressive("Histórico de preços",body=>historyPanel(item,body)));
    extra.append(progressive("Informações tributárias",body=>taxPanel(item,body)));
    extra.append(progressive("Possíveis ofertas semelhantes",body=>offersPanel(item,body)));
-   detail.append(back,head,priceSection,actionBox,extra);
+   const more=make("details","zm-more");
+   more.append(make("summary","","Outras informações"));
+   more.append(extra);
+   detail.append(back,head,priceSection,actionBox,more);
    try{
     const prices=await api.request("GET","/market/quotes?id="+encodeURIComponent(item.id));
     if(token!==sequence)return;
@@ -536,8 +544,12 @@ function marketBox(parent,mode){
 }
 const product=document.getElementById("nameInput")?.closest(".field");
 if(product){const target=make("div","zm-mount");product.after(target);marketBox(target,"products");}
-const cost=document.getElementById("compRows")?.parentElement;
-if(cost){const target=make("div","zm-mount");cost.append(target);marketBox(target,"costs");}
+const cost=document.getElementById("marketSearchMountCosts");
+if(cost)marketBox(cost,"costs");
+else{
+ const comp=document.getElementById("compRows")?.parentElement;
+ if(comp){const target=make("div","zm-mount");comp.append(target);marketBox(target,"costs");}
+}
 const simulationMount=document.getElementById("marketSearchMount");
 if(simulationMount)marketBox(simulationMount,"simulations");
 else{
