@@ -82,6 +82,57 @@ function marketBox(parent,mode){
   b.append(copy,make("span","zm-result-chevron","›"));
   return b;
  }
+ function offerButton(offer){
+  const b=btn("",()=>selectOffer(offer),"zm-result");
+  const copy=make("span","zm-result-copy");
+  copy.append(make("strong","zm-result-name",text(offer.title).slice(0,110)),
+    make("small","zm-result-meta",text(offer.seller)+" · "+money(offer.price)+" · conferir na loja"));
+  b.append(copy,make("span","zm-result-chevron","›"));
+  return b;
+ }
+ function renderOffers(rows){
+  results.replaceChildren(make("p","zm-results-title","Ofertas encontradas"));
+  const list=make("div","zm-product-list");
+  for(const offer of (rows||[]).slice(0,8))list.append(offerButton(offer));
+  results.append(list,make("p","zm-caption","Anúncios semelhantes: confirme o modelo e as condições antes de utilizar o preço."));
+ }
+ function useOfferDraft(offer){
+  const payload={name:text(offer.title).slice(0,60)};
+  if(mode==="products"){
+   window.dispatchEvent(new CustomEvent("zuz:market:draft",{detail:payload}));
+   inform("Nome preenchido para revisão. Informe seus custos e confirme o produto.");
+   document.getElementById("nameInput")?.focus({preventScroll:true});
+  }else{
+   try{sessionStorage.setItem("zuz:market-draft",JSON.stringify(payload));}
+   catch{inform("Não foi possível preparar o cadastro automaticamente.");return;}
+   window.location.href="../produtos/produtos.html";
+  }
+ }
+ function selectOffer(offer){
+  ++sequence;results.hidden=true;detail.hidden=false;detail.replaceChildren();
+  const back=btn("← Voltar aos resultados",()=>{
+   ++sequence;results.hidden=false;detail.hidden=true;detail.replaceChildren();input.focus();
+  },"zm-back");
+  const head=make("div","zm-product-heading");
+  head.append(make("h3","zm-selected-title",offer.title),
+   make("p","zm-product-identity",offer.seller));
+  const prices=block("Preço anunciado");
+  const amount=make("p","zm-advertised-price",money(offer.price));
+  prices.append(amount,make("p","zm-caption","Consulta em "+(date(offer.queriedAt)||"data não informada")+
+    ". A loja não informou necessariamente quando o anúncio foi atualizado."));
+  const original=safeLink("Conferir preço na loja",offer.url);if(original)prices.append(original);
+  const action=make("div","zm-product-action");
+  action.append(btn("Cadastrar com este nome",()=>{
+   const box=make("div","zm-confirm");
+   box.append(make("p","","Preencher apenas o nome para cadastro? O preço anunciado não substituirá seus custos ou seu preço de venda."),
+    btn("Confirmar",()=>useOfferDraft(offer),"zm-primary"),
+    btn("Cancelar",()=>action.replaceChildren(btn("Cadastrar com este nome",()=>selectOffer(offer),"zm-primary")),"zm-secondary"));
+   action.replaceChildren(box);
+  },"zm-primary"));
+  detail.append(back,head,prices,action,
+   make("p","zm-caption","Oferta possivelmente semelhante, sem identificação inequívoca por GTIN ou variante. Não entra na média comercial validada."));
+  inform("");
+ }
  function renderList(rows){
   results.replaceChildren();
   const seen=new Set(),unique=[];
@@ -153,6 +204,18 @@ function marketBox(parent,mode){
     if(commercial.length<=2)results.append(technicalOption(term));
     inform("Selecione um produto para consultar os preços.");
    }else{
+    let shop=[];
+    try{
+     const response=await api.request("GET","/market/offers?q="+encodeURIComponent(term));
+     if(token!==sequence)return;
+     shop=Array.isArray(response.offers)?response.offers:[];
+    }catch{shop=[];}
+    if(shop.length){
+     renderOffers(shop);
+     results.append(technicalOption(term));
+     inform("Selecione uma opção e confira o anúncio da loja.");
+     return;
+    }
     empty(results,"Procurando materiais relacionados...");
     try{
      const additional=await api.request("GET","/market/v2/search?"+new URLSearchParams({q:term,historical:"true"}));
