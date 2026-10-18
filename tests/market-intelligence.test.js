@@ -5,6 +5,8 @@ const {similar,parseShopping,yearly}=require("../server/market-intelligence");
 test("comparação exige tokens de modelo e evita variantes irrelevantes",()=>{
  assert.equal(similar("iPhone 18 Plus","Apple iPhone 18 Plus 128 GB"),true);
  assert.equal(similar("iPhone 18 Plus","Apple iPhone 17 Plus 128 GB"),false);
+ assert.equal(similar("iPhone 18+","Apple iPhone 18 Plus 128 GB"),true);
+ assert.equal(similar("iPhone 18+","Apple iPhone 18 Pro 128 GB"),false);
  assert.equal(similar("vassoura","Vassoura de piaçava"),true);
 });
 test("ofertas descartam preço ausente e resultados não correspondentes",()=>{
