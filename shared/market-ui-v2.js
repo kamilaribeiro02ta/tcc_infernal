@@ -30,8 +30,8 @@ const rowText=(parent,label,value)=>{
 function marketBox(parent,mode){
  const root=make("section","zm-search-shell");root.setAttribute("aria-label","Consulta de preços de mercado");
  const headline=make("header","zm-heading");
- headline.append(make("h3","zm-title","Consulta de preços"),
-  make("p","zm-subtitle","Pesquise um produto, compare preços e decida como utilizá-los."));
+ headline.append(make("h3","zm-title","Encontre seu produto"),
+  make("p","zm-subtitle","Digite o nome, uma marca ou o código da embalagem. Depois escolha o resultado."));
  const form=make("form","zm-search-form");
  const inputLabel=make("label","zm-sr-only","Produto, marca ou código de barras");
  const input=make("input","zm-search-input");input.type="search";input.minLength=2;input.maxLength=80;
@@ -50,9 +50,9 @@ function marketBox(parent,mode){
  const launcher=make("section","zm-launcher"+(mode==="products"?" zm-launcher-compact":""));
  const launchCopy=make("div","zm-launch-copy");
  launchCopy.append(make("span","zm-eyebrow","ZUZ  /  MERCADO"),
-  make("h3","zm-launch-title",mode==="products"?"Consultar preços de mercado":"O mercado, sem complicação."),
+  make("h3","zm-launch-title",mode==="products"?"Quanto custa no mercado?":"Descubra os preços do mercado."),
   make("p","zm-launch-subtitle",mode==="products"?
-   "Confira uma referência antes de definir seu preço.":"Busque um produto. Compare preços. Tome a sua decisão."));
+   "Pesquise antes de definir seu preço.":"Busque o que você vende, veja as ofertas disponíveis e escolha como utilizar."));
  const launchForm=make("div","zm-launch-form"),launchField=make("label","zm-launch-field");
  launchForm.setAttribute("role","search");
  launchField.append(make("span","zm-launch-icon","⌕"));
@@ -77,7 +77,7 @@ function marketBox(parent,mode){
  welcomeArt.append(make("span","zm-orbit zm-orbit-one"),make("span","zm-orbit zm-orbit-two"),
   make("span","zm-orbit-core","↗"));
  welcome.append(welcomeArt,make("h4","zm-welcome-title","Descubra antes de precificar."),
-  make("p","zm-welcome-sub","Encontre o produto e consulte preços reais quando estiverem disponíveis."));
+  make("p","zm-welcome-sub","Comece pelo nome do produto. A ZUZ mostra os resultados e ajuda você a escolher."));
  const shortcuts=make("div","zm-shortcuts");
  for(const example of ["Macarrão","Vassoura","Celular"]){
   const chip=make("button","zm-shortcut",example+" ↗");chip.type="button";
@@ -171,15 +171,15 @@ function marketBox(parent,mode){
   const confirm=make("div","zm-confirm");
   confirm.append(make("p","","Usar os dados deste produto no cadastro? Seus custos e seu preço de venda não serão alterados."));
   confirm.append(btn("Confirmar",()=>useProduct(item),"zm-primary"),
-   btn("Cancelar",()=>parent.replaceChildren(btn(mode==="products"?"Usar na precificação":"Cadastrar este produto",()=>confirmProduct(item,parent),"zm-primary")),"zm-secondary"));
+   btn("Cancelar",()=>parent.replaceChildren(btn(mode==="products"?"Usar no meu cadastro":"Cadastrar este produto",()=>confirmProduct(item,parent),"zm-primary")),"zm-secondary"));
   parent.replaceChildren(confirm);
  }
  function resultButton(row){
-  const title=text(row.display_name||row.full_name||"Produto identificado");
+  const title=text(row.display_name||row.full_name||"Produto encontrado");
   const b=btn("",()=>selectProduct(row,b),"zm-result");
   const copy=make("span","zm-result-copy");
   copy.append(make("strong","zm-result-name",title.slice(0,110)));
-  const secondary=[row.brand,row.model].filter(Boolean).join(" · ");
+  const secondary=[row.brand,row.model,row.unit||row.quantity].filter(Boolean).join(" · ");
   if(secondary)copy.append(make("small","zm-result-meta",secondary));
   else if(row.kind==="service")copy.append(make("small","zm-result-meta","Serviço"));
   else if(row.barcode)copy.append(make("small","zm-result-meta","Produto identificado por código"));
@@ -254,7 +254,7 @@ function marketBox(parent,mode){
   }
   const list=make("div","zm-product-list");
   for(const row of unique)list.append(resultButton(row));
-  results.append(make("p","zm-results-title",unique.length===1?"1 produto encontrado":"Produtos encontrados"),list);
+  results.append(make("p","zm-results-title",unique.length===1?"Escolha o produto encontrado":"Escolha um produto"),list);
   if((rows||[]).length>unique.length)results.append(make("p","zm-caption","Mostrando os resultados mais relevantes. Refine a pesquisa para encontrar um modelo específico."));
  }
  function renderTechnical(target,rows){
@@ -310,7 +310,7 @@ function marketBox(parent,mode){
    if(commercial.length){
     renderList(commercial);
     if(commercial.length<=2)results.append(technicalOption(term));
-    inform("Selecione um produto para consultar os preços.");
+    inform("Toque no produto desejado para abrir sua ficha.");
    }else{
     let shop=[];
     try{
@@ -321,7 +321,7 @@ function marketBox(parent,mode){
     if(shop.length){
      renderOffers(shop);
      results.append(technicalOption(term));
-     inform("Selecione uma opção e confira o anúncio da loja.");
+     inform("Selecione uma oferta para conferir os detalhes.");
      return;
     }
     empty(results,"Procurando materiais relacionados...");
@@ -333,9 +333,9 @@ function marketBox(parent,mode){
       const list=make("div","zm-product-list");
       renderTechnical(list,related);
       results.replaceChildren(make("p","zm-results-title","Materiais relacionados"),list,
-       make("p","zm-caption","Modelos identificados em referências de materiais. Os preços comerciais serão consultados após a seleção."),
+       make("p","zm-caption","Escolha a descrição mais próxima. O preço só aparecerá se houver uma oferta confirmada."),
        manualAction());
-      inform("Selecione um material ou continue o cadastro manual.");
+      inform("Escolha o material mais parecido com o seu produto.");
      }else{
       empty(results,"Não encontramos produtos correspondentes nesta pesquisa.");
       results.append(manualAction());inform("");
@@ -499,20 +499,25 @@ function marketBox(parent,mode){
   const summary=market.summary||null;
   if(summary){
    const stats=make("div","zm-price-stats");
-   for(const [label,val] of [["Mínimo",summary.min],["Média",summary.average],["Máximo",summary.max]]){
+   const main=make("div","zm-price-highlight");
+   main.append(make("span","zm-price-kicker","Preço médio nas lojas"),
+    make("strong","zm-average-value",money(summary.average)),
+    make("small","zm-price-explanation","Calculado a partir de "+summary.offers+" lojas comparáveis"+(summary.region?" em "+summary.region:"")+"."));
+   const range=make("div","zm-price-range");
+   for(const [label,val] of [["Menor preço",summary.min],["Maior preço",summary.max]]){
     const block=make("div","zm-price-stat");
-    block.append(make("small","",label),make("strong","",money(val)));stats.append(block);
+    block.append(make("small","",label),make("strong","",money(val)));range.append(block);
    }
-   container.append(stats,make("p","zm-caption",summary.offers+" lojas comparáveis · "+summary.region+" · Cotações recentes"));
+   stats.append(main,range);container.append(stats);
   }
   if(quotes.length){
-   container.append(make("p","zm-mini-title","Preços encontrados"));
+   container.append(make("p","zm-mini-title","Preços encontrados nas lojas"));
    const list=make("div","zm-prices");
-   for(const quote of quotes.slice(0,8)){
+   for(const quote of quotes.slice(0,3)){
     const entry=make("article","zm-price-line"),lead=make("div","zm-price-lead");
     lead.append(make("strong","zm-price-value",money(quote.price)),
      make("span","zm-seller",quote.seller));
-    const meta=make("span","zm-quote-meta","Observado em "+(date(quote.observedAt)||"data não informada")+" · "+quote.region);
+    const meta=make("span","zm-quote-meta","Preço observado em "+(date(quote.observedAt)||"data não informada")+(quote.region?" · "+quote.region:""));
     const actions=make("div","zm-quote-actions");
     const link=safeLink("Ver fonte",quote.url);if(link)actions.append(link);
     if(mode==="simulations"){
@@ -522,10 +527,26 @@ function marketBox(parent,mode){
     entry.append(lead,meta,actions);list.append(entry);
    }
    container.append(list);
-   if(!summary)container.append(make("p","zm-caption","Amostra insuficiente para um preço médio confiável. Consulte os valores individuais."));
+   if(quotes.length>3){
+    const more=make("details","zm-optional zm-more-offers");
+    more.append(make("summary","","Ver mais preços ("+(quotes.length-3)+")"));
+    const extra=make("div","zm-optional-content");
+    for(const quote of quotes.slice(3,8)){
+     const row=make("div","zm-offer");
+     row.append(make("strong","",money(quote.price)+" · "+quote.seller),
+      make("span","zm-quote-meta",date(quote.observedAt)||"Data não informada"));
+     const link=safeLink("Ver fonte",quote.url);if(link)row.append(link);
+     extra.append(row);
+    }
+    more.append(extra);container.append(more);
+   }
+   if(!summary)container.append(make("p","zm-caption","Há preços individuais, mas ainda não há lojas suficientes para calcular uma média."));
   }else{
-   empty(container,"Ainda não há cotação comercial verificável para este produto.");
-   container.append(make("p","zm-caption","Você pode continuar a precificação informando seus próprios custos."));
+   const notice=make("div","zm-price-empty");
+   const symbol=make("span","zm-price-empty-symbol","—");symbol.setAttribute("aria-hidden","true");
+   notice.append(symbol,make("strong","zm-price-empty-title","Ainda não encontramos preços em lojas"),
+    make("p","zm-price-empty-copy","Você pode cadastrar este produto normalmente e calcular o preço com seus custos."));
+   container.append(notice);
   }
   if((response.quotes||[]).some(q=>q.price_type==="public_purchase")){
    const historical=make("details","zm-optional");
@@ -547,20 +568,21 @@ function marketBox(parent,mode){
    const item=response.item;chosen=item;detail.replaceChildren();
    const back=btn("Voltar aos produtos",closeSheet,"zm-back");
    const head=make("div","zm-product-heading");
-   head.append(make("h3","zm-selected-title",item.name),
-    make("p","zm-product-identity",[item.brand,item.model,item.unit].filter(Boolean).join(" · ")||"Produto selecionado"));
+   head.append(make("span","zm-sheet-eyebrow","PRODUTO SELECIONADO"),
+    make("h3","zm-selected-title",item.name),
+    make("p","zm-product-identity",[item.brand,item.model,item.unit].filter(Boolean).join(" · ")||"Detalhes do produto"));
    const actionBox=make("div","zm-product-action");
-   actionBox.append(btn(mode==="products"?"Usar na precificação":"Cadastrar este produto",()=>confirmProduct(item,actionBox),"zm-primary"));
-   const priceSection=block("Preços de mercado","zm-market-prices");
+   actionBox.append(btn(mode==="products"?"Usar no meu cadastro":"Cadastrar este produto",()=>confirmProduct(item,actionBox),"zm-primary"));
+   const priceSection=block("Quanto custa nas lojas?","zm-market-prices");
    const priceContent=make("div","zm-price-content");priceSection.append(priceContent);
-   empty(priceContent,"Consultando preços...");
+   empty(priceContent,"Buscando preços disponíveis...");
    const extra=make("div","zm-advanced");
-   extra.append(progressive("Informações do produto",body=>body.append(detailsPanel(item))));
+   extra.append(progressive("Sobre o produto",body=>body.append(detailsPanel(item))));
    extra.append(progressive("Histórico de preços",body=>historyPanel(item,body)));
-   extra.append(progressive("Informações tributárias",body=>taxPanel(item,body)));
+   extra.append(progressive("Impostos (opcional)",body=>taxPanel(item,body)));
    extra.append(progressive("Possíveis ofertas semelhantes",body=>offersPanel(item,body)));
    const more=make("details","zm-more");
-   more.append(make("summary","","Outras informações"));
+   more.append(make("summary","","Ver detalhes e informações adicionais"));
    more.append(extra);
    detail.append(back,head,priceSection,actionBox,more);
    try{
