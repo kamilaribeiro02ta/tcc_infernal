@@ -158,6 +158,17 @@ async function quotesFor(item,{force=false}={}){
   note:["comprasgov","catmat_archive_2018"].includes(item.source)?"Compra pública não representa preço de varejo; itens históricos só são consultados após confirmação do código oficial.":"Preço colaborativo: confirme data e condições."};
 }
 function registerMarketRoutes(router,{asyncRoute,getCompany}){
+ router.get("/market/lookup",asyncRoute(async(req,res)=>{
+  throttle(req.user.id);const id=txt(req.query.id,40);
+  if(!/^[a-f0-9]{32}$/.test(id))err(400,"Identificador de produto inválido.");
+  const found=await query("SELECT * FROM zuz_market_catalog WHERE id=$1",[id]);
+  if(!found.rows.length)err(404,"Produto não encontrado.");
+  const row=found.rows[0];const item=dto(row);let warnings=[];
+  if(provider==="postgresql"){const refreshed=await quotesFor(row);warnings=refreshed.warnings;}
+  const prices=await query("SELECT * FROM zuz_market_prices WHERE catalog_id=$1 ORDER BY observed_at DESC LIMIT 50",[id]);
+  const {normalizeReference}=require("./market-reference-search");
+  res.setHeader("Cache-Control","private, no-store");res.json({references:prices.rows.map(price=>normalizeReference(item,price)).filter(Boolean),warnings});
+ }));
  router.get("/market/references",asyncRoute(async(req,res)=>{
   throttle(req.user.id);
   const term=txt(req.query.q,81);

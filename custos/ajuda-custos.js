@@ -130,7 +130,7 @@
       const wrapper=document.createElement("div");wrapper.className="cost-field";
       const top=document.createElement("div");top.className="cost-field-heading";
       const label=document.createElement("label");label.htmlFor=topic;
-      label.textContent=old.textContent.trim();
+      label.textContent=[...old.childNodes].filter(node=>node.nodeType===3).map(node=>node.textContent).join(" ").trim()||T[topic].name;
       top.append(label,trigger(topic));
       const small=slot("cost-help-slot");
       old.replaceWith(wrapper);wrapper.append(top,input,small);
@@ -390,3 +390,4 @@
   window.addEventListener("resize",relocate,{passive:true});
   document.addEventListener("keydown",event=>{if(event.key==="Escape"&&active)closeHelp(true);});
 })();
+

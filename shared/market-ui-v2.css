@@ -81,3 +81,15 @@ body.dark .zm-search-shell,html[data-theme="dark"] .zm-search-shell{--zm-purple:
 .zm-search-shell input.zm-simulation-input{display:block;position:static;width:100%;min-width:0;min-height:44px;margin:8px 0 0;padding:8px;border:1px solid var(--zm-line);border-radius:8px;background:var(--zm-surface);color:var(--zm-text);font:400 14px/1.5 Poppins,sans-serif}
 .zm-simulation-heading{font-size:13px;font-weight:600;margin:16px 0}
 @media(max-width:600px){.zm-simulation-fields{grid-template-columns:minmax(0,1fr)}}
+
+/* Comparison is a single touch target, insulated from the page's form-label rules. */
+.zm-search-shell .zm-result-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:0 8px 8px}
+.zm-search-shell button.zm-compare-toggle{display:inline-flex!important;flex-direction:row!important;align-items:center!important;justify-content:center;gap:8px;min-height:44px;width:auto!important;margin:0!important;padding:8px 12px;border:1px solid color-mix(in srgb,var(--zm-purple) 40%,transparent);border-radius:8px;background:transparent;color:var(--zm-purple);font:500 12px/1.5 Poppins,sans-serif;white-space:nowrap}
+.zm-search-shell button.zm-compare-toggle[aria-pressed="true"]{background:color-mix(in srgb,var(--zm-purple) 11%,transparent);border-color:var(--zm-purple)}
+.zm-compare-symbol{display:inline-grid;place-items:center;width:16px;height:16px;line-height:1;font-size:16px;flex:none}
+.zm-search-shell .zm-offer-summary{gap:8px 16px;padding:8px}
+.zm-search-shell .zm-result-meta{font-size:11px}
+.zm-search-shell .zm-kind{font-size:10px}
+.zm-search-shell .zm-offer-price{font-size:18px}
+.zm-search-shell .zm-catalog-item{border-top:1px solid var(--zm-line)}
+.zm-search-shell .zm-catalog-item .zm-catalog-load{margin:8px 0}

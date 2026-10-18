@@ -145,3 +145,32 @@ unidade, variante, data e procedência e testar consultas reais representativas.
 Registrar uma fonte ou importar descrições não resolve essa falta de preços.
 Uma nova fonte paga ou que exija autorização não foi habilitada sem credenciais
 ou assinatura fornecidas pelo responsável.
+
+## Correção da prévia móvel e do controle Comparar
+
+A primeira prévia móvel usava intencionalmente um adaptador com apenas duas
+observações de vassoura. Portanto, a ausência de macarrão naquela prévia não
+representava uma consulta ao catálogo completo. Esse adaptador foi removido.
+
+A prévia atual pesquisa uma extração de todos os 5.898 itens públicos e 150
+observações, obtida em 18/10/2026, e consulta Open Prices ou Compras.gov.br no
+servidor para os itens aplicáveis. A extração não contém usuários, sessões ou
+dados privados das empresas. Não é uma conexão contínua ao banco de produção.
+Não foram importados preços fictícios nem habilitados provedores pagos.
+
+Testes do catálogo: macarrão encontra 3 produtos; arroz encontra 11; vassoura
+96. A consulta de preços de macarrão ao Open Prices não retornou observações;
+a interface distingue produto existente e ausência de cotação. Celular não
+possui correspondência nesta extração: a cobertura continua limitada pelas
+fontes realmente integradas.
+
+O controle Comparar é um botão único, com toque mínimo de 44 px, ícone alinhado,
+texto e estado aria-pressed. A alteração evita as regras globais que separavam
+o checkbox e o rótulo na página de Custos. Os rótulos dos selects também foram
+corrigidos para não concatenar os textos de todas as opções. Datas de observação
+passam a preservar o dia civil informado pela fonte, sem retroceder um dia pelo
+fuso brasileiro.
+
+A listagem de produtos sem cotação fica visível e oferece consulta explícita da
+fonte. A rota autenticada /api/market/lookup valida o identificador e reaproveita
+os conectores existentes. 77 testes automatizados passaram após as correções.

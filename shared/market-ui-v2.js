@@ -4,7 +4,7 @@ if(!window.ZUZAPI)return;
 const el=(tag,cls,value)=>{const n=document.createElement(tag);n.className=cls||"";if(value!==undefined)n.textContent=String(value);return n;};
 const text=value=>String(value??"").trim();
 const money=value=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(value);
-const date=value=>value&&Number.isFinite(Date.parse(value))?new Date(value).toLocaleDateString("pt-BR"):"Não informada";
+const date=value=>value&&Number.isFinite(Date.parse(value))?new Date(value).toLocaleDateString("pt-BR",{timeZone:"UTC"}):"Não informada";
 const button=(label,fn,cls="")=>{const b=el("button","zm-button "+cls,label);b.type="button";b.addEventListener("click",fn);return b;};
 const safeURL=value=>{try{const u=new URL(value);return u.protocol==="https:"?u.href:null;}catch{return null;}};
 const sourceNames={openfoodfacts:"Open Food Facts",openbeautyfacts:"Open Beauty Facts",openproductsfacts:"Open Products Facts",openpetfoodfacts:"Open Pet Food Facts",catmat_archive_2018:"CATMAT",comprasgov:"Compras.gov.br"};
@@ -141,14 +141,18 @@ function mount(parent,mode){
   copy.append(el("span","zm-result-meta",(offer.observedAt?"Preço: "+date(offer.observedAt):"Atualização da loja não informada")+" · Consulta: "+date(offer.queriedAt)),el("span","zm-kind",kind(offer)));
   summary.append(copy,el("strong","zm-offer-price",money(offer.price)),el("span","zm-expand-label","Ver detalhes"));disclosure.append(summary);
   let populated=false;disclosure.addEventListener("toggle",()=>{if(disclosure.open&&!populated){disclosure.append(details(offer));populated=true;}});
-  const label=el("label","zm-compare-label");const checkbox=el("input","");checkbox.type="checkbox";checkbox.checked=selected.has(offer.key);checkbox.setAttribute("aria-label","Comparar "+offer.title+" de "+offer.seller);
-  checkbox.addEventListener("change",()=>{if(checkbox.checked&&selected.size>=3){checkbox.checked=false;status.textContent="Compare até três referências por vez.";return;}if(checkbox.checked)selected.add(offer.key);else selected.delete(offer.key);renderComparison();});
-  label.append(checkbox,el("span","","Comparar"));row.append(disclosure,label);return row;
+  const toggle=button("",()=>{
+   if(!selected.has(offer.key)&&selected.size>=3){status.textContent="Compare até três referências por vez.";return;}
+   if(selected.has(offer.key))selected.delete(offer.key);else selected.add(offer.key);
+   sync();renderComparison();
+  },"zm-compare-toggle");
+  const sync=()=>{const active=selected.has(offer.key);toggle.setAttribute("aria-pressed",String(active));toggle.setAttribute("aria-label",(active?"Remover da comparação: ":"Comparar: ")+offer.title+" de "+offer.seller);toggle.replaceChildren(el("span","zm-compare-symbol",active?"✓":"+"),el("span","",active?"Selecionado":"Comparar"));};
+  sync();const actions=el("div","zm-result-actions");actions.append(toggle);row.append(disclosure,actions);return row;
  }
  function render(){
   const open=new Set([...results.querySelectorAll("details[open]")].map(x=>x.dataset.key));
   results.replaceChildren();
-  if(offers.length){results.append(el("p","zm-results-title",offers.length+" referência(s) com preço"));for(const o of offers.slice(0,visibleCount)){const row=offerRow(o);results.append(row);if(open.has(o.key))row.querySelector("details").open=true;}}
+  if(offers.length){results.append(el("p","zm-results-title",offers.length+(offers.length===1?" referência com preço":" referências com preço")));for(const o of offers.slice(0,visibleCount)){const row=offerRow(o);results.append(row);if(open.has(o.key))row.querySelector("details").open=true;}}
   if(offers.length>visibleCount)results.append(button("Ver mais referências ("+(offers.length-visibleCount)+")",()=>{visibleCount+=8;render();},"zm-secondary"));
   renderComparison();
  }
@@ -164,9 +168,23 @@ function mount(parent,mode){
   render();
  }
  function renderCatalog(items){
-  catalog.replaceChildren();const withoutPrice=(items||[]).filter(item=>!offers.some(o=>o.item?.id===item.id));catalog.hidden=!withoutPrice.length;if(!withoutPrice.length)return;
-  catalog.append(el("summary","","Itens de catálogo sem preço disponível ("+withoutPrice.length+")"));
-  for(const item of withoutPrice){const d=el("details","zm-catalog-item");d.append(el("summary","",item.fullName||item.name));const facts=el("dl","zm-facts");fact(facts,"Fonte",sourceNames[item.source]||item.source);fact(facts,"Código",item.sourceId||item.id);fact(facts,"Marca",item.brand);fact(facts,"Modelo",item.model);fact(facts,"Quantidade",item.unit);fact(facts,"Código de barras",item.barcode);fact(facts,"Preço","Não disponível nesta consulta");d.append(facts,el("p","zm-caption","Este registro identifica um produto; não é uma oferta com preço."));sourceLink(d,item.attributes?.product_url);catalog.append(d);}
+  catalog.replaceChildren();catalog.open=true;const withoutPrice=(items||[]).filter(item=>!offers.some(o=>o.item?.id===item.id));catalog.hidden=!withoutPrice.length;if(!withoutPrice.length)return;
+  catalog.append(el("summary","","Produtos encontrados sem cotação ("+withoutPrice.length+")"));
+  for(const item of withoutPrice){
+   const d=el("details","zm-catalog-item");d.append(el("summary","",item.fullName||item.name));
+   const facts=el("dl","zm-facts");fact(facts,"Fonte",sourceNames[item.source]||item.source);fact(facts,"Código",item.sourceId||item.id);fact(facts,"Marca",item.brand);fact(facts,"Modelo",item.model);fact(facts,"Quantidade",item.unit);fact(facts,"Código de barras",item.barcode);fact(facts,"Preço","Ainda sem cotação nesta consulta");
+   d.append(facts,el("p","zm-caption","Produto identificado no catálogo. A ausência de cotação não significa preço zero."));sourceLink(d,item.attributes?.product_url);
+   const outcome=el("div","zm-catalog-quotes");
+   const lookup=button("Consultar preços públicos",async()=>{
+    lookup.disabled=true;outcome.replaceChildren(el("p","zm-caption","Consultando a fonte..."));
+    try{const result=await request("GET","/market/lookup?id="+encodeURIComponent(item.id));
+     if(result.references?.length){add(result.references);outcome.replaceChildren(el("p","zm-success","Encontramos "+result.references.length+" referências. Os preços aparecem na lista acima."));}
+     else outcome.replaceChildren(el("p","zm-caption","Esta fonte não retornou uma cotação para o produto. Você pode usar a precificação manual."));
+    }catch{outcome.replaceChildren(el("p","zm-error","Fonte indisponível agora. Tente novamente ou continue manualmente."));}
+    finally{lookup.disabled=false;}
+   },"zm-secondary zm-catalog-load");
+   d.append(lookup,outcome);catalog.append(d);
+  }
  }
  form.addEventListener("submit",async event=>{
   event.preventDefault();event.stopPropagation?.();const term=input.value.trim();if(term.length<3||term.length>80){status.textContent="Digite entre 3 e 80 caracteres.";input.focus();return;}
@@ -190,7 +208,7 @@ function mount(parent,mode){
    })()
   ]);
   if(token!==serial)return;busy(false);renderCatalog(catalogItems);warnings.textContent=[...new Set(messages)].join(" ");
-  status.textContent=offers.length?"Consulta concluída. Abra os detalhes ou marque até três referências para comparar.":successes?"Não encontramos preços verificáveis para esta pesquisa. Tente outra descrição ou continue com a precificação manual.":"Não foi possível concluir a consulta. Tente novamente ou continue com a precificação manual.";
+  status.textContent=offers.length?"Consulta concluída. Abra os detalhes ou marque até três referências para comparar.":catalogItems.length?"Encontramos "+catalogItems.length+" produtos no catálogo. Abra um resultado para consultar a identificação e procurar preços.":successes?"Não encontramos preços verificáveis para esta pesquisa. Tente outra descrição ou continue com a precificação manual.":"Não foi possível concluir a consulta. Tente novamente ou continue com a precificação manual.";
  });
 }
 // Reuse the existing page mounts; no overlay, new page or automatic navigation on selection.

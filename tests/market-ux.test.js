@@ -40,7 +40,7 @@ test("falha parcial preserva ofertas e oferece precificação manual",async()=>{
 });
 test("ausência de preços não apresenta catálogo como oferta",async()=>{
  const {root}=setup(async(_,url)=>url.includes("/references")?{references:[],catalog:[offer.item]}:{enabled:false,offers:[]});
- await search(root);assert.equal(root.all(x=>x.className==="zm-offer").length,0);assert.ok(root.find(x=>x.className==="zm-status").textContent.includes("Não encontramos preços verificáveis"));assert.equal(root.find(x=>x.className==="zm-catalog").hidden,false);
+ await search(root);assert.equal(root.all(x=>x.className==="zm-offer").length,0);assert.ok(root.find(x=>x.className==="zm-status").textContent.includes("produtos no catálogo"));assert.equal(root.find(x=>x.className==="zm-catalog").hidden,false);
 });
 test("requisição que nunca responde termina e libera a interface",async()=>{
  const {root}=setup(()=>new Promise(()=>{}),(fn)=>setTimeout(fn,5));await search(root);
@@ -70,4 +70,16 @@ test("valores privados ausentes não viram zero e simulação exige valores expl
 });
 test("registro público antigo mantém o aviso de idade visível",async()=>{
  const {root}=setup(async(_,url)=>url.includes("/references")?{references:[{...offer,priceType:"public_purchase",stale:true}]}:{offers:[]});await search(root);assert.ok(root.find(x=>x.className==="zm-kind").textContent.includes("observação antiga"));
+});
+test("Comparar é um único botão com estado acessível, sem checkbox solto",async()=>{
+ const {root}=setup(async(_,url)=>url.includes('/references')?{references:[offer,{...offer,id:'outro',seller:'Loja B'}]}:{offers:[]});await search(root);
+ const toggles=root.all(x=>x.tag==='button'&&x.className.includes('zm-compare-toggle'));assert.equal(toggles.length,2);assert.equal(root.all(x=>x.tag==='input'&&x.type==='checkbox').length,0);
+ assert.equal(toggles[0]['aria-pressed'],'false');toggles[0].handlers.click[0]();assert.equal(toggles[0]['aria-pressed'],'true');toggles[1].handlers.click[0]();assert.equal(root.find(x=>x.className==='zm-comparison').hidden,false);
+});
+test("catálogo sem preço fica visível e oferece consulta na fonte",async()=>{
+ const {root}=setup(async(_,url)=>url.includes('/references')?{references:[],catalog:[offer.item]}:{offers:[]});await search(root,'macarrao');
+ const catalog=root.find(x=>x.className==='zm-catalog');assert.equal(catalog.hidden,false);assert.equal(catalog.open,true);assert.ok(root.find(x=>x.tag==='button'&&x.textContent==='Consultar preços públicos'));assert.ok(root.find(x=>x.className==='zm-status').textContent.includes('produtos no catálogo'));
+});
+test("data de preço é preservada como dia civil, sem retroceder por fuso horário",async()=>{
+ const {root}=setup(async(_,url)=>url.includes('/references')?{references:[offer]}:{offers:[]});await search(root);assert.ok(root.all(x=>x.className==='zm-result-meta').some(x=>x.textContent.includes('17/10/2026')));
 });
