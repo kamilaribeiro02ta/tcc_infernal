@@ -41,7 +41,7 @@ function taxContext(body={}){
 async function ibptEstimate(body,context){
  if(!body.useIbpt)return null;
  if(!process.env.IBPT_TOKEN)return {available:false,warning:"Integração IBPT exige token autorizado no servidor."};
- const cnpj=clean(body.cnpj,14).replace(/\D/g,"");
+ const cnpj=String(body.cnpj||"").replace(/\D/g,"").slice(0,14);
  const code=context.activity==="servico"?context.serviceCode:context.ncm;
  if(cnpj.length!==14||!context.uf||!code||!context.salePrice)
   return {available:false,warning:"Para consulta IBPT é necessário CNPJ, UF, código fiscal e preço. Nenhum dado é armazenado."};
