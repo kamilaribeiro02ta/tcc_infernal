@@ -470,9 +470,13 @@ const product=document.getElementById("nameInput")?.closest(".field");
 if(product){const target=make("div","zm-mount");product.after(target);marketBox(target,"products");}
 const cost=document.getElementById("compRows")?.parentElement;
 if(cost){const target=make("div","zm-mount");cost.append(target);marketBox(target,"costs");}
-const simulations=document.getElementById("marketStats");
-if(simulations?.parentElement){
- const target=make("div","zm-mount");simulations.parentElement.insertBefore(target,simulations);
- marketBox(target,"simulations");
+const simulationMount=document.getElementById("marketSearchMount");
+if(simulationMount)marketBox(simulationMount,"simulations");
+else{
+ const simulations=document.getElementById("marketStats");
+ if(simulations?.parentElement){
+  const target=make("div","zm-mount");simulations.parentElement.insertBefore(target,simulations);
+  marketBox(target,"simulations");
+ }
 }
 })();
