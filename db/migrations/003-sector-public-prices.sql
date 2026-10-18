@@ -9,3 +9,6 @@ CREATE TABLE IF NOT EXISTS zuz_sector_public_prices (
 );
 CREATE INDEX IF NOT EXISTS idx_sector_prices_name ON zuz_sector_public_prices USING gin (lower(product_name) gin_trgm_ops);
 CREATE INDEX IF NOT EXISTS idx_sector_prices_date ON zuz_sector_public_prices(source,reference_date DESC);
+
+-- Nenhum acesso direto por navegador; consultas públicas são mediadas pelo backend autenticado.
+ALTER TABLE zuz_sector_public_prices ENABLE ROW LEVEL SECURITY;
