@@ -43,3 +43,32 @@ Na Vercel, a variável DATABASE_URL estava presente. SerpApi, Keepa e IBPT depen
 5. Confirmar os preços, a origem e o SHA do deploy antes de anunciar funcionalidade operacional.
 
 Situação: mudanças salvas na branch de desenvolvimento; sem merge na main e sem publicação manual em produção.
+
+
+## Segunda revisão — usabilidade para pessoas sem conhecimento técnico
+
+Mudanças realizadas somente no frontend, na branch de desenvolvimento, sem alterar backend, banco, `main` ou Vercel Production:
+
+- **Entrada acessível:** um único bloco para pesquisar por nome, marca ou código. É o principal destaque da seção de mercado, inserido próximo da escolha do produto em Simulações; em Custos, a inclusão manual permanece sob `Minhas referências de preço`.
+- **Espaço de pesquisa focado:** abre uma janela própria com exemplos de pesquisa, mensagens simples e resultados organizados como linhas de produtos. Não há formulário fiscal ou documentação de APIs na primeira tela.
+- **Ficha que sobe:** ao selecionar o produto, uma folha/cartão surge de baixo no celular e uma gaveta surge à direita no computador. O restante fica ao fundo; é possível fechar pelo fundo, pelo botão **Voltar aos produtos**, pela tecla Esc e por gesto descendente no topo da ficha.
+- **Hierarquia de preço:** quando o backend fornece média comercial validada, **Preço médio nas lojas** é o destaque, seguido de menor/maior preço e observações das ofertas. Sem uma média validada, mostra ofertas individuais; sem preços, informa diretamente **Ainda não encontramos preços em lojas** e orienta a continuar a precificação manual.
+- **Divulgação progressiva:** marcas, modelos, embalagem e condições essenciais aparecem primeiro. Detalhes do catálogo, impostos, histórico e informações técnicas ficam em **Ver detalhes e informações adicionais**, recolhido por padrão.
+- **Prevenção de erros:** anúncios semelhantes são apresentados como anúncios a verificar na loja, nunca misturados à média confirmada. A importação exige confirmação; o preço anunciado não substitui custos nem o preço de venda.
+- **Acessibilidade e controle:** botão de fechar com área de toque de 44 px, foco no cartão ao abrir e retorno ao produto ao fechar, teclado/Esc, `aria-live` nos estados e desativação da animação para quem prefere movimento reduzido.
+- **Identidade preservada:** Poppins, cor roxa e modo escuro/claro existentes; sem alterar sidebar nem o design das outras seções.
+
+### Heurísticas aplicadas
+
+1. **Visibilidade do estado:** busca, carregamento, indisponibilidade e sucesso apresentam mensagens contextuais.
+2. **Correspondência com a realidade:** a pessoa procura produto e preço, não APIs, NCM ou bancos.
+3. **Controle e liberdade:** voltar, fechar, gesto descendente e cancelar confirmações.
+4. **Consistência:** mesmo fluxo nas três páginas e componentes da identidade ZUZ.
+5. **Prevenção de erros:** cotações sem validação não viram média; nada sobrescreve custos.
+6. **Reconhecimento:** resultados com nome, marca e embalagem antes dos detalhes.
+7. **Flexibilidade:** busca por texto, marca, código e sugestões.
+8. **Minimalismo:** elementos técnicos deixam a interface principal.
+9. **Recuperação de falhas:** mensagens em linguagem simples com próxima ação disponível.
+10. **Ajuda contextual:** histórico, dados de origem e tributos acessíveis por expansão somente quando solicitados.
+
+Os testes determinísticos da interface precisam continuar passando e a validação com navegador real e público-alvo é necessária antes de considerar a experiência definitivamente aprovada. A tela foi implementada e verificada em testes simulados, **não foi publicada na versão principal**.
