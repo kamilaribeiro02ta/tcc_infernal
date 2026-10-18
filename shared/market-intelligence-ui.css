@@ -22,3 +22,16 @@
 .zuz-market-intel-ncm-results{max-height:290px;overflow:auto}
 .zuz-market-intel-links{display:flex;flex-wrap:wrap;gap:5px 14px;margin:10px 0}
 @media(max-width:540px){.zuz-market-intel-form{grid-template-columns:1fr}.zuz-market-intel-years{grid-template-columns:1fr}}
+
+/* Fichas ampliadas: fonte, preço, histórico e contexto tributário. */
+.zuz-market-x{display:grid;gap:12px;margin:16px 0 0;min-width:0}
+.zuz-market-x-panel{border:1px solid var(--zm-edge);border-radius:13px;background:var(--zm-card);padding:14px;min-width:0}
+.zuz-market-x-panel .zuz-v3-group{margin:0 0 7px}
+.zuz-market-x-card{display:grid;gap:5px;padding:10px 0;border-bottom:1px solid var(--zm-edge);min-width:0;overflow-wrap:anywhere}
+.zuz-market-x-card:last-child{border-bottom:0}
+.zuz-market-x-years{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:6px 0}
+.zuz-market-x-year{display:grid;gap:3px;border:1px solid var(--zm-edge);background:var(--zm-bg);border-radius:10px;padding:10px}
+.zuz-market-x-year small,.zuz-market-x-year span{font:400 11px/1.5 Poppins,sans-serif;color:var(--zm-muted)}
+.zuz-market-x-year strong{font:600 14px/1.5 Poppins,sans-serif;color:var(--zm-ink)}
+.zuz-market-x-chart{display:block;width:100%;max-height:135px;margin:8px 0;color:var(--purple,#6a3df0);overflow:visible}
+@media(max-width:420px){.zuz-market-x-panel{padding:11px}.zuz-market-x-years{grid-template-columns:1fr}}
