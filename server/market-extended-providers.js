@@ -45,7 +45,8 @@ async function keepaByProduct(code,asin){
  else return {enabled:true,products:[],warning:"Keepa Brasil: pesquise por GTIN/EAN ou ASIN (não há busca livre brasileira confirmada nesta integração)."};
  const result=await limitedJSON("https://api.keepa.com/product?"+params,{limit:6000000});
  const products=(Array.isArray(result.products)?result.products:[]).map(keepaProduct).filter(Boolean).slice(0,5);
- return {enabled:true,products,warning:products.length?"":"Produto não encontrado na Amazon Brasil pelo identificador informado."};
+ const data={enabled:true,products,warning:products.length?"":"Produto não encontrado na Amazon Brasil pelo identificador informado."};
+ if(cache.size>300)cache.clear();cache.set(key,{at:Date.now(),data});return data;
 }
 function parseIPCA(rows){
  return (Array.isArray(rows)?rows:[]).flatMap(row=>{
