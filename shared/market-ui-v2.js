@@ -35,7 +35,7 @@ function marketBox(parent,mode){
  const info=DOM("div","zuz-v3-info");info.hidden=true;
  const results=DOM("div","zuz-v3-results");
  root.append(header,form,archive,status,info,results);parent.append(root);
- const state={list:[],limit:8,selected:null,sequence:0};
+ const state={list:[],limit:8,selected:null,sequence:0,archivePage:0,archiveHasMore:false};
  function notice(t){status.textContent=t;}
  function empty(parent,message){parent.replaceChildren(DOM("p","zuz-v3-sub",message));}
  function resultCard(row){
@@ -67,6 +67,7 @@ function marketBox(parent,mode){
   if(state.limit<state.list.length)results.append(button("Mostrar mais resultados ("+(state.list.length-state.limit)+")",()=>{
    state.limit=Math.min(state.limit+8,state.list.length);paintList();
   },"zuz-v3-more"));
+  if(state.limit>=state.list.length&&state.archiveHasMore)results.append(button("Carregar mais referências técnicas",loadMoreArchive,"zuz-v3-more"));
  }
  form.addEventListener("submit",e=>{e.preventDefault();performSearch()});
  archiveInput.addEventListener("change",()=>{if(search.value.trim().length>=2)performSearch()});
@@ -81,11 +82,31 @@ function marketBox(parent,mode){
    const response=await api.request("GET","/market/v2/search?"+params.toString());
    if(token!==state.sequence)return;
    state.list=[...(response.commercial||[]),...(response.archived||[])];
+   state.archivePage=0;state.archiveHasMore=!!response.archiveHasMore;
    state.limit=8;paintList();
    const n=response.totals||{commercial:0,archived:0};
    notice(n.commercial+" item(ns) de catálogos atuais; "+n.archived+" registro(s) técnicos de 2018. "+(response.warnings||[]).join(" "));
   }catch(error){if(token===state.sequence){empty(results,"Não foi possível completar a pesquisa: "+error.message+". A precificação manual continua disponível.");notice("Falha na consulta.");}}
   finally{if(token===state.sequence)submit.disabled=false;}
+ }
+ async function loadMoreArchive(){
+  const q=search.value.trim();
+  if(q.length<2||!archiveInput.checked)return;
+  const page=state.archivePage+1,token=++state.sequence;
+  state.archiveHasMore=false;paintList();notice("Carregando mais referências...");
+  try{
+   const params=new URLSearchParams({q,historical:"true",page:String(page)});
+   if(kind.value)params.set("kind",kind.value);
+   const response=await api.request("GET","/market/v2/search?"+params.toString());
+   if(token!==state.sequence)return;
+   const previous=new Set(state.list.map(row=>row.item_id));
+   for(const row of response.archived||[])if(!previous.has(row.item_id))state.list.push(row);
+   state.archivePage=page;state.archiveHasMore=!!response.archiveHasMore;
+   state.limit=state.list.length;paintList();
+   notice("Mais referências carregadas. Registros técnicos não representam ofertas nem preços atuais.");
+  }catch(error){
+   if(token===state.sequence){state.archiveHasMore=true;paintList();notice("Não foi possível carregar mais registros: "+error.message);}
+  }
  }
  function field(label,value){
   if(value===null||value===undefined||String(value).trim()==="")return null;
