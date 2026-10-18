@@ -49,13 +49,14 @@ function marketBox(parent,mode){
   make("h3","zm-launch-title",mode==="products"?"Consultar preços de mercado":"O mercado, sem complicação."),
   make("p","zm-launch-subtitle",mode==="products"?
    "Confira uma referência antes de definir seu preço.":"Busque um produto. Compare preços. Tome a sua decisão."));
- const launchForm=make("form","zm-launch-form"),launchField=make("label","zm-launch-field");
+ const launchForm=make("div","zm-launch-form"),launchField=make("label","zm-launch-field");
+ launchForm.setAttribute("role","search");
  launchField.append(make("span","zm-launch-icon","⌕"));
  const launchInput=make("input","zm-launch-input");launchInput.type="search";launchInput.maxLength=80;
  launchInput.placeholder="Produto, marca ou código de barras";
  launchInput.setAttribute("aria-label","Pesquisar produto no mercado");
  launchField.append(launchInput);
- const launchSubmit=make("button","zm-launch-submit","Pesquisar");launchSubmit.type="submit";
+ const launchSubmit=make("button","zm-launch-submit","Pesquisar");launchSubmit.type="button";
  launchForm.append(launchField,launchSubmit);
  launcher.append(launchCopy,launchForm);
  const overlay=make("div","zm-overlay");overlay.hidden=true;
@@ -111,7 +112,8 @@ function marketBox(parent,mode){
   if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
  });
- launchForm.addEventListener("submit",e=>{e.preventDefault();openExplorer(launchInput.value.trim());});
+ launchSubmit.addEventListener("click",()=>openExplorer(launchInput.value.trim()));
+ launchInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.stopPropagation?.();openExplorer(launchInput.value.trim());}});
  function inform(message){status.textContent=message||"";}
  function empty(el,message){el.replaceChildren(make("p","zm-empty",message));}
  function payloadOf(item){
