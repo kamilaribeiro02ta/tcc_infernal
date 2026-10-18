@@ -41,7 +41,11 @@ function marketBox(parent,mode){
  inputLabel.append(input);form.append(inputLabel,searchButton);
  const status=make("p","zm-status");status.setAttribute("role","status");status.setAttribute("aria-live","polite");
  const results=make("div","zm-results");results.setAttribute("aria-label","Resultados da pesquisa");
- const detail=make("div","zm-detail");detail.hidden=true;detail.setAttribute("aria-live","polite");
+ const detail=make("section","zm-detail");detail.hidden=true;
+ detail.setAttribute("role","region");detail.setAttribute("aria-label","Ficha do produto");
+ detail.setAttribute("aria-live","polite");detail.setAttribute("tabindex","-1");
+ const sheetBackdrop=make("div","zm-sheet-backdrop");sheetBackdrop.hidden=true;
+ sheetBackdrop.setAttribute("aria-hidden","true");
  // A consulta abre um espaço focado. Nenhum catálogo ou formulário técnico é mostrado na página.
  const launcher=make("section","zm-launcher"+(mode==="products"?" zm-launcher-compact":""));
  const launchCopy=make("div","zm-launch-copy");
@@ -81,12 +85,36 @@ function marketBox(parent,mode){
  }
  welcome.append(shortcuts);
  const dialogBody=make("div","zm-dialog-body");
- root.append(headline,form,status,welcome,results,detail);
+ root.append(headline,form,status,welcome,results);
  results.hidden=true;
- dialogBody.append(root);dialog.append(toolbar,dialogBody);overlay.append(dialog);
+ dialogBody.append(root,sheetBackdrop,detail);dialog.append(toolbar,dialogBody);overlay.append(dialog);
  parent.append(launcher);
  (document.body||parent).append(overlay);
- let sequence=0,currentTerm="",chosen=null,lastFocus=null;
+ let sequence=0,currentTerm="",chosen=null,lastFocus=null,lastProductTrigger=null;
+ function showSheet(trigger){
+  lastProductTrigger=trigger||document.activeElement||null;
+  sheetBackdrop.hidden=false;detail.hidden=false;detail.scrollTop=0;
+  root.classList?.add("zm-selected");
+  detail.focus?.({preventScroll:true});
+ }
+ function closeSheet(){
+  sequence++;chosen=null;sheetBackdrop.hidden=true;detail.hidden=true;
+  root.classList?.remove("zm-selected");
+  detail.replaceChildren();
+  lastProductTrigger?.focus?.({preventScroll:true});
+ }
+ sheetBackdrop.addEventListener("click",closeSheet);
+ // Um movimento para baixo fecha a ficha no celular, sem bloquear a rolagem de seu conteúdo.
+ let startY=null,startScroll=0;
+ detail.addEventListener("touchstart",event=>{
+  const touch=event.touches?.[0];if(!touch)return;
+  startY=touch.clientY;startScroll=detail.scrollTop||0;
+ },{passive:true});
+ detail.addEventListener("touchend",event=>{
+  const touch=event.changedTouches?.[0];
+  if(startY!==null&&touch&&startScroll<=1&&touch.clientY-startY>110)closeSheet();
+  startY=null;
+ },{passive:true});
  function openExplorer(term=""){
   lastFocus=document.activeElement||null;
   overlay.hidden=false;
@@ -96,16 +124,22 @@ function marketBox(parent,mode){
   if(term.trim().length>=2)search();
  }
  function closeExplorer(){
-  sequence++;overlay.hidden=true;
+  if(!detail.hidden)closeSheet();
+  sequence++;overlay.hidden=true;sheetBackdrop.hidden=true;
   document.body?.classList?.remove("zm-market-open");
   lastFocus?.focus?.();
  }
  closeButton.addEventListener("click",closeExplorer);
  overlay.addEventListener("click",e=>{if(e.target===overlay)closeExplorer();});
  overlay.addEventListener("keydown",e=>{
-  if(e.key==="Escape"){e.preventDefault();closeExplorer();return;}
+  if(e.key==="Escape"){
+   e.preventDefault();
+   if(!detail.hidden)closeSheet();else closeExplorer();
+   return;
+  }
   if(e.key!=="Tab"||!dialog.querySelectorAll)return;
-  const focusable=[...dialog.querySelectorAll("button:not([disabled]),input:not([disabled]),select:not([disabled]),a[href],summary")]
+  const scope=detail.hidden?dialog:detail;
+  const focusable=[...scope.querySelectorAll("button:not([disabled]),input:not([disabled]),select:not([disabled]),a[href],summary")]
    .filter(x=>!x.closest("[hidden]")&&x.getClientRects().length);
   if(!focusable.length)return;
   const first=focusable[0],last=focusable[focusable.length-1];
@@ -142,7 +176,7 @@ function marketBox(parent,mode){
  }
  function resultButton(row){
   const title=text(row.display_name||row.full_name||"Produto identificado");
-  const b=btn("",()=>selectProduct(row),"zm-result");
+  const b=btn("",()=>selectProduct(row,b),"zm-result");
   const copy=make("span","zm-result-copy");
   copy.append(make("strong","zm-result-name",title.slice(0,110)));
   const secondary=[row.brand,row.model].filter(Boolean).join(" · ");
@@ -155,7 +189,7 @@ function marketBox(parent,mode){
   return b;
  }
  function offerButton(offer){
-  const b=btn("",()=>selectOffer(offer),"zm-result");
+  const b=btn("",()=>selectOffer(offer,b),"zm-result");
   const copy=make("span","zm-result-copy");
   copy.append(make("strong","zm-result-name",text(offer.title).slice(0,110)),
     make("small","zm-result-meta",text(offer.seller)+" · "+money(offer.price)+" · conferir na loja"));
@@ -182,11 +216,9 @@ function marketBox(parent,mode){
    window.location.href="../produtos/produtos.html";
   }
  }
- function selectOffer(offer){
-  ++sequence;results.hidden=false;detail.hidden=false;root.classList?.add("zm-selected");detail.replaceChildren();
-  const back=btn("← Voltar aos resultados",()=>{
-   ++sequence;results.hidden=false;detail.hidden=true;root.classList?.remove("zm-selected");detail.replaceChildren();input.focus();
-  },"zm-back");
+ function selectOffer(offer,trigger){
+  ++sequence;results.hidden=false;detail.replaceChildren();showSheet(trigger);
+  const back=btn("Voltar aos produtos",closeSheet,"zm-back");
   const head=make("div","zm-product-heading");
   head.append(make("h3","zm-selected-title",offer.title),
    make("p","zm-product-identity",offer.seller));
@@ -267,6 +299,7 @@ function marketBox(parent,mode){
   if(term.length<2){inform("Digite pelo menos dois caracteres para pesquisar.");input.focus();return;}
   const token=++sequence;currentTerm=term;chosen=null;
   root.classList?.remove("zm-selected");welcome.hidden=true;
+  sheetBackdrop.hidden=true;
   searchButton.disabled=true;detail.hidden=true;results.hidden=false;detail.replaceChildren();
   empty(results,"Procurando produtos...");inform("");
   try{
@@ -502,16 +535,17 @@ function marketBox(parent,mode){
    advanced.append(historical);
   }
  }
- async function selectProduct(row){
-  const token=++sequence;chosen=null;detail.hidden=false;results.hidden=false;root.classList?.add("zm-selected");
-  empty(detail,"Abrindo produto...");inform("");
+ async function selectProduct(row,trigger){
+  const token=++sequence;chosen=null;results.hidden=false;
+  detail.replaceChildren();showSheet(trigger);
+  const loading=make("div","zm-sheet-loading");
+  loading.append(make("span","zm-loader-dot"),make("p","","Preparando a ficha do produto..."));
+  detail.append(loading);inform("");
   try{
    const response=await api.request("GET","/market/v2/item?id="+encodeURIComponent(row.item_id));
    if(token!==sequence)return;
    const item=response.item;chosen=item;detail.replaceChildren();
-   const back=btn("← Voltar aos resultados",()=>{
-    sequence++;chosen=null;detail.hidden=true;results.hidden=false;root.classList?.remove("zm-selected");detail.replaceChildren();input.focus();
-   },"zm-back");
+   const back=btn("Voltar aos produtos",closeSheet,"zm-back");
    const head=make("div","zm-product-heading");
    head.append(make("h3","zm-selected-title",item.name),
     make("p","zm-product-identity",[item.brand,item.model,item.unit].filter(Boolean).join(" · ")||"Produto selecionado"));
