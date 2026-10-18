@@ -34,7 +34,31 @@ function marketBox(parent,mode){
  const status=DOM("p","zuz-v3-status");status.setAttribute("role","status");status.setAttribute("aria-live","polite");
  const info=DOM("div","zuz-v3-info");info.hidden=true;
  const results=DOM("div","zuz-v3-results");
- root.append(header,form,archive,status,info,results);parent.append(root);
+ const coverage=DOM("details","zuz-v3-coverage");
+ coverage.append(DOM("summary","zuz-v3-check","Ver cobertura das fontes e preços existentes"));
+ const coverageBody=DOM("div","zuz-v3-coverage-body");
+ coverage.append(coverageBody);
+ coverage.addEventListener("toggle",async()=>{
+  if(!coverage.open)return;
+  coverageBody.replaceChildren(DOM("p","zuz-v3-muted","Lendo somente as estatísticas públicas do banco..."));
+  try{
+   const data=await api.request("GET","/market/coverage");
+   coverageBody.replaceChildren();
+   const labels={openfoodfacts:"Open Food Facts · alimentos",openbeautyfacts:"Open Beauty Facts · cosméticos",
+    openproductsfacts:"Open Products Facts · gerais",openpetfoodfacts:"Open Pet Food Facts · animais",
+    catmat_archive_2018:"CATMAT · acervo técnico de 2018",comprasgov:"Compras.gov.br"};
+   const lookup=new Map((data.catalog||[]).map(x=>[x.source,(Number(x.items)||0)]));
+   for(const [key,title] of Object.entries(labels)){
+    const line=DOM("p","zuz-v3-muted",title+": "+(lookup.get(key)||0)+" item(ns) no banco");coverageBody.append(line);
+   }
+   const count=(data.prices||[]).reduce((n,x)=>n+(Number(x.records)||0),0);
+   const sector=(data.sector||[]).reduce((n,x)=>n+(Number(x.records)||0),0);
+   coverageBody.append(DOM("p","zuz-v3-muted","Preços com registro no banco: "+count+
+    " · BPS/SINAPI importados: "+sector));
+   coverageBody.append(DOM("p","zuz-v3-muted","Catálogo não é tabela de preços. Algumas integrações exigem credenciais ou importação."));
+  }catch(error){coverageBody.replaceChildren(DOM("p","zuz-v3-muted","Não foi possível carregar a cobertura: "+error.message));}
+ });
+ root.append(header,form,archive,coverage,status,info,results);parent.append(root);
  const state={list:[],limit:8,selected:null,sequence:0,archivePage:0,archiveHasMore:false};
  function notice(t){status.textContent=t;}
  function empty(parent,message){parent.replaceChildren(DOM("p","zuz-v3-sub",message));}
