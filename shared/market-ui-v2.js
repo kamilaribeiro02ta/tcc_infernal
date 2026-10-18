@@ -2,273 +2,378 @@
 "use strict";
 if(!window.ZUZAPI)return;
 const api=window.ZUZAPI;
-const DOM=(tag,cls,value)=>{
- const n=document.createElement(tag);if(cls)n.className=cls;
- if(value!==undefined)n.textContent=value;return n;
+const make=(tag,cls,content)=>{
+ const node=document.createElement(tag);
+ if(cls)node.className=cls;
+ if(content!==undefined)node.textContent=String(content);
+ return node;
 };
-const button=(name,fn,cls="")=>{
- const b=DOM("button","zuz-v3-btn "+cls,name);b.type="button";b.addEventListener("click",fn);return b;
+const money=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number(n));
+const date=n=>{if(!n)return null;const d=new Date(n);return Number.isFinite(d.valueOf())?d.toLocaleDateString("pt-BR"):null;};
+const text=n=>String(n??"").trim();
+const safeLink=(label,url)=>{
+ try{
+  const u=new URL(url);
+  if(u.protocol!=="https:")return null;
+  const a=make("a","zm-link",label);a.href=u.href;a.target="_blank";a.rel="noopener noreferrer";return a;
+ }catch{return null;}
 };
-const labels={openfoodfacts:"Open Food Facts",openbeautyfacts:"Open Beauty Facts",
- openproductsfacts:"Open Products Facts",openpetfoodfacts:"Open Pet Food Facts",
- comprasgov:"Compras.gov.br",catmat_archive_2018:"CATMAT · acervo 2018",openprices:"Open Prices"};
-const source=s=>labels[s]||String(s||"Fonte pública");
-const money=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number(n)||0);
-const date=x=>{if(!x)return "não informado";const d=new Date(x);return Number.isFinite(d.getTime())?d.toLocaleDateString("pt-BR"):"não informado"};
-const safeImage=url=>/^https:\/\/images\.openfoodfacts\.org\/images\//.test(String(url||""))?url:null;
+const btn=(title,action,extra="")=>{
+ const b=make("button","zm-button "+extra,title);b.type="button";b.addEventListener("click",action);return b;
+};
+const rowText=(parent,label,value)=>{
+ if(!text(value))return;
+ const line=make("div","zm-fact");
+ line.append(make("span","zm-fact-label",label),make("span","zm-fact-value",value));
+ parent.append(line);
+};
 function marketBox(parent,mode){
- const root=DOM("section","zuz-v3");root.setAttribute("aria-label","Referências de mercado");
- const header=DOM("div","zuz-v3-head");
- header.append(DOM("h3","zuz-v3-title","Consultar mercado"),
-  DOM("p","zuz-v3-sub","Encontre produtos e seus detalhes. Preços aparecem somente quando existem cotações públicas verificáveis."));
- const form=DOM("form","zuz-v3-search");
- const search=DOM("input","zuz-v3-control");
- search.type="search";search.maxLength=80;search.placeholder="Produto, marca ou código de barras";search.setAttribute("aria-label","Pesquisar produtos ou serviços");
- const kind=DOM("select","zuz-v3-control zuz-v3-kind");kind.setAttribute("aria-label","Tipo de item");
- for(const [v,t] of [["","Todos"],["product","Produtos"],["service","Serviços"]]){const o=DOM("option","",t);o.value=v;kind.append(o)}
- const submit=DOM("button","zuz-v3-btn zuz-v3-primary","Pesquisar");submit.type="submit";
- form.append(search,kind,submit);
- const archiveInput=DOM("input");archiveInput.type="checkbox";archiveInput.checked=true;archiveInput.id="zuz-v3-historical-"+mode;
- const archiveLabel=DOM("label","zuz-v3-check","Incluir catálogo técnico antigo (2018)");archiveLabel.htmlFor=archiveInput.id;
- const archive=DOM("div","zuz-v3-archive");archive.append(archiveInput,archiveLabel);
- const status=DOM("p","zuz-v3-status");status.setAttribute("role","status");status.setAttribute("aria-live","polite");
- const info=DOM("div","zuz-v3-info");info.hidden=true;
- const results=DOM("div","zuz-v3-results");
- const coverage=DOM("details","zuz-v3-coverage");
- coverage.append(DOM("summary","zuz-v3-check","Ver cobertura das fontes e preços existentes"));
- const coverageBody=DOM("div","zuz-v3-coverage-body");
- coverage.append(coverageBody);
- coverage.addEventListener("toggle",async()=>{
-  if(!coverage.open)return;
-  coverageBody.replaceChildren(DOM("p","zuz-v3-muted","Lendo somente as estatísticas públicas do banco..."));
-  try{
-   const data=await api.request("GET","/market/coverage");
-   coverageBody.replaceChildren();
-   const labels={openfoodfacts:"Open Food Facts · alimentos",openbeautyfacts:"Open Beauty Facts · cosméticos",
-    openproductsfacts:"Open Products Facts · gerais",openpetfoodfacts:"Open Pet Food Facts · animais",
-    catmat_archive_2018:"CATMAT · acervo técnico de 2018",comprasgov:"Compras.gov.br"};
-   const lookup=new Map((data.catalog||[]).map(x=>[x.source,(Number(x.items)||0)]));
-   for(const [key,title] of Object.entries(labels)){
-    const line=DOM("p","zuz-v3-muted",title+": "+(lookup.get(key)||0)+" item(ns) no banco");coverageBody.append(line);
-   }
-   const count=(data.prices||[]).reduce((n,x)=>n+(Number(x.records)||0),0);
-   const sector=(data.sector||[]).reduce((n,x)=>n+(Number(x.records)||0),0);
-   coverageBody.append(DOM("p","zuz-v3-muted","Preços com registro no banco: "+count+
-    " · BPS/SINAPI importados: "+sector));
-   coverageBody.append(DOM("p","zuz-v3-muted","Catálogo não é tabela de preços. Algumas integrações exigem credenciais ou importação."));
-  }catch(error){coverageBody.replaceChildren(DOM("p","zuz-v3-muted","Não foi possível carregar a cobertura: "+error.message));}
- });
- root.append(header,form,archive,coverage,status,info,results);parent.append(root);
- const state={list:[],limit:8,selected:null,sequence:0,archivePage:0,archiveHasMore:false};
- function notice(t){status.textContent=t;}
- function empty(parent,message){parent.replaceChildren(DOM("p","zuz-v3-sub",message));}
- function resultCard(row){
-  const card=button(" ",()=>loadProduct(row),"zuz-v3-option");
-  const title=DOM("strong","zuz-v3-option-name",String(row.display_name||row.full_name||"Produto").slice(0,72));
-  const details=[row.brand,row.model,row.barcode].filter(Boolean).join(" · ");
-  const technical=row.full_name&&!details?String(row.full_name).split(",").slice(1,3).join(" · ").trim().slice(0,105):details;
-  const meta=DOM("small","zuz-v3-option-meta",technical||source(row.source));
-  const badge=DOM("small","zuz-v3-option-status",row.is_historical?"Histórico, sem preço atual garantido":row.has_price?"Com observações armazenadas":"Preço ainda não encontrado");
-  card.replaceChildren(title,meta,badge);return card;
- }
- function paintList(){
-  results.replaceChildren();
-  if(!state.list.length){
-   empty(results,"Nenhum item encontrado nas fontes consultadas. Você ainda pode cadastrar manualmente.");
-   return;
-  }
-  const visible=state.list.slice(0,state.limit);
-  let previous="";
-  for(const row of visible){
-   const group=row.is_historical?"historical":"current";
-   if(group!==previous){
-    results.append(DOM("h4","zuz-v3-group",group==="historical"?"Referências técnicas do CATMAT (2018)":"Produtos e serviços identificados"));
-    if(group==="historical")results.append(DOM("p","zuz-v3-muted","São registros antigos, não anúncios comerciais. Selecione para consultar as especificações."));
-    previous=group;
-   }
-   results.append(resultCard(row));
-  }
-  if(state.limit<state.list.length)results.append(button("Mostrar mais resultados ("+(state.list.length-state.limit)+")",()=>{
-   state.limit=Math.min(state.limit+8,state.list.length);paintList();
-  },"zuz-v3-more"));
-  if(state.limit>=state.list.length&&state.archiveHasMore)results.append(button("Carregar mais referências técnicas",loadMoreArchive,"zuz-v3-more"));
- }
- form.addEventListener("submit",e=>{e.preventDefault();performSearch()});
- archiveInput.addEventListener("change",()=>{if(search.value.trim().length>=2)performSearch()});
- async function performSearch(){
-  const q=search.value.trim();if(q.length<2){notice("Informe ao menos dois caracteres.");return;}
-  const token=++state.sequence;submit.disabled=true;info.hidden=true;info.replaceChildren();results.replaceChildren();
-  notice("Pesquisando no catálogo público...");
-  document.dispatchEvent(new CustomEvent("zuz:market:search",{detail:{root,query:q,info}}));
-  try{
-   const params=new URLSearchParams({q,historical:String(archiveInput.checked)});
-   if(kind.value)params.set("kind",kind.value);
-   const response=await api.request("GET","/market/v2/search?"+params.toString());
-   if(token!==state.sequence)return;
-   state.list=[...(response.commercial||[]),...(response.archived||[])];
-   state.archivePage=0;state.archiveHasMore=!!response.archiveHasMore;
-   state.limit=8;paintList();
-   const n=response.totals||{commercial:0,archived:0};
-   notice(n.commercial+" item(ns) de catálogos atuais; "+n.archived+" registro(s) técnicos de 2018. "+(response.warnings||[]).join(" "));
-  }catch(error){if(token===state.sequence){empty(results,"Não foi possível completar a pesquisa: "+error.message+". A precificação manual continua disponível.");notice("Falha na consulta.");}}
-  finally{if(token===state.sequence)submit.disabled=false;}
- }
- async function loadMoreArchive(){
-  const q=search.value.trim();
-  if(q.length<2||!archiveInput.checked)return;
-  const page=state.archivePage+1,token=++state.sequence;
-  state.archiveHasMore=false;paintList();notice("Carregando mais referências...");
-  try{
-   const params=new URLSearchParams({q,historical:"true",page:String(page)});
-   if(kind.value)params.set("kind",kind.value);
-   const response=await api.request("GET","/market/v2/search?"+params.toString());
-   if(token!==state.sequence)return;
-   const previous=new Set(state.list.map(row=>row.item_id));
-   for(const row of response.archived||[])if(!previous.has(row.item_id))state.list.push(row);
-   state.archivePage=page;state.archiveHasMore=!!response.archiveHasMore;
-   state.limit=state.list.length;paintList();
-   notice("Mais referências carregadas. Registros técnicos não representam ofertas nem preços atuais.");
-  }catch(error){
-   if(token===state.sequence){state.archiveHasMore=true;paintList();notice("Não foi possível carregar mais registros: "+error.message);}
-  }
- }
- function field(label,value){
-  if(value===null||value===undefined||String(value).trim()==="")return null;
-  const item=DOM("div","zuz-v3-field");item.append(DOM("small","",label),DOM("strong","",String(value).slice(0,250)));return item;
- }
- function renderFicha(item){
-  info.replaceChildren();info.hidden=false;
-  const card=DOM("section","zuz-v3-ficha");
-  const kicker=DOM("div","zuz-v3-kicker","FICHA DO PRODUTO");
-  const title=DOM("h4","zuz-v3-ficha-title",String(item.name||"Produto identificado"));
-  card.append(kicker,title);
-  const image=safeImage(item.attributes?.image_url);
-  if(image){const photo=DOM("img","zuz-v3-photo");photo.src=image;photo.loading="lazy";photo.referrerPolicy="no-referrer";photo.alt="Imagem do produto cadastrada na fonte pública";card.append(photo);}
-  const grid=DOM("div","zuz-v3-info-grid");
-  for(const entry of [
-    field("Categoria",item.category),field("Marca",item.brand),field("Modelo",item.model),
-    field("Código de barras (GTIN)",item.barcode),field("Código da fonte",item.sourceId),
-    field("Quantidade / embalagem",item.unit||item.attributes?.quantity),
-    field("Base de dados",source(item.source)),field(item.isHistorical?"Data do acervo":"Última atualização da fonte",item.isHistorical?"2018":date(item.attributes?.last_source_update||item.attributes?.source_updated_at||item.updatedAt))
-  ]){if(entry)grid.append(entry)}
-  card.append(grid);
-  if(item.fullName&&item.fullName!==item.name){
-   const extra=DOM("details","zuz-v3-long");const summary=DOM("summary","","Descrição técnica completa");
-   extra.append(summary,DOM("p","",item.fullName));card.append(extra);
-  }
-  if(item.attributes?.description)card.append(DOM("p","zuz-v3-muted",item.attributes.description));
-  if(item.attributes?.ingredients){
-   const extra=DOM("details","zuz-v3-long");
-   extra.append(DOM("summary","","Ingredientes informados na fonte"),DOM("p","",item.attributes.ingredients));
-   card.append(extra);
-  }
-  const nutrition=item.attributes?.nutrition;
-  if(nutrition&&typeof nutrition==="object"){
-   const values=[["Energia",nutrition.energy_kcal_100g,"kcal/100g"],["Açúcares",nutrition.sugars_100g,"g/100g"],
-    ["Proteínas",nutrition.proteins_100g,"g/100g"],["Sal",nutrition.salt_100g,"g/100g"]]
-    .filter(v=>v[1]!==null&&v[1]!==undefined&&Number.isFinite(Number(v[1]))&&Number(v[1])>=0);
-   if(values.length){
-    const n=DOM("section","zuz-v3-market");
-    n.append(DOM("h4","zuz-v3-group","Informações nutricionais da fonte"));
-    for(const [label,value,unit] of values)n.append(DOM("p","zuz-v3-muted",label+": "+Number(value).toLocaleString("pt-BR")+" "+unit));
-    card.append(n);
-   }
-  }
-  if(item.attributes?.allergens?.length)card.append(DOM("p","zuz-v3-muted","Alérgenos informados: "+item.attributes.allergens.join(", ").slice(0,260)));
-  if(item.attributes?.price_notice)card.append(DOM("p","zuz-v3-muted",item.attributes.price_notice));
-  if(item.isHistorical)card.append(DOM("p","zuz-v3-warning","Registro histórico de 2018. Não significa que o produto ou seu preço esteja disponível hoje."));
-  if(item.isHistorical&&/^https:\/\/github\.com\/ant-rod-silva\/catmat_compras_gov_pub/.test(String(item.attributes?.origin||""))){
-   const a=DOM("a","zuz-v3-source","Consultar o repositório histórico");a.href=item.attributes.origin;a.target="_blank";a.rel="noopener noreferrer";card.append(a);
-  }
-  if(item.attributes?.product_url&&/^https:\/\/world\.open(food|beauty|products|petfood)facts\.org\/product\//.test(item.attributes.product_url)){
-   const a=DOM("a","zuz-v3-source","Consultar identificação original");a.href=item.attributes.product_url;a.target="_blank";a.rel="noopener noreferrer";card.append(a);
-  }
-  const btns=DOM("div","zuz-v3-buttons");
-  btns.append(button(mode==="products"?"Preencher cadastro com estes dados":"Cadastrar este produto",()=>useProduct(item),"zuz-v3-primary"));
-  card.append(btns);
-  info.append(card);
-  const quotes=DOM("div","zuz-v3-market");
-  quotes.append(DOM("h4","zuz-v3-group","Preços e estabelecimentos"),
-    DOM("p","zuz-v3-muted","Consultando cotações por código de barras ou código público..."));
-  info.append(quotes);
-  return quotes;
+ const root=make("section","zm-search-shell");root.setAttribute("aria-label","Consulta de preços de mercado");
+ const headline=make("header","zm-heading");
+ headline.append(make("h3","zm-title","Consulta de preços"),
+  make("p","zm-subtitle","Pesquise um produto, compare preços e decida como utilizá-los."));
+ const form=make("form","zm-search-form");
+ const inputLabel=make("label","zm-sr-only","Produto, marca ou código de barras");
+ const input=make("input","zm-search-input");input.type="search";input.minLength=2;input.maxLength=80;
+ input.placeholder="Ex.: vassoura, macarrão, marca ou código";input.autocomplete="off";
+ input.setAttribute("aria-label","Produto, marca ou código de barras");
+ const searchButton=make("button","zm-search-submit","Buscar");searchButton.type="submit";
+ inputLabel.append(input);form.append(inputLabel,searchButton);
+ const status=make("p","zm-status");status.setAttribute("role","status");status.setAttribute("aria-live","polite");
+ const results=make("div","zm-results");results.setAttribute("aria-label","Resultados da pesquisa");
+ const detail=make("div","zm-detail");detail.hidden=true;detail.setAttribute("aria-live","polite");
+ root.append(headline,form,status,results,detail);parent.append(root);
+ let sequence=0,currentTerm="",chosen=null;
+ function inform(message){status.textContent=message||"";}
+ function empty(el,message){el.replaceChildren(make("p","zm-empty",message));}
+ function payloadOf(item){
+  return {id:item.id,name:text(item.name).slice(0,60),barcode:item.barcode||"",brand:item.brand||"",
+   model:item.model||"",category:item.category||"",type:item.type||"product",source:item.source,
+   isHistorical:!!item.isHistorical,unit:item.unit||"",imageUrl:item.attributes?.image_url||null};
  }
  function useProduct(item){
-  const payload={id:item.id,name:String(item.name||"").slice(0,60),
-   barcode:item.barcode||"",brand:item.brand||"",model:item.model||"",
-   category:item.category||"",type:item.type||"product",source:item.source,
-   isHistorical:!!item.isHistorical,unit:item.unit||"",imageUrl:safeImage(item.attributes?.image_url)};
+  const payload=payloadOf(item);
   if(mode==="products"){
    window.dispatchEvent(new CustomEvent("zuz:market:prefill",{detail:payload}));
-   const cost=document.querySelector("#costItems .cost-item-amount");
-   info.querySelector(".zuz-v3-kicker").textContent="DADOS ADICIONADOS AO FORMULÁRIO";
-   cost?.scrollIntoView({behavior:"smooth",block:"center"});
-  }else{
-   try{sessionStorage.setItem("zuz:market-import",JSON.stringify(payload));}
-   catch(e){notice("Navegador não permitiu preparar o formulário. Abra Produtos para cadastrar.");return;}
-   window.location.href="../produtos/produtos.html";
-  }
- }
- function renderQuotes(quotes,container,item){
-  container.replaceChildren(DOM("h4","zuz-v3-group","Preços e estabelecimentos"));
-  if(!quotes.quotes?.length){
-   container.append(DOM("p","zuz-v3-warning","Produto identificado, mas nenhuma cotação comercial verificável foi encontrada. Isso não impede o cadastro e o cálculo pelos seus custos."));
-   if(quotes.warnings?.length)container.append(DOM("p","zuz-v3-muted",quotes.warnings.join(" ")));
+   inform("Produto preenchido no cadastro. Revise os dados e informe seus custos.");
+   document.getElementById("nameInput")?.focus({preventScroll:true});
    return;
   }
-  for(const group of quotes.groups||[]){
-   const title=DOM("p","zuz-v3-muted",(group.type==="public_purchase"?"Compra governamental":"Varejo")+
-    " · "+(group.region||"região não informada")+" · "+(group.unit||"unidade desconhecida"));
-   container.append(title);
-   if(group.distinctStores<3||group.count<3){
-    container.append(DOM("p","zuz-v3-muted","Amostra insuficiente ("+group.distinctStores+" estabelecimentos). Sem média representativa."));
-    continue;
-   }
-   const g=DOM("div","zuz-v3-stats");
-   for(const [name,num] of [["Mínimo",group.min],["Média",group.average],["Mediana",group.median],["Máximo",group.max]]){
-    const cell=DOM("div","zuz-v3-stat");cell.append(DOM("small","",name),DOM("strong","",money(num)));g.append(cell);
-   }
-   container.append(g);
+  try{sessionStorage.setItem("zuz:market-import",JSON.stringify(payload));}
+  catch{inform("Não foi possível preparar o cadastro automaticamente.");return;}
+  window.location.href="../produtos/produtos.html";
+ }
+ function confirmProduct(item,parent){
+  const confirm=make("div","zm-confirm");
+  confirm.append(make("p","","Usar os dados deste produto no cadastro? Seus custos e seu preço de venda não serão alterados."));
+  confirm.append(btn("Confirmar",()=>useProduct(item),"zm-primary"),
+   btn("Cancelar",()=>confirm.remove(),"zm-secondary"));
+  parent.replaceChildren(confirm);
+ }
+ function resultButton(row){
+  const title=text(row.display_name||row.full_name||"Produto identificado");
+  const b=btn("",()=>selectProduct(row),"zm-result");
+  const copy=make("span","zm-result-copy");
+  copy.append(make("strong","zm-result-name",title.slice(0,110)));
+  const secondary=[row.brand,row.model].filter(Boolean).join(" · ");
+  if(secondary)copy.append(make("small","zm-result-meta",secondary));
+  else if(row.kind==="service")copy.append(make("small","zm-result-meta","Serviço"));
+  else if(row.barcode)copy.append(make("small","zm-result-meta","Produto identificado por código"));
+  b.append(copy,make("span","zm-result-chevron","›"));
+  return b;
+ }
+ function renderList(rows){
+  results.replaceChildren();
+  const seen=new Set(),unique=[];
+  for(const row of rows||[]){
+   const key=row.barcode?"gtin:"+row.barcode:
+    "name:"+[row.display_name,row.brand,row.model,row.kind].map(x=>text(x).toLocaleLowerCase("pt-BR")).join("|");
+   if(seen.has(key))continue;seen.add(key);unique.push(row);
+   if(unique.length>=12)break;
   }
-  for(const q of quotes.quotes.slice(0,10)){
-   const line=DOM("article","zuz-v3-quote");
-   line.append(DOM("strong","",money(q.price)+" · "+(q.seller||source(q.source))),
-    DOM("small","",(q.price_type==="public_purchase"?"Compra pública":"Preço colaborativo")+" · "+(q.region||"região não informada")+" · "+(q.unit||"unidade não informada")),
-    DOM("small","","Observado "+date(q.observed_at)+" · Consultado "+date(q.last_checked_at||q.fetched_at)+" · "+(q.stale?"Desatualizado":"Recente")+" · Confiabilidade "+(q.confidence||"baixa")));
-   if(q.url&&/^https:\/\//.test(q.url)){
-    const a=DOM("a","zuz-v3-source","Ver origem do registro");a.href=q.url;a.target="_blank";a.rel="noopener noreferrer";line.append(a);
+  if(!unique.length){
+   empty(results,"Não encontramos um produto comercial correspondente. Você pode cadastrá-lo manualmente.");
+   return;
+  }
+  const list=make("div","zm-product-list");
+  for(const row of unique)list.append(resultButton(row));
+  results.append(make("p","zm-results-title",unique.length===1?"1 produto encontrado":"Produtos encontrados"),list);
+  if((rows||[]).length>unique.length)results.append(make("p","zm-caption","Mostrando os resultados mais relevantes. Refine a pesquisa para encontrar um modelo específico."));
+ }
+ function renderTechnical(target,rows){
+  target.replaceChildren();
+  const seen=new Set();
+  for(const row of rows||[]){
+   const name=text(row.display_name||"").split(",")[0].trim();
+   const key=name.toLocaleLowerCase("pt-BR");
+   if(!name||seen.has(key))continue;
+   seen.add(key);target.append(resultButton({...row,display_name:name}));
+   if(seen.size>=5)break;
+  }
+  if(!seen.size)empty(target,"Nenhuma referência de material encontrada.");
+ }
+ function technicalOption(term){
+  const advanced=make("details","zm-optional zm-technical");
+  advanced.append(make("summary","","Ver materiais relacionados"));
+  const content=make("div","zm-optional-content");advanced.append(content);
+  let loaded=false;
+  advanced.addEventListener("toggle",async()=>{
+   if(!advanced.open||loaded)return;loaded=true;
+   empty(content,"Buscando materiais relacionados...");
+   try{
+    const r=await api.request("GET","/market/v2/search?"+new URLSearchParams({q:term,historical:"true"}));
+    if(currentTerm!==term)return;
+    renderTechnical(content,r.archived);
+   }catch{empty(content,"Não foi possível consultar materiais relacionados.");}
+  });
+  return advanced;
+ }
+ async function search(e){
+  e?.preventDefault();
+  const term=input.value.trim();
+  if(term.length<2){inform("Digite pelo menos dois caracteres para pesquisar.");input.focus();return;}
+  const token=++sequence;currentTerm=term;chosen=null;
+  searchButton.disabled=true;detail.hidden=true;detail.replaceChildren();
+  empty(results,"Procurando produtos...");inform("");
+  try{
+   const query=new URLSearchParams({q:term,historical:"false"});
+   const data=await api.request("GET","/market/v2/search?"+query);
+   if(token!==sequence)return;
+   renderList(data.commercial||[]);
+   results.append(technicalOption(term));
+   inform((data.commercial||[]).length?"Selecione um produto para ver os preços disponíveis.":"Nenhum produto comercial encontrado nesta busca.");
+  }catch{
+   if(token!==sequence)return;
+   empty(results,"Não conseguimos completar a pesquisa agora. Você pode cadastrar o produto manualmente.");
+   inform("Não foi possível concluir a consulta.");
+  }finally{if(token===sequence)searchButton.disabled=false;}
+ }
+ function block(title,contentClass=""){
+  const s=make("section","zm-section "+contentClass);
+  s.append(make("h4","zm-section-title",title));return s;
+ }
+ function progressive(title,fn){
+  const box=make("details","zm-optional");
+  box.append(make("summary","",title));
+  const body=make("div","zm-optional-content");box.append(body);
+  let loaded=false;
+  box.addEventListener("toggle",()=>{
+   if(!box.open||loaded)return;loaded=true;fn(body);
+  });
+  return box;
+ }
+ function detailsPanel(item){
+  const wrap=make("div","zm-small-facts");
+  rowText(wrap,"Marca",item.brand);rowText(wrap,"Modelo",item.model);
+  rowText(wrap,"Categoria",item.category);rowText(wrap,"Quantidade",item.unit||item.attributes?.quantity);
+  rowText(wrap,"Código de barras",item.barcode);
+  if(item.isHistorical)rowText(wrap,"Identificação","Catálogo de materiais");
+  const notes=make("div","zm-extra-notes");
+  if(item.fullName&&item.fullName!==item.name)notes.append(make("p","zm-caption",item.fullName.slice(0,450)));
+  if(item.attributes?.ingredients)notes.append(make("p","zm-caption","Ingredientes: "+item.attributes.ingredients.slice(0,250)));
+  if(item.attributes?.allergens?.length)notes.append(make("p","zm-caption","Alérgenos informados: "+item.attributes.allergens.slice(0,8).join(", ")));
+  const link=safeLink("Consultar identificação original",item.attributes?.product_url);
+  if(link)notes.append(link);
+  wrap.append(notes);return wrap;
+ }
+ function historyPanel(item,target){
+  empty(target,"Consultando histórico disponível...");
+  Promise.allSettled([
+   api.request("GET","/market/history?id="+encodeURIComponent(item.id)),
+   item.barcode?api.request("GET","/market/keepa?gtin="+encodeURIComponent(item.barcode)):Promise.resolve({products:[]})
+  ]).then(res=>{
+   target.replaceChildren();
+   const db=res[0].status==="fulfilled"?res[0].value:{years:[]};
+   const keepa=res[1].status==="fulfilled"?res[1].value:{products:[]};
+   const years=db.years||[];
+   if(years.length){
+    const list=make("div","zm-small-facts");
+    for(const r of years.slice(-8))rowText(list,String(r.year),money(r.median)+" · "+r.count+" registro(s)");
+    target.append(list);
    }
-   container.append(line);
+   const k=keepa.products?.find(p=>Array.isArray(p.history)&&p.history.length);
+   if(k){
+    const last=k.history.at(-1);
+    target.append(make("p","zm-caption","Histórico Amazon: última observação "+date(last.date)+" · "+money(last.price)));
+    const link=safeLink("Conferir histórico na loja",k.url);if(link)target.append(link);
+   }
+   if(!years.length&&!k)target.append(make("p","zm-caption","Ainda não há histórico de preços verificável para este produto."));
+   target.append(make("p","zm-caption","Histórico e atualização pela inflação não representam um preço atual de loja."));
+  }).catch(()=>empty(target,"Histórico indisponível no momento."));
+ }
+ function taxPanel(item,target){
+  target.append(make("p","zm-caption","Os tributos dependem da atividade, regime fiscal, local da operação e classificação do produto."));
+  const form=make("form","zm-tax-form");
+  const regime=make("select","zm-field");
+  for(const [value,label] of [["","Regime tributário"],["mei","MEI"],["simples","Simples Nacional"],["presumido","Lucro Presumido"],["real","Lucro Real"],["outro","Outro"]]){
+   const o=make("option","",label);o.value=value;regime.append(o);
+  }
+  const activity=make("select","zm-field");
+  for(const [value,label] of [["revenda","Revenda"],["producao","Produção"],["servico","Serviços"],["misto","Atividade mista"]]){
+   const o=make("option","",label);o.value=value;activity.append(o);
+  }
+  if(item.type==="service")activity.value="servico";
+  const uf=make("select","zm-field");
+  const none=make("option","","Estado (UF)");none.value="";uf.append(none);
+  for(const state of "AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ")){
+   const o=make("option","",state);o.value=state;uf.append(o);
+  }
+  const ncm=make("input","zm-field");ncm.placeholder="NCM confirmado (opcional)";ncm.maxLength=8;ncm.inputMode="numeric";
+  const sale=make("input","zm-field");sale.type="number";sale.min="0.01";sale.step="0.01";sale.placeholder="Preço de venda (R$)";
+  const rate=make("input","zm-field");rate.type="number";rate.min="0";rate.max="90";rate.step="0.01";rate.placeholder="Alíquota conhecida (%)";
+  const run=make("button","zm-button zm-secondary","Ver estimativa");run.type="submit";
+  const out=make("div","zm-tax-result");
+  form.append(activity,regime,uf,ncm,sale,rate,run);
+  form.addEventListener("submit",async e=>{
+   e.preventDefault();run.disabled=true;empty(out,"Calculando estimativa...");
+   try{
+    const d=await api.request("POST","/market/tax-context",{
+     activity:activity.value,regime:regime.value,uf:uf.value,ncm:ncm.value,
+     salePrice:sale.value,estimatedBusinessRate:rate.value,productName:item.name
+    });
+    out.replaceChildren();
+    if(d.manualSimulation){
+     out.append(make("p","zm-tax-total","Impacto hipotético: "+money(d.manualSimulation.estimatedAmount)));
+     out.append(make("p","zm-caption",d.manualSimulation.label));
+    }else out.append(make("p","zm-caption","Sem alíquota informada, não é possível estimar o imposto devido."));
+    out.append(make("p","zm-caption","Esta simulação não substitui a apuração tributária do negócio."));
+   }catch{empty(out,"Não conseguimos calcular a estimativa. Revise os dados.");}
+   finally{run.disabled=false;}
+  });
+  target.append(form,out);
+ }
+ function offersPanel(item,target){
+  empty(target,"Buscando ofertas semelhantes...");
+  api.request("GET","/market/offers?q="+encodeURIComponent(String(item.name||"").slice(0,80))).then(data=>{
+   target.replaceChildren();
+   if(!data.offers?.length){
+    empty(target,"Nenhuma oferta semelhante disponível nesta consulta.");return;
+   }
+   target.append(make("p","zm-caption","Anúncios possivelmente semelhantes. Confirme modelo, unidade e preço na loja antes de comparar."));
+   for(const offer of data.offers.slice(0,7)){
+    const line=make("div","zm-offer");
+    line.append(make("strong","",offer.title.slice(0,110)),
+      make("span","",money(offer.price)+" · "+offer.seller));
+    const a=safeLink("Abrir anúncio",offer.url);if(a)line.append(a);target.append(line);
+   }
+  }).catch(()=>empty(target,"Não foi possível consultar anúncios de lojas agora."));
+ }
+ function publicPanel(records,target){
+  target.replaceChildren();
+  const eligible=(records||[]).filter(q=>q.price_type==="public_purchase").slice(0,7);
+  if(!eligible.length){empty(target,"Nenhuma referência de compra pública disponível.");return;}
+  target.append(make("p","zm-caption","Valores de compras governamentais, não ofertas de varejo."));
+  for(const q of eligible){
+   const div=make("div","zm-offer");
+   div.append(make("strong","",money(q.price)),make("span","",text(q.seller).slice(0,100)));
+   div.append(make("small","",date(q.observed_at)||"Data não informada"));
+   const l=safeLink("Conferir fonte",q.url);if(l)div.append(l);target.append(div);
   }
  }
- async function loadProduct(row){
-  const token=++state.sequence;
-  info.hidden=false;empty(info,"Abrindo a ficha do produto...");
+ function quoteAction(item,quote,parent){
+  const confirmation=make("div","zm-confirm");
+  confirmation.append(make("p","","Adicionar esta cotação à simulação selecionada? O preço de venda e os custos continuarão inalterados."));
+  const save=btn("Confirmar",async()=>{
+   save.disabled=true;
+   try{
+    const verified=await api.request("POST","/market/reference/verify",{itemId:item.id,quoteId:quote.id});
+    window.dispatchEvent(new CustomEvent("zuz:market:reference",{detail:verified.reference}));
+    parent.replaceChildren(make("p","zm-success","Referência adicionada à simulação."));
+   }catch(error){parent.replaceChildren(make("p","zm-error",error.message||"Não foi possível validar esta cotação."));}
+   finally{save.disabled=false;}
+  },"zm-primary");
+  confirmation.append(save,btn("Cancelar",()=>parent.replaceChildren(),"zm-secondary"));
+  parent.replaceChildren(confirmation);
+ }
+ function showPrices(item,response,container,advanced){
+  container.replaceChildren();
+  const market=response.commercial||{offers:[],summary:null};
+  const quotes=Array.isArray(market.offers)?market.offers:[];
+  const summary=market.summary||null;
+  if(summary){
+   const stats=make("div","zm-price-stats");
+   for(const [label,val] of [["Mínimo",summary.min],["Média",summary.average],["Máximo",summary.max]]){
+    const block=make("div","zm-price-stat");
+    block.append(make("small","",label),make("strong","",money(val)));stats.append(block);
+   }
+   container.append(stats,make("p","zm-caption",summary.offers+" lojas comparáveis · "+summary.region+" · Cotações recentes"));
+  }
+  if(quotes.length){
+   container.append(make("p","zm-mini-title","Preços encontrados"));
+   const list=make("div","zm-prices");
+   for(const quote of quotes.slice(0,8)){
+    const entry=make("article","zm-price-line"),lead=make("div","zm-price-lead");
+    lead.append(make("strong","zm-price-value",money(quote.price)),
+     make("span","zm-seller",quote.seller));
+    const meta=make("span","zm-quote-meta","Observado em "+(date(quote.observedAt)||"data não informada")+" · "+quote.region);
+    const actions=make("div","zm-quote-actions");
+    const link=safeLink("Ver fonte",quote.url);if(link)actions.append(link);
+    if(mode==="simulations"){
+     const area=make("div","zm-inline-confirm");
+     actions.append(btn("Usar na simulação",()=>quoteAction(item,quote,area),"zm-secondary"),area);
+    }
+    entry.append(lead,meta,actions);list.append(entry);
+   }
+   container.append(list);
+   if(!summary)container.append(make("p","zm-caption","Amostra insuficiente para um preço médio confiável. Consulte os valores individuais."));
+  }else{
+   empty(container,"Ainda não há cotação comercial verificável para este produto.");
+   container.append(make("p","zm-caption","Você pode continuar a precificação informando seus próprios custos."));
+  }
+  if((response.quotes||[]).some(q=>q.price_type==="public_purchase")){
+   const historical=make("details","zm-optional");
+   historical.append(make("summary","","Ver referências de compras públicas"));
+   const body=make("div","zm-optional-content");historical.append(body);
+   historical.addEventListener("toggle",()=>{if(historical.open)publicPanel(response.quotes,body);});
+   advanced.append(historical);
+  }
+ }
+ async function selectProduct(row){
+  const token=++sequence;chosen=null;detail.hidden=false;results.hidden=true;
+  empty(detail,"Abrindo produto...");inform("");
   try{
    const response=await api.request("GET","/market/v2/item?id="+encodeURIComponent(row.item_id));
-   if(token!==state.sequence)return;
-   const item=response.item;
-   state.selected=item;
-   const container=renderFicha(item);
-   document.dispatchEvent(new CustomEvent("zuz:market:selected",{detail:{item,info}}));
-   container.id="zuz-v3-quote-status-"+mode;
+   if(token!==sequence)return;
+   const item=response.item;chosen=item;detail.replaceChildren();
+   const back=btn("← Voltar aos resultados",()=>{
+    sequence++;chosen=null;detail.hidden=true;results.hidden=false;detail.replaceChildren();input.focus();
+   },"zm-back");
+   const head=make("div","zm-product-heading");
+   head.append(make("h3","zm-selected-title",item.name),
+    make("p","zm-product-identity",[item.brand,item.model,item.unit].filter(Boolean).join(" · ")||"Produto selecionado"));
+   const actionBox=make("div","zm-product-action");
+   actionBox.append(btn(mode==="products"?"Usar na precificação":"Cadastrar este produto",()=>confirmProduct(item,actionBox),"zm-primary"));
+   const priceSection=block("Preços de mercado","zm-market-prices");
+   const priceContent=make("div","zm-price-content");priceSection.append(priceContent);
+   empty(priceContent,"Consultando preços...");
+   const extra=make("div","zm-advanced");
+   extra.append(progressive("Informações do produto",body=>body.append(detailsPanel(item))));
+   extra.append(progressive("Histórico de preços",body=>historyPanel(item,body)));
+   extra.append(progressive("Informações tributárias",body=>taxPanel(item,body)));
+   extra.append(progressive("Possíveis ofertas semelhantes",body=>offersPanel(item,body)));
+   detail.append(back,head,priceSection,actionBox,extra);
    try{
-    const prices=await api.request("GET","/market/quotes?id="+encodeURIComponent(row.item_id));
-    if(token!==state.sequence)return;
-    renderQuotes(prices,container,item);
-   }catch(error){
-    if(token===state.sequence)empty(container,"Cotações indisponíveis. Os detalhes do produto permanecem disponíveis; seus custos são informados por você.");
+    const prices=await api.request("GET","/market/quotes?id="+encodeURIComponent(item.id));
+    if(token!==sequence)return;
+    showPrices(item,prices,priceContent,extra);
+   }catch{
+    if(token===sequence)empty(priceContent,"Não foi possível consultar preços agora. Você ainda pode cadastrar e precificar manualmente.");
    }
-  }catch(error){if(token===state.sequence)empty(info,"Não foi possível abrir esta ficha: "+error.message);}
+  }catch{
+   if(token===sequence)empty(detail,"Não conseguimos abrir este produto. Tente selecionar outro resultado.");
+  }
  }
- const name=document.getElementById("nameInput");
- if(mode==="products"&&name){search.value=name.value;name.addEventListener("input",()=>{if(document.activeElement===name)search.value=name.value;});}
- if(mode==="simulations"){const p=document.getElementById("product");p?.addEventListener("change",()=>{search.value=p.selectedOptions[0]?.textContent||"";});}
+ form.addEventListener("submit",search);
+ const productField=document.getElementById("nameInput");
+ if(mode==="products"&&productField&&!input.value)input.value=productField.value||"";
 }
 const product=document.getElementById("nameInput")?.closest(".field");
-if(product){const container=DOM("div");product.after(container);marketBox(container,"products");}
+if(product){const target=make("div","zm-mount");product.after(target);marketBox(target,"products");}
 const cost=document.getElementById("compRows")?.parentElement;
-if(cost)marketBox(cost,"costs");
-const market=document.getElementById("marketStats");
-if(market?.parentElement){const container=DOM("div");market.parentElement.insertBefore(container,market);marketBox(container,"simulations");}
+if(cost){const target=make("div","zm-mount");cost.append(target);marketBox(target,"costs");}
+const simulations=document.getElementById("marketStats");
+if(simulations?.parentElement){
+ const target=make("div","zm-mount");simulations.parentElement.insertBefore(target,simulations);
+ marketBox(target,"simulations");
+}
 })();
