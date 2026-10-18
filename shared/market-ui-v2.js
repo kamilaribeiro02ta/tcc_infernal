@@ -104,7 +104,8 @@ function marketBox(parent,mode){
   target.replaceChildren();
   const seen=new Set();
   for(const row of rows||[]){
-   const name=text(row.display_name||"").split(",")[0].trim();
+   const descriptions=text(row.full_name||row.display_name||"").split(",").map(part=>part.trim()).filter(Boolean);
+   const name=descriptions.slice(0,3).join(" · ").slice(0,110);
    const key=name.toLocaleLowerCase("pt-BR");
    if(!name||seen.has(key))continue;
    seen.add(key);target.append(resultButton({...row,display_name:name}));
