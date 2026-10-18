@@ -48,3 +48,9 @@ body.dark .zuz-v3-option,body.dark .zuz-v3-control,body.dark .zuz-v3-ficha,html[
 body.dark .zuz-v3-btn:not(.zuz-v3-primary),html[data-theme="dark"] .zuz-v3-btn:not(.zuz-v3-primary){background:var(--zm-card);color:var(--zm-ink)}
 @media(max-width:680px){.zuz-v3{padding:12px}.zuz-v3-search{grid-template-columns:minmax(0,1fr) 105px}.zuz-v3-search>.zuz-v3-control:first-child{grid-column:1/-1}.zuz-v3-search>.zuz-v3-primary{grid-column:2}.zuz-v3-search>.zuz-v3-kind{grid-column:1}.zuz-v3-info-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.zuz-v3-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.zuz-v3-photo{max-width:116px;max-height:116px}}
 @media(max-width:370px){.zuz-v3-info-grid{grid-template-columns:1fr}.zuz-v3-photo{max-width:100px;max-height:100px}}
+
+/* Cobertura real de fontes, apresentada sob demanda e sem competir com a busca. */
+.zuz-v3-coverage{margin:0 0 10px;padding:9px 12px;border:1px solid var(--zm-edge);border-radius:11px;background:var(--zm-card);color:var(--zm-ink)}
+.zuz-v3-coverage>summary{font:500 12px/1.5 Poppins,sans-serif;color:var(--purple,#6a3df0);cursor:pointer;list-style:revert}
+.zuz-v3-coverage-body{padding:9px 0 0}
+.zuz-v3-coverage-body .zuz-v3-muted{margin:4px 0}
