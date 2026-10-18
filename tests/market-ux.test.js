@@ -85,7 +85,7 @@ test("produto moderno: anúncio semelhante visível, mas preço não vira média
  assert.equal(host.all(x=>x.className==="zm-price-stats").length,0);
  const draft=host.find(x=>x.tag==="button"&&x.textContent==="Cadastrar com este nome");
  assert.ok(draft);draft.handlers.click[0]();
- const confirm=root.find(x=>x.tag==="button"&&x.textContent==="Confirmar");
+ const confirm=host.find(x=>x.tag==="button"&&x.textContent==="Confirmar");
  assert.ok(confirm);confirm.handlers.click[0]();
  assert.equal(events.filter(x=>x.type==="zuz:market:draft").length,1);
  assert.equal(events.find(x=>x.type==="zuz:market:draft").detail.price,undefined);
@@ -128,5 +128,5 @@ test("detalhes fiscais e históricos permanecem recolhidos ao selecionar produto
  const more=host.find(x=>x.className==="zm-more");
  assert.ok(more);
  assert.equal(more.open,undefined);
- assert.equal(root.find(x=>x.className==="zm-detail").hidden,false);
+ assert.equal(host.find(x=>x.className==="zm-detail").hidden,false);
 });
