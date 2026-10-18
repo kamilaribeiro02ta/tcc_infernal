@@ -74,6 +74,7 @@ function marketBox(parent,mode){
   const q=search.value.trim();if(q.length<2){notice("Informe ao menos dois caracteres.");return;}
   const token=++state.sequence;submit.disabled=true;info.hidden=true;info.replaceChildren();results.replaceChildren();
   notice("Pesquisando no catálogo público...");
+  document.dispatchEvent(new CustomEvent("zuz:market:search",{detail:{root,query:q,info}}));
   try{
    const params=new URLSearchParams({q,historical:String(archiveInput.checked)});
    if(kind.value)params.set("kind",kind.value);
@@ -190,6 +191,7 @@ function marketBox(parent,mode){
    const item=response.item;
    state.selected=item;
    const container=renderFicha(item);
+   document.dispatchEvent(new CustomEvent("zuz:market:selected",{detail:{item,info}}));
    container.id="zuz-v3-quote-status-"+mode;
    try{
     const prices=await api.request("GET","/market/quotes?id="+encodeURIComponent(row.item_id));
