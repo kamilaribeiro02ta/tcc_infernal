@@ -101,6 +101,10 @@
 .zm-tax-form>.zm-button{justify-self:start}
 .zm-tax-result{margin-top:13px;font:400 12px/1.6 Poppins,sans-serif}
 .zm-tax-total{font:600 14px/1.5 Poppins,sans-serif;color:var(--zm-ink)}
+/* Em Simulações, o registro manual é secundário e permanece disponível por escolha. */
+.sim-manual-details{border-top:1px solid var(--border,#eae6f1);padding:9px 0 0;margin-top:6px}
+.sim-manual-details>summary{cursor:pointer;color:var(--text-secondary,#706b7c);font:500 12px/1.6 Poppins,sans-serif;padding:12px 0}
+.sim-manual-details[open]>summary{color:var(--purple,#6a3df0);margin-bottom:10px}
 /* Seguir o tema do site; não alterar a sidebar nem controles globais. */
 body.dark .zm-search-shell,html[data-theme="dark"] .zm-search-shell{
  --zm-ink:#f3f1fa;--zm-muted:#c7c2db;--zm-line:#403651;--zm-surface:#241d36;--zm-soft:#1e1832;
