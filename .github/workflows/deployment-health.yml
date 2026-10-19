@@ -5,12 +5,13 @@ permissions:
   contents: read
 jobs:
   health:
-    if: >-
-      github.event.deployment_status.state == 'success' &&
-      github.event.deployment.production_environment == true
+    if: github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
+      - name: Identificar implantação sem expor credenciais
+        run: |
+          node -e 'const fs=require("node:fs"),e=JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH,"utf8"));const u=new URL(e.deployment_status.environment_url);console.log(JSON.stringify({environment:e.deployment.environment,production:e.deployment.production_environment,ref:e.deployment.ref,sha:e.deployment.sha,url:u.origin}));'
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: main
