@@ -1,9 +1,12 @@
 (function (root, factory) {
-  const pricing = factory();
+  const pricing = factory(typeof module === "object" && module.exports ? require("./money") : root.ZUZMoney);
   if (typeof module === "object" && module.exports) module.exports = pricing;
   if (root) root.ZUZPricingCore = pricing;
-})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+})(typeof globalThis !== "undefined" ? globalThis : this, function (money) {
   "use strict";
+  if (!money) throw new Error("Carregue money.js antes de pricing-core.js.");
+  const Decimal = money.Decimal;
+  const d = value => new Decimal(value);
 
   const number = value => {
     const n = Number(value);
@@ -42,7 +45,7 @@
   }
 
   function fixedCostsTotal(settings) {
-    return normalize(settings).fixedCosts.reduce((sum, item) => sum + item.value, 0);
+    return money.sum(normalize(settings).fixedCosts.map(item => item.value));
   }
   const comparableKey = value => text(value).normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -50,7 +53,7 @@
     if (!prices.length) return 0;
     const index = (prices.length - 1) * fraction;
     const low = Math.floor(index), high = Math.ceil(index);
-    return prices[low] + (prices[high] - prices[low]) * (index - low);
+    return d(prices[low]).plus(d(prices[high]).minus(prices[low]).times(d(index).minus(low))).toNumber();
   }
 
   // Preços de categorias distintas nunca fundamentam o teto de um produto.
@@ -71,7 +74,7 @@
     return {
       count, totalCount: s.competitors.length, comparable: !!(category || productId || productName),
       min: count ? prices[0] : 0, max: count ? prices[count - 1] : 0,
-      average: count ? prices.reduce((sum, value) => sum + value, 0) / count : 0,
+      average: count ? money.divide(money.sum(prices), count) : 0,
       median: quantile(prices, 0.5), q25: quantile(prices, 0.25), q75: quantile(prices, 0.75)
     };
   }
@@ -82,15 +85,18 @@
     const sale = nonNegative(input.salePrice);
     const targetMargin = Number(input.targetMargin ?? settings.defaultMargin);
     const units = Math.max(0, Math.round(number(input.units ?? 1)));
-    const rate = settings.taxesPct + settings.sellingFeesPct;
+    const rateDecimal = d(settings.taxesPct).plus(settings.sellingFeesPct);
+    const rate = rateDecimal.toNumber();
     if (!Number.isFinite(targetMargin) || targetMargin < 0 || targetMargin > 90 ||
-        rate >= 100 || rate + targetMargin >= 100) {
+        rateDecimal.gte(100) || rateDecimal.plus(targetMargin).gte(100)) {
       throw new RangeError("A soma da margem desejada com os tributos e taxas deve ser menor que 100%.");
     }
     const fixedTotal = fixedCostsTotal(settings);
-    const fixedAllocation = fixedTotal / settings.monthlyUnits;
-    const baseCost = direct + fixedAllocation;
-    const technicalPrice = baseCost / (1 - (rate + targetMargin) / 100);
+    const fixedAllocationDecimal = d(fixedTotal).div(settings.monthlyUnits);
+    const fixedAllocation = fixedAllocationDecimal.toNumber();
+    const baseCostDecimal = d(direct).plus(fixedAllocationDecimal);
+    const baseCost = baseCostDecimal.toNumber();
+    const technicalPrice = baseCostDecimal.div(d(1).minus(rateDecimal.plus(targetMargin).div(100))).toNumber();
     const market = marketStats(settings, {
       category: input.category, productId: input.productId, productName: input.productName
     });
@@ -122,12 +128,15 @@
       warnings.push("Recomendação baseada apenas em custos, tributos, taxas e margem desejada.");
     }
 
-    const charges = sale * rate / 100;
-    const contribution = sale - direct - charges;
-    const unitProfit = contribution - fixedAllocation;
-    const revenue = sale * units;
-    const profit = contribution * units - fixedTotal;
-    const breakEvenUnits = contribution > 0 ? Math.ceil(fixedTotal / contribution) : null;
+    const chargesDecimal = d(sale).times(rateDecimal).div(100);
+    const contributionDecimal = d(sale).minus(direct).minus(chargesDecimal);
+    const contribution = contributionDecimal.toNumber();
+    const unitProfitDecimal = contributionDecimal.minus(fixedAllocationDecimal);
+    const unitProfit = unitProfitDecimal.toNumber();
+    const revenue = d(sale).times(units).toNumber();
+    const profit = contributionDecimal.times(units).minus(fixedTotal).toNumber();
+    const periodVariableCosts = d(direct).plus(chargesDecimal).times(units);
+    const breakEvenUnits = contributionDecimal.gt(0) ? d(fixedTotal).div(contributionDecimal).ceil().toNumber() : null;
     if (contribution <= 0 && fixedTotal > 0) warnings.push("O preço não gera contribuição positiva para cobrir os custos fixos.");
 
     return {
@@ -139,13 +148,14 @@
         confidence: upperBound === null ? "insuficiente" : "referencia_de_mercado"
       },
       salePrice: sale, targetMargin, units, contributionMargin: contribution,
-      contributionMarginPct: sale > 0 ? contribution / sale * 100 : 0,
-      unitProfit, netMarginPct: sale > 0 ? unitProfit / sale * 100 : 0,
-      breakEvenUnits, investment: direct * units + fixedTotal, revenue,
-      periodVariableCosts: direct * units + charges * units,
-      periodFixedCosts: fixedTotal, periodCosts: direct * units + charges * units + fixedTotal,
+      contributionMarginPct: sale > 0 ? contributionDecimal.div(sale).times(100).toNumber() : 0,
+      unitProfit, netMarginPct: sale > 0 ? unitProfitDecimal.div(sale).times(100).toNumber() : 0,
+      breakEvenUnits, investment: d(direct).times(units).plus(fixedTotal).toNumber(), revenue,
+      periodVariableCosts: periodVariableCosts.toNumber(),
+      periodFixedCosts: fixedTotal, periodCosts: periodVariableCosts.plus(fixedTotal).toNumber(),
       profit, profitScope: "periodo_com_custo_fixo_integral"
     };
   }
   return { calculate, normalize, marketStats, fixedCostsTotal };
 });
+

@@ -29,6 +29,10 @@ Após se cadastrar, conclua o onboarding da empresa para usar Produtos, Simulaç
 npm run test:core
 ```
 
+Com o lockfile presente, use `npm ci` para instalar as versões registradas. Decimal.js é usado no cálculo monetário; Zod valida entradas da API; Supertest é uma dependência de desenvolvimento para os testes HTTP. Os testes da API usam SQLite temporário e não acessam o banco de produção.
+
+A cópia de Decimal.js servida ao navegador fica em `shared/vendor/`, com a licença original. Ao atualizar a dependência, execute `npm run vendor:sync`; os testes verificam se ela corresponde à versão instalada.
+
 Para verificar a API local, acesse `http://localhost:3000/api/health`. A resposta deve indicar `"database": "sqlite"`.
 
 **Checklist manual antes de publicar:**

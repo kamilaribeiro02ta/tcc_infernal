@@ -3,7 +3,8 @@ const { DatabaseSync } = require("node:sqlite");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const directory = path.join(__dirname, "..", "data");
+// Permite banco temporário nos testes sem tocar nos dados locais ou na produção.
+const directory = process.env.ZUZ_SQLITE_DIRECTORY || path.join(__dirname, "..", "data");
 fs.mkdirSync(directory, { recursive: true });
 const db = new DatabaseSync(path.join(directory, "zuz.db"));
 db.exec("PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;");
@@ -58,4 +59,5 @@ function getPool() {
     }
   };
 }
-module.exports = { query, getPool };
+module.exports = { query, getPool, close: () => db.close() };
+

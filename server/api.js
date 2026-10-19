@@ -13,6 +13,8 @@ const { registerTaxContextRoutes } = require("./tax-context");
 const { askCostsGuide } = require("./costs-assistant");
 const { askSimulationGuide } = require("./simulations-help");
 const pricing = require("../shared/pricing-core");
+const money = require("../shared/money");
+const {schemas,validateBody}=require("./validation");
 // O motor estatístico só é carregado ao consultar previsões;
 // falha nele não pode bloquear cadastro, login e sessão.
 const predictPrice = (...args) => require("../shared/price-prediction").predictPrice(...args);
@@ -61,7 +63,7 @@ async function getCompany(userId) {
 function productSnapshot(product, settings) {
   const costs = Array.isArray(product.additionalCosts) ? product.additionalCosts : [];
   const rawDirect = product.baseCost ?? product.direct_cost ?? product.directCost ?? 0;
-  const direct = Number(rawDirect) + costs.reduce((sum, item) => sum + Number(item.value || 0), 0);
+  const direct = money.sum([Number(rawDirect), ...costs.map(item => Number(item.value || 0))]);
   const salePrice = Number(product.salePrice ?? product.sale_price ?? 0);
   const targetMargin = Number(product.targetMargin ?? product.target_margin ?? settings.defaultMargin ?? 30);
   const units = Number(product.units ?? 1);
@@ -104,7 +106,7 @@ function createApi() {
     res.setHeader("Cache-Control", "no-store");
     res.json({ ok: true, app: "ZUZ", databaseConfigured: true, database: provider });
   }));
-  router.post("/auth/signup", asyncRoute(async (req, res) => {
+  router.post("/auth/signup", validateBody(schemas.signup), asyncRoute(async (req, res) => {
     const name = normalText(req.body.name, 160);
     const email = normalText(req.body.email, 254).toLowerCase();
     const password = String(req.body.password || "");
@@ -119,7 +121,7 @@ function createApi() {
     const user = created.rows[0]; await session(req,res,user);
     res.status(201).json({ user: safeUser(user), company: null });
   }));
-  router.post("/auth/login", asyncRoute(async (req, res) => {
+  router.post("/auth/login", validateBody(schemas.login), asyncRoute(async (req, res) => {
     const email = normalText(req.body.email,254).toLowerCase();
     const result = await query("SELECT * FROM zuz_users WHERE email=$1",[email]);
     const user = result.rows[0];
@@ -280,7 +282,7 @@ function createApi() {
   router.get("/me", asyncRoute(async (req,res) => res.json({ user:safeUser(req.user),company:await getCompany(req.user.id) })));
   // Atualiza a identidade autenticada no banco, permitindo que o nome apareça
   // corretamente em outros dispositivos (em vez de existir apenas no localStorage).
-  router.put("/me", asyncRoute(async (req,res) => {
+  router.put("/me", validateBody(schemas.profile), asyncRoute(async (req,res) => {
     const name=normalText(req.body?.name,160);
     if(name.length<2) fail(400,"Informe um nome com pelo menos 2 caracteres.");
     const result=await query(
@@ -321,7 +323,7 @@ function createApi() {
     ]);
     res.json({ company, categories:categories.rows, products:products.rows.map(row=>row.payload && Object.keys(row.payload).length ? row.payload : row) });
   }));
-  router.put("/company", asyncRoute(async (req,res) => {
+  router.put("/company", validateBody(schemas.company), asyncRoute(async (req,res) => {
     const name=normalText(req.body.name,160);
     const segment=normalText(req.body.segment || "outro",120);
     const operation_type=normalText(req.body.operationType,24);
@@ -350,7 +352,7 @@ function createApi() {
     finally{client.release();}
     res.json({ company });
   }));
-  router.put("/company/settings", asyncRoute(async (req,res) => {
+  router.put("/company/settings", validateBody(schemas.settings), asyncRoute(async (req,res) => {
     const company=await getCompany(req.user.id);
     if (!company) fail(404,"Configure sua empresa antes de salvar os custos.");
     const input=req.body.settings;
@@ -392,7 +394,7 @@ function createApi() {
   }));
 
   // Registro explicito de unidades efetivamente vendidas em um mes.
-  router.put("/pricing/sales", asyncRoute(async (req,res) => {
+  router.put("/pricing/sales", validateBody(schemas.sales), asyncRoute(async (req,res) => {
     const company=await getCompany(req.user.id);
     if(!company)fail(404,"Configure sua empresa.");
     const productId=normalText(req.body.productId,100);
@@ -428,23 +430,23 @@ function createApi() {
       fixedTotal:current.fixedTotal,technicalPrice:current.technicalPrice
     }));
   }));
-  router.post("/pricing/calculate", asyncRoute(async (req,res) => {
+  router.post("/pricing/calculate", validateBody(schemas.calculate), asyncRoute(async (req,res) => {
     const company=await getCompany(req.user.id);
     if (!company) fail(404,"Configure sua empresa.");
     try { res.json(pricing.calculate({ ...req.body, settings:company.settings })); }
     catch(e){ if(e instanceof RangeError) fail(400,e.message); throw e; }
   }));
-  router.put("/company/products", asyncRoute(async (req,res) => {
+  router.put("/company/products", validateBody(schemas.products), asyncRoute(async (req,res) => {
     const company=await getCompany(req.user.id);
     if(!company)fail(404,"Configure sua empresa antes de cadastrar produtos.");
     const products=req.body.products;
     if(!Array.isArray(products)||products.length>500)fail(400,"Lista de produtos inválida.");
     const verified=products.map(item=>{
       if(!item || typeof item!=="object")fail(400,"Produto inválido.");
-      const name=normalText(item.name,180),direct=Number(item.baseCost||0)
-        +(Array.isArray(item.additionalCosts)?item.additionalCosts.reduce((sum,x)=>sum+Number(x.value||0),0):0);
+      const name=normalText(item.name,180),direct=money.sum([Number(item.baseCost||0),
+        ...(Array.isArray(item.additionalCosts)?item.additionalCosts.map(x=>Number(x.value||0)):[])]);
       const sale=Number(item.salePrice||0),margin=Number(item.targetMargin??30),units=Number(item.units??1);
-      const id=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(item.id||"")?item.id:crypto.randomUUID();
+      const id=/^(?:[0-9a-f]{32}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i.test(item.id||"")?item.id:crypto.randomUUID();
       const payload={...item,id};
       if(!name || !Number.isFinite(direct)||direct<0||!Number.isFinite(sale)||sale<0||!Number.isFinite(margin)||margin<0||margin>90||!Number.isInteger(units)||units<1||JSON.stringify(payload).length>1500000)fail(400,"Revise nome, custos, margem, quantidade e foto dos produtos.");
       return {name,id,direct,sale,margin,units,payload};
@@ -474,7 +476,7 @@ function createApi() {
     finally{client.release();}
     res.json({ok:true,products:verified.map(p=>p.payload)});
   }));
-  router.post("/company/products", asyncRoute(async (req,res) => {
+  router.post("/company/products", validateBody(schemas.product), asyncRoute(async (req,res) => {
     const company=await getCompany(req.user.id);
     if (!company) fail(404,"Configure sua empresa.");
     const name=normalText(req.body.name,180);

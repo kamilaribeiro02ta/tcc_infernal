@@ -255,13 +255,13 @@
 
   function additionalCostTotal(product) {
     return Array.isArray(product.additionalCosts)
-      ? product.additionalCosts.reduce((sum, item) => sum + numberValue(item.value), 0)
+      ? window.ZUZMoney.sum(product.additionalCosts.map(item => numberValue(item.value)))
       : 0;
   }
 
   function pricingFor(product) {
     return window.ZUZPricing.calculate({
-      unitDirectCost: numberValue(product.baseCost) + additionalCostTotal(product),
+      unitDirectCost: window.ZUZMoney.add(numberValue(product.baseCost), additionalCostTotal(product)),
       salePrice: product.salePrice, targetMargin: product.targetMargin,
       units: product.units, category: product.category, productId: product.id,
       productName: product.name

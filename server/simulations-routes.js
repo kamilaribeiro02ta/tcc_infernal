@@ -1,6 +1,7 @@
 "use strict";
 const simulation=require("../shared/simulation-core");
 const {query}=require("./database");
+const {schemas,validateBody}=require("./validation");
 const crypto=require("node:crypto");
 const brl=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(n);
 const safeText=(s,max=120)=>String(s||"").trim().slice(0,max);
@@ -118,7 +119,7 @@ function registerSimulationRoutes(router,{asyncRoute,getCompany}){
     const rows=await query("SELECT id,name,product_id,snapshot,created_at FROM zuz_simulations WHERE company_id=$1 ORDER BY created_at DESC,id DESC LIMIT 60",[company.id]);
     res.json({simulations:rows.rows.map(r=>({id:r.id,name:r.name,productId:r.product_id,createdAt:r.created_at,snapshot:typeof r.snapshot === "string" ? JSON.parse(r.snapshot) : r.snapshot}))});
   }));
-  router.post("/simulations",asyncRoute(async(req,res)=>{
+  router.post("/simulations",validateBody(schemas.simulation),asyncRoute(async(req,res)=>{
     const company=await getCompany(req.user.id);
     if(!company)fail(404,"Configure sua empresa primeiro.");
     const name=safeText(req.body?.name,100);
@@ -186,3 +187,4 @@ function registerSimulationRoutes(router,{asyncRoute,getCompany}){
   }));
 }
 module.exports={registerSimulationRoutes};
+
