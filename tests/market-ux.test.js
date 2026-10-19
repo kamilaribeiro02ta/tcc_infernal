@@ -113,3 +113,14 @@ test("catálogo sem preço pode iniciar precificação própria com confirmaçã
  const draft=JSON.parse(sessionWrites[0].value);assert.equal(draft.id,ID);assert.equal(draft.price,undefined);assert.equal(draft.baseCost,undefined);
  assert.equal(window.location.href,"../produtos/produtos.html");
 });
+
+test("sessão ausente mostra login e não acusa falha das fontes",async()=>{
+ const {root}=setup(async()=>{throw Object.assign(new Error("Faça login para continuar."),{status:401});});
+ await search(root);
+ assert.equal(root["aria-busy"],"false");
+ assert.ok(root.find(x=>x.className==="zm-status").textContent.includes("Entre na sua conta"));
+ const login=root.find(x=>x.tag==="a"&&x.textContent==="Entrar na minha conta");
+ assert.equal(login.href,"../Login/login.html");
+ assert.equal(root.all(x=>x.className==="zm-offer").length,0);
+ assert.ok(!root.find(x=>x.className.includes("zm-source-status")).textContent.includes("referências salvas"));
+});
