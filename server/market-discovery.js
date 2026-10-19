@@ -15,9 +15,9 @@ function preferred(q){
  const n=norm(q);
  const hints=/absorvente|higiene|shampoo|sabonete|perfume|cosmet|creme|desodorante|condicionador|maquiagem|batom|protetor solar/;
  const pets=/racao|ração|pet|gato|cachorro|animal/;
- if(hints.test(n))return [SOURCES[1],SOURCES[2],SOURCES[0]];
- if(pets.test(n))return [SOURCES[3],SOURCES[0],SOURCES[2]];
- if(/macarrao|massa|arroz|biscoito|farinha|leite|pao|pasta|miojo|alimento|refrigerante/.test(n))return [SOURCES[0],SOURCES[2],SOURCES[1]];
+ if(hints.test(n))return [SOURCES[1],...SOURCES.filter(s=>s!==SOURCES[1])];
+ if(pets.test(n))return [SOURCES[3],...SOURCES.filter(s=>s!==SOURCES[3])];
+ if(/macarrao|massa|arroz|biscoito|farinha|leite|pao|pasta|miojo|alimento|refrigerante/.test(n))return SOURCES;
  return SOURCES;
 }
 function dto(row,source){
@@ -95,3 +95,4 @@ async function lookup(q){
  return {cached:false,counts:info,warnings};
 }
 module.exports={lookup,rank,norm,preferred,dto};
+

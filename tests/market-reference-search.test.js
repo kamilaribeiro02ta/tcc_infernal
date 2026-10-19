@@ -25,3 +25,12 @@ test("falha em uma fonte não elimina as observações salvas",async()=>{
  const out=await searchReferences("vassoura",{query:async sql=>({rows:sql.startsWith("SELECT c.*")?[product]:[{...quote,observed_at:new Date().toISOString()}]}),provider:"postgresql",refresh:async()=>{throw Error("offline");},dto:x=>x});
  assert.equal(out.references.length,1);assert.ok(out.warnings.length);
 });
+test("descobre qualquer termo antes de pesquisar o catálogo local",async()=>{
+ const events=[];
+ const out=await searchReferences("smartphone",{provider:"postgresql",discover:async term=>{events.push(term);return {warnings:[]};},query:async()=>{events.push("sql");return {rows:[]};},refresh:async()=>({warnings:[]}),dto:x=>x});
+ assert.deepEqual(events,["smartphone","sql"]);assert.deepEqual(out.catalog,[]);
+});
+test("falha na descoberta preserva consulta local e informa limitação",async()=>{
+ const out=await searchReferences("qualquer produto",{provider:"postgresql",discover:async()=>{throw Error("offline");},query:async()=>({rows:[]}),refresh:async()=>({warnings:[]}),dto:x=>x});
+ assert.match(out.warnings[0],/descoberta/);
+});

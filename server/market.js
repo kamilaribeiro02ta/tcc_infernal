@@ -173,7 +173,8 @@ function registerMarketRoutes(router,{asyncRoute,getCompany}){
   throttle(req.user.id);
   const term=txt(req.query.q,81);
   if(term.length<3||term.length>80)err(400,"Digite entre 3 e 80 caracteres.");
-  const result=await require("./market-reference-search").searchReferences(term,{query,provider,refresh:quotesFor,dto});
+  const result=await require("./market-reference-search").searchReferences(term,{query,provider,refresh:quotesFor,dto,
+   discover:require("./market-discovery").lookup});
   res.setHeader("Cache-Control","private, no-store");
   res.json(result);
  }));

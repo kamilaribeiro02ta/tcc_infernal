@@ -195,7 +195,7 @@ function mount(parent,mode){
   const query=encodeURIComponent(term);
   await Promise.allSettled([
    (async()=>{
-    try{const data=await request("GET","/market/references?q="+query);if(token!==serial)return;successes++;add(data.references);catalogItems.push(...(data.catalog||[]));
+    try{const data=await request("GET","/market/references?q="+query,undefined,35000);if(token!==serial)return;successes++;add(data.references);catalogItems.push(...(data.catalog||[]));
      if(data.warnings?.length)messages.push("Algumas fontes estão indisponíveis; parte dos dados pode vir de consultas anteriores.");
      if(data.limited)messages.push("Exibindo as primeiras referências. Refine a marca ou o modelo para ampliar a precisão.");
     }catch{if(token===serial)messages.push("Não foi possível consultar as referências salvas agora.");}

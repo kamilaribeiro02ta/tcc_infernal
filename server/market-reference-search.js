@@ -22,16 +22,23 @@ function normalizeReference(item,row,now=Date.now()){
   imageUrl:item.attributes?.image_url||null};
 }
 // No catalogue row is represented as an offer without an actual price and source.
-async function searchReferences(term,{query,provider,refresh,dto}){
+async function searchReferences(term,{query,provider,refresh,dto,discover}){
+ const warnings=[];
+ // Discover for every term, even when the local archive already has matches.
+ // External catalogs are independently cached by the discovery adapter.
+ if(provider==="postgresql"&&discover){
+  try{const result=await discover(term);warnings.push(...(result.warnings||[]));}
+  catch{warnings.push("A descoberta de produtos externos está indisponível; exibindo o catálogo já consultado.");}
+ }
  const tokens=String(term).trim().split(/\s+/).slice(0,8);
  const params=tokens.map(x=>"%"+x.toLowerCase().replace(/[\\%_]/g,"")+"%");
  const expression=provider==="postgresql"?
-  "unaccent(lower(COALESCE(c.commercial_name,c.name,'')||' '||COALESCE(c.brand,'')||' '||COALESCE(c.model,'')||' '||COALESCE(c.barcode,'')))":
+  "unaccent(lower(COALESCE(c.commercial_name,'')||' '||COALESCE(c.name,'')||' '||COALESCE(c.brand,'')||' '||COALESCE(c.model,'')||' '||COALESCE(c.barcode,'')))":
   "lower(COALESCE(c.name,'')||' '||COALESCE(c.brand,'')||' '||COALESCE(c.model,'')||' '||COALESCE(c.barcode,''))";
  const where=params.map((_,i)=>expression+" LIKE "+(provider==="postgresql"?"unaccent($"+(i+1)+")":"$"+(i+1))).join(" AND ");
  const found=await query("SELECT c.* FROM zuz_market_catalog c WHERE "+where+
   " ORDER BY EXISTS(SELECT 1 FROM zuz_market_prices p WHERE p.catalog_id=c.id) DESC,c.name,c.id LIMIT 12",params);
- const warnings=[],references=[],catalog=[];
+ const references=[],catalog=[];
  // Only four live source refreshes per search; the remaining matches use saved observations.
  const responses=await Promise.allSettled(found.rows.map(async(row,index)=>{
   let item=dto({...row,attributes:typeof row.attributes==="string"?JSON.parse(row.attributes):row.attributes});
