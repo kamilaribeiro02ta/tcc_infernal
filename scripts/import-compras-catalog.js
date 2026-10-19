@@ -36,9 +36,10 @@ async function persist(rows){
     String(x.nomeClasse||"").slice(0,160),JSON.stringify({catalogCode:code,governmentType:specs.tag}));
    return "("+Array.from({length:7},(_,j)=>j===6?"$"+(i*7+j+1)+"::jsonb":"$"+(i*7+j+1)).join(",")+")";
   }).join(",");
-  const sql="INSERT INTO zuz_market_catalog (id,source,external_id,kind,name,category,attributes) VALUES "+placeholders+
-   " ON CONFLICT(source,external_id) DO UPDATE SET name=excluded.name,category=excluded.category,attributes=excluded.attributes,updated_at=CURRENT_TIMESTAMP";
-  await query(sql,params);total+=chunk.length;
+  const values=provider==="postgresql"?"SELECT v.* FROM (VALUES "+placeholders+") AS v(id,source,external_id,kind,name,category,attributes) WHERE zuz_market_use_curated_import()":"VALUES "+placeholders;
+  const sql="INSERT INTO zuz_market_catalog (id,source,external_id,kind,name,category,attributes) "+values+
+   " ON CONFLICT(source,external_id) DO UPDATE SET name=excluded.name,category=excluded.category,attributes=excluded.attributes,updated_at=CURRENT_TIMESTAMP RETURNING id";
+  const result=await query(sql,params);total+=result.rowCount;
  }
  return total;
 }
@@ -55,3 +56,4 @@ async function persist(rows){
  }
  console.info("Total processado: "+count+". Nenhum dado privado de empresas foi acessado.");
 })().catch(e=>{console.error("Importacao interrompida:",e.message);process.exitCode=1;});
+

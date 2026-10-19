@@ -14,7 +14,7 @@ function mount(parent,mode){
  const head=el("header","zm-heading");head.append(el("h3","zm-title","Descubra os preços de mercado"),el("p","zm-subtitle","Pesquise um produto e abra uma referência para consultar o preço."));
  const form=el("form","zm-search-form");form.setAttribute("role","search");
  const label=el("label","zm-search-label","Produto, marca ou código de barras");
- const input=el("input","zm-search-input");input.id="zm-search-"+(++instance);input.type="search";input.minLength=3;input.maxLength=80;input.required=true;input.placeholder="Ex.: vassoura";label.htmlFor=input.id;
+ const input=el("input","zm-search-input");input.id="zm-search-"+(++instance);input.type="search";input.minLength=3;input.maxLength=80;input.required=true;input.placeholder="Nome, marca ou código";label.htmlFor=input.id;
  const controls=el("div","zm-search-controls");const submit=el("button","zm-search-submit","Pesquisar");submit.type="submit";
  const cancel=button("Cancelar",()=>stop());cancel.hidden=true;
  controls.append(input,submit,cancel);form.append(label,controls);
@@ -183,7 +183,10 @@ function mount(parent,mode){
     }catch{outcome.replaceChildren(el("p","zm-error","Fonte indisponível agora. Tente novamente ou continue manualmente."));}
     finally{lookup.disabled=false;}
    },"zm-secondary zm-catalog-load");
-   d.append(lookup,outcome);catalog.append(d);
+   const manualArea=el("div","zm-catalog-manual");
+   const reference={item,title:item.fullName||item.name};
+   manualArea.append(button("Precificar com meus custos",()=>useReference(reference,manualArea),"zm-secondary"));
+   d.append(lookup,outcome,manualArea);catalog.append(d);
   }
  }
  form.addEventListener("submit",async event=>{

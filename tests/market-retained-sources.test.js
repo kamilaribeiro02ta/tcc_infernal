@@ -14,7 +14,7 @@ function load(file,database,fetch){
 test("descoberta consulta somente fontes mantidas e persiste identificações sem preço",async()=>{
  const calls=[],writes=[];
  const discovery=load("market-discovery.js",{query:async(sql,params)=>{
-  if(sql.startsWith("INSERT"))writes.push({sql,params});return {rows:[]};
+  if(sql.startsWith("INSERT")){writes.push({sql,params});return {rows:[{id:params[0]}],rowCount:1};}return {rows:[],rowCount:0};
  }},async url=>{
   calls.push(new URL(url).hostname);
   return {ok:true,text:async()=>JSON.stringify({products:[{code:"7891234567895",product_name:"Produto consultado"}]})};
@@ -44,4 +44,12 @@ test("rotas matemáticas e histórico permanecem sem os conectores vazios",()=>{
  load("market-extended-providers.js",{},()=>{throw Error("unexpected network");}).registerExtendedMarketRoutes(router,options);
  load("market-intelligence.js",{},()=>{throw Error("unexpected network");}).registerMarketIntelligenceRoutes(router,options);
  assert.deepEqual(routes.sort(),["/market/classif","/market/history","/market/ipca","/market/official-sources"]);
+});
+test("referência bloqueada pela curadoria não é contada como importada",async()=>{
+ const discovery=load("market-discovery.js",{query:async()=>({rows:[],rowCount:0})},async()=>({ok:true,text:async()=>JSON.stringify({products:[{code:"7891234567895",product_name:"Produto"}]})}));
+ const result=await discovery.lookup("produto");assert.equal(result.counts.found,2);assert.equal(result.counts.imported,0);
+});
+test("bootstrap contabiliza somente linhas aceitas pelo banco",async()=>{
+ const bootstrap=load("market-catalog-bootstrap.js",{provider:"postgresql",query:async()=>({rows:[],rowCount:0})});
+ assert.equal(await bootstrap.upsertRows([{id:"a".repeat(32),source:"openfoodfacts",externalId:"7891234567895",name:"Produto",attributes:{}}]),0);
 });

@@ -89,11 +89,11 @@ async function upsertRows(items){
  let stored=0;
  // UPSERT mantém SKU, vínculo e preços existentes. Nunca sobrescreve informação privada.
  const sql="INSERT INTO zuz_market_catalog(id,source,external_id,kind,name,commercial_name,brand,barcode,category,unit,attributes,is_historical,commercial_search_ready,updated_at) "+
- "VALUES($1,$2,$3,'product',$4,$4,$5,$3,$6,$7,$8::jsonb,FALSE,TRUE,CURRENT_TIMESTAMP) "+
- "ON CONFLICT(source,external_id) DO UPDATE SET name=EXCLUDED.name,commercial_name=EXCLUDED.commercial_name,brand=EXCLUDED.brand,barcode=EXCLUDED.barcode,category=EXCLUDED.category,unit=EXCLUDED.unit,attributes=EXCLUDED.attributes,commercial_search_ready=TRUE,is_historical=FALSE,updated_at=CURRENT_TIMESTAMP";
+ "SELECT $1,$2,$3,'product',$4,$4,$5,$3,$6,$7,$8::jsonb,FALSE,TRUE,CURRENT_TIMESTAMP WHERE zuz_market_use_curated_import() "+
+ "ON CONFLICT(source,external_id) DO UPDATE SET name=EXCLUDED.name,commercial_name=EXCLUDED.commercial_name,brand=EXCLUDED.brand,barcode=EXCLUDED.barcode,category=EXCLUDED.category,unit=EXCLUDED.unit,attributes=EXCLUDED.attributes,commercial_search_ready=TRUE,is_historical=FALSE,updated_at=CURRENT_TIMESTAMP RETURNING id";
  for(const x of items){
-  await query(sql,[x.id,x.source,x.externalId,x.name,x.brand,x.category,x.unit,JSON.stringify(x.attributes)]);
-  stored++;
+  const result=await query(sql,[x.id,x.source,x.externalId,x.name,x.brand,x.category,x.unit,JSON.stringify(x.attributes)]);
+  stored+=result.rowCount;
  }
  return stored;
 }

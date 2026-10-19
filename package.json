@@ -11,6 +11,7 @@
     "vendor:sync": "node scripts/sync-browser-vendor.js",
     "market:import": "node --env-file-if-exists=.env scripts/import-compras-catalog.js",
     "market:sync": "node --env-file-if-exists=.env scripts/sync-market-prices.js",
+    "market:curate": "node --env-file-if-exists=.env scripts/curate-market-catalog.js",
     "market:catalog-seed": "node --env-file-if-exists=.env scripts/bootstrap-open-facts.js"
   },
   "engines": {

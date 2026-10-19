@@ -18,10 +18,10 @@ class FakeNode{
 }
 function setup(request,timer=setTimeout){
  const host=new FakeNode("div"),mount=new FakeNode("div");host.append(mount);
- const events=[],window={ZUZAPI:{request},location:{href:""},dispatchEvent:e=>{events.push(e);e.detail.accepted=true;}};
+ const events=[],sessionWrites=[],window={ZUZAPI:{request},location:{href:""},dispatchEvent:e=>{events.push(e);e.detail.accepted=true;}};
  const document={createElement:t=>new FakeNode(t),getElementById:id=>id==="marketSearchMount"?mount:null};
- vm.runInNewContext(code,{window,document,CustomEvent:class{constructor(type,arg){this.type=type;this.detail=arg.detail;}},URL,AbortController,URLSearchParams,sessionStorage:{setItem(){}},Date,Intl,setTimeout:timer,clearTimeout});
- return {root:host.find(x=>x.className==="zm-search-shell"),host,events,window};
+ vm.runInNewContext(code,{window,document,CustomEvent:class{constructor(type,arg){this.type=type;this.detail=arg.detail;}},URL,AbortController,URLSearchParams,sessionStorage:{setItem(key,value){sessionWrites.push({key,value});}},Date,Intl,setTimeout:timer,clearTimeout});
+ return {root:host.find(x=>x.className==="zm-search-shell"),host,events,window,sessionWrites};
 }
 const ID="a".repeat(32),QID="b".repeat(32);
 const offer={id:QID,title:"Vassoura de piaçava",price:14.9,seller:"Loja A",currency:"BRL",source:"Open Prices",sourceCode:"openprices",sourceRef:"123",url:"https://prices.openfoodfacts.org/api/v1/prices/123",observedAt:"2026-10-17",queriedAt:"2026-10-18",verified:true,comparison:"gtin",item:{id:ID,name:"Vassoura",barcode:"7891234567895",attributes:{}}};
@@ -82,4 +82,13 @@ test("catálogo sem preço fica visível e oferece consulta na fonte",async()=>{
 });
 test("data de preço é preservada como dia civil, sem retroceder por fuso horário",async()=>{
  const {root}=setup(async(_,url)=>url.includes('/references')?{references:[offer]}:{offers:[]});await search(root);assert.ok(root.all(x=>x.className==='zm-result-meta').some(x=>x.textContent.includes('17/10/2026')));
+});
+test("catálogo sem preço pode iniciar precificação própria com confirmação e sem valores inventados",async()=>{
+ const {root,window,sessionWrites}=setup(async()=>({references:[],catalog:[offer.item]}));await search(root,"produto");
+ root.find(x=>x.tag==="button"&&x.textContent==="Precificar com meus custos").handlers.click[0]();
+ assert.equal(window.location.href,"");
+ await root.find(x=>x.tag==="button"&&x.textContent==="Confirmar").handlers.click[0]();
+ assert.equal(sessionWrites.length,1);assert.equal(sessionWrites[0].key,"zuz:market-import");
+ const draft=JSON.parse(sessionWrites[0].value);assert.equal(draft.id,ID);assert.equal(draft.price,undefined);assert.equal(draft.baseCost,undefined);
+ assert.equal(window.location.href,"../produtos/produtos.html");
 });

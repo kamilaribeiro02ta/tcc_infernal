@@ -56,10 +56,11 @@ async function remote(source,q){
 }
 async function upsert(item){
  const sql="INSERT INTO zuz_market_catalog(id,source,external_id,kind,name,commercial_name,brand,barcode,category,unit,attributes,is_historical,commercial_search_ready,updated_at) "+
- "VALUES($1,$2,$3,'product',$4,$4,$5,$3,$6,$7,$8::jsonb,FALSE,TRUE,NOW()) "+
+ "SELECT $1,$2,$3,'product',$4,$4,$5,$3,$6,$7,$8::jsonb,FALSE,TRUE,NOW() WHERE zuz_market_use_curated_import() "+
  "ON CONFLICT(source,external_id) DO UPDATE SET name=excluded.name,commercial_name=excluded.commercial_name,brand=excluded.brand,"+
- "barcode=excluded.barcode,category=excluded.category,unit=excluded.unit,attributes=excluded.attributes,is_historical=FALSE,commercial_search_ready=TRUE,updated_at=NOW()";
- await query(sql,[id(item.source,item.externalId),item.source,item.externalId,item.name,item.brand,item.category,item.unit,JSON.stringify(item.attrs)]);
+ "barcode=excluded.barcode,category=excluded.category,unit=excluded.unit,attributes=excluded.attributes,is_historical=FALSE,commercial_search_ready=TRUE,updated_at=NOW() RETURNING id";
+ const result=await query(sql,[id(item.source,item.externalId),item.source,item.externalId,item.name,item.brand,item.category,item.unit,JSON.stringify(item.attrs)]);
+ return result.rowCount;
 }
 async function lookup(q){
  const target=clean(q,80),key="discovery-retained:"+id("term",norm(target));
@@ -82,7 +83,7 @@ async function lookup(q){
   const key=item.source+":"+item.barcode;
   if(seen.has(key))continue;
   seen.add(key);
-  try{await upsert(item);imported++;}catch(e){warnings.push("Alguns itens não puderam ser armazenados.");break;}
+  try{imported+=await upsert(item);}catch(e){warnings.push("Alguns itens não puderam ser armazenados.");break;}
  }
  const info={found:found.length,imported,sources:candidates.map(x=>x.code)};
  if(responses.some(x=>x.status==="fulfilled"))

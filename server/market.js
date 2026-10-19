@@ -37,12 +37,13 @@ async function cacheSet(key,obj){
 }
 const dto=r=>({id:r.id,source:r.source,sourceId:r.external_id,type:r.kind,name:r.commercial_name||r.name,fullName:r.name,brand:r.brand||"",model:r.model||"",barcode:r.barcode||"",category:r.category||"",unit:r.unit||"",attributes:r.attributes||{},isHistorical:!!r.is_historical,updatedAt:r.updated_at||null});
 async function upsert(item){
+ const values="$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,CURRENT_TIMESTAMP";
  const sql="INSERT INTO zuz_market_catalog(id,source,external_id,kind,name,brand,model,barcode,category,unit,attributes,updated_at) "+
- "VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,CURRENT_TIMESTAMP) "+
+ (provider==="postgresql"?"SELECT "+values+" WHERE zuz_market_use_curated_import() ":"VALUES("+values+") ")+
  "ON CONFLICT(source,external_id) DO UPDATE SET name=excluded.name,brand=excluded.brand,model=excluded.model,"+
  "barcode=excluded.barcode,category=excluded.category,unit=excluded.unit,attributes=excluded.attributes,updated_at=CURRENT_TIMESTAMP RETURNING *";
  const r=await query(sql,[hash(item.source,item.externalId),item.source,item.externalId,item.kind,item.name,item.brand||null,item.model||null,item.barcode||null,item.category||null,item.unit||null,JSON.stringify(item.attributes||{})]);
- return dto(r.rows[0]);
+ return r.rows[0]?dto(r.rows[0]):null;
 }
 function foodProduct(x){
  const code=txt(x.code,24),name=txt(x.product_name||x.product_name_pt,240);
@@ -73,7 +74,7 @@ async function catalog(term){
  const hit=await cacheGet(key,12*3600000);if(hit)return {items:unique(stored.concat(hit.items)),cached:true,warnings:[]};
  const ext=await Promise.allSettled([searchFood(term),searchGovernment(term)]);
  const errors=ext.flatMap((x,i)=>x.status==="rejected"?[i===0?"Open Food Facts indisponível":"Compras.gov.br indisponível"]:[]);
- const imported=[];for(const item of ext.flatMap(x=>x.status==="fulfilled"?x.value:[]).slice(0,25))imported.push(await upsert(item));
+ const imported=[];for(const item of ext.flatMap(x=>x.status==="fulfilled"?x.value:[]).slice(0,25)){const stored=await upsert(item);if(stored)imported.push(stored);}
  if(ext.some(x=>x.status==="fulfilled"))await cacheSet(key,{items:imported});
  return {items:unique(stored.concat(imported)),cached:false,warnings:errors};
 }

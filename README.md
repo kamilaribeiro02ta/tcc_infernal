@@ -58,4 +58,8 @@ Agenda, tarefas e alguns recursos do Perfil ainda possuem dados locais no navega
 
 A busca opcional aparece em **Produtos**, **Custos** e **Simulações**. As fontes de catálogo habilitadas são Open Food Facts, Open Beauty Facts, CATMAT e Compras.gov.br. A atualização de preços usa Compras.gov.br; valores de compras públicas não representam anúncios de lojas. O cálculo manual permanece disponível.
 
-Para bancos PostgreSQL novos, aplicar `db/schema.sql`, seguido das migrações `001-market-postgresql.sql`, `002-market-search-indexes.sql`, `003-market-quality.sql`, `003-sector-public-prices.sql`, `004-market-catalog-fixes.sql` e `005-retire-empty-market-sources.sql`. A última migração desativa apenas cadastros de fontes sem catálogo, preços ou referências setoriais; não exclui dados.
+Para bancos PostgreSQL novos, aplicar `db/schema.sql`, seguido das migrações `001-market-postgresql.sql`, `002-market-search-indexes.sql`, `003-market-quality.sql`, `003-sector-public-prices.sql`, `004-market-catalog-fixes.sql`, `005-retire-empty-market-sources.sql` e `006-curate-market-catalog.sql`.
+
+A curadoria preserva referências com preço ou uso salvo e mantém até três registros por grupo, distinguindo espécies explicitamente informadas. Excedentes ficam fora da busca, com cópia integral em `zuz_market_catalog_archive`. Os importadores desta versão ativam a proteção na própria transação para não reinserir registros retirados nem ultrapassar a capacidade do grupo. Clientes antigos continuam compatíveis durante a implantação. Catálogos sem preço continuam disponíveis para precificação com custos próprios.
+
+Use `npm run market:curate` para uma prévia e acrescente `-- --apply` para aplicar. A saída informa o lote de recuperação. `npm run market:curate -- --restore-batch=UUID` mostra quantos registros serão restaurados; acrescente `--apply` para confirmar. Testar migrações e limpeza em um banco isolado antes de aplicar à produção.

@@ -160,8 +160,13 @@ function createApi() {
         priceSync={source,processed:result.processed,quotesAvailable:result.pricesAvailable,sourceFailures:result.errors};
       }
     }catch(e){priceSync.warning="Sincronização de preços governamentais indisponível."; }
+    let curation;
+    if(provider==="postgresql")try{
+      const result=await query("SELECT zuz_market_curate_catalog((SELECT max_per_group FROM zuz_market_catalog_policy WHERE id=1),FALSE) AS summary");
+      curation=result.rows[0].summary;
+    }catch{curation={warning:"Curadoria indisponível; confira a migração do catálogo."};}
     res.setHeader("Cache-Control","no-store");
-    res.json({ok:true,bootstrap,priceSync,
+    res.json({ok:true,bootstrap,priceSync,curation,
       note:"A rotina importa produtos identificados por Open Facts, mas não inventa cotações de preço."});
   }));
   router.use(asyncRoute(async (req,res,next) => {
