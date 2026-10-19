@@ -1,0 +1,94 @@
+/* Pesquisa integrada à identidade ZUZ. Cards mostram a identificação antes da expansão. */
+.zm-search-shell{--zm-purple:var(--purple,#6a3df0);--zm-text:#181320;--zm-muted:#625c70;--zm-line:#e3dfea;--zm-surface:#fff;--zm-soft:#f8f6fc;box-sizing:border-box;width:100%;min-width:0;padding:16px 0;font-family:Poppins,sans-serif;color:var(--zm-text)}
+body.dark .zm-search-shell,html[data-theme="dark"] .zm-search-shell{--zm-purple:#ae93ff;--zm-text:#f3f1fa;--zm-muted:#c2b9d1;--zm-line:#3a314d;--zm-surface:#211a30;--zm-soft:#261e36;color-scheme:dark}
+.zm-search-shell *,.zm-search-shell *::before,.zm-search-shell *::after{box-sizing:border-box}
+.zm-search-shell [hidden]{display:none!important}
+.zm-search-shell .zm-title{margin:0;font:600 18px/1.4 Poppins,sans-serif;color:var(--zm-text);letter-spacing:-.02em}
+.zm-search-shell .zm-subtitle{margin:8px 0 16px;font-size:13px;line-height:1.6;color:var(--zm-muted)}
+.zm-search-shell .zm-search-label{display:block;margin:0 0 8px;color:var(--zm-text);font-size:12px;font-weight:500}
+.zm-search-shell .zm-search-controls{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;min-width:0}
+.zm-search-shell input.zm-search-input{display:block;position:static;width:100%;min-width:0;height:48px;padding:0 16px;margin:0;border:1px solid var(--zm-line);border-radius:8px;background:var(--zm-surface);color:var(--zm-text);font:400 16px/1.5 Poppins,sans-serif;box-shadow:none}
+.zm-search-shell input.zm-search-input::placeholder{color:var(--zm-muted);opacity:1}
+.zm-search-shell input.zm-search-input:-webkit-autofill{-webkit-text-fill-color:var(--zm-text);-webkit-box-shadow:0 0 0 1000px var(--zm-surface) inset!important;caret-color:var(--zm-text)}
+.zm-search-shell .zm-button,.zm-search-shell .zm-search-submit{position:static;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;width:auto;max-width:100%;margin:0;padding:8px 16px;border:1px solid var(--zm-line);border-radius:8px;background:transparent;color:var(--zm-purple);font:500 12px/1.5 Poppins,sans-serif;cursor:pointer;white-space:normal;transition:background .16s,border-color .16s}
+.zm-search-shell .zm-search-submit{height:48px;background:#6a3df0;border-color:#6a3df0;color:#fff}
+.zm-search-shell .zm-search-submit i{font-size:20px}
+.zm-search-shell .zm-search-submit:hover{background:#5c2fe0}
+.zm-search-controls>.zm-button{grid-column:1/-1;justify-self:start}
+.zm-search-shell .zm-button:hover{background:var(--zm-soft);border-color:var(--zm-purple)}
+.zm-search-shell button:disabled{opacity:.65;cursor:wait}
+.zm-search-shell :is(button,input,a,summary):focus-visible{outline:2px solid var(--zm-purple);outline-offset:4px}
+.zm-search-shell .zm-status{margin:16px 0 8px;color:var(--zm-text);font-size:13px;line-height:1.6}
+.zm-search-shell .zm-status:empty,.zm-search-shell .zm-source-status:empty{display:none}
+.zm-search-shell .zm-caption,.zm-search-shell .zm-result-meta{color:var(--zm-muted);font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.zm-search-shell .zm-caption{margin:8px 0}
+.zm-search-shell .zm-source-status{margin:0 0 16px;font-size:12px}
+.zm-search-shell .zm-results,.zm-search-shell .zm-catalog-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px;min-width:0}
+.zm-search-shell .zm-results-title{grid-column:1/-1;margin:8px 0 0;font-size:12px;font-weight:500;color:var(--zm-muted)}
+.zm-search-shell .zm-offer-row,.zm-search-shell .zm-catalog-item{min-width:0;margin:0;padding:0;border:1px solid var(--zm-line);border-radius:16px;background:var(--zm-surface);box-shadow:none;overflow:hidden}
+.zm-search-shell .zm-offer-row:hover,.zm-search-shell .zm-catalog-item:hover{border-color:color-mix(in srgb,var(--zm-purple) 55%,var(--zm-line))}
+.zm-search-shell .zm-offer-row:has(.zm-offer[open]),.zm-search-shell .zm-catalog-item[open]{grid-column:1/-1;border-color:var(--zm-purple)}
+.zm-search-shell .zm-offer{margin:0;padding:0;border:0;background:transparent;box-shadow:none}
+.zm-search-shell .zm-offer-summary,.zm-search-shell .zm-catalog-summary{display:flex;align-items:flex-start;gap:16px;min-height:112px;margin:0;padding:16px;list-style:none;cursor:pointer;color:var(--zm-text);background:transparent}
+.zm-search-shell summary::-webkit-details-marker{display:none}
+.zm-search-shell summary::marker{content:""}
+.zm-search-shell .zm-result-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:8px}
+.zm-search-shell .zm-result-name{font-size:14px;line-height:1.5;font-weight:600;color:var(--zm-text);overflow-wrap:anywhere}
+.zm-search-shell .zm-product-image{width:48px;height:48px;flex:none;object-fit:contain;border-radius:8px;background:#fff}
+.zm-search-shell .zm-card-bottom{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+.zm-search-shell .zm-offer-price{margin:0;color:var(--zm-purple);font-size:18px;font-weight:600;line-height:1.5;font-variant-numeric:tabular-nums}
+.zm-search-shell .zm-expand-label{flex:none;color:var(--zm-purple);font-size:12px;font-weight:500;line-height:1.5;text-decoration:underline;text-underline-offset:4px}
+.zm-search-shell .zm-no-price{font-size:12px;line-height:1.5;color:var(--zm-muted)}
+.zm-search-shell .zm-kind{font-size:11px;line-height:1.5;color:var(--zm-muted)}
+.zm-search-shell .zm-offer-details,.zm-search-shell .zm-catalog-body{min-width:0;padding:16px;border-top:1px solid var(--zm-line);background:var(--zm-soft)}
+.zm-search-shell .zm-detail-name{margin:0 0 16px;color:var(--zm-text);font-size:14px;font-weight:600;line-height:1.6;overflow-wrap:anywhere}
+.zm-search-shell .zm-facts,.zm-search-shell .zm-financial-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0}
+.zm-search-shell .zm-fact{min-width:0;overflow-wrap:anywhere}
+.zm-search-shell .zm-fact dt{margin:0 0 8px;color:var(--zm-muted);font-size:11px;font-weight:400}
+.zm-search-shell .zm-fact dd{margin:0;color:var(--zm-text);font-size:13px;line-height:1.6}
+.zm-search-shell .zm-link{display:inline-block;padding:8px 0;color:var(--zm-purple);font-size:12px;line-height:1.6;text-underline-offset:4px;overflow-wrap:anywhere}
+.zm-search-shell .zm-financial-facts{margin:16px 0;padding:16px 0;border-top:1px solid var(--zm-line);border-bottom:1px solid var(--zm-line)}
+.zm-search-shell .zm-financial-facts dd{font-size:12px;color:var(--zm-muted)}
+.zm-search-shell .zm-section-title{margin:16px 0;font-size:13px;font-weight:600;color:var(--zm-text)}
+.zm-search-shell .zm-reference-data{margin-top:16px}
+.zm-search-shell .zm-product-action,.zm-search-shell .zm-footer{margin-top:16px}
+.zm-search-shell .zm-catalog{margin:16px 0 0;padding:0;border:0;background:transparent}
+.zm-search-shell .zm-catalog>.zm-results-title{margin-bottom:16px}
+.zm-search-shell .zm-catalog-load{margin:16px 0 0}
+.zm-search-shell .zm-catalog-manual{margin-top:8px}
+.zm-search-shell .zm-confirm{font-size:13px;line-height:1.6}
+.zm-search-shell .zm-confirm .zm-button{margin:8px 8px 0 0}
+.zm-search-shell .zm-error{font-size:13px;line-height:1.6;color:var(--zm-text)}
+.zm-search-shell .zm-success{font-size:13px;line-height:1.6;color:var(--zm-purple)}
+.zm-search-shell .zm-inline-quote{margin-top:8px;border:1px solid var(--zm-line);border-radius:8px;overflow:hidden}
+.zm-search-shell .zm-inline-quote-summary{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:48px;padding:16px;font-size:13px;cursor:pointer}
+.zm-search-shell .zm-result-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:0 16px 16px}
+.zm-search-shell button.zm-compare-toggle{display:inline-flex;flex-direction:row;align-items:center;gap:8px;min-height:44px;width:auto;margin:0;padding:8px 16px;border-color:var(--zm-line);font-size:12px}
+.zm-search-shell button.zm-compare-toggle[aria-pressed="true"]{background:var(--zm-soft);border-color:var(--zm-purple)}
+.zm-search-shell .zm-compare-symbol{display:inline-grid;place-items:center;width:16px;height:16px;flex:none;font-size:16px;line-height:1}
+.zm-search-shell .zm-comparison{margin-top:24px;padding-top:16px;border-top:1px solid var(--zm-line)}
+.zm-search-shell .zm-comparison h4{margin:0;font-size:15px;font-weight:600}
+.zm-search-shell .zm-compare-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:16px 0}
+.zm-search-shell .zm-compare-item{min-width:0;padding:16px;border:1px solid var(--zm-line);border-radius:8px;font-size:13px;overflow-wrap:anywhere}
+.zm-search-shell .zm-compare-item p{margin:8px 0}
+.zm-search-shell .zm-financial-simulation{margin-top:16px}
+.zm-search-shell .zm-financial-simulation>summary{min-height:44px;padding:8px 0;font-size:12px;color:var(--zm-purple);cursor:pointer}
+.zm-search-shell .zm-simulation-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:16px 0}
+.zm-search-shell .zm-simulation-fields label{color:var(--zm-text);font-size:12px;line-height:1.6}
+.zm-search-shell input.zm-simulation-input{display:block;position:static;width:100%;min-width:0;min-height:44px;margin:8px 0 0;padding:8px;border:1px solid var(--zm-line);border-radius:8px;background:var(--zm-surface);color:var(--zm-text);font:400 16px/1.5 Poppins,sans-serif}
+.zm-search-shell .zm-simulation-heading{margin:16px 0;font-size:13px;font-weight:600}
+.zm-mount{min-width:0;max-width:100%}
+.sim .sim-market-access{margin:0 0 24px;min-width:0}
+.sim .sim-market-secondary{min-width:0;margin:24px 0 0;padding:16px 0;background:transparent;border:0;box-shadow:none}
+.sim .sim-market-secondary .sim-manual-details{margin:0}
+.cost-page .cost-market-section{margin-top:24px}
+.cost-page .cost-market-section .cost-manual-details{padding-top:8px}
+@media(max-width:600px){
+ .zm-search-shell .zm-search-submit{width:48px;padding:8px}
+ .zm-search-shell .zm-submit-label{display:none}
+ .zm-search-shell .zm-results,.zm-search-shell .zm-catalog-list{grid-template-columns:minmax(0,1fr)}
+ .zm-search-shell .zm-facts,.zm-search-shell .zm-financial-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .zm-search-shell .zm-compare-grid,.zm-search-shell .zm-simulation-fields{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:360px){.zm-search-shell .zm-facts,.zm-search-shell .zm-financial-facts{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.zm-search-shell *{transition:none!important}}
