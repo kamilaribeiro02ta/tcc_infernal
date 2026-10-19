@@ -17,7 +17,7 @@ test("Busca especializada prioriza higiene e alimentos",()=>{
 });
 test("prioridade de categoria nunca exclui outras fontes",()=>{
  for(const term of ["absorvente","ração","macarrão","smartphone","ferramenta"]){
-  assert.equal(new Set(extra.preferred(term).map(s=>s.code)).size,4);
+  assert.deepEqual([...new Set(extra.preferred(term).map(s=>s.code))].sort(),["openbeautyfacts","openfoodfacts"]);
  }
 });
 test("Itens diferentes não recebem correspondência apenas por categoria",()=>assert.equal(extra.rank({name:"Sabonete 90g",brand:"Marca",barcode:"7890000000000"},"absorvente"),0));

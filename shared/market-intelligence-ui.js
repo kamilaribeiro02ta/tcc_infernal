@@ -109,76 +109,11 @@ async function timeline(parent,item){
   if(other.length)section.append(el("p","zuz-v3-muted","Outros anos com preços: "+other.map(x=>x.year).join(", ")+"."));
  }catch(error){body.replaceChildren(el("p","zuz-v3-muted","Histórico temporariamente indisponível."));}
 }
-function offerInfo(info,offer){
- info.hidden=false;info.replaceChildren();
- const card=el("section","zuz-v3-ficha");
- card.append(el("div","zuz-v3-kicker","OFERTA ENCONTRADA EM LOJA"),
-  el("h4","zuz-v3-ficha-title",offer.title),
-  el("p","zuz-market-intel-strong",price(offer.price)+" · "+offer.seller),
-  el("p","zuz-v3-muted","Consulta: "+iso(offer.observedAt)+" · "+offer.source),
-  el("p","zuz-v3-warning",offer.warning),link("Abrir anúncio e conferir preço",offer.url));
- const add=document.getElementById("newProductBtn");
- if(add)card.append(button("Cadastrar este item manualmente",()=>{
-  add.click();const field=document.getElementById("nameInput");
-  if(field){field.value=offer.title.slice(0,60);field.dispatchEvent(new Event("input",{bubbles:true}));}
- }));
- info.append(card);
- mountTaxes(info,{name:offer.title,salePrice:offer.price});
- info.scrollIntoView({behavior:"smooth",block:"nearest"});
-}
-document.addEventListener("zuz:market:search",async event=>{
- const {root,query,info}=event.detail||{};
- if(!root||!query)return;
- let container=root.querySelector(".zuz-market-intel-offers");
- if(!container){container=el("section","zuz-market-intel-offers");root.append(container);}
- container.replaceChildren(el("p","zuz-v3-muted","Consultando ofertas de lojas, quando a API estiver habilitada..."));
- try{
-  const d=await api.request("GET","/market/offers?q="+encodeURIComponent(query));
-  container.replaceChildren(el("h4","zuz-v3-group","Ofertas de lojas e produtos similares"));
-  if(!d.offers?.length){
-   container.append(el("p","zuz-v3-muted",d.warnings?.join(" ")||"Nenhum anúncio comparável retornado pela fonte configurada."));
-   return;
-  }
-  container.append(el("p","zuz-v3-muted","Anúncios semelhantes, não necessariamente produtos idênticos. Confirme modelo, condição, preço e entrega na loja."));
-  for(const offer of d.offers){
-   const card=el("button","zuz-v3-option zuz-market-intel-offer");card.type="button";
-   card.append(el("strong","zuz-v3-option-name",offer.title),
-    el("small","zuz-v3-option-meta",offer.seller+" · "+offer.source),
-    el("small","zuz-v3-option-status",price(offer.price)));
-   card.addEventListener("click",()=>offerInfo(info||root.querySelector(".zuz-v3-info"),offer));
-   container.append(card);
-  }
- }catch{container.replaceChildren(el("p","zuz-v3-muted","Consulta de ofertas externas indisponível. O catálogo local permanece disponível."));}
-});
-async function itemOffers(parent,item,info){
- const section=el("section","zuz-market-intel-panel");
- section.append(el("h4","zuz-v3-group","Preços anunciados para produtos semelhantes"));
- const rows=el("div");
- rows.append(el("p","zuz-v3-muted","Pesquisando ofertas atuais quando o provedor estiver configurado..."));
- section.append(rows);parent.append(section);
- try{
-  const d=await api.request("GET","/market/offers?q="+encodeURIComponent(String(item.name||"").slice(0,80)));
-  rows.replaceChildren();
-  if(!d.offers?.length){
-   rows.append(el("p","zuz-v3-muted",d.warnings?.join(" ")||"Sem anúncios semelhantes retornados."));return;
-  }
-  rows.append(el("p","zuz-v3-muted","Preços atuais observados na consulta, sem comprovação de equivalência à descrição histórica do catálogo."));
-  for(const offer of d.offers.slice(0,8)){
-   const card=el("button","zuz-v3-option");card.type="button";
-   card.append(el("strong","zuz-v3-option-name",offer.title),
-    el("small","zuz-v3-option-meta",offer.seller+" · "+iso(offer.observedAt)),
-    el("small","zuz-v3-option-status",price(offer.price)));
-   card.addEventListener("click",()=>offerInfo(info,offer));
-   rows.append(card);
-  }
- }catch{rows.replaceChildren(el("p","zuz-v3-muted","Ofertas externas indisponíveis no momento."));}
-}
 document.addEventListener("zuz:market:selected",event=>{
  const {item,info}=event.detail||{};
  if(!item||!info)return;
  const wrapper=el("div","zuz-market-intel-details");info.append(wrapper);
  timeline(wrapper,item);
- itemOffers(wrapper,item,info);
  mountTaxes(wrapper,{name:item.name,kind:item.type,gtin:item.barcode});
 });
 })();

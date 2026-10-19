@@ -1237,7 +1237,6 @@
     let category="Outros";
     if(source==="openfoodfacts"||/alimento|massas|aliment|comida|pasta|food|bebida/.test(generic))category="Alimentos e bebidas";
     else if(source==="openbeautyfacts"||/absorvente|higiene|sabonete|perfume|cosmét|cosmet|desodorante/.test(name.toLowerCase()+" "+generic))category="Beleza e cuidados";
-    else if(source==="openpetfoodfacts")category="Outros";
     else if(item.type==="service")category="Serviços";
     else if(/eletr|informat|celular|telefone|computador|televis/.test(generic+" "+name.toLowerCase()))category="Eletrônicos";
     else if(/vestu|roupa|camisa|calca|calça/.test(generic))category="Vestuário";

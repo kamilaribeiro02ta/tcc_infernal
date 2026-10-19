@@ -17,7 +17,7 @@ async function main(){
   const topics=category==="all"?SOURCES[s].topics.map(x=>x[0]):[category];
   return topics.flatMap(topic=>Array.from({length:pages},(_,i)=>({source:s,topic,page:i+1,size,preview:dryRun})));
  });
- // Distribuição intercalada: não esgotar o limite com alimentos antes de consultar beleza/pets/produtos.
+ // Distribuição intercalada: não esgotar o limite com alimentos antes de consultar higiene e beleza.
  while(pending.some(x=>x.length))for(const queue of pending)if(queue.length)jobs.push(queue.shift());
  let total=0,stored=0,errors=0;
  for(const job of jobs.slice(0,max)){

@@ -156,7 +156,7 @@ function init(anchor,mode){
     let count=0;
     for(const ref of records.slice(0,8)){
      if(!add||!name||!price)break;
-     name.value=("Open Prices — "+(ref.seller||"referência")+" "+new Date(ref.observed_at).toLocaleDateString("pt-BR")).slice(0,90);
+     name.value=(sourceName(ref.source)+" — "+(ref.seller||"referência")+" "+new Date(ref.observed_at).toLocaleDateString("pt-BR")).slice(0,90);
      price.value=String(ref.price);add.click();count++;
     }
     message(count+" preço(s) públicos importados para o cenário, sem alterar o produto.");

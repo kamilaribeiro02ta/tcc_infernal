@@ -3,9 +3,7 @@ const crypto=require("node:crypto");
 const {query}=require("./database");
 const SOURCES=[
  {code:"openfoodfacts",host:"world.openfoodfacts.org",label:"Alimentos e bebidas"},
- {code:"openbeautyfacts",host:"world.openbeautyfacts.org",label:"Beleza, higiene e cosméticos"},
- {code:"openproductsfacts",host:"world.openproductsfacts.org",label:"Produtos gerais"},
- {code:"openpetfoodfacts",host:"world.openpetfoodfacts.org",label:"Alimentos para animais"}
+ {code:"openbeautyfacts",host:"world.openbeautyfacts.org",label:"Beleza, higiene e cosméticos"}
 ];
 const clean=(x,n=200)=>String(x??"").trim().slice(0,n);
 const norm=s=>clean(s,500).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("pt-BR").replace(/[^a-z0-9]+/g," ").trim();
@@ -14,10 +12,7 @@ const codeOk=v=>/^\d{8,14}$/.test(String(v??""));
 function preferred(q){
  const n=norm(q);
  const hints=/absorvente|higiene|shampoo|sabonete|perfume|cosmet|creme|desodorante|condicionador|maquiagem|batom|protetor solar/;
- const pets=/racao|ração|pet|gato|cachorro|animal/;
  if(hints.test(n))return [SOURCES[1],...SOURCES.filter(s=>s!==SOURCES[1])];
- if(pets.test(n))return [SOURCES[3],...SOURCES.filter(s=>s!==SOURCES[3])];
- if(/macarrao|massa|arroz|biscoito|farinha|leite|pao|pasta|miojo|alimento|refrigerante/.test(n))return SOURCES;
  return SOURCES;
 }
 function dto(row,source){
@@ -67,7 +62,7 @@ async function upsert(item){
  await query(sql,[id(item.source,item.externalId),item.source,item.externalId,item.name,item.brand,item.category,item.unit,JSON.stringify(item.attrs)]);
 }
 async function lookup(q){
- const target=clean(q,80),key="discovery4:"+id("term",norm(target));
+ const target=clean(q,80),key="discovery-retained:"+id("term",norm(target));
  const prev=await query("SELECT payload,fetched_at FROM zuz_market_cache WHERE cache_key=$1",[key]);
  if(prev.rows.length&&Date.now()-new Date(prev.rows[0].fetched_at).getTime()<3*3600000){
   const v=prev.rows[0].payload;

@@ -52,4 +52,6 @@ Agenda, tarefas e alguns recursos do Perfil ainda possuem dados locais no navega
 
 ## Referências públicas de mercado
 
-A busca opcional de catálogo e cotações públicas aparece nas páginas **Produtos**, **Custos** e **Simulações**. O cálculo manual permanece disponível; cotações externas nunca substituem os custos de cada empresa. Para bancos PostgreSQL novos, aplicar também `db/migrations/001-market-postgresql.sql` e `db/migrations/002-market-search-indexes.sql` após `db/schema.sql`. Consulte [fontes, limitações e testes](docs/market-integration.md).
+A busca opcional aparece em **Produtos**, **Custos** e **Simulações**. As fontes de catálogo habilitadas são Open Food Facts, Open Beauty Facts, CATMAT e Compras.gov.br. A atualização de preços usa Compras.gov.br; valores de compras públicas não representam anúncios de lojas. O cálculo manual permanece disponível.
+
+Para bancos PostgreSQL novos, aplicar `db/schema.sql`, seguido das migrações `001-market-postgresql.sql`, `002-market-search-indexes.sql`, `003-market-quality.sql`, `003-sector-public-prices.sql`, `004-market-catalog-fixes.sql` e `005-retire-empty-market-sources.sql`. A última migração desativa apenas cadastros de fontes sem catálogo, preços ou referências setoriais; não exclui dados.

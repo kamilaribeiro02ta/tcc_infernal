@@ -22,17 +22,7 @@ const SOURCES={
   ["perfume","perfume"],["hidratante","moisturizer"],["pasta-de-dente","toothpaste"],["absorvente","sanitary-pads"],
   ["gel","gel"],["tinta-cabelo","hair-dye"],["esfoliante","scrub"]
  ]},
- openproductsfacts:{host:"world.openproductsfacts.org",kind:"text",topics:[
-  ["vassoura","broom"],["pano","cloth"],["detergente","detergent"],["escova","brush"],
-  ["caderno","notebook"],["papel","paper"],["caneta","pen"],["livro","book"],
-  ["lampada","lamp"],["pilha","battery"],["garrafa","bottle"],["brinquedo","toy"],
-  ["camiseta","t-shirt"],["sapato","shoe"],["copo","cup"],["ferramenta","tool"]
- ]},
- openpetfoodfacts:{host:"world.openpetfoodfacts.org",kind:"text",topics:[
-  ["racao","dog food"],["gatos","cat food"],["cao","dog"],["petiscos","pet treats"],
-  ["biscoitos","pet biscuits"],["comida-umida","wet food"],["comida-seca","dry food"],
-  ["aves","bird food"],["peixes","fish food"],["roedores","rodent food"]
- ]}
+
 };
 const clean=(v,n=200)=>String(v??"").trim().slice(0,n);
 const hash=(s)=>crypto.createHash("sha256").update(s).digest("hex").slice(0,32);

@@ -18,7 +18,7 @@ function throttle(uid){
  if(a.n>40)err(429,"Aguarde um minuto antes de fazer novas consultas.");
 }
 function safeUrl(x){
- try{const u=new URL(x);return u.protocol==="https:"&&["prices.openfoodfacts.org","dadosabertos.compras.gov.br","world.openfoodfacts.org"].includes(u.hostname)?u.toString():null;}catch{return null;}
+ try{const u=new URL(x);return u.protocol==="https:"&&["dadosabertos.compras.gov.br","world.openfoodfacts.org"].includes(u.hostname)?u.toString():null;}catch{return null;}
 }
 async function getJson(url){
  if(!safeUrl(url))throw Error("Origem não autorizada.");
@@ -89,18 +89,6 @@ async function storeQuote(item,q){
   "VALUES($1,$2,$3,$4,$5) ON CONFLICT(quote_id,observed_at,price) DO NOTHING",
   [hash(q.source,q.sourceRef),q.source,q.sourceRef,q.price,q.date]);
 }
-async function fetchOpenPrices(item){
- if(!item.barcode)return [];
- const url="https://prices.openfoodfacts.org/api/v1/prices?"+new URLSearchParams({product_code:item.barcode,size:"50",page:"1"});
- const data=await getJson(url);
- return (data.items||[]).flat().map(x=>{
-  const price=pos(x.price),date=iso(x.date),reference=String(x.id??"");
-  if(!price||!date||x.currency!=="BRL"||x.product_code!==item.barcode||x.price_per!=="UNIT"||x.price_is_discounted===true||x.duplicate_of||!/^\d+$/.test(reference))return null;
-  return {source:"openprices",sourceRef:reference,price,date,type:"retail",unit:"un",condition:"new",
-    seller:txt(x.location?.osm_name||x.location?.osm_display_name),region:txt(x.location?.osm_address_city||x.location?.osm_address_country),
-    url:"https://prices.openfoodfacts.org/api/v1/prices/"+reference};
- }).filter(Boolean);
-}
 async function fetchGovQuotes(item){
  const archived=item.source==="catmat_archive_2018";
  const code=item.attributes?.catalogCode||(archived?item.external_id:null);
@@ -143,9 +131,10 @@ function parseGovQuote(x,code,url){
 function groupsOf(quotes){return quality.summarize(quotes);}
 async function quotesFor(item,{force=false}={}){
  const key="quotes:"+item.id,ttl=item.source==="comprasgov"?7*86400000:12*3600000;
- let warnings=[],hit=await cacheGet(key,ttl);
- if(!hit||force)try{
-  const list=["comprasgov","catmat_archive_2018"].includes(item.source)?await fetchGovQuotes(item):await fetchOpenPrices(item);
+ const canRefresh=["comprasgov","catmat_archive_2018"].includes(item.source);
+ let warnings=[],hit=canRefresh?await cacheGet(key,ttl):null;
+ if(canRefresh&&(!hit||force))try{
+  const list=await fetchGovQuotes(item);
   for(const q of list.slice(0,50))await storeQuote(item,q);
   await cacheSet(key,{checked:true,count:list.length});
  }catch(e){warnings.push("Fonte externa indisponível. Mostrando apenas registros já consultados.");}
@@ -241,7 +230,7 @@ function registerMarketRoutes(router,{asyncRoute,getCompany}){
  }));
 }
 async function syncCatalogPrices({source="comprasgov",limit=15,offset=0,force=false,onProgress=()=>{}}={}){
- const allowed=["comprasgov","catmat_archive_2018","openfoodfacts"];
+ const allowed=["comprasgov","catmat_archive_2018"];
  if(!allowed.includes(source)||!Number.isInteger(limit)||limit<1||limit>50||!Number.isInteger(offset)||offset<0)err(400,"Parâmetros de importação inválidos.");
  const r=await query("SELECT * FROM zuz_market_catalog WHERE source=$1 ORDER BY external_id LIMIT $2 OFFSET $3",[source,limit,offset]);
  const summary={source,requested:limit,processed:0,pricesAvailable:0,errors:0,details:[]};

@@ -29,14 +29,14 @@ async function search(root,term="vassoura"){
  root.find(x=>x.className==="zm-search-input").value=term;
  await root.find(x=>x.tag==="form").handlers.submit[0]({preventDefault(){}});
 }
-test("consulta fontes em paralelo mesmo com catálogo; preços ficam na própria página",async()=>{
+test("consulta referências sem chamar provedores removidos; preços ficam na própria página",async()=>{
  const calls=[];const {root,host,window}=setup(async(_,url)=>{calls.push(url);return url.includes("/references")?{references:[offer],catalog:[]}:{enabled:true,offers:[{...offer,id:"shop",source:"Shopping",verified:false,comparison:"possivel_similar"}]};});
- await search(root);assert.equal(calls.length,2);assert.equal(root.all(x=>x.className==="zm-offer").length,2);assert.equal(host.all(x=>x.className==="zm-overlay").length,0);assert.equal(window.location.href,"");
- const d=root.find(x=>x.className==="zm-offer");d.open=true;d.handlers.toggle[0]();assert.ok(d.find(x=>x.textContent==="Custos de aquisição"));assert.equal(root.all(x=>x.className==="zm-offer").length,2);
+ await search(root);assert.equal(calls.length,1);assert.ok(calls[0].includes("/market/references"));assert.equal(root.all(x=>x.className==="zm-offer").length,1);assert.equal(host.all(x=>x.className==="zm-overlay").length,0);assert.equal(window.location.href,"");
+ const d=root.find(x=>x.className==="zm-offer");d.open=true;d.handlers.toggle[0]();assert.ok(d.find(x=>x.textContent==="Custos de aquisição"));assert.equal(root.all(x=>x.className==="zm-offer").length,1);
 });
-test("falha parcial preserva ofertas e oferece precificação manual",async()=>{
- const {root}=setup(async(_,url)=>{if(url.includes("/references"))throw Error("offline");return {enabled:true,offers:[offer]};});
- await search(root);assert.equal(root.all(x=>x.className==="zm-offer").length,1);assert.ok(root.find(x=>x.className==="zm-source-status"||x.className.includes("zm-source-status")).textContent.includes("referências salvas"));assert.ok(root.find(x=>x.textContent==="Precificar manualmente"));
+test("falha nas referências libera a tela e oferece precificação manual",async()=>{
+ const {root}=setup(async()=>{throw Error("offline");});
+ await search(root);assert.equal(root.all(x=>x.className==="zm-offer").length,0);assert.ok(root.find(x=>x.className==="zm-source-status"||x.className.includes("zm-source-status")).textContent.includes("referências salvas"));assert.ok(root.find(x=>x.textContent==="Precificar manualmente"));assert.equal(root["aria-busy"],"false");
 });
 test("ausência de preços não apresenta catálogo como oferta",async()=>{
  const {root}=setup(async(_,url)=>url.includes("/references")?{references:[],catalog:[offer.item]}:{enabled:false,offers:[]});

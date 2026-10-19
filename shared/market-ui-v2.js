@@ -7,7 +7,7 @@ const money=value=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL
 const date=value=>value&&Number.isFinite(Date.parse(value))?new Date(value).toLocaleDateString("pt-BR",{timeZone:"UTC"}):"Não informada";
 const button=(label,fn,cls="")=>{const b=el("button","zm-button "+cls,label);b.type="button";b.addEventListener("click",fn);return b;};
 const safeURL=value=>{try{const u=new URL(value);return u.protocol==="https:"?u.href:null;}catch{return null;}};
-const sourceNames={openfoodfacts:"Open Food Facts",openbeautyfacts:"Open Beauty Facts",openproductsfacts:"Open Products Facts",openpetfoodfacts:"Open Pet Food Facts",catmat_archive_2018:"CATMAT",comprasgov:"Compras.gov.br"};
+const sourceNames={openfoodfacts:"Open Food Facts",openbeautyfacts:"Open Beauty Facts",catmat_archive_2018:"CATMAT",comprasgov:"Compras.gov.br"};
 let instance=0;
 function mount(parent,mode){
  const root=el("section","zm-search-shell");root.setAttribute("aria-label","Pesquisa de preços de mercado");
@@ -190,23 +190,13 @@ function mount(parent,mode){
   event.preventDefault();event.stopPropagation?.();const term=input.value.trim();if(term.length<3||term.length>80){status.textContent="Digite entre 3 e 80 caracteres.";input.focus();return;}
   controllers.forEach(c=>c.abort());controllers=[];const token=++serial;
   offers=[];visibleCount=8;selected.clear();results.replaceChildren();catalog.hidden=true;comparison.hidden=true;warnings.textContent="";
-  busy(true);status.textContent="Consultando referências e ofertas...";
+  busy(true);status.textContent="Consultando referências...";
   const messages=[],catalogItems=[];let successes=0;
   const query=encodeURIComponent(term);
-  await Promise.allSettled([
-   (async()=>{
-    try{const data=await request("GET","/market/references?q="+query,undefined,35000);if(token!==serial)return;successes++;add(data.references);catalogItems.push(...(data.catalog||[]));
-     if(data.warnings?.length)messages.push("Algumas fontes estão indisponíveis; parte dos dados pode vir de consultas anteriores.");
-     if(data.limited)messages.push("Exibindo as primeiras referências. Refine a marca ou o modelo para ampliar a precisão.");
-    }catch{if(token===serial)messages.push("Não foi possível consultar as referências salvas agora.");}
-   })(),
-   (async()=>{
-    try{const data=await request("GET","/market/offers?q="+query);if(token!==serial)return;successes++;add(data.offers);
-     if(data.enabled===false)messages.push("A consulta de anúncios de lojas está indisponível neste momento.");
-     else if(data.warnings?.length)messages.push("Não foi possível consultar os anúncios de lojas agora.");
-    }catch{if(token===serial)messages.push("Não foi possível consultar os anúncios de lojas agora.");}
-   })()
-  ]);
+  try{const data=await request("GET","/market/references?q="+query,undefined,35000);if(token!==serial)return;successes++;add(data.references);catalogItems.push(...(data.catalog||[]));
+   if(data.warnings?.length)messages.push("Algumas fontes estão indisponíveis; parte dos dados pode vir de consultas anteriores.");
+   if(data.limited)messages.push("Exibindo as primeiras referências. Refine a marca ou o modelo para ampliar a precisão.");
+  }catch{if(token===serial)messages.push("Não foi possível consultar as referências salvas agora.");}
   if(token!==serial)return;busy(false);renderCatalog(catalogItems);warnings.textContent=[...new Set(messages)].join(" ");
   status.textContent=offers.length?"Consulta concluída. Abra os detalhes ou marque até três referências para comparar.":catalogItems.length?"Encontramos "+catalogItems.length+" produtos no catálogo. Abra um resultado para consultar a identificação e procurar preços.":successes?"Não encontramos preços verificáveis para esta pesquisa. Tente outra descrição ou continue com a precificação manual.":"Não foi possível concluir a consulta. Tente novamente ou continue com a precificação manual.";
  });
