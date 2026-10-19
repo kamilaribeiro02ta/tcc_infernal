@@ -11,6 +11,7 @@ const { registerExtendedMarketRoutes } = require("./market-extended-providers");
 const { registerRTCRoutes } = require("./rtc-offline");
 const { registerTaxContextRoutes } = require("./tax-context");
 const { askCostsGuide } = require("./costs-assistant");
+const { registerGeminiTestRoute } = require("./gemini-test");
 const { askSimulationGuide } = require("./simulations-help");
 const pricing = require("../shared/pricing-core");
 const money = require("../shared/money");
@@ -100,6 +101,7 @@ async function appendRecommendation(client, companyId, product, settings) {
 }
 function createApi() {
   const router = express.Router();
+  registerGeminiTestRoute(router, asyncRoute, getUser);
   router.get("/health", asyncRoute(async (_req, res) => {
     res.setHeader("Cache-Control", "no-store");
     try{res.json(await require("./backend-status").health(query,provider));}
