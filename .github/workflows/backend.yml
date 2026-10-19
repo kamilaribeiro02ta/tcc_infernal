@@ -1,0 +1,54 @@
+name: Backend ZUZ
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Testes e PostgreSQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: zuz_test
+          POSTGRES_USER: zuz_test
+          POSTGRES_PASSWORD: ci_only_disposable
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U zuz_test -d zuz_test"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          cache: npm
+      - name: Instalar versões do lockfile
+        run: npm ci --ignore-scripts
+      - name: Verificar JavaScript
+        run: npm run check:syntax
+      - name: Testar cálculos, validação, API e fontes
+        run: npm run test:core
+      - name: Testar migrações e fluxo completo no PostgreSQL isolado
+        run: npm run test:postgres
+        env:
+          ZUZ_TEST_DATABASE_URL: postgresql://zuz_test:ci_only_disposable@localhost:5432/zuz_test
+      - name: Resumo do backend
+        if: always()
+        env:
+          RESULT: ${{ job.status }}
+        run: |
+          node -e 'require("node:fs").appendFileSync(process.env.GITHUB_STEP_SUMMARY, "## Backend ZUZ\n\nResultado: **"+process.env.RESULT+"**\n\nVerificações: sintaxe, cálculos, validação, autenticação, persistência, simulações e migrações PostgreSQL.\n\nBigDataCorp: testes de contrato locais; acesso real depende de credenciais e habilitação. UCI: base histórica em GBP, separada das cotações brasileiras.\n")'

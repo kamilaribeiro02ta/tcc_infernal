@@ -11,16 +11,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const { query, provider } = require("../server/database");
-    const result = await query("SELECT 1 AS alive");
-    if (Number(result.rows?.[0]?.alive) !== 1) {
-      throw new Error("Database health check returned an unexpected result");
-    }
-    return res.status(200).json({
-      ok: true,
-      app: "ZUZ",
-      databaseConfigured: true,
-      database: provider
-    });
+    return res.status(200).json(await require("../server/backend-status").health(query,provider));
   } catch (error) {
     console.error("ZUZ health check failed:", error.code || error.message);
     return res.status(503).json({
@@ -35,3 +26,4 @@ module.exports = async function handler(req, res) {
     });
   }
 };
+

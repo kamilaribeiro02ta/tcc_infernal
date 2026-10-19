@@ -22,8 +22,9 @@ function normalizeReference(item,row,now=Date.now()){
   imageUrl:item.attributes?.image_url||null};
 }
 // No catalogue row is represented as an offer without an actual price and source.
-async function searchReferences(term,{query,provider,refresh,dto,discover}){
+async function searchReferences(term,{query,provider,refresh,dto,discover,external}){
  const warnings=[];
+ const live=external?Promise.resolve().then(()=>external(term)).catch(()=>({references:[],warnings:["A fonte comercial está indisponível."]})):null;
  // Discover for every term, even when the local archive already has matches.
  // External catalogs are independently cached by the discovery adapter.
  if(provider==="postgresql"&&discover){
@@ -53,6 +54,7 @@ async function searchReferences(term,{query,provider,refresh,dto,discover}){
   if(response.status==="rejected"){warnings.push("Algumas referências não puderam ser consultadas.");continue;}
   references.push(...response.value.offers);catalog.push(response.value.item);
  }
+ if(live){const extra=await live;references.push(...(extra.references||[]));warnings.push(...(extra.warnings||[]));}
  return {references,catalog,warnings:[...new Set(warnings)],limited:found.rows.length===12,
   queriedAt:new Date().toISOString()};
 }

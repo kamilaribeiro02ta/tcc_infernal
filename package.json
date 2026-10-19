@@ -12,7 +12,11 @@
     "market:import": "node --env-file-if-exists=.env scripts/import-compras-catalog.js",
     "market:sync": "node --env-file-if-exists=.env scripts/sync-market-prices.js",
     "market:curate": "node --env-file-if-exists=.env scripts/curate-market-catalog.js",
-    "market:catalog-seed": "node --env-file-if-exists=.env scripts/bootstrap-open-facts.js"
+    "market:catalog-seed": "node --env-file-if-exists=.env scripts/bootstrap-open-facts.js",
+    "market:uci-import": "node --env-file-if-exists=.env scripts/import-uci-retail.js",
+    "check:syntax": "node scripts/check-syntax.js",
+    "test:postgres": "node scripts/check-postgres.js",
+    "test:deployment": "node scripts/smoke-deployment.js"
   },
   "engines": {
     "node": "24.x"

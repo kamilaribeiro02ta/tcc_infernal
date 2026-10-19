@@ -1,0 +1,37 @@
+name: Verificar backend publicado
+on:
+  deployment_status:
+permissions:
+  contents: read
+jobs:
+  health:
+    if: >-
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment.production_environment == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+      - name: Confirmar que a implantação corresponde à main atual
+        id: revision
+        env:
+          DEPLOYED_SHA: ${{ github.event.deployment.sha }}
+        run: |
+          if [ "$(git rev-parse HEAD)" = "$DEPLOYED_SHA" ]; then
+            echo "current=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "current=false" >> "$GITHUB_OUTPUT"
+            echo "Implantação anterior à main atual; verificação ignorada." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Conferir API, PostgreSQL, esquema e commit publicado
+        if: steps.revision.outputs.current == 'true'
+        run: node scripts/smoke-deployment.js
+        env:
+          ZUZ_DEPLOYMENT_URL: ${{ github.event.deployment_status.environment_url }}
+          ZUZ_EXPECTED_REVISION: ${{ github.event.deployment.sha }}

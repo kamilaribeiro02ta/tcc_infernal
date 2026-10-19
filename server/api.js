@@ -101,10 +101,9 @@ async function appendRecommendation(client, companyId, product, settings) {
 function createApi() {
   const router = express.Router();
   router.get("/health", asyncRoute(async (_req, res) => {
-    // Um retorno positivo só deve ocorrer quando o banco responder de verdade.
-    await query("SELECT 1 AS alive");
     res.setHeader("Cache-Control", "no-store");
-    res.json({ ok: true, app: "ZUZ", databaseConfigured: true, database: provider });
+    try{res.json(await require("./backend-status").health(query,provider));}
+    catch{res.status(503).json({ok:false,app:"ZUZ",code:"BACKEND_NOT_READY"});}
   }));
   router.post("/auth/signup", validateBody(schemas.signup), asyncRoute(async (req, res) => {
     const name = normalText(req.body.name, 160);
@@ -174,6 +173,7 @@ function createApi() {
     if (!user) fail(401,"Faça login para continuar.");
     req.user = user; next();
   }));
+  require("./backend-status").registerBackendStatus(router,{query,provider,asyncRoute});
   registerMarketRoutes(router,{asyncRoute,getCompany});
   registerMarketIntelligenceRoutes(router,{asyncRoute});
   registerExtendedMarketRoutes(router,{asyncRoute});
