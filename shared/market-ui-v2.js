@@ -219,7 +219,19 @@ function mount(parent,mode){
   try{const data=await request("GET","/market/references?q="+query,undefined,35000);if(token!==serial)return;successes++;add(data.references);catalogItems.push(...(data.catalog||[]));
    if(data.warnings?.length)messages.push("Algumas fontes não responderam. Exibindo os dados disponíveis.");
    if(data.limited)messages.push("Exibindo as primeiras referências. Refine a marca ou o modelo para ampliar a precisão.");
-  }catch{if(token===serial)messages.push("Não foi possível consultar as referências salvas agora.");}
+  }catch(error){
+   if(token!==serial)return;
+   if(error.status===401){
+    busy(false);
+    status.textContent="Entre na sua conta para pesquisar os preços de mercado.";
+    warnings.textContent="A sessão deste navegador está ausente ou expirou. O login no celular não conecta automaticamente o computador.";
+    const login=el("a","zm-button zm-secondary","Entrar na minha conta");
+    login.href="../Login/login.html";
+    results.replaceChildren(login);
+    return;
+   }
+   messages.push("Não foi possível consultar as referências salvas agora.");
+  }
   if(token!==serial)return;busy(false);renderCatalog(catalogItems);warnings.textContent=[...new Set(messages)].join(" ");
   status.textContent=offers.length?offers.length+" referências com preço. Selecione para ver os detalhes.":catalogCount?catalogCount+(catalogCount===1?" produto encontrado. Preço indisponível nesta consulta.":" produtos encontrados. Preços indisponíveis nesta consulta."):successes?"Nenhum produto encontrado. Tente outro nome, marca ou código, ou precifique manualmente.":"Não foi possível concluir a consulta. Tente novamente ou precifique manualmente.";
  });
