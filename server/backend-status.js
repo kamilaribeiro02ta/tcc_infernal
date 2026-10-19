@@ -35,7 +35,7 @@ function registerBackendStatus(router,{query,provider,asyncRoute}){
   if(term.length<3||term.length>80)return res.status(400).json({error:"Digite entre 3 e 80 caracteres."});
   if(provider!=="postgresql")return res.json({items:[],historical:true,usableForMarketPricing:false});
   const result=await query(`SELECT product_code,original_name,COALESCE(display_name,original_name) AS name,price,currency,
-   observed_at,source_url,source_sha256,license FROM zuz_market_research_prices
+   to_char(observed_at,'YYYY-MM-DD"T"HH24:MI:SS') AS observed_at,source_url,source_sha256,license FROM zuz_market_research_prices
    WHERE lower(original_name) LIKE $1 OR lower(COALESCE(display_name,'')) LIKE $1 ORDER BY original_name LIMIT 30`,
    ["%"+term.toLowerCase().replace(/[\\%_]/g,"")+"%"]);
   res.json({items:result.rows,historical:true,usableForMarketPricing:false,

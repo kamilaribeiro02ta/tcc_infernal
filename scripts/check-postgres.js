@@ -36,6 +36,13 @@ async function main(){
    await agent.post("/api/simulations").send({name:"CI",productId:id,snapshot:{scenarios:[{...scenario,id:"conservador"},{...scenario,id:"equilibrado"},{...scenario,id:"premium"}]}}).expect(201);
    await agent.get("/api/simulations").expect(200).expect(r=>assert.equal(r.body.simulations.length,1));
    await agent.get("/api/backend/status").expect(200).expect(r=>{assert.equal(r.body.counts.historical_research,0);assert.equal(r.body.sources.bigdatacorp.status,"disabled");});
+   // Fixture sintética de CI: valida precisão, isolamento e data civil do dado histórico.
+   await require("./import-uci-retail").importDataset({source:"uci_online_retail",sourceUrl:"https://doi.org/10.24432/C5BW33",
+    sourceSha256:"0".repeat(64),license:"CC BY 4.0",attribution:"Fixture CI",scanned:1,rejected:0,
+    products:[{productCode:"10001",name:"Produto histórico CI",price:"1.23456789123456789",currency:"GBP",observedAt:"2010-12-01T00:00:00"}]},client);
+   await agent.get("/api/market/research?q=hist%C3%B3rico").expect(200).expect(r=>{
+    assert.equal(r.body.items[0].price,"1.23456789123456789");assert.equal(r.body.items[0].observed_at,"2010-12-01T00:00:00");
+   });
    await agent.get("/api/market/references?q=consulta%20sem%20fonte").expect(200).expect(r=>assert.deepEqual(r.body.references,[]));
    await agent.get("/api/market/research?q=produto").expect(200).expect(r=>assert.equal(r.body.usableForMarketPricing,false));
    await agent.post("/api/auth/logout").expect(200);

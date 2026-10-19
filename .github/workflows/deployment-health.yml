@@ -36,3 +36,4 @@ jobs:
         env:
           ZUZ_DEPLOYMENT_URL: ${{ github.event.deployment_status.environment_url }}
           ZUZ_EXPECTED_REVISION: ${{ github.event.deployment.sha }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
