@@ -32,6 +32,94 @@
   let history = [];
   let busy = false;
   let lastFailedMessage = "";
+  let currentConversationId = null;
+  const conversationList = document.getElementById("conversationList");
+  const historyToggle = document.getElementById("historyToggle");
+  const historyPane = document.querySelector(".ia-history");
+  async function api(path, options={}) {
+    const response=await fetch("/api/ai/"+path,{credentials:"same-origin",...options});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data.error||"Não foi possível acessar o histórico.");
+    return data;
+  }
+  async function refreshConversations() {
+    try {
+      const data=await api("conversations");
+      conversationList.replaceChildren();
+      if(!data.conversations.length) {
+        const empty=document.createElement("p");
+        empty.className="ia-history-empty";
+        empty.textContent="Suas conversas aparecerão aqui.";
+        conversationList.append(empty);
+      }
+      for(const conversation of data.conversations) {
+        const item=document.createElement("div");
+        item.className="ia-conversation"+(conversation.id===currentConversationId?" selected":"");
+        const open=document.createElement("button");
+        open.type="button";
+        open.className="ia-conversation-open";
+        open.textContent=conversation.title;
+        open.title=conversation.title;
+        open.addEventListener("click",()=>openConversation(conversation.id));
+        const del=document.createElement("button");
+        del.type="button";
+        del.className="ia-conversation-delete";
+        del.setAttribute("aria-label","Excluir conversa "+conversation.title);
+        del.textContent="×";
+        del.addEventListener("click",async()=>{
+          if(busy)return;
+          if(!confirm("Excluir esta conversa permanentemente?"))return;
+          try {
+            await api("conversations/"+encodeURIComponent(conversation.id),{method:"DELETE"});
+            if(currentConversationId===conversation.id)newConversation();
+            await refreshConversations();
+          }catch(error){status.textContent=error.message;}
+        });
+        item.append(open,del);
+        conversationList.append(item);
+      }
+    }catch(error){
+      conversationList.textContent="Não foi possível carregar o histórico.";
+      status.textContent=error.message;
+    }
+  }
+  async function openConversation(id) {
+    if(busy)return;
+    try {
+      const data=await api("conversations/"+encodeURIComponent(id));
+      currentConversationId=id;
+      history=data.messages.map(m=>({role:m.role,text:m.text})).slice(-20);
+      messages.replaceChildren();
+      for(const entry of data.messages) {
+        const node=bubble(entry.role,entry.text);
+        if(entry.role==="model")renderAnswer(node,entry.text);
+      }
+      suggestions.hidden=true;
+      setMascote("idle");
+      status.textContent="Conversa recuperada. Você pode continuar de onde parou.";
+      await refreshConversations();
+      historyPane.classList.remove("mobile-open");
+      historyToggle.setAttribute("aria-expanded","false");
+    }catch(error){status.textContent=error.message;}
+  }
+  function newConversation(){
+    if(busy)return;
+    currentConversationId=null;
+    history=[];
+    messages.innerHTML=initial;
+    suggestions.hidden=false;
+    status.textContent="Nova conversa iniciada.";
+    setMascote("sleeping");
+    refreshConversations();
+    input.focus();
+  }
+  document.getElementById("newChatSidebar").addEventListener("click",newConversation);
+  historyToggle.addEventListener("click",()=>{
+    const open=historyPane.classList.toggle("mobile-open");
+    historyToggle.setAttribute("aria-expanded",String(open));
+  });
+  refreshConversations();
+
 
   // Renderização limitada de Markdown via nós DOM: o texto da IA nunca é executado como HTML.
   function formattedText(target, text) {
@@ -120,11 +208,13 @@
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history })
+        body: JSON.stringify({ message: text, conversationId: currentConversationId })
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || "Não foi possível consultar o assistente.");
       const answer = String(data.reply || "Nenhuma resposta recebida.");
+      currentConversationId=data.conversationId||currentConversationId;
+      refreshConversations();
       pending.classList.remove("ia-typing");
       pending.removeAttribute("aria-label");
       renderAnswer(pending, answer);
@@ -174,12 +264,5 @@
   document.querySelectorAll(".suggestions button").forEach(button => {
     button.addEventListener("click", () => ask(button.textContent));
   });
-  document.getElementById("clear").addEventListener("click", () => {
-    setMascote("sleeping");
-    history = [];
-    messages.innerHTML = initial;
-    suggestions.hidden = false;
-    status.textContent = "Nova conversa iniciada.";
-    input.focus();
-  });
+  document.getElementById("clear").addEventListener("click", newConversation);
 })();
