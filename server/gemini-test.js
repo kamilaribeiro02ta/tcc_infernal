@@ -1,6 +1,8 @@
 "use strict";
 
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta";
+const modelCache = {models:[],expires:0};
+const sleep = ms => new Promise(resolve => setTimeout(resolve,ms));
 const instructions = "Você é o assistente de teste da ZUZ, sistema brasileiro de precificação para pequenos negócios. Responda em português do Brasil de modo claro e objetivo. Ajude com custos, despesas, margem e preços, explicando hipóteses e cálculos. Solicite os dados que faltarem. Nunca invente cotações de mercado ou alíquotas tributárias. Não alegue acesso ou capacidade de alterar cadastros, produtos e simulações.";
 
 function candidatesFromList(models) {
@@ -37,6 +39,7 @@ async function request(url, key, options, timeoutMs = 18000) {
 }
 
 async function availableModels(key) {
+  if(modelCache.expires > Date.now() && modelCache.models.length) return {models:modelCache.models};
   let pageToken="";
   const list=[];
   for(let i=0;i<3;i++){
@@ -47,7 +50,9 @@ async function availableModels(key) {
     pageToken=String(result.body.nextPageToken||"");
     if(!pageToken)break;
   }
-  return {models:candidatesFromList(list)};
+  const models = candidatesFromList(list);
+  if(models.length){modelCache.models = models;modelCache.expires=Date.now()+10*60*1000;}
+  return {models};
 }
 
 function errorMessage(result, exhaustedModels=false) {
@@ -93,43 +98,53 @@ function registerGeminiTestRoute(router, asyncRoute, getUser) {
     if(discovery.error)return res.status(502).json({error:errorMessage(discovery.error),providerStatus:discovery.error.status});
     if(!discovery.models.length)return res.status(502).json({error:"Nenhum modelo de chat compatível com generateContent foi liberado para esta chave."});
 
-    const preferred=String(process.env.GEMINI_MODEL||"").trim();
-    const names=[...new Set([preferred,...discovery.models].filter(x=>x && discovery.models.includes(x)))].slice(0,6);
+    const preferred=String(process.env.GEMINI_MODEL||"").trim().replace(/^models\//,"");
+    const names=[...new Set([preferred,...discovery.models].filter(x=>x && discovery.models.includes(x)))];
+    // Keep the whole backend request inside a bounded execution window on serverless.
+    const deadline=Date.now()+21500;
     let last;
-    for(const model of names.slice(0,3)){
-      for(let attempt=0;attempt<2;attempt++){
+    let attempts=0;
+    for(const model of names){
+      if(attempts>=5 || deadline-Date.now()<1800) break;
+      attempts++;
       try{
+        const remaining=Math.min(9500,Math.max(1500,deadline-Date.now()-350));
         const result=await request(ENDPOINT+"/models/"+encodeURIComponent(model)+":generateContent",key,{
           method:"POST",
           headers:{"Content-Type":"application/json"},
           body:JSON.stringify({
             systemInstruction:{parts:[{text:instructions}]},
             contents,
-            generationConfig:{maxOutputTokens:1400,temperature:0.4}
+            generationConfig:{maxOutputTokens:700,temperature:0.4}
           })
-        },13000);
+        },remaining);
         if(result.ok){
           const reply=(result.body.candidates?.[0]?.content?.parts||[]).map(p=>p.text||"").join("").trim();
           if(reply)return res.json({reply,model});
-          return res.status(502).json({error:"O Gemini não retornou texto. Reformule a pergunta e tente novamente."});
+          last={status:502,body:{error:{message:"empty model response"}}};
+          continue;
         }
         last=result;
-        if(result.status===404)break; // tentar o próximo modelo anunciado
-        if([502,503,504].includes(result.status)){
-          console.warn("Gemini temporary unavailability",{status:result.status,model,attempt});
-          if(attempt===0){await new Promise(resolve=>setTimeout(resolve,800));continue;}
-          break; // usar outro modelo compatível, se existir
+        console.warn("Gemini model attempt failed",{model,status:result.status,providerCode:result.body?.error?.status});
+        if([404,500,502,503,504].includes(result.status)){
+          if([502,503,504].includes(result.status) && deadline-Date.now()>3000) await sleep(400);
+          continue;
         }
-        console.error("Gemini test request rejected",{status:result.status,code:result.body?.error?.status,model});
+        // 429 is a per-model rate or quota response; another model may have a different limit.
+        if(result.status===429 && deadline-Date.now()>1800)continue;
         return res.status(502).json({error:errorMessage(result),providerStatus:result.status});
       }catch(error){
-        console.error("Gemini generation network error",error?.name);
-        if(attempt===0){await new Promise(resolve=>setTimeout(resolve,800));continue;}
+        console.warn("Gemini model attempt timed out",{model,error:error?.name});
         last={status:503,body:{}};
       }
-      }
     }
-    return res.status(502).json({error:errorMessage(last,last?.status===404),providerStatus:last?.status});
+    return res.status(502).json({
+      error: last?.status===503
+        ? "O Gemini está sobrecarregado no momento. Não foi possível obter uma resposta dos modelos disponíveis; tente novamente."
+        :errorMessage(last,last?.status===404),
+      providerStatus:last?.status,
+      retryable:[429,500,502,503,504].includes(last?.status)
+    });
   }));
 }
 module.exports={registerGeminiTestRoute};
