@@ -79,7 +79,19 @@
         conversationList.append(item);
       }
     }catch(error){
-      conversationList.textContent="Não foi possível carregar o histórico.";
+      conversationList.replaceChildren();
+      const notice=document.createElement("div");
+      notice.className="ia-history-empty ia-history-error";
+      const title=document.createElement("strong");
+      title.textContent="Histórico indisponível";
+      const detail=document.createElement("p");
+      detail.textContent="Não foi possível carregar suas conversas. Você ainda pode usar o chat.";
+      const retry=document.createElement("button");
+      retry.type="button";
+      retry.textContent="Recarregar histórico";
+      retry.addEventListener("click",refreshConversations);
+      notice.append(title,detail,retry);
+      conversationList.append(notice);
       status.textContent=error.message;
     }
   }
