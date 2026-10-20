@@ -358,10 +358,14 @@ body.dark{
 }
 /* Contraste editorial apenas no destaque, Poppins permanece na interface. */
 .zuni-welcome h2 span{
+  display:inline;
   font-family:"Times New Roman",Times,serif;
+  font-size:.9em;
   font-style:italic;
   font-weight:700;
-  letter-spacing:-.045em;
+  line-height:inherit;
+  letter-spacing:-.035em;
+  vertical-align:baseline;
 }
 @supports not ((backdrop-filter:blur(1px))){
   .ia-panel.ia-panel-history,.zuni-quick,.composer textarea,.ia-mascot-label,.ia-tag{
