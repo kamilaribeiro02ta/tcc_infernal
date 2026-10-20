@@ -161,3 +161,30 @@
 
 .ia-retry{display:block;margin-top:12px;padding:8px 12px;border-radius:10px;border:1px solid var(--ia-accent);background:transparent;color:var(--ia-accent);font:inherit;font-size:11px;font-weight:600;cursor:pointer}
 .ia-retry:hover{background:var(--ia-bg)}
+
+
+/* Histórico persistido por conta: navegação de conversas */
+.ia-panel.ia-panel-history{max-width:1040px;flex-direction:row;overflow:hidden}
+.ia-history{width:228px;flex:0 0 228px;background:var(--ia-bg);border-right:1px solid var(--ia-line);display:flex;flex-direction:column;min-height:0}
+.ia-history-head{padding:16px 13px 12px;display:flex;align-items:center;justify-content:space-between;font-size:13px}
+.ia-history-head button{width:32px;height:32px;border:1px solid var(--ia-line);border-radius:9px;background:var(--ia-panel);color:var(--ia-accent);font-size:20px;cursor:pointer}
+.ia-conversation-list{padding:0 8px 12px;overflow:auto;flex:1;min-height:0}
+.ia-history-empty{padding:10px;font-size:11px;color:var(--ia-muted);line-height:1.5}
+.ia-conversation{display:flex;align-items:center;border-radius:10px;margin-bottom:5px;border:1px solid transparent}
+.ia-conversation:hover,.ia-conversation.selected{background:var(--ia-panel);border-color:var(--ia-line)}
+.ia-conversation-open{flex:1;min-width:0;text-align:left;border:0;background:transparent;padding:11px 9px;font:inherit;font-size:11px;color:var(--ia-text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:pointer}
+.ia-conversation-delete{flex:0 0 26px;background:transparent;color:var(--ia-muted);border:0;cursor:pointer;font-size:19px;padding:2px}
+.ia-conversation-delete:hover{color:#bd3345}
+.ia-chat-area{display:flex;flex-direction:column;min-width:0;flex:1;min-height:0}
+.ia-history-toggle{display:none}
+@media(max-width:830px){
+  .ia-history{width:180px;flex-basis:180px}
+}
+@media(max-width:650px){
+  .ia-panel.ia-panel-history{position:relative}
+  .ia-history{display:none;position:absolute;inset:0 auto 0 0;width:min(77%,270px);z-index:4;box-shadow:10px 0 30px rgba(0,0,0,.09)}
+  .ia-history.mobile-open{display:flex}
+  .ia-history-toggle{display:inline-flex;align-items:center}
+  .ia-panel-head{gap:7px}
+  .clear{padding:7px 9px;font-size:10px}
+}
