@@ -52,6 +52,8 @@ async function availableModels(key) {
 
 function errorMessage(result, exhaustedModels=false) {
   const detail=String(result?.body?.error?.message||"");
+  if(result?.status===503 || result?.status===502 || result?.status===504)
+    return "O serviço Gemini está temporariamente indisponível (HTTP "+result.status+"). Tente novamente em alguns instantes.";
   if(result?.status===429 || /quota|rate limit|resource.exhausted/i.test(detail))
     return "A cota do Gemini foi atingida ou o plano gratuito não permite esta requisição. Consulte seus limites no Google AI Studio.";
   if(/API_KEY_INVALID|API key not valid|invalid API key/i.test(detail))
@@ -94,7 +96,8 @@ function registerGeminiTestRoute(router, asyncRoute, getUser) {
     const preferred=String(process.env.GEMINI_MODEL||"").trim();
     const names=[...new Set([preferred,...discovery.models].filter(x=>x && discovery.models.includes(x)))].slice(0,6);
     let last;
-    for(const model of names){
+    for(const model of names.slice(0,3)){
+      for(let attempt=0;attempt<2;attempt++){
       try{
         const result=await request(ENDPOINT+"/models/"+encodeURIComponent(model)+":generateContent",key,{
           method:"POST",
@@ -104,22 +107,29 @@ function registerGeminiTestRoute(router, asyncRoute, getUser) {
             contents,
             generationConfig:{maxOutputTokens:1400,temperature:0.4}
           })
-        },23000);
+        },13000);
         if(result.ok){
           const reply=(result.body.candidates?.[0]?.content?.parts||[]).map(p=>p.text||"").join("").trim();
           if(reply)return res.json({reply,model});
           return res.status(502).json({error:"O Gemini não retornou texto. Reformule a pergunta e tente novamente."});
         }
         last=result;
-        if(result.status===404)continue; // um modelo anunciado pode retornar NOT_FOUND
+        if(result.status===404)break; // tentar o próximo modelo anunciado
+        if([502,503,504].includes(result.status)){
+          console.warn("Gemini temporary unavailability",{status:result.status,model,attempt});
+          if(attempt===0){await new Promise(resolve=>setTimeout(resolve,800));continue;}
+          break; // usar outro modelo compatível, se existir
+        }
         console.error("Gemini test request rejected",{status:result.status,code:result.body?.error?.status,model});
         return res.status(502).json({error:errorMessage(result),providerStatus:result.status});
       }catch(error){
         console.error("Gemini generation network error",error?.name);
-        return res.status(502).json({error:"A conexão com o Gemini falhou ou excedeu o tempo limite."});
+        if(attempt===0){await new Promise(resolve=>setTimeout(resolve,800));continue;}
+        last={status:503,body:{}};
+      }
       }
     }
-    return res.status(502).json({error:errorMessage(last,true),providerStatus:last?.status});
+    return res.status(502).json({error:errorMessage(last,last?.status===404),providerStatus:last?.status});
   }));
 }
 module.exports={registerGeminiTestRoute};
