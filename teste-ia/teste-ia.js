@@ -8,6 +8,19 @@
   const status = document.getElementById("status");
   const suggestions = document.getElementById("suggestions");
   const initial = messages.innerHTML;
+  const mascot = document.getElementById("mascot");
+  const mascotLabel = document.getElementById("mascotLabel");
+  let mascotTimer = null;
+  function setMascote(state) {
+    if (!mascot) return;
+    clearTimeout(mascotTimer);
+    mascot.dataset.state = state;
+    const labels = { sleeping: "Aguardando sua pergunta", thinking: "Pensando na sua resposta...", talking: "Resposta pronta" };
+    const descriptions = { sleeping: "Mascote da ZUZ aguardando", thinking: "Mascote da ZUZ pensando", talking: "Mascote da ZUZ respondendo" };
+    mascot.setAttribute("aria-label", descriptions[state] || descriptions.sleeping);
+    if (mascotLabel) mascotLabel.textContent = labels[state] || labels.sleeping;
+  }
+  setMascote("sleeping");
   let history = [];
   let busy = false;
 
@@ -82,6 +95,7 @@
     text = String(text || "").trim();
     if (!text || busy) return;
     busy = true;
+    setMascote("thinking");
     send.disabled = true;
     input.value = "";
     suggestions.hidden = true;
@@ -99,11 +113,14 @@
       if (!response.ok) throw new Error(data.error || "Não foi possível consultar o assistente.");
       const answer = String(data.reply || "Nenhuma resposta recebida.");
       renderAnswer(pending, answer);
+      setMascote("talking");
+      mascotTimer = setTimeout(() => setMascote("sleeping"), 3200);
       history.push({ role: "user", text }, { role: "model", text: answer });
       history = history.slice(-20);
       status.textContent = "Ambiente de testes: nenhuma alteração foi salva na sua empresa.";
       scrollBottom();
     } catch (error) {
+      setMascote("sleeping");
       pending.textContent = "Não foi possível responder: " + error.message;
       status.textContent = "Confira o erro exibido acima.";
     } finally {
@@ -127,6 +144,7 @@
     button.addEventListener("click", () => ask(button.textContent));
   });
   document.getElementById("clear").addEventListener("click", () => {
+    setMascote("sleeping");
     history = [];
     messages.innerHTML = initial;
     suggestions.hidden = false;

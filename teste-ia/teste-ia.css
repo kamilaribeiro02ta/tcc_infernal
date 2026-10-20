@@ -55,3 +55,30 @@
 @media (max-width:700px) {
   .messages { height: 57vh; min-height: 310px; }
 }
+
+/* Mascote original fornecido pelo grupo: estados dormindo, pensando e respondendo */
+.ia-header-mascot{justify-content:flex-start;gap:24px;align-items:center}
+.ia-header-mascot .ia-intro{flex:1;min-width:0}
+.ia-header-mascot .ia-tag{align-self:flex-start;margin-left:auto}
+.ia-mascot{position:relative;width:160px;height:160px;flex:0 0 160px;isolation:isolate}
+.ia-mascot-body{position:absolute;inset:0;transform-origin:center 85%}
+.ia-mascot-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(.95);transition:opacity .28s ease,transform .28s ease}
+.ia-mascot[data-state="sleeping"] .ia-mascot-sleep,
+.ia-mascot[data-state="thinking"] .ia-mascot-think,
+.ia-mascot[data-state="talking"] .ia-mascot-talk{opacity:1;transform:scale(1)}
+.ia-mascot[data-state="sleeping"] .ia-mascot-body{animation:zuzMascotSleep 4.5s ease-in-out infinite}
+.ia-mascot[data-state="thinking"] .ia-mascot-body{animation:zuzMascotThink 2.7s ease-in-out infinite}
+.ia-mascot[data-state="talking"] .ia-mascot-body{animation:zuzMascotTalk .68s ease-in-out infinite}
+@keyframes zuzMascotSleep{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+@keyframes zuzMascotThink{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7px) rotate(3deg)}}
+@keyframes zuzMascotTalk{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.03,.98)}}
+.ia-mascot-dots{position:absolute;right:-8px;top:12px;display:flex;gap:4px;opacity:0;transition:opacity .2s}
+.ia-mascot[data-state="thinking"] .ia-mascot-dots{opacity:1}
+.ia-mascot-dots i{width:7px;height:7px;background:var(--ia-accent);border-radius:50%;animation:zuzMascotDot 1.2s infinite}
+.ia-mascot-dots i:nth-child(2){animation-delay:.15s}.ia-mascot-dots i:nth-child(3){animation-delay:.3s}
+@keyframes zuzMascotDot{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
+.ia-mascot-label{display:inline-block;font-size:12px;color:var(--ia-accent);font-weight:600;margin-top:14px}
+.ia-mark-mascot{background:transparent;overflow:hidden}
+.ia-mark-mascot img{width:42px;height:42px;object-fit:contain}
+@media(max-width:700px){.ia-header-mascot{gap:14px;align-items:center}.ia-mascot{width:104px;height:104px;flex-basis:104px}.ia-header-mascot .ia-intro h1{font-size:29px}.ia-header-mascot .ia-intro p{font-size:12px}.ia-mascot-label{margin-top:8px}}
+@media(prefers-reduced-motion:reduce){.ia-mascot-body,.ia-mascot-dots i{animation:none!important}.ia-mascot-img{transition:none}}
