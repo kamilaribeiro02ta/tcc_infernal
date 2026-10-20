@@ -8,6 +8,8 @@
   const status = document.getElementById("status");
   const suggestions = document.getElementById("suggestions");
   const initial = messages.innerHTML;
+  const chatArea=document.querySelector(".ia-chat-area");
+  const setWelcome=visible=>chatArea.classList.toggle("is-welcome",visible);
   const mascot = document.getElementById("mascot");
   const mascotLabel = document.getElementById("mascotLabel");
   let mascotTimer = null;
@@ -100,6 +102,7 @@
     try {
       const data=await api("conversations/"+encodeURIComponent(id));
       currentConversationId=id;
+      setWelcome(false);
       history=data.messages.map(m=>({role:m.role,text:m.text})).slice(-20);
       messages.replaceChildren();
       for(const entry of data.messages) {
@@ -117,6 +120,7 @@
   function newConversation(){
     if(busy)return;
     currentConversationId=null;
+    setWelcome(true);
     history=[];
     messages.innerHTML=initial;
     suggestions.hidden=false;
@@ -204,6 +208,7 @@
     text = String(text || "").trim();
     if (!text || busy) return;
     busy = true;
+    setWelcome(false);
     lastFailedMessage = "";
     setMascote("thinking");
     send.disabled = true;
@@ -272,6 +277,9 @@
     if (busy) return;
     if (input.value.trim()) setMascote("idle");
     else scheduleSleep(1000);
+  });
+  document.querySelectorAll(".zuni-quick").forEach(button => {
+    button.addEventListener("click",()=>ask(button.dataset.prompt));
   });
   document.querySelectorAll(".suggestions button").forEach(button => {
     button.addEventListener("click", () => ask(button.textContent));
