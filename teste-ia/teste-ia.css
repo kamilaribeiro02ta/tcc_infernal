@@ -17,3 +17,41 @@
 @media (max-width: 700px) {
   .page.workspace-shell > .sidebar { flex: 0 0 auto; }
 }
+
+
+/* Legibilidade das respostas longas do Gemini */
+.messages {
+  height: min(62vh, 650px);
+  min-height: 350px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+.bubble.assistant {
+  white-space: normal;
+  line-height: 1.75;
+}
+.bubble.assistant p { margin: 0 0 10px; }
+.bubble.assistant p:last-child { margin-bottom: 0; }
+.bubble.assistant h3,
+.bubble.assistant h4 {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 20px 0 9px;
+  font-weight: 700;
+}
+.bubble.assistant h3:first-child,
+.bubble.assistant h4:first-child { margin-top: 0; }
+.bubble.assistant ul,
+.bubble.assistant ol { margin: 8px 0 14px; padding-left: 22px; }
+.bubble.assistant li { margin-bottom: 6px; }
+.bubble.assistant code {
+  font: 0.94em ui-monospace, SFMono-Regular, Consolas, monospace;
+  background: color-mix(in srgb, var(--ia-accent) 8%, transparent);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+.suggestions[hidden] { display: none !important; }
+@media (max-width:700px) {
+  .messages { height: 57vh; min-height: 310px; }
+}
