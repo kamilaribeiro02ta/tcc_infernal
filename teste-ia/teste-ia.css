@@ -244,3 +244,27 @@ body { font-family: Poppins, sans-serif; color: var(--ia-text); }
   .ia-mascot-body,.ia-mascot-dots i,.ia-typing span { animation:none!important; }
   .ia-mascot-img,.ia-conversation,.suggestions button { transition:none!important; }
 }
+
+
+/* Zuni — boas-vindas contextuais (referências mobile adaptadas ao desktop ZUZ) */
+.ia-chat-area.is-welcome .messages,.ia-chat-area.is-welcome .suggestions{display:none}
+.zuni-welcome{display:none;flex:1 1 0;min-height:0;overflow-y:auto;padding:20px 20px 12px;background:radial-gradient(ellipse at 50% 22%,color-mix(in srgb,var(--ia-accent) 10%,var(--ia-surface)) 0%,var(--ia-surface) 57%);}
+.ia-chat-area.is-welcome .zuni-welcome{display:flex;align-items:center;justify-content:center}
+.zuni-welcome-inner{width:min(100%,640px);margin:auto;text-align:center;padding:12px 0}
+.zuni-welcome-art{width:116px;height:116px;display:grid;place-items:center;margin:0 auto 6px;filter:drop-shadow(0 14px 22px rgba(106,61,240,.12))}
+.zuni-welcome-art img{width:100%;height:100%;object-fit:contain;animation:zuz-ai-breathe 4s ease-in-out infinite}
+.zuni-welcome-eyebrow{font-size:10px;letter-spacing:.16em;font-weight:600;color:var(--ia-accent)}
+.zuni-welcome h2{font-size:clamp(22px,2.6vw,33px);font-weight:700;letter-spacing:-.04em;line-height:1.22;margin:9px 0 10px;color:var(--ia-text)}
+.zuni-welcome h2 span{color:var(--ia-accent)}
+.zuni-welcome p{font-size:12px;color:var(--ia-muted);max-width:47ch;margin:0 auto 24px;line-height:1.75}
+.zuni-quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;text-align:left}
+.zuni-quick{min-width:0;display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--ia-line);border-radius:16px;background:var(--ia-surface);color:var(--ia-text);font:inherit;text-align:left;cursor:pointer;transition:border-color .18s,background .18s,transform .18s;box-shadow:0 6px 18px rgba(49,34,89,.025)}
+.zuni-quick>i:first-child{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:11px;background:var(--ia-selected);color:var(--ia-accent);font-size:19px}
+.zuni-quick>span{flex:1;min-width:0;font-size:12px;font-weight:600;line-height:1.45}
+.zuni-quick small{display:block;color:var(--ia-muted);font-weight:400;font-size:10px;margin-top:4px}
+.zuni-quick>i:last-child{color:var(--ia-muted);font-size:19px;flex:0 0 auto}
+.zuni-quick:hover{border-color:color-mix(in srgb,var(--ia-accent) 45%,var(--ia-line));background:color-mix(in srgb,var(--ia-accent) 3%,var(--ia-surface));transform:translateY(-2px)}
+.ia-chat-area.is-welcome .composer{border-top:1px solid var(--ia-line)}
+@media(max-width:900px){.zuni-welcome{padding:16px}.zuni-welcome-inner{padding:0}.zuni-welcome-art{width:92px;height:92px}.zuni-quick{padding:12px;gap:9px}.zuni-quick>i:first-child{width:30px;height:30px;flex-basis:30px}}
+@media(max-width:570px){.zuni-welcome{padding:14px 12px}.zuni-welcome h2{font-size:23px}.zuni-welcome p{font-size:11px;margin-bottom:16px}.zuni-quick-grid{gap:8px}.zuni-quick{border-radius:12px;padding:10px;align-items:flex-start;gap:7px}.zuni-quick>span{font-size:10px}.zuni-quick small{font-size:9px;line-height:1.5}.zuni-quick>i:last-child{display:none}.zuni-quick>i:first-child{flex:0 0 26px;width:26px;height:26px;font-size:15px;border-radius:8px}.zuni-welcome-art{width:75px;height:75px}}
+@media(prefers-reduced-motion:reduce){.zuni-welcome-art img{animation:none}.zuni-quick{transition:none}}
