@@ -31,6 +31,7 @@
   setMascote("sleeping");
   let history = [];
   let busy = false;
+  let lastFailedMessage = "";
 
   // Renderização limitada de Markdown via nós DOM: o texto da IA nunca é executado como HTML.
   function formattedText(target, text) {
@@ -103,6 +104,7 @@
     text = String(text || "").trim();
     if (!text || busy) return;
     busy = true;
+    lastFailedMessage = "";
     setMascote("thinking");
     send.disabled = true;
     input.value = "";
@@ -135,7 +137,14 @@
     } catch (error) {
       setMascote("sleeping");
       pending.classList.remove("ia-typing");
+      lastFailedMessage = text;
       pending.textContent = "Não foi possível responder: " + error.message;
+      const retry = document.createElement("button");
+      retry.type = "button";
+      retry.className = "ia-retry";
+      retry.textContent = "Tentar novamente";
+      retry.addEventListener("click", () => { pending.remove(); ask(lastFailedMessage); });
+      pending.append(retry);
       status.textContent = "Confira o erro exibido acima.";
     } finally {
       busy = false;
