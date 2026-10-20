@@ -188,3 +188,108 @@
   .ia-panel-head{gap:7px}
   .clear{padding:7px 9px;font-size:10px}
 }
+
+/* ZUZ Teste IA: refinamento editorial — duas áreas proporcionais e sem corte */
+html,body{max-width:100%;overflow-x:hidden}
+.page.workspace-shell{min-width:0;width:100%}
+.page.workspace-shell>.ia-main{
+  width:calc(100% - 240px);
+  max-width:1440px;
+  min-width:0;
+  margin:0;
+  padding:28px clamp(16px,2.5vw,40px) 32px;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+.ia-header-mascot{width:100%;max-width:none;margin:0 0 22px;min-height:100px;gap:18px}
+.ia-header-mascot .ia-intro{min-width:0}
+.ia-header-mascot .ia-tag{align-self:center;margin-left:auto}
+.ia-header h1{margin:3px 0 6px}
+.ia-header p{max-width:65ch}
+.ia-panel.ia-panel-history{
+  width:100%;
+  max-width:none;
+  min-width:0;
+  height:clamp(490px,calc(100dvh - 205px),790px);
+  margin:0;
+  border:1px solid var(--ia-line);
+  border-radius:20px;
+  box-shadow:0 8px 28px rgba(48,28,107,.06);
+  background:var(--ia-panel);
+}
+.ia-history{
+  box-sizing:border-box;
+  flex:0 0 clamp(198px,22%,255px);
+  width:clamp(198px,22%,255px);
+  min-width:0;
+  background:color-mix(in srgb,var(--ia-bg) 74%,var(--ia-panel));
+}
+.ia-history-head{padding:20px 16px 14px;gap:10px}
+.ia-history-head strong{font-size:13px;letter-spacing:-.01em}
+.ia-history-head button{flex-shrink:0;border-radius:10px}
+.ia-conversation-list{padding:0 10px 16px;overflow-wrap:anywhere}
+.ia-history-empty{
+  margin:6px 4px;
+  padding:14px;
+  border:1px dashed var(--ia-line);
+  border-radius:12px;
+  color:var(--ia-muted);
+  font-size:11px;line-height:1.65;
+  overflow-wrap:anywhere;
+}
+.ia-conversation{min-width:0;border-radius:11px;gap:2px}
+.ia-conversation.selected{border-color:color-mix(in srgb,var(--ia-accent) 38%,transparent);background:color-mix(in srgb,var(--ia-accent) 8%,var(--ia-panel))}
+.ia-conversation-open{min-width:0;padding:12px 9px;font-size:11px}
+.ia-conversation-delete{margin-right:4px;border-radius:7px}
+.ia-chat-area{width:0;min-width:0;flex:1 1 auto;overflow:hidden}
+.ia-panel-head{min-width:0;flex:0 0 auto;padding:14px 20px;gap:11px}
+.ia-panel-head>div:nth-child(2){min-width:0}
+.ia-panel-head strong{font-size:13px}
+.ia-panel-head small{font-size:11px}
+.ia-panel-head .clear{margin-left:auto;white-space:nowrap;padding:9px 13px}
+.messages{min-width:0;min-height:0;box-sizing:border-box;padding:22px clamp(14px,3%,28px);gap:18px}
+.bubble{box-sizing:border-box;width:fit-content;max-width:min(88%,680px);font-size:12px;line-height:1.7;padding:13px 17px;border-radius:15px}
+.bubble.user{max-width:min(82%,540px);border-radius:16px 16px 5px 16px}
+.bubble.assistant{border-radius:5px 16px 16px 16px}
+.suggestions{min-width:0;gap:8px;padding:0 20px 14px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:thin}
+.suggestions button{flex:0 0 auto;border-radius:999px;font-size:11px;line-height:1.5}
+.composer{min-width:0;box-sizing:border-box;padding:14px 20px 10px;gap:12px}
+.composer textarea{min-width:0;width:0;flex:1 1 auto;border-radius:13px;line-height:1.65}
+.composer button{flex:0 0 46px;width:46px;height:46px;border-radius:12px}
+.disclaimer{padding:2px 20px 13px;overflow-wrap:anywhere;line-height:1.5}
+.ia-retry{width:fit-content;font-size:11px}
+.ia-history-error button{display:block;margin-top:12px;border:1px solid var(--ia-line);color:var(--ia-accent);background:var(--ia-panel);font:inherit;font-weight:600;border-radius:9px;padding:8px 12px;cursor:pointer}
+button:focus-visible,textarea:focus-visible{outline:2px solid var(--ia-accent);outline-offset:2px}
+@media(max-width:1120px){
+  .page.workspace-shell>.ia-main{padding:22px 16px 28px}
+  .ia-history{flex-basis:195px;width:195px}
+  .ia-panel-head{padding:12px 14px}
+  .messages{padding:16px}
+  .composer{padding:12px 14px 8px}
+}
+@media(max-width:850px){
+  .page.workspace-shell>.ia-main{width:auto;flex:1 1 0}
+  .ia-history{flex-basis:185px;width:185px}
+  .ia-header-mascot .ia-tag{display:none}
+}
+@media(max-width:700px){
+  .page.workspace-shell>.ia-main{width:100%;min-width:0;padding:15px 12px 22px}
+  .ia-panel.ia-panel-history{height:clamp(470px,calc(100dvh - 180px),770px);min-height:470px}
+  .ia-history{display:none;position:absolute;inset:0 auto 0 0;width:min(78vw,290px);z-index:8;box-shadow:10px 0 25px #110e2715}
+  .ia-history.mobile-open{display:flex}
+  .ia-panel-head .ia-history-toggle{display:inline-flex;margin-left:auto}
+  .ia-panel-head .clear{padding:8px 9px;font-size:10px}
+  .messages{padding:14px}
+  .bubble{max-width:92%;padding:12px 14px}
+  .suggestions{padding:0 12px 10px}
+  .composer{padding:10px 12px 8px}
+  .disclaimer{padding:2px 12px 10px}
+}
+@media(max-width:440px){
+  .ia-mascot{width:74px;height:74px;flex-basis:74px}
+  .ia-header-mascot{min-height:85px}
+  .ia-header-mascot .ia-intro h1{font-size:24px}
+  .ia-header-mascot .ia-intro p{font-size:10px}
+  .ia-panel-head .ia-mark{width:30px;height:30px}
+  .ia-panel-head .ia-mark img{width:30px;height:30px}
+}
