@@ -306,3 +306,72 @@ body.dark{
 }
 .ia-conversation.selected{border:1px solid var(--ia-line-strong)}
 .bubble.assistant{border:1px solid var(--ia-line)}
+
+
+/* Zuni editorial glass: camadas sutis sem perder a identidade da ZUZ. */
+:root{
+  --zuni-glass:rgba(255,255,255,.73);
+  --zuni-glass-line:rgba(190,171,223,.64);
+  --zuni-glass-shadow:0 12px 32px rgba(69,45,121,.075);
+}
+body.dark{
+  --zuni-glass:rgba(36,28,54,.78);
+  --zuni-glass-line:rgba(151,123,197,.38);
+  --zuni-glass-shadow:0 12px 36px rgba(0,0,0,.22);
+}
+.ia-panel.ia-panel-history{
+  background:var(--zuni-glass);
+  border:1px solid var(--zuni-glass-line);
+  box-shadow:var(--zuni-glass-shadow);
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+}
+.ia-chat-area{
+  background:var(--zuni-glass);
+}
+.zuni-welcome{
+  background:radial-gradient(ellipse at 50% 16%,
+    color-mix(in srgb,var(--ia-accent) 11%,transparent),
+    transparent 64%);
+}
+.zuni-quick{
+  background:var(--zuni-glass);
+  border:1px solid var(--zuni-glass-line);
+  box-shadow:0 5px 20px rgba(69,45,121,.045);
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+}
+.zuni-quick:hover{
+  background:color-mix(in srgb,var(--ia-accent) 6%,var(--zuni-glass));
+}
+.composer textarea{
+  background:var(--zuni-glass);
+  border:1px solid var(--ia-line-strong);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+}
+.ia-mascot-label,.ia-tag{
+  background:var(--zuni-glass);
+  border:1px solid var(--zuni-glass-line);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+}
+/* Contraste editorial apenas no destaque, Poppins permanece na interface. */
+.zuni-welcome h2 span{
+  font-family:"Times New Roman",Times,serif;
+  font-style:italic;
+  font-weight:700;
+  letter-spacing:-.045em;
+}
+@supports not ((backdrop-filter:blur(1px))){
+  .ia-panel.ia-panel-history,.zuni-quick,.composer textarea,.ia-mascot-label,.ia-tag{
+    background:var(--ia-surface);
+  }
+}
+@media(prefers-reduced-transparency:reduce){
+  .ia-panel.ia-panel-history,.zuni-quick,.composer textarea,.ia-mascot-label,.ia-tag{
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+    background:var(--ia-surface);
+  }
+}
