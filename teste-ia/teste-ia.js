@@ -11,14 +11,22 @@
   const mascot = document.getElementById("mascot");
   const mascotLabel = document.getElementById("mascotLabel");
   let mascotTimer = null;
+  let idleTimer = null;
   function setMascote(state) {
     if (!mascot) return;
     clearTimeout(mascotTimer);
+    clearTimeout(idleTimer);
     mascot.dataset.state = state;
-    const labels = { sleeping: "Aguardando sua pergunta", thinking: "Pensando na sua resposta...", talking: "Resposta pronta" };
-    const descriptions = { sleeping: "Mascote da ZUZ aguardando", thinking: "Mascote da ZUZ pensando", talking: "Mascote da ZUZ respondendo" };
+    const labels = { sleeping: "Aguardando sua pergunta", idle: "Pronto para conversar", thinking: "Pensando na sua resposta...", talking: "Respondendo..." };
+    const descriptions = { sleeping: "Mascote da ZUZ aguardando", idle: "Mascote da ZUZ pronto para conversar", thinking: "Mascote da ZUZ pensando", talking: "Mascote da ZUZ respondendo" };
     mascot.setAttribute("aria-label", descriptions[state] || descriptions.sleeping);
     if (mascotLabel) mascotLabel.textContent = labels[state] || labels.sleeping;
+  }
+  function scheduleSleep(delay = 2600) {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      if (!busy && !input.value.trim()) setMascote("sleeping");
+    }, delay);
   }
   setMascote("sleeping");
   let history = [];
@@ -100,7 +108,10 @@
     input.value = "";
     suggestions.hidden = true;
     bubble("user", text);
-    const pending = bubble("assistant", "Pensando...");
+    const pending = bubble("assistant", "");
+    pending.classList.add("ia-typing");
+    pending.setAttribute("aria-label", "Aguardando resposta da IA");
+    for (let i = 0; i < 3; i++) pending.append(document.createElement("span"));
     status.textContent = "Consultando Gemini...";
     try {
       const response = await fetch("/api/ai/test", {
@@ -112,21 +123,25 @@
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || "Não foi possível consultar o assistente.");
       const answer = String(data.reply || "Nenhuma resposta recebida.");
+      pending.classList.remove("ia-typing");
+      pending.removeAttribute("aria-label");
       renderAnswer(pending, answer);
       setMascote("talking");
-      mascotTimer = setTimeout(() => setMascote("sleeping"), 3200);
+      mascotTimer = setTimeout(() => { setMascote("idle"); scheduleSleep(); }, 2800);
       history.push({ role: "user", text }, { role: "model", text: answer });
       history = history.slice(-20);
       status.textContent = "Ambiente de testes: nenhuma alteração foi salva na sua empresa.";
       scrollBottom();
     } catch (error) {
       setMascote("sleeping");
+      pending.classList.remove("ia-typing");
       pending.textContent = "Não foi possível responder: " + error.message;
       status.textContent = "Confira o erro exibido acima.";
     } finally {
       busy = false;
       send.disabled = false;
       input.focus();
+      if (mascot && mascot.dataset.state === "sleeping") scheduleSleep();
     }
   }
 
@@ -139,6 +154,13 @@
       event.preventDefault();
       form.requestSubmit();
     }
+  });
+  input.addEventListener("input", () => {
+    input.style.height = "44px";
+    input.style.height = Math.min(120, Math.max(44, input.scrollHeight)) + "px";
+    if (busy) return;
+    if (input.value.trim()) setMascote("idle");
+    else scheduleSleep(1000);
   });
   document.querySelectorAll(".suggestions button").forEach(button => {
     button.addEventListener("click", () => ask(button.textContent));

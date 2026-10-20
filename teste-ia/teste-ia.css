@@ -82,3 +82,79 @@
 .ia-mark-mascot img{width:42px;height:42px;object-fit:contain}
 @media(max-width:700px){.ia-header-mascot{gap:14px;align-items:center}.ia-mascot{width:104px;height:104px;flex-basis:104px}.ia-header-mascot .ia-intro h1{font-size:29px}.ia-header-mascot .ia-intro p{font-size:12px}.ia-mascot-label{margin-top:8px}}
 @media(prefers-reduced-motion:reduce){.ia-mascot-body,.ia-mascot-dots i{animation:none!important}.ia-mascot-img{transition:none}}
+
+/* Chat compacto inspirado no protótipo fornecido pelo grupo.
+   Conserva o shell, o menu lateral, as cores e o backend da ZUZ. */
+.page.workspace-shell > .ia-main {
+  max-width: 1100px;
+  padding: 26px clamp(18px, 3vw, 44px) 24px;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+.ia-header-mascot {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 16px;
+  gap: 18px;
+  justify-content: flex-start;
+  min-height: 118px;
+}
+.ia-mascot { width: 116px; height: 116px; flex-basis: 116px; }
+.ia-header h1 { font-size: clamp(27px, 3vw, 35px); letter-spacing: -.035em; line-height: 1.15; }
+.ia-header p { font-size: 12px; max-width: 49ch; line-height: 1.55; }
+.ia-mascot-label { margin-top: 8px; font-size: 11px; }
+.ia-header-mascot .ia-tag { font-size: 10px; padding: 7px 11px; }
+.ia-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  height: clamp(430px, calc(100dvh - 235px), 620px);
+  min-height: 430px;
+  margin: 0 auto;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(80,40,160,.08);
+}
+.ia-panel-head { padding: 12px 16px; gap: 10px; flex: 0 0 auto; }
+.ia-mark,.ia-mark-mascot,.ia-mark-mascot img { width: 34px; height: 34px; }
+.ia-panel-head strong { font-size: 13px; }
+.ia-panel-head small { font-size: 10px; }
+.clear { padding: 8px 11px; font-size: 11px; }
+.messages {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  max-height: none;
+  padding: 16px;
+  gap: 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.bubble { max-width: 84%; padding: 11px 14px; font-size: 12px; line-height: 1.6; }
+.suggestions { flex: 0 0 auto; padding: 0 16px 10px; gap: 7px; }
+.suggestions button { padding: 7px 11px; font-size: 10px; background: var(--ia-bg); }
+.composer { flex: 0 0 auto; padding: 12px 16px; gap: 10px; align-items: end; }
+.composer textarea { resize: none; min-height: 44px; height: 44px; max-height: 120px; padding: 10px 12px; font-size: 12px; }
+.composer button { width: 44px; height: 44px; font-size: 19px; }
+.disclaimer { flex: 0 0 auto; padding: 0 16px 10px; font-size: 10px; }
+.ia-typing { display: flex; gap: 5px; align-items: center; min-height: 37px; }
+.ia-typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--ia-accent); animation: iaTypingDot 1.2s ease-in-out infinite; }
+.ia-typing span:nth-child(2) { animation-delay: .18s; }
+.ia-typing span:nth-child(3) { animation-delay: .36s; }
+@keyframes iaTypingDot { 0%,80%,100% { transform: translateY(0); opacity: .35; } 40% { transform: translateY(-5px); opacity: 1; } }
+.ia-mascot[data-state="idle"] .ia-mascot-talk { opacity: 1; transform: scale(1); }
+.ia-mascot[data-state="idle"] .ia-mascot-body { animation: zuzMascotSleep 3.6s ease-in-out infinite; }
+@media (max-width:700px) {
+  .page.workspace-shell > .ia-main { padding: 16px 12px 22px; }
+  .ia-header-mascot { gap: 12px; margin-bottom: 12px; min-height: 88px; }
+  .ia-mascot { width: 90px; height: 90px; flex-basis: 90px; }
+  .ia-header-mascot .ia-intro h1 { font-size: 27px; }
+  .ia-header-mascot .ia-intro p { font-size: 11px; }
+  .ia-panel { height: clamp(430px, calc(100dvh - 190px), 680px); min-height: 430px; border-radius: 16px; }
+  .messages { height: auto; min-height: 0; padding: 12px; }
+  .composer { padding: 10px 12px; }
+  .suggestions { padding: 0 12px 9px; }
+  .bubble { max-width: 90%; }
+}
+@media (prefers-reduced-motion:reduce) { .ia-typing span { animation: none; } }
