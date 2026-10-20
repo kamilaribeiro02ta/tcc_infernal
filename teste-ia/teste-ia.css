@@ -158,3 +158,6 @@
   .bubble { max-width: 90%; }
 }
 @media (prefers-reduced-motion:reduce) { .ia-typing span { animation: none; } }
+
+.ia-retry{display:block;margin-top:12px;padding:8px 12px;border-radius:10px;border:1px solid var(--ia-accent);background:transparent;color:var(--ia-accent);font:inherit;font-size:11px;font-weight:600;cursor:pointer}
+.ia-retry:hover{background:var(--ia-bg)}
