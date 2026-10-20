@@ -1,5 +1,38 @@
 "use strict";
 
+const { randomUUID } = require("node:crypto");
+const { query, provider } = require("./database");
+let schemaReady = null;
+function ensureHistorySchema() {
+  if (!schemaReady) schemaReady = (async () => {
+    if (provider === "postgresql") {
+      await query(`CREATE TABLE IF NOT EXISTS zuz_ai_conversations (
+        id UUID PRIMARY KEY, user_id UUID NOT NULL REFERENCES zuz_users(id) ON DELETE CASCADE,
+        title VARCHAR(120) NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
+      await query(`CREATE TABLE IF NOT EXISTS zuz_ai_messages (
+        id UUID PRIMARY KEY, conversation_id UUID NOT NULL REFERENCES zuz_ai_conversations(id) ON DELETE CASCADE,
+        role VARCHAR(10) NOT NULL CHECK (role IN ('user','model')),
+        content TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
+      await query("CREATE INDEX IF NOT EXISTS idx_zuz_ai_conversations_user ON zuz_ai_conversations(user_id,updated_at DESC)");
+      await query("CREATE INDEX IF NOT EXISTS idx_zuz_ai_messages_conversation ON zuz_ai_messages(conversation_id,created_at,id)");
+      await query("ALTER TABLE zuz_ai_conversations ENABLE ROW LEVEL SECURITY");
+      await query("ALTER TABLE zuz_ai_messages ENABLE ROW LEVEL SECURITY");
+    } else {
+      await query(`CREATE TABLE IF NOT EXISTS zuz_ai_conversations (
+        id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES zuz_users(id) ON DELETE CASCADE,
+        title TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)`);
+      await query(`CREATE TABLE IF NOT EXISTS zuz_ai_messages (
+        id TEXT PRIMARY KEY, conversation_id TEXT NOT NULL REFERENCES zuz_ai_conversations(id) ON DELETE CASCADE,
+        role TEXT NOT NULL CHECK (role IN ('user','model')),
+        content TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)`);
+      await query("CREATE INDEX IF NOT EXISTS idx_zuz_ai_conversations_user ON zuz_ai_conversations(user_id,updated_at DESC)");
+      await query("CREATE INDEX IF NOT EXISTS idx_zuz_ai_messages_conversation ON zuz_ai_messages(conversation_id,created_at,id)");
+    }
+  })().catch(error => {schemaReady=null;throw error;});
+  return schemaReady;
+}
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta";
 const modelCache = {models:[],expires:0};
 const sleep = ms => new Promise(resolve => setTimeout(resolve,ms));
@@ -75,6 +108,35 @@ function errorMessage(result, exhaustedModels=false) {
 }
 
 function registerGeminiTestRoute(router, asyncRoute, getUser) {
+  const auth = async (req,res) => {
+    const user=await getUser(req);
+    if (!user) {res.status(401).json({error:"Faça login na ZUZ."});return null;}
+    return user;
+  };
+  router.get("/ai/conversations",asyncRoute(async(req,res)=>{
+    res.setHeader("Cache-Control","no-store");
+    const user=await auth(req,res);if(!user)return;
+    await ensureHistorySchema();
+    const result=await query("SELECT id,title,created_at,updated_at FROM zuz_ai_conversations WHERE user_id=$1 ORDER BY updated_at DESC LIMIT 150",[user.id]);
+    res.json({conversations:result.rows});
+  }));
+  router.get("/ai/conversations/:id",asyncRoute(async(req,res)=>{
+    res.setHeader("Cache-Control","no-store");
+    const user=await auth(req,res);if(!user)return;
+    if(!/^[0-9a-f-]{36}$/i.test(req.params.id))return res.status(400).json({error:"Conversa inválida."});
+    await ensureHistorySchema();
+    const row=await query("SELECT id,title,created_at,updated_at FROM zuz_ai_conversations WHERE id=$1 AND user_id=$2",[req.params.id,user.id]);
+    if(!row.rows[0])return res.status(404).json({error:"Conversa não encontrada."});
+    const messages=await query("SELECT role,content AS text,created_at FROM zuz_ai_messages WHERE conversation_id=$1 ORDER BY created_at,id LIMIT 500",[req.params.id]);
+    res.json({conversation:row.rows[0],messages:messages.rows});
+  }));
+  router.delete("/ai/conversations/:id",asyncRoute(async(req,res)=>{
+    const user=await auth(req,res);if(!user)return;
+    if(!/^[0-9a-f-]{36}$/i.test(req.params.id))return res.status(400).json({error:"Conversa inválida."});
+    await ensureHistorySchema();
+    await query("DELETE FROM zuz_ai_conversations WHERE id=$1 AND user_id=$2",[req.params.id,user.id]);
+    res.json({ok:true});
+  }));
   router.post("/ai/test",asyncRoute(async (req,res)=>{
     res.setHeader("Cache-Control","no-store");
     const user=await getUser(req);
@@ -84,7 +146,16 @@ function registerGeminiTestRoute(router, asyncRoute, getUser) {
     const message=String(req.body?.message||"").trim();
     if(!message||message.length>3000)return res.status(400).json({error:"Envie uma mensagem de até 3000 caracteres."});
 
-    const history=Array.isArray(req.body?.history)?req.body.history.slice(-12):[];
+    await ensureHistorySchema();
+    const requestedId=String(req.body?.conversationId||"");
+    if(requestedId && !/^[0-9a-f-]{36}$/i.test(requestedId))return res.status(400).json({error:"Conversa inválida."});
+    let history=[];
+    if(requestedId){
+      const owned=await query("SELECT id FROM zuz_ai_conversations WHERE id=$1 AND user_id=$2",[requestedId,user.id]);
+      if(!owned.rows.length)return res.status(404).json({error:"Conversa não encontrada."});
+      const previous=await query("SELECT role,content AS text FROM zuz_ai_messages WHERE conversation_id=$1 ORDER BY created_at DESC,id DESC LIMIT 12",[requestedId]);
+      history=previous.rows.reverse();
+    }
     const contents=history.filter(m=>["user","model"].includes(m?.role)&&typeof m.text==="string")
       .map(m=>({role:m.role,parts:[{text:m.text.slice(0,3000)}]}));
     contents.push({role:"user",parts:[{text:message}]});
@@ -120,7 +191,16 @@ function registerGeminiTestRoute(router, asyncRoute, getUser) {
         },remaining);
         if(result.ok){
           const reply=(result.body.candidates?.[0]?.content?.parts||[]).map(p=>p.text||"").join("").trim();
-          if(reply)return res.json({reply,model});
+          if(reply){
+            const id=requestedId||randomUUID();
+            if(!requestedId){
+              await query("INSERT INTO zuz_ai_conversations(id,user_id,title) VALUES($1,$2,$3)",[id,user.id,message.slice(0,116)]);
+            }
+            await query("INSERT INTO zuz_ai_messages(id,conversation_id,role,content) VALUES($1,$2,$3,$4)",[randomUUID(),id,"user",message]);
+            await query("INSERT INTO zuz_ai_messages(id,conversation_id,role,content) VALUES($1,$2,$3,$4)",[randomUUID(),id,"model",reply]);
+            await query("UPDATE zuz_ai_conversations SET updated_at=CURRENT_TIMESTAMP WHERE id=$1 AND user_id=$2",[id,user.id]);
+            return res.json({reply,model,conversationId:id});
+          }
           last={status:502,body:{error:{message:"empty model response"}}};
           continue;
         }
