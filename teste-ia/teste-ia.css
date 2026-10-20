@@ -362,10 +362,14 @@ body.dark{
   font-family:"Times New Roman",Times,serif;
   font-size:1.07em;
   font-style:italic;
-  font-weight:700;
+  font-weight:900;
   line-height:inherit;
-  letter-spacing:-.035em;
+  letter-spacing:-.065em;
   vertical-align:baseline;
+}
+.zuni-welcome h2{
+  word-spacing:-.065em;
+  letter-spacing:-.055em;
 }
 @supports not ((backdrop-filter:blur(1px))){
   .ia-panel.ia-panel-history,.zuni-quick,.composer textarea,.ia-mascot-label,.ia-tag{
