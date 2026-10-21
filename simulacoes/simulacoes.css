@@ -710,3 +710,15 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
 .sim .sim-product-bar #product:disabled:hover{
   box-shadow:none;
 }
+
+/* Entrada do seletor igual aos painéis de Início/Sobre: subida, fade e blur. */
+@keyframes sim-product-enter{
+  from{opacity:0;transform:translateY(34px);filter:blur(7px)}
+  to{opacity:1;transform:translateY(0);filter:blur(0)}
+}
+.sim .sim-product-bar{
+  animation:sim-product-enter .72s cubic-bezier(.22,.61,.36,1) .11s both;
+}
+@media(prefers-reduced-motion:reduce){
+  .sim .sim-product-bar{animation:none!important}
+}
