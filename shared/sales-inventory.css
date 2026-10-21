@@ -105,3 +105,19 @@
 /* Remover apenas a aparência de card externo; preservar o título e o conteúdo. */
 .zuz-sales{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;overflow:visible!important}
 .zuz-sales__head{padding:0;margin:0 0 24px}
+
+/* Uniformizar os dois indicadores inferiores com os quatro cards financeiros. */
+.zuz-sales__stock-overview>div{
+ background:var(--bg-card,var(--bg,#faf9ff));
+ border:1px solid var(--border,#eee);
+ border-radius:14px;
+ padding:17px;
+}
+.zuz-sales__stock-overview>div span{font-size:.78rem;line-height:1.5}
+.zuz-sales__stock-overview>div strong{font-size:1.25rem;margin-top:6px}
+.zuz-sales__hint{font-size:.72rem!important;line-height:1.55;max-width:95ch;margin:4px 0 16px!important}
+@media(max-width:520px){
+ .zuz-sales__stock-overview>div{padding:12px}
+ .zuz-sales__stock-overview>div strong{font-size:1rem}
+ .zuz-sales__hint{font-size:.7rem!important}
+}
