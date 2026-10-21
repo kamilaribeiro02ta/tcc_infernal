@@ -101,3 +101,7 @@
 @keyframes zuz-sales-enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:600px){.zuz-sales__tabs .zuz-sales__tab{min-height:48px;padding:10px 8px}.zuz-sales__form{padding:20px 16px}.zuz-sales__records{gap:12px}}
 @media(prefers-reduced-motion:reduce){.zuz-sales__form{animation:none!important}.zuz-sales__tabs .zuz-sales__tab:active{transform:none}.zuz-sales__records .zuz-sales__table{transition:none}}
+
+/* Remover apenas a aparência de card externo; preservar o título e o conteúdo. */
+.zuz-sales{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;overflow:visible!important}
+.zuz-sales__head{padding:0;margin:0 0 24px}
