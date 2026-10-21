@@ -101,3 +101,6 @@ body.dark .zuni-panel header .zuni-wordmark{filter:invert(1)}
   .sim .sim-assistant .sim-zuni-chat .zuni-messages .bubble{max-width:94%}
   .sim .sim-assistant .sim-zuni-chat .zuni-form button{min-width:70px;padding:10px 12px}
 }
+
+/* Remover o botao flutuante global sem desativar o chat acionado por outras interfaces. */
+.zuni-mini > .zuni-launch{display:none!important}
