@@ -96,7 +96,7 @@
 
   <div class="simulation-layout">
     <section class="workspace-panel simulation-input" aria-labelledby="settingsTitle">
-      <div class="workspace-section-head sim-settings-heading"><div><span>01 / PARÂMETROS</span><h2 id="settingsTitle">Configurar cenário</h2></div><button id="guideOpenFromSettings" class="sim-guide-inline-trigger" type="button" aria-controls="guideContent"><i class="bx bx-help-circle" aria-hidden="true"></i> Como usar</button></div>
+      <div class="workspace-section-head sim-settings-heading"><div><h2 id="settingsTitle">Configurar cenário</h2></div><button id="guideOpenFromSettings" class="sim-guide-inline-trigger" type="button" aria-controls="guideContent"><i class="bx bx-help-circle" aria-hidden="true"></i> Como usar</button></div>
       <p class="sim-context-copy">Escolha uma estratégia e altere os números para ver o que aconteceria com o preço e o resultado do mês. Nada é salvo no produto original.</p>
       <div id="scenarioTabs" class="sim-tabs" role="tablist" aria-label="Cenário em edição"></div>
       <div class="workspace-fields sim-input-grid">
@@ -121,7 +121,7 @@
     </section>
 
     <aside class="workspace-panel simulation-output" aria-labelledby="resultTitle">
-      <span class="workspace-kicker">02 / RESULTADO DO CENÁRIO</span>
+      
       <p class="workspace-result-label" id="resultTitle">Preço sugerido pelos parâmetros</p>
       <h2 id="suggested">—</h2>
       <div class="workspace-metrics">
@@ -139,19 +139,19 @@
   </div>
 
   <section class="workspace-panel sim-section" aria-labelledby="chartTitle">
-    <div class="sim-heading-row"><div><span class="workspace-kicker">03 / VISUALIZAÇÃO</span><h2 id="chartTitle">O impacto de cada decisão</h2><p>Receita e custos em diferentes volumes de vendas.</p></div><div class="sim-legend"><span><i class="sim-dot is-revenue"></i> Receita</span><span><i class="sim-dot is-cost"></i> Custos</span></div></div>
+    <div class="sim-heading-row"><div><h2 id="chartTitle">O impacto de cada decisão</h2><p>Receita e custos em diferentes volumes de vendas.</p></div><div class="sim-legend"><span><i class="sim-dot is-revenue"></i> Receita</span><span><i class="sim-dot is-cost"></i> Custos</span></div></div>
     <div class="sim-chart-shell"><svg id="chart" viewBox="0 0 820 300" role="img" aria-label="Gráfico de receita e custos por quantidade vendida" preserveAspectRatio="xMidYMid meet"></svg></div>
     <p id="chartDescription" class="sim-muted" aria-live="polite">Modifique um cenário para visualizar seu impacto.</p>
   </section>
 
   <section class="workspace-panel sim-section" aria-labelledby="comparisonTitle">
-    <div class="sim-heading-row"><div><span class="workspace-kicker">04 / COMPARAÇÃO</span><h2 id="comparisonTitle">Três caminhos, uma decisão</h2><p>Os volumes são hipóteses informadas por você, não projeções de demanda.</p></div></div>
+    <div class="sim-heading-row"><div><h2 id="comparisonTitle">Três caminhos, uma decisão</h2><p>Os volumes são hipóteses informadas por você, não projeções de demanda.</p></div></div>
     <div id="comparisonCards" class="sim-comparison-grid"></div>
   </section>
 
   <div class="sim-bottom-grid">
     <section class="workspace-panel sim-section" aria-labelledby="goalTitle">
-      <span class="workspace-kicker">05 / METAS</span><h2 id="goalTitle">Quanto preciso vender?</h2>
+      <h2 id="goalTitle">Quanto preciso vender?</h2>
       <p>Descubra o volume necessário para alcançar uma meta mensal.</p>
       <div class="workspace-fields sim-input-grid">
         <label for="goalType">Tipo de meta<select id="goalType"><option value="revenue">Faturamento</option><option value="profit">Resultado após custos</option></select></label>
@@ -172,14 +172,14 @@
 
   <div class="sim-bottom-grid">
     <section class="workspace-panel sim-section" aria-labelledby="historyTitle">
-      <div class="sim-heading-row"><div><span class="workspace-kicker">07 / HISTÓRICO</span><h2 id="historyTitle">Simulações salvas</h2></div></div>
+      <div class="sim-heading-row"><div><h2 id="historyTitle">Simulações salvas</h2></div></div>
       <label for="simulationName">Nome da simulação<input id="simulationName" maxlength="100" placeholder="Ex.: Preço para as festas"></label>
       <div class="sim-actions"><button type="button" class="workspace-primary" id="saveSimulation">Salvar simulação</button></div>
       <p class="sim-muted">Salvar não altera o cadastro original do produto.</p>
       <div id="historyList" class="sim-history-list" aria-live="polite"></div>
     </section>
     <section class="workspace-panel sim-section sim-assistant" aria-labelledby="aiTitle">
-      <span class="workspace-kicker">08 / ASSISTÊNCIA</span><h2 id="aiTitle">Converse com a Zuni</h2>
+      <h2 id="aiTitle">Converse com a Zuni</h2>
       <p>Converse com a Zuni sobre seus preços, custos e cenários. Cadastros e alterações exigem sua confirmação.</p>
       <div id="zuniSimulationChat" class="sim-zuni-chat" aria-label="Conversa com a Zuni"></div>
     </section>
