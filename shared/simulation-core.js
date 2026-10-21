@@ -19,9 +19,9 @@
     const units=Math.max(1,Math.round(Number(product.units)||100));
     const margin=Number(product.targetMargin??30);
     return [
-      {id:"conservador",label:"Conservador",price:money.round(money.multiply(p,0.93)),units:Math.max(1,Math.round(units*1.1)),margin,changePct:0,changeMode:"variable"},
+      {id:"conservador",label:"Conservador",price:money.round(money.multiply(p,0.93)),units,margin,changePct:0,changeMode:"variable"},
       {id:"equilibrado",label:"Equilibrado",price:p,units,margin,changePct:0,changeMode:"variable"},
-      {id:"premium",label:"Premium",price:money.round(money.multiply(p,1.12)),units:Math.max(1,Math.round(units*.8)),margin,changePct:0,changeMode:"variable"}
+      {id:"premium",label:"Premium",price:money.round(money.multiply(p,1.12)),units,margin,changePct:0,changeMode:"variable"}
     ];
   }
   function validate(scenario){
