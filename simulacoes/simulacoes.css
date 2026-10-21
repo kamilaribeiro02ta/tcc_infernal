@@ -680,7 +680,7 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
 /* Assistência: título próximo à descrição, com Zuni na tipografia da Teste IA. */
 .sim .sim-assistant #aiTitle{margin-bottom:8px}
 .sim .sim-assistant #aiTitle + p{margin-top:0}
-.sim .sim-assistant #aiTitle .sim-zuni-title{
+.sim .sim-assistant #aiTitle .sim-converse-title{
   font-family:"Times New Roman",Times,serif;
   font-style:italic;
   font-weight:900;
