@@ -12,10 +12,13 @@ test("tres cenarios independentes e imutabilidade do produto",()=>{
   const p=product(),cfg=settings(),pBefore=JSON.stringify(p),cBefore=JSON.stringify(cfg);
   const list=simulation.defaults(p);
   assert.deepEqual(list.map(x=>x.id),["conservador","equilibrado","premium"]);
+  assert.deepEqual(list.map(x=>x.units),[100,100,100],"Os cenários devem manter o volume cadastrado.");
   const outputs=list.map(s=>simulation.calculate(p,cfg,s));
   assert.equal(outputs.length,3);
   assert.ok(outputs[0].salePrice<outputs[1].salePrice);
   assert.ok(outputs[2].salePrice>outputs[1].salePrice);
+  assert.deepEqual(outputs.map(x=>x.units),[100,100,100]);
+  for(const output of outputs)assert.equal(output.revenue,output.salePrice*100);
   assert.equal(JSON.stringify(p),pBefore);
   assert.equal(JSON.stringify(cfg),cBefore);
 });
