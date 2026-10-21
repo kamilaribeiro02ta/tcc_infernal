@@ -44,6 +44,14 @@
     if(!response.ok)throw new Error(data.error||"Não foi possível acessar o histórico.");
     return data;
   }
+  const conversationSearch = document.getElementById("conversationSearch");
+  function filterConversations() {
+    const query = conversationSearch.value.trim().toLocaleLowerCase("pt-BR");
+    conversationList.querySelectorAll(".ia-conversation").forEach(item => {
+      item.hidden = !item.querySelector(".ia-conversation-open").textContent.toLocaleLowerCase("pt-BR").includes(query);
+    });
+  }
+  conversationSearch.addEventListener("input", filterConversations);
   async function refreshConversations() {
     try {
       const data=await api("conversations");
@@ -80,6 +88,7 @@
         item.append(open,del);
         conversationList.append(item);
       }
+      filterConversations();
     }catch(error){
       conversationList.replaceChildren();
       const notice=document.createElement("div");
