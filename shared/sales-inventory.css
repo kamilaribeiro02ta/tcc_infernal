@@ -121,3 +121,11 @@
  .zuz-sales__stock-overview>div strong{font-size:1rem}
  .zuz-sales__hint{font-size:.7rem!important}
 }
+
+/* Cards financeiros e de estoque com fundo branco no modo claro. */
+.zuz-sales__metric,
+.zuz-sales__stock-overview>div{background:#fff}
+@media(prefers-color-scheme:dark){
+ .zuz-sales__metric,
+ .zuz-sales__stock-overview>div{background:var(--bg-card,var(--surface,#1e1832))}
+}
