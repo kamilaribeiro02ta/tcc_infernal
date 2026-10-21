@@ -227,7 +227,7 @@
     const pending = bubble("assistant", "");
     pending.classList.add("ia-typing");
     pending.setAttribute("aria-label", "Aguardando resposta da IA");
-    for (let i = 0; i < 3; i++) pending.append(document.createElement("span"));
+    pending.textContent = "Preparando resposta...";
     status.textContent = "Consultando Gemini...";
     try {
       const response = await fetch("/api/ai/test", {

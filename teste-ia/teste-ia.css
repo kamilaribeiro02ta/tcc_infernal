@@ -325,9 +325,9 @@ body{background:var(--page-bg)}
 .clear{font-size:12px;min-height:44px;background:var(--ia-selected);color:var(--ia-accent);border-color:transparent}
 .messages{padding:28px max(24px,calc((100% - 820px)/2));gap:24px;scroll-behavior:auto}
 .bubble{max-width:min(92%,740px);font-size:14px;line-height:1.8;flex-shrink:0}
-.bubble.assistant{background:transparent;border:0;padding:4px 0;border-radius:0}
+.bubble.assistant{background:#eeeeF2;color:#17131f;border:1px solid rgba(20,16,28,.06);padding:16px 20px;border-radius:5px 18px 18px 18px}
 .bubble.assistant h3,.bubble.assistant h4{font-size:15px}
-.bubble.user{padding:14px 18px;max-width:82%;background:var(--ia-selected);color:var(--ia-text);border-radius:18px 18px 5px 18px}
+.bubble.user{padding:14px 18px;max-width:82%;background:#6a3df0;color:#fff;border-radius:18px 18px 5px 18px}
 .zuni-welcome{display:none;flex:1 1 0;min-height:0;overflow:auto;padding:32px 28px}
 .ia-chat-area.is-welcome .zuni-welcome{display:flex}
 .ia-chat-area.is-welcome .messages,.ia-chat-area.is-welcome .suggestions{display:none}
@@ -412,3 +412,12 @@ body.dark{--ia-bg:#0c0d19;--ia-surface:rgba(23,23,42,.82);--ia-soft:#202033;--ia
 @media(min-width:993px) and (max-width:1350px){.zuni-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ia-header-mascot{padding:44px 24px 20px;gap:16px}.ia-header-mascot .ia-mascot{width:100px;height:100px;flex-basis:100px}}
 @media(max-width:992px){.page.workspace-shell>.ia-main{padding:20px}.ia-panel.ia-panel-history{height:calc(100dvh - 180px);min-height:660px}.zuni-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ia-header-mascot{padding:44px 24px 20px}.ia-header-mascot .ia-mascot{width:90px;height:90px;flex-basis:90px}}
 @media(max-width:700px){.page.workspace-shell>.ia-main{padding:12px}.ia-panel.ia-panel-history{min-height:640px;height:calc(100dvh - 160px);gap:0;position:relative}.ia-chat-area{border-radius:22px}.ia-header-mascot{padding:60px 20px 20px;gap:14px}.ia-header-mascot .ia-mascot{width:76px;height:76px;flex-basis:76px}.ia-header h1{font-size:25px}.ia-header p{font-size:11px}.ia-hero-subtitle{font-size:12px}.ia-history{order:1;inset:0 0 0 auto;width:min(90%,320px);background:var(--ia-bg)}.ia-history-toggle{display:inline-flex}.zuni-welcome{padding:12px 16px 20px}.zuni-quick{min-height:96px;padding:12px}.composer{margin:8px 14px}.disclaimer{padding:0 18px 16px}.ia-chat-area:not(.is-welcome) .ia-header-mascot{padding:18px}.ia-chat-area:not(.is-welcome) .ia-mascot{width:48px;height:48px;flex-basis:48px}.ia-chat-area:not(.is-welcome) .ia-header h1{font-size:21px}}
+
+/* Cards de conversa com contraste próprio em cada tema. */
+body.dark .bubble.assistant { background:#29292f; color:#f3f1fa; border-color:rgba(255,255,255,.08); }
+.ia-mascot-dots { display:none; }
+.ia-mascot[data-state="thinking"] .ia-mascot-think { opacity:0; }
+.ia-mascot[data-state="thinking"] .ia-mascot-talk { opacity:1; transform:scale(1); }
+@media(max-width:600px) {
+  .bubble.assistant,.bubble.user { max-width:96%; padding:12px 14px; }
+}

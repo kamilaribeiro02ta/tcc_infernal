@@ -92,3 +92,43 @@ body.dark .zm-search-shell,html[data-theme="dark"] .zm-search-shell{--zm-purple:
 }
 @media(max-width:360px){.zm-search-shell .zm-facts,.zm-search-shell .zm-financial-facts{grid-template-columns:minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){.zm-search-shell *{transition:none!important}}
+
+/* A pesquisa acompanha a largura dos demais painéis da simulação. */
+.sim > .sim-market-access {
+  width: min(100%, 1180px);
+  max-width: 1180px;
+  min-width: 0;
+  margin: 0 auto 24px;
+}
+.zm-search-shell { container-type: inline-size; }
+.zm-search-shell .zm-heading,
+.zm-search-shell .zm-search-form,
+.zm-search-shell .zm-footer { min-width: 0; }
+.zm-search-shell .zm-title,
+.zm-search-shell .zm-subtitle { overflow-wrap: anywhere; }
+/* A largura do painel também importa quando há uma sidebar ao lado. */
+@container (max-width: 480px) {
+  .zm-search-shell .zm-search-controls { grid-template-columns: minmax(0, 1fr); }
+  .zm-search-shell .zm-search-submit { width: 100%; }
+  .zm-search-shell .zm-submit-label { display: inline; }
+  .zm-search-shell .zm-footer .zm-button { width: 100%; }
+  .zm-search-shell .zm-compare-grid,
+  .zm-search-shell .zm-simulation-fields { grid-template-columns: minmax(0, 1fr); }
+}
+@keyframes zuz-market-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* O bloco é criado via JS: a animação começa quando ele é montado. */
+.zm-search-shell {
+  animation: zuz-market-rise .65s cubic-bezier(.22,.61,.36,1) both;
+}
+.zm-search-shell .zm-offer-row,
+.zm-search-shell .zm-catalog-item {
+  animation: zuz-market-rise .4s cubic-bezier(.22,.61,.36,1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zm-search-shell,
+  .zm-search-shell .zm-offer-row,
+  .zm-search-shell .zm-catalog-item { animation: none; }
+}
