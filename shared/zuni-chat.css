@@ -118,3 +118,17 @@ body.dark .zuni-panel header .zuni-wordmark{filter:invert(1)}
 body.dark .zuni-top-details{background:#201c2a;border-color:#3a334b;color:#f3f1fa}
 body.dark .zuni-top-details[open]>summary{border-color:#3a334b}
 @media(max-width:600px){.zuni-top-details{margin:14px 0 20px}.zuni-top-chat{padding:0 10px 10px}.zuni-top-chat .zuni-inline .zuni-panel{height:320px;max-height:60dvh}}
+
+/* Acesso discreto a Zuni: compacto, com mascote e sem barra de largura total. */
+.zuni-top-details{width:min(100%,340px);max-width:100%;margin:16px 0 24px;border-radius:16px;overflow:visible;box-shadow:none;transition:border-color .2s ease,box-shadow .2s ease}
+.zuni-top-details>summary{justify-content:flex-start;gap:11px;min-height:64px;padding:10px 13px;font-size:13px}
+.zuni-top-details>summary .zuni-top-avatar{width:38px;height:38px;object-fit:contain;flex:none}
+.zuni-top-details>summary .zuni-top-label{display:flex;flex:1;min-width:0;flex-direction:column;gap:1px;color:inherit;font-size:13px;font-weight:600;line-height:1.4}
+.zuni-top-details>summary .zuni-top-label small{font-size:11px;color:#817c91;font-weight:400}
+.zuni-top-details>summary .zuni-top-chevron{font-size:20px;color:#8a8299;transition:transform .2s ease}
+.zuni-top-details[open] .zuni-top-chevron{transform:rotate(180deg)}
+.zuni-top-details:hover{border-color:#cbbdfb;box-shadow:0 5px 20px rgba(60,40,130,.05)}
+.zuni-top-details[open]{width:min(100%,440px)}
+.zuni-top-chat{padding:0 12px 12px}
+body.dark .zuni-top-details>summary .zuni-top-label small{color:#c7c2db}
+@media(max-width:600px){.zuni-top-details{width:min(100%,320px);margin:12px 0 20px}.zuni-top-details[open]{width:100%}}
