@@ -30,6 +30,29 @@
 
 <link rel="stylesheet" href="../shared/zuni-chat.css?v=20261021">
   <link rel="stylesheet" href="../shared/sales-inventory.css?v=20261021">
+  <style>
+    /* Card da pesquisa de mercado exclusivo da página Produtos. */
+    .products-market-card {
+      margin: 24px 0 32px;
+      padding: clamp(20px, 2.8vw, 32px);
+      background: var(--bg-card, var(--surface, #fff));
+      border: 1px solid var(--border, #eeeeee);
+      border-radius: 20px;
+      box-shadow: 0 12px 32px rgba(60, 40, 130, 0.07);
+      min-width: 0;
+    }
+    .products-market-card .zm-search-shell {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      min-width: 0;
+    }
+    @media (max-width: 600px) {
+      .products-market-card { padding: 18px 16px; border-radius: 16px; }
+    }
+  </style>
 </head>
 
 <body>
@@ -260,7 +283,9 @@
 
 
       <section class="zuz-sales" id="zuzSalesInventory" aria-label="Vendas realizadas e estoque"></section>
-      <div id="marketSearchMountProducts" aria-label="Pesquisa de preços de mercado"></div>
+      <section class="products-market-card" aria-label="Pesquisa de preços de mercado">
+        <div id="marketSearchMountProducts"></div>
+      </section>
 
       <!-- CATÁLOGO -->
       <section class="catalog-shell">
