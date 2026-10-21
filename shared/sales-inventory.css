@@ -222,3 +222,6 @@ body.dark .zuz-sales__records button{
  cursor:pointer;
 }
 body.dark .zuz-sales__records button:hover{background:#503b7b}
+
+/* Aba ativa: roxo oficial da identidade ZUZ no modo escuro. */
+body.dark .zuz-sales__tabs .zuz-sales__tab.is-active{background:#6a3df0;color:#fff;border:1px solid #8c6bff;box-shadow:0 3px 12px rgba(106,61,240,.22)}
