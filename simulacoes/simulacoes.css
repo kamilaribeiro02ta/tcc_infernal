@@ -730,3 +730,11 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
 @media(prefers-reduced-motion:reduce){
   .sim #simGuide{animation:none!important}
 }
+
+/* Guia, produto e pesquisa como um unico card, sem paineis aninhados. */
+.sim .sim-unified-card{width:min(100%,1180px);margin:0 auto 26px;padding:clamp(20px,3vw,30px);border:1px solid var(--sim-border);border-radius:20px;background:var(--sim-panel);min-width:0}
+.sim .sim-unified-card > .sim-guide{margin:0;padding:0 0 20px;border:0;border-bottom:1px solid var(--sim-border);border-radius:0;background:transparent}
+.sim .sim-unified-card > .sim-product-bar{margin:0;padding:22px 0;border:0;border-bottom:1px solid var(--sim-border);border-radius:0;background:transparent;box-shadow:none}
+.sim .sim-unified-card > .sim-market-access{width:100%;max-width:none;margin:0;padding:0;min-width:0}
+.sim .sim-unified-card #marketSearchMount .zm-search-shell{border:0;border-radius:0;background:transparent;padding:22px 0 0}
+@media(max-width:600px){.sim .sim-unified-card{padding:20px 16px;border-radius:16px}.sim .sim-unified-card > .sim-product-bar{padding:20px 0}.sim .sim-unified-card #marketSearchMount .zm-search-shell{padding:20px 0 0}}
