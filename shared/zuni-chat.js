@@ -3,7 +3,7 @@
   const root=document.createElement("div");root.className="zuni-mini";
   root.innerHTML=`<button type="button" class="zuni-launch" aria-expanded="false" aria-controls="zuni-mini-panel">Falar com a Zuni</button>
   <section id="zuni-mini-panel" class="zuni-panel" role="dialog" aria-label="Chat da Zuni" hidden>
-  <header><img src="/teste-ia/assets/mascot-talking.webp" width="40" height="40" alt=""><div><strong>Zuni</strong><small>Assistente da ZUZ</small></div><button type="button" class="zuni-close" aria-label="Fechar chat">×</button></header>
+  <header><img src="/teste-ia/assets/mascot-talking.webp" width="40" height="40" alt=""><div><img class="zuni-wordmark" src="/teste-ia/assets/zuni-wordmark.svg" alt="Zuni" width="105" height="42"><small>Assistente da ZUZ</small></div><button type="button" class="zuni-close" aria-label="Fechar chat">×</button></header>
   <div class="zuni-messages" role="log" aria-live="polite" aria-relevant="additions text"></div>
   <p class="zuni-status" role="status"></p><form class="zuni-form"><textarea rows="2" maxlength="3000" aria-label="Mensagem para a Zuni" placeholder="Escreva sua dúvida…" required></textarea><button type="submit">Enviar</button></form></section>`;
   const simulationHost=document.getElementById("zuniSimulationChat");
