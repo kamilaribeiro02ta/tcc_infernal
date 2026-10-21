@@ -421,3 +421,17 @@ body.dark .bubble.assistant { background:#29292f; color:#f3f1fa; border-color:rg
 @media(max-width:600px) {
   .bubble.assistant,.bubble.user { max-width:96%; padding:12px 14px; }
 }
+
+/* Tipografia do nome e separação do estado da conversa. */
+.ia-header h1 > span {
+  font-family: "Times New Roman", Times, serif;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: -.025em;
+}
+.ia-intro > .ia-mascot-label {
+  display: block;
+  width: fit-content;
+  margin-top: 12px;
+  line-height: 1.5;
+}
