@@ -62,3 +62,21 @@ test("Zuni: ferramentas, confirmação persistente, isolamento e idempotência",
  await a.get("/api/company").expect(r=>assert.equal(r.body.products.length,2));
  await a.get("/api/pricing/history?productId="+saved.body.productId).expect(r=>assert.ok(r.body.history.length));
 });
+
+test("Zuni: cadastra custo unitário agregado sem inventar ingredientes",async()=>{
+ const agent=request.agent(app);
+ await agent.post("/api/auth/signup").send({name:"Teste Custo Agregado",email:"agregado@zuni.test",password:"SenhaTeste123!"}).expect(201);
+ await agent.put("/api/company").send({name:"Brigadeiros",operationType:"producao"}).expect(200);
+ nextCall={name:"create_product",args:{name:"Brigadeiro",category:"Confeitaria",costs:[{name:"Custo agregado por unidade (R$ 30 / 50)",value:0.6}],salePrice:1.2,targetMargin:50,units:50}};
+ const proposed=await agent.post("/api/ai/test").send({message:"Cadastre meu brigadeiro com os valores que aprovei"}).expect(200);
+ assert.equal(proposed.body.actions.length,1);
+ const action=proposed.body.actions[0];
+ assert.equal(action.product.costs.length,1);
+ await agent.get("/api/company").expect(r=>assert.equal(r.body.products.length,0));
+ await agent.post("/api/ai/actions/"+action.id).send({decision:"confirm"}).expect(200);
+ await agent.get("/api/company").expect(r=>{
+   assert.equal(r.body.products.length,1);
+   assert.equal(r.body.products[0].additionalCosts.length,1);
+   assert.equal(r.body.products[0].additionalCosts[0].value,0.6);
+ });
+});
