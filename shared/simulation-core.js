@@ -42,7 +42,13 @@
     const direct=money.multiply(directCost(product),s.changeMode==="variable"?multiplier:1);
     if(s.changeMode==="fixed")copied.fixedCosts=copied.fixedCosts.map(c=>({...c,value:money.multiply(c.value,multiplier)}));
     const output=pricing.calculate({unitDirectCost:direct,salePrice:s.price,targetMargin:s.margin,units:s.units,settings:copied,productId:String(product?.id??""),productName:String(product?.name??""),category:String(product?.category??"")});
-    return {...output,scenario:s,appliedSettings:copied,variableCost:direct,variableContribution:output.contributionMargin};
+    // Unidades vendidas necessárias para recuperar o custo de produzir TODO o lote planejado,
+    // mais custos fixos, descontando tributos/taxas incidentes em cada unidade vendida.
+    // Diferente do ponto de equilíbrio operacional, que considera apenas unidades vendidas.
+    const batchCost=new money.Decimal(output.directCost).times(s.units).plus(output.fixedTotal);
+    const netSalePerUnit=new money.Decimal(output.salePrice).times(new money.Decimal(1).minus(new money.Decimal(output.variableRatePct).div(100)));
+    const batchRecoveryUnits=netSalePerUnit.gt(0)?batchCost.div(netSalePerUnit).ceil().toNumber():null;
+    return {...output,scenario:s,appliedSettings:copied,variableCost:direct,variableContribution:output.contributionMargin,batchRecoveryUnits};
   }
   function goal(result,target,kind){
     const amount=finite(numeric(target,NaN),"Meta",0,1000000000);
