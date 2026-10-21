@@ -2080,6 +2080,7 @@
       await saveProducts();
       closeModal(els.modalProduct);
       renderAll();
+      window.dispatchEvent(new CustomEvent("zuz:products:updated"));
       showToast("Produto cadastrado com sucesso.");
     } catch (error) {
       products = previousProducts;
