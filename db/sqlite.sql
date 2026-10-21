@@ -130,3 +130,23 @@ CREATE TABLE IF NOT EXISTS zuz_market_cache (
  payload TEXT NOT NULL,
  fetched_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Registros reais de estoque e vendas por empresa.
+CREATE TABLE IF NOT EXISTS zuz_inventory (
+ company_id TEXT NOT NULL REFERENCES zuz_companies(id) ON DELETE CASCADE,
+ product_id TEXT NOT NULL REFERENCES zuz_products(id) ON DELETE CASCADE,
+ quantity INTEGER NOT NULL DEFAULT 0 CHECK(quantity>=0),
+ updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY(company_id,product_id)
+);
+CREATE TABLE IF NOT EXISTS zuz_sales (
+ id TEXT PRIMARY KEY,
+ company_id TEXT NOT NULL REFERENCES zuz_companies(id) ON DELETE CASCADE,
+ product_id TEXT NOT NULL REFERENCES zuz_products(id) ON DELETE RESTRICT,
+ quantity INTEGER NOT NULL CHECK(quantity>0),
+ unit_price REAL NOT NULL CHECK(unit_price>0),
+ unit_cost REAL NOT NULL CHECK(unit_cost>=0),
+ sold_at TEXT NOT NULL,
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_zuz_sales_company_date ON zuz_sales(company_id,sold_at DESC);
