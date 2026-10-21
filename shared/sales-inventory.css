@@ -60,3 +60,14 @@
 @media(max-width:800px){.zuz-sales__records{grid-template-columns:1fr}}
 @media(max-width:600px){.zuz-sales__fields{grid-template-columns:1fr}.zuz-sales__fields label:first-child,.zuz-sales__fields label:has(input[name="soldAt"]){grid-column:auto}.zuz-sales__form-footer{align-items:stretch;flex-direction:column}.zuz-sales__form-footer button[type="submit"]{width:100%}.zuz-sales__form-footer .zuz-sales__feedback{flex:auto}.zuz-sales__tabs .zuz-sales__tab{font-size:.77rem}}
 @media(prefers-reduced-motion:reduce){.zuz-sales__tabs .zuz-sales__tab{transition:none}}
+
+/* Resumo do estoque e histórico detalhado */
+.zuz-sales__stock-overview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 22px}
+.zuz-sales__stock-overview>div{border:1px solid var(--border,#eee);border-radius:14px;padding:16px;background:var(--bg-card,var(--surface,#fff));transition:box-shadow .2s ease,transform .2s ease}
+.zuz-sales__stock-overview>div:hover{box-shadow:0 8px 22px rgba(60,40,130,.08);transform:translateY(-2px)}
+.zuz-sales__stock-overview span{display:block;color:var(--text-secondary,#777);font-size:.77rem;line-height:1.5}
+.zuz-sales__stock-overview strong{display:block;font-size:1.35rem;margin-top:5px}
+.zuz-sales__records .zuz-sales__table{overflow-x:auto}
+.zuz-sales__records table{min-width:390px}
+@media(max-width:520px){.zuz-sales__stock-overview{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.zuz-sales__stock-overview>div{transition:none;transform:none!important}}
