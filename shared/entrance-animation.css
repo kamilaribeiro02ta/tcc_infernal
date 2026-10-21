@@ -34,3 +34,33 @@
 
 /* Entrada sequencial do painel Produtos cadastrados em Análises. */
 .page-rise > .products-panel { animation-delay: .34s; }
+
+/* Entrada padrão para páginas do aplicativo ainda não cobertas. */
+.page-rise > .workspace-heading,
+.page-rise > .workspace-panel,
+.page-rise > .sim-guide,
+.page-rise > .sim-market-secondary,
+.page-rise > .profile-intro,
+.page-rise > .account-section,
+.page-rise > .team-card,
+.page-rise > .business-hub,
+.page-rise > .business-section,
+.page-rise > .auth-form-side,
+.page-rise > .auth-visual,
+.page-rise > .onboard-topbar,
+.page-rise > .onboard-workspace,
+.page-rise > .zuz-sales,
+.page-rise > .products-market-card {
+  animation: zuz-page-rise .72s cubic-bezier(.22,.61,.36,1) both;
+}
+.page-rise > :is(.workspace-heading,.profile-intro,.auth-form-side,.onboard-topbar) { animation-delay: 0s; }
+.page-rise > :is(.workspace-panel,.sim-guide,.account-section,.auth-visual,.onboard-workspace,.zuz-sales) { animation-delay: .12s; }
+.page-rise > :is(.sim-market-secondary,.team-card,.business-hub,.business-section,.products-market-card) { animation-delay: .23s; }
+.page-rise > .workspace-panel:nth-of-type(n+3) { animation-delay: .28s; }
+/* Páginas institucionais mantêm a animação de revelação ao rolar. */
+.page-rise > :is(.hero-shell,.about-hero) {
+  animation: zuz-page-rise .72s cubic-bezier(.22,.61,.36,1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+ .page-rise > :is(.workspace-heading,.workspace-panel,.sim-guide,.sim-market-secondary,.profile-intro,.account-section,.team-card,.business-hub,.business-section,.auth-form-side,.auth-visual,.onboard-topbar,.onboard-workspace,.zuz-sales,.products-market-card,.hero-shell,.about-hero) { animation: none !important; }
+}
