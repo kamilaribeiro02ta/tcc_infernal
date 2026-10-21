@@ -1038,6 +1038,7 @@
     const message = editingId ? "Produto atualizado." : "Produto cadastrado.";
     closeModal();
     renderAll();
+    window.dispatchEvent(new CustomEvent("zuz:products:updated"));
     showToast(message);
   }
 
