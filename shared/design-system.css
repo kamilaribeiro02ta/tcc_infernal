@@ -297,3 +297,29 @@ textarea[aria-invalid="true"] {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Cor única dos botões de ação roxos em todo o ZUZ. */
+:root,body.dark{
+  --purple:#6a3df0;
+  --primary:#6a3df0;
+  --brand-primary:#6a3df0;
+  --sim-accent:#6a3df0;
+  --accent-purple:#6a3df0;
+}
+.ui-button-primary,
+button.btn-primary,
+a.btn-primary,
+button.primary-button,
+a.primary-button,
+button.button-primary,
+a.button-primary,
+button.btn-purple,
+a.btn-purple,
+.zuz-sales__form button[type="submit"],
+body.dark .zuz-sales__form button[type="submit"]:not(:disabled),
+body.dark .zuz-sales__tabs .zuz-sales__tab.is-active,
+.zuni-launch,
+.zuni-form button{
+  background:#6a3df0;
+  background-color:#6a3df0;
+}
