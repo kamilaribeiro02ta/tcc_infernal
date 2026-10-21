@@ -3352,3 +3352,28 @@ body.dark .team-planner .planner-calendar-grid .planner-day {
   .team-planner .planner-weekdays,
   .team-planner .planner-calendar-grid { min-width: 700px; }
 }
+
+/* Agenda: vendas reais e anotações vinculadas ao negócio. */
+.zuz-calendar-extra{margin:18px 0 8px;padding:22px;border:1px solid var(--border,#e9e6ef);border-radius:20px;background:var(--surface,#fff);color:var(--text-primary,#17131f)}
+.zuz-calendar-extra-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.zuz-calendar-extra h3,.zuz-calendar-extra h4{margin:0 0 8px;font-weight:700}
+.zuz-calendar-extra p{font-size:.85rem;color:var(--text-secondary,#686171);line-height:1.6;margin:5px 0 12px}
+.zuz-calendar-extra button{border:1px solid var(--border,#e9e6ef);border-radius:10px;padding:9px 13px;background:var(--surface-soft,#f3f0fa);color:inherit;font:600 .8rem Poppins,sans-serif;cursor:pointer}
+.zuz-calendar-extra-head>button,.zuz-cal-actions button[type=submit]{background:#6a3df0;color:#fff;border-color:#6a3df0}
+.zuz-calendar-extra button:hover{filter:brightness(.94)}
+.zuz-calendar-extra button:disabled{opacity:.55;cursor:wait}
+.zuz-calendar-extra ul{padding-left:20px;margin:8px 0 20px;font-size:.85rem;line-height:1.9}
+.zuz-calendar-extra li{margin-bottom:7px}
+.zuz-calendar-extra li button{margin:2px 3px;padding:5px 9px}
+.zuz-cal-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.zuz-cal-fields label{display:flex;flex-direction:column;gap:5px;font-size:.82rem;font-weight:600}
+.zuz-cal-fields .zuz-cal-wide{grid-column:1/-1}
+.zuz-cal-fields :is(input,select,textarea){width:100%;min-width:0;padding:10px;border-radius:10px;border:1px solid var(--border,#ddd);background:var(--surface,#fff);color:inherit;font:inherit}
+.zuz-cal-actions{display:flex;gap:10px}
+.zuz-cal-day-badge{display:block;margin-top:4px;border-radius:6px;padding:3px 5px;background:rgba(106,61,240,.13);color:var(--purple,#6a3df0);font-size:.64rem;font-weight:700;overflow-wrap:anywhere}
+body.dark .zuz-calendar-extra{background:#1e1832;border-color:#453a60;color:#f3f1fa}
+body.dark .zuz-calendar-extra p{color:#c7c2db}
+body.dark .zuz-cal-fields :is(input,select,textarea){background:#251d39;border-color:#453a60;color:#f3f1fa;color-scheme:dark}
+body.dark .zuz-calendar-extra button:not(.zuz-calendar-extra-head>button):not([type=submit]){background:#392b59;border-color:#453a60;color:#f3f1fa}
+body.dark .zuz-cal-day-badge{background:rgba(167,139,250,.2);color:#c6b6ff}
+@media(max-width:600px){.zuz-calendar-extra{padding:15px}.zuz-cal-fields{grid-template-columns:1fr}}
