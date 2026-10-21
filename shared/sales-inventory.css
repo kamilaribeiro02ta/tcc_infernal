@@ -134,3 +134,91 @@
 .zuz-sales__head h2{font-size:clamp(2rem,3.5vw,3.25rem);line-height:1.12;letter-spacing:-.045em;font-weight:700;margin:0 0 12px}
 .zuz-sales__title-serif{display:inline-block;margin-left:.015em;font-family:"Times New Roman",Times,serif;font-size:1.28em;font-style:italic;font-weight:700;line-height:.80;letter-spacing:-.075em;vertical-align:-.015em}
 @media(max-width:520px){.zuz-sales__head h2{font-size:clamp(1.85rem,7vw,2.5rem)}}
+
+/* Tema escuro: contraste acessível para abas, campos, avisos e histórico. */
+body.dark .zuz-sales{
+ --sales-accent:#a78bfa;
+ --sales-bg:#1e1832;
+ --sales-field:#251d39;
+ --sales-border:#453a60;
+ --sales-text:#f3f1fa;
+ --sales-muted:#c7c2db;
+ color:var(--sales-text);
+}
+body.dark .zuz-sales__workspace,
+body.dark .zuz-sales__records .zuz-sales__table{
+ background:var(--sales-bg);
+ border-color:var(--sales-border);
+ color:var(--sales-text);
+}
+body.dark .zuz-sales__tabs{
+ background:#251d39;
+ border-bottom-color:var(--sales-border);
+}
+body.dark .zuz-sales__tabs .zuz-sales__tab{
+ color:var(--sales-muted);
+ background:transparent;
+}
+body.dark .zuz-sales__tabs .zuz-sales__tab.is-active{
+ color:#f3f1fa;
+ background:#5c3bb8;
+ box-shadow:0 3px 12px rgba(0,0,0,.18);
+}
+body.dark .zuz-sales__tabs .zuz-sales__tab:not(.is-active):hover{
+ color:#fff;
+ background:#392b59;
+}
+body.dark .zuz-sales__form h3,
+body.dark .zuz-sales__form label,
+body.dark .zuz-sales__records h3{color:var(--sales-text)}
+body.dark .zuz-sales__form p,
+body.dark .zuz-sales__head p,
+body.dark .zuz-sales__empty,
+body.dark .zuz-sales__hint{color:var(--sales-muted)}
+body.dark .zuz-sales__fields input,
+body.dark .zuz-sales__fields select{
+ background:var(--sales-field);
+ color:var(--sales-text);
+ border-color:var(--sales-border);
+ color-scheme:dark;
+}
+body.dark .zuz-sales__fields :is(input,select)::placeholder{color:#b0aac9;opacity:1}
+body.dark .zuz-sales__fields :is(input,select):focus-visible{
+ border-color:#a78bfa;
+ box-shadow:0 0 0 3px rgba(167,139,250,.2);
+}
+body.dark .zuz-sales__operation-summary{
+ background:#251d39;
+ color:var(--sales-muted);
+ border-color:var(--sales-border);
+}
+body.dark .zuz-sales__operation-summary.is-warning{
+ background:#3a2b22;
+ border-color:#c58a4e;
+ color:#ffe1bd;
+}
+body.dark .zuz-sales__form button[type="submit"]{
+ background:#7551e6;
+ color:#fff;
+}
+body.dark .zuz-sales__form button[type="submit"]:not(:disabled):hover{background:#8c6bff}
+body.dark .zuz-sales__form button[type="submit"]:disabled{
+ background:#45365e;
+ color:#d3cce5;
+ opacity:1;
+}
+body.dark .zuz-sales__feedback[data-state="error"]{color:#ffaaa5}
+body.dark .zuz-sales__feedback[data-state="success"]{color:#8be0b3}
+body.dark .zuz-sales__records .zuz-sales__table :is(th,td){border-bottom-color:var(--sales-border)}
+body.dark .zuz-sales__records .zuz-sales__table th{color:var(--sales-muted)}
+body.dark .zuz-sales__records .zuz-sales__table tbody tr:hover{background:rgba(167,139,250,.1)}
+body.dark .zuz-sales__records button{
+ background:#392b59;
+ border:1px solid var(--sales-border);
+ border-radius:9px;
+ color:var(--sales-text);
+ padding:8px 12px;
+ font:600 .78rem Poppins,sans-serif;
+ cursor:pointer;
+}
+body.dark .zuz-sales__records button:hover{background:#503b7b}
