@@ -1080,6 +1080,7 @@
     catch(error){products=previous;showToast(error.message);return;}
     closeDeleteConfirm();
     renderAll();
+    window.dispatchEvent(new CustomEvent("zuz:products:updated"));
 
     if (product) {
       showToast("Produto excluído: " + product.name);
