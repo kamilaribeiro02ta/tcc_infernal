@@ -698,3 +698,15 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
   font-weight:700!important;
   letter-spacing:-.045em!important;
 }
+
+/* Hover padrao do seletor de produto na barra inicial. */
+.sim .sim-product-bar #product:not(:disabled){
+  transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease;
+}
+.sim .sim-product-bar #product:not(:disabled):hover{
+  border-color:var(--sim-accent)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--sim-accent) 10%,transparent);
+}
+.sim .sim-product-bar #product:disabled:hover{
+  box-shadow:none;
+}
