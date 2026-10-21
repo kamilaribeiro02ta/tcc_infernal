@@ -132,3 +132,27 @@ body.dark .zuni-top-details[open]>summary{border-color:#3a334b}
 .zuni-top-chat{padding:0 12px 12px}
 body.dark .zuni-top-details>summary .zuni-top-label small{color:#c7c2db}
 @media(max-width:600px){.zuni-top-details{width:min(100%,320px);margin:12px 0 20px}.zuni-top-details[open]{width:100%}}
+
+/* Posicionamento UX: assistente secundario no canto direito, sem competir com titulo e CTA principal. */
+.products-page > .zuni-top-details,
+.dashboard > .zuni-top-details{
+  margin:0 0 20px auto;
+  width:min(100%,288px);
+  border-radius:14px;
+}
+.products-page > .zuni-top-details > summary,
+.dashboard > .zuni-top-details > summary{
+  min-height:56px;
+  padding:8px 12px;
+  gap:10px;
+}
+.products-page > .zuni-top-details .zuni-top-avatar,
+.dashboard > .zuni-top-details .zuni-top-avatar{width:34px;height:34px}
+.products-page > .zuni-top-details[open],
+.dashboard > .zuni-top-details[open]{width:min(100%,410px)}
+@media(max-width:650px){
+  .products-page > .zuni-top-details,
+  .dashboard > .zuni-top-details{width:min(100%,288px);margin:4px 0 18px auto}
+  .products-page > .zuni-top-details[open],
+  .dashboard > .zuni-top-details[open]{width:100%}
+}
