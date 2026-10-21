@@ -416,8 +416,8 @@ body.dark{--ia-bg:#0c0d19;--ia-surface:rgba(23,23,42,.82);--ia-soft:#202033;--ia
 /* Cards de conversa com contraste próprio em cada tema. */
 body.dark .bubble.assistant { background:#29292f; color:#f3f1fa; border-color:rgba(255,255,255,.08); }
 .ia-mascot-dots { display:none; }
-.ia-mascot[data-state="thinking"] .ia-mascot-think { opacity:0; }
-.ia-mascot[data-state="thinking"] .ia-mascot-talk { opacity:1; transform:scale(1); }
+.ia-mascot[data-state="thinking"] .ia-mascot-think { opacity:1; transform:scale(1); }
+.ia-mascot[data-state="thinking"] .ia-mascot-talk { opacity:0; }
 @media(max-width:600px) {
   .bubble.assistant,.bubble.user { max-width:96%; padding:12px 14px; }
 }
