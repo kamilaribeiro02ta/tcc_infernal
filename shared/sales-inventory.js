@@ -8,7 +8,7 @@
  let products=[],inventory=[],sales=[],busy=false,loaded=false,failed=false;
  root.innerHTML=`
  <div class="zuz-sales__head"><div><span class="zuz-sales__eyebrow">GESTÃO DE PRODUTOS</span><h2>Vendas e estoque</h2><p>Registre suas vendas e acompanhe as unidades disponíveis.</p></div></div>
- <div class="zuz-sales__grid" id="zuzSalesMetrics"></div>
+ <div class="zuz-sales__grid" id="zuzSalesMetrics"></div><div class="zuz-sales__stock-overview" id="zuzStockOverview"></div>
  <div class="zuz-sales__workspace">
    <div class="zuz-sales__tabs" role="tablist" aria-label="Operação">
      <button type="button" class="zuz-sales__tab is-active" id="zuzTabSale" role="tab" aria-selected="true" aria-controls="zuzSaleForm">Registrar venda</button>
@@ -54,7 +54,7 @@
   const saleBalance=balances.get(saleId);
   const quantity=Number(saleForm.elements.quantity.value);
   const unitPrice=Number(saleForm.elements.unitPrice.value);
-  const saleText=!saleId?"Selecione um produto para consultar o saldo disponível.":saleBalance===undefined?"Estoque ainda não informado para este produto.":"Disponível: "+saleBalance+" unidade(s)"+(quantity>0&&Number.isInteger(quantity)?" · Saldo após venda: "+(saleBalance-quantity)+" unidade(s)":"")+(quantity>0&&unitPrice>0?" · Total: "+currency(quantity*unitPrice):"");
+  const saleText=!saleId?"Selecione um produto para consultar o saldo disponível.":saleBalance===undefined?"Estoque ainda não informado para este produto.":"Disponível: "+saleBalance+" unidade(s)"+(quantity>0&&Number.isInteger(quantity)?" · Saldo após venda: "+(saleBalance-quantity)+" unidade(s)"+(quantity>saleBalance?" — estoque insuficiente":""):"")+(quantity>0&&unitPrice>0?" · Total: "+currency(quantity*unitPrice):"");
   root.querySelector("#zuzSaleSummary").textContent=saleText;
   root.querySelector("#zuzStockSummary").textContent=!stockId?"Selecione um produto para consultar o estoque atual.":"Estoque atual: "+(balances.get(stockId)??"não informado")+" unidade(s). O novo valor substituirá o atual.";
  }
@@ -73,13 +73,15 @@
    form.querySelector("button[type=submit]").disabled=busy||!products.length||!loaded||failed;
   }
   const projections=products.reduce((a,p)=>{if(!window.ZUZPricing?.calculate)return a;let v;try{v=window.ZUZPricing.calculate({unitDirectCost:(Number(p.baseCost)||0)+(Array.isArray(p.additionalCosts)?p.additionalCosts.reduce((s,x)=>s+(Number(x.value)||0),0):0),salePrice:Number(p.salePrice)||0,targetMargin:Number(p.targetMargin??30),units:Number(p.units)||0,category:p.category,productId:p.id,productName:p.name});}catch{return a;}a.revenue+=Number(v.revenue)||0;a.profit+=Number(v.profit)||0;return a;},{revenue:0,profit:0});
+  const totalStock=Array.from(balances.values()).reduce((sum,q)=>sum+q,0);
+  root.querySelector("#zuzStockOverview").innerHTML='<div><span>Em estoque</span><strong>'+totalStock.toLocaleString("pt-BR")+'</strong></div><div><span>Unidades vendidas (histórico consultado)</span><strong>'+sales.reduce((sum,s)=>sum+Number(s.quantity||0),0).toLocaleString("pt-BR")+'</strong></div>';
   const actual=sales.reduce((a,s)=>{const q=Number(s.quantity)||0,price=Number(s.unit_price)||0,cost=Number(s.unit_cost)||0;a.revenue+=q*price;a.profit+=q*(price-cost);a.units+=q;return a;},{revenue:0,profit:0,units:0});
   metrics.innerHTML=[["Faturamento previsto",currency(projections.revenue)],["Lucro previsto*",currency(projections.profit)],["Faturamento realizado",currency(actual.revenue)],["Lucro realizado*",currency(actual.profit)]].map(([label,value])=>'<article class="zuz-sales__metric"><span>'+label+'</span><strong>'+value+'</strong></article>').join("");
   let hint=root.querySelector("#zuzProfitHint");if(!hint){hint=document.createElement("p");hint.id="zuzProfitHint";hint.className="zuz-sales__hint";metrics.after(hint);}hint.textContent="*Valores estimados com base nos custos, taxas e configurações informados. O lucro realizado é calculado pelas vendas registradas, sem representar lucro contábil fechado. O histórico exibido contém até 500 vendas.";
   updateSummary();
-  const list=products.map(p=>'<tr><td>'+esc(p.name)+'</td><td>'+String(balances.get(String(p.id))??0)+'</td></tr>').join("");
+  const list=products.map(p=>'<tr><td>'+esc(p.name)+'</td><td>'+(balances.has(String(p.id))?String(balances.get(String(p.id))):"Não informado")+'</td></tr>').join("");
   root.querySelector("#zuzStockTable").innerHTML=failed?'<div class="zuz-sales__empty-state"><span>Não foi possível carregar o estoque.</span><button type="button" data-retry-sales>Tentar novamente</button></div>':!loaded?'<p class="zuz-sales__empty">Carregando estoque...</p>':products.length?'<table><thead><tr><th>Produto</th><th>Disponível</th></tr></thead><tbody>'+list+'</tbody></table>':'<p class="zuz-sales__empty">Cadastre um produto para começar.</p>';
-  root.querySelector("#zuzSalesTable").innerHTML=failed?'<div class="zuz-sales__empty-state"><span>Não foi possível carregar as vendas.</span><button type="button" data-retry-sales>Tentar novamente</button></div>':!loaded?'<p class="zuz-sales__empty">Carregando vendas...</p>':sales.length?'<table><thead><tr><th>Data</th><th>Produto</th><th>Qtd.</th><th>Total</th></tr></thead><tbody>'+sales.slice(0,15).map(s=>'<tr><td>'+esc(String(s.sold_at).slice(0,10).split("-").reverse().join("/"))+'</td><td>'+esc(byId.get(String(s.product_id))?.name||"Produto")+'</td><td>'+esc(s.quantity)+'</td><td>'+currency(Number(s.quantity)*Number(s.unit_price))+'</td></tr>').join("")+'</tbody></table>':'<p class="zuz-sales__empty">Nenhuma venda real registrada.</p>';
+  root.querySelector("#zuzSalesTable").innerHTML=failed?'<div class="zuz-sales__empty-state"><span>Não foi possível carregar as vendas.</span><button type="button" data-retry-sales>Tentar novamente</button></div>':!loaded?'<p class="zuz-sales__empty">Carregando vendas...</p>':sales.length?'<table><thead><tr><th>Data</th><th>Produto</th><th>Qtd.</th><th>Preço un.</th><th>Total</th><th>Lucro estimado</th></tr></thead><tbody>'+sales.slice(0,15).map(s=>'<tr><td>'+esc(String(s.sold_at).slice(0,10).split("-").reverse().join("/"))+'</td><td>'+esc(byId.get(String(s.product_id))?.name||"Produto")+'</td><td>'+esc(s.quantity)+'</td><td>'+currency(s.unit_price)+'</td><td>'+currency(Number(s.quantity)*Number(s.unit_price))+'</td><td>'+currency(Number(s.quantity)*(Number(s.unit_price)-Number(s.unit_cost)))+'</td></tr>').join("")+'</tbody></table>':'<p class="zuz-sales__empty">Nenhuma venda real registrada.</p>';
  }
  async function load(){
   try{
@@ -99,7 +101,7 @@
  }
  stockForm.addEventListener("submit",e=>{e.preventDefault();const productId=stockForm.elements.productId.value;const quantity=Number(stockForm.elements.quantity.value);if(!productId||!Number.isSafeInteger(quantity)||quantity<0)return feedback(stockForm,"Informe produto e quantidade válida.");submit(stockForm,"PUT","/company/inventory/"+encodeURIComponent(productId),{quantity},"Estoque atualizado.");});
  saleForm.elements.productId.addEventListener("change",()=>{const p=products.find(x=>String(x.id)===saleForm.elements.productId.value);if(p)saleForm.elements.unitPrice.value=Number(p.salePrice||0).toFixed(2);});
- saleForm.addEventListener("submit",e=>{e.preventDefault();const productId=saleForm.elements.productId.value,quantity=Number(saleForm.elements.quantity.value),unitPrice=Number(saleForm.elements.unitPrice.value),soldAt=saleForm.elements.soldAt.value;if(!productId||!Number.isSafeInteger(quantity)||quantity<1||!Number.isFinite(unitPrice)||unitPrice<=0||!soldAt)return feedback(saleForm,"Informe os dados válidos da venda.");submit(saleForm,"POST","/company/sales",{productId,quantity,unitPrice,soldAt},"Venda registrada e estoque atualizado.");});
+ saleForm.addEventListener("submit",e=>{e.preventDefault();const productId=saleForm.elements.productId.value,quantity=Number(saleForm.elements.quantity.value),unitPrice=Number(saleForm.elements.unitPrice.value),soldAt=saleForm.elements.soldAt.value;if(!productId||!Number.isSafeInteger(quantity)||quantity<1||!Number.isFinite(unitPrice)||unitPrice<=0||!soldAt)return feedback(saleForm,"Informe os dados válidos da venda.");(snapshot().get(productId)===undefined?feedback(saleForm,"Cadastre o estoque antes de registrar a venda."):quantity>snapshot().get(productId)?feedback(saleForm,"Estoque insuficiente para esta venda."):submit(saleForm,"POST","/company/sales",{productId,quantity,unitPrice,soldAt},"Venda registrada e estoque atualizado."));});
  window.addEventListener("zuz:products:updated",load);
  load();
 })();
