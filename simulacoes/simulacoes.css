@@ -677,12 +677,17 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
   .sim .sim-guide-inline-trigger {padding:7px 10px;}
 }
 
-/* Assistência: título próximo à descrição, com Zuni na tipografia da Teste IA. */
-.sim .sim-assistant #aiTitle{margin-bottom:8px}
-.sim .sim-assistant #aiTitle + p{margin-top:0}
+/* Assistência: somente "Converse" em Times New Roman itálico; restante em Poppins. */
+.sim .sim-assistant #aiTitle{
+  margin:0 0 4px!important;
+  font-family:Poppins,sans-serif;
+  font-style:normal;
+}
+.sim .sim-assistant #aiTitle + p{margin:0 0 12px!important}
 .sim .sim-assistant #aiTitle .sim-converse-title{
-  font-family:"Times New Roman",Times,serif;
-  font-style:italic;
+  display:inline;
+  font-family:"Times New Roman",Times,serif!important;
+  font-style:italic!important;
   font-weight:900;
   letter-spacing:-.065em;
 }
