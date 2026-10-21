@@ -1958,6 +1958,7 @@
     try {
       await saveProducts();
       renderAll();
+      window.dispatchEvent(new CustomEvent("zuz:products:updated"));
       showToast("Produto removido: " + product.name);
     } catch (error) {
       products = previous;
