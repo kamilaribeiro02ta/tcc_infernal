@@ -129,3 +129,8 @@
  .zuz-sales__metric,
  .zuz-sales__stock-overview>div{background:var(--bg-card,var(--surface,#1e1832))}
 }
+
+/* Título principal de vendas e estoque, com ênfase editorial na última palavra. */
+.zuz-sales__head h2{font-size:clamp(2rem,3.5vw,3.25rem);line-height:1.12;letter-spacing:-.045em;font-weight:700;margin:0 0 12px}
+.zuz-sales__title-serif{font-family:"Times New Roman",Times,serif;font-style:italic;font-weight:700;letter-spacing:-.055em}
+@media(max-width:520px){.zuz-sales__head h2{font-size:clamp(1.85rem,7vw,2.5rem)}}
