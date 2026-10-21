@@ -136,3 +136,16 @@ body.dark .zm-search-shell,html[data-theme="dark"] .zm-search-shell{--zm-purple:
   .zm-search-shell .zm-offer-row,
   .zm-search-shell .zm-catalog-item { animation: none; }
 }
+
+/* Simulações: pesquisa com hierarquia mais clara e campos discretos. */
+.sim #marketSearchMount .zm-search-shell{padding:22px 24px 26px;border:1px solid var(--zm-line);border-radius:20px;background:var(--zm-surface)}
+.sim #marketSearchMount .zm-title{font-size:clamp(20px,2vw,25px);font-weight:700;letter-spacing:-.04em}
+.sim #marketSearchMount .zm-subtitle{margin:6px 0 22px;font-size:13px;line-height:1.65}
+.sim #marketSearchMount .zm-search-label{font-size:12px;font-weight:600;margin-bottom:9px}
+.sim #marketSearchMount input.zm-search-input{height:52px;border-radius:12px;background:var(--zm-soft);transition:border-color .2s,box-shadow .2s,background-color .2s}
+.sim #marketSearchMount input.zm-search-input:hover{border-color:color-mix(in srgb,var(--zm-purple) 45%,var(--zm-line))}
+.sim #marketSearchMount input.zm-search-input:focus{background:var(--zm-surface);border-color:var(--zm-purple);box-shadow:0 0 0 3px color-mix(in srgb,var(--zm-purple) 12%,transparent)}
+.sim #marketSearchMount .zm-search-controls{gap:12px}
+.sim #marketSearchMount .zm-search-submit{min-height:52px;height:52px;border-radius:12px;font-weight:600}
+.sim #marketSearchMount .zm-search-controls>.zm-button{margin-top:5px;border-radius:11px;font-weight:600}
+@media(max-width:600px){.sim #marketSearchMount .zm-search-shell{padding:20px 16px;border-radius:16px}}
