@@ -156,3 +156,25 @@ body.dark .zuni-top-details>summary .zuni-top-label small{color:#c7c2db}
   .products-page > .zuni-top-details[open],
   .dashboard > .zuni-top-details[open]{width:100%}
 }
+
+/* Chat superior sobreposto: abrir nao desloca os cards nem o conteudo da pagina. */
+.products-page > .zuni-top-details,
+.dashboard > .zuni-top-details{position:relative;z-index:20;overflow:visible}
+.products-page > .zuni-top-details[open],
+.dashboard > .zuni-top-details[open]{width:min(100%,288px);z-index:1500}
+.products-page > .zuni-top-details .zuni-top-chat,
+.dashboard > .zuni-top-details .zuni-top-chat{
+  position:absolute;top:calc(100% + 8px);right:0;
+  width:min(410px,calc(100vw - 32px));max-width:none;
+  padding:10px;background:var(--zc-bg,#fff);
+  border:1px solid #e7e5ed;border-radius:18px;
+  box-shadow:0 18px 50px rgba(30,20,60,.16);
+}
+.products-page > .zuni-top-details .zuni-top-chat .zuni-panel,
+.dashboard > .zuni-top-details .zuni-top-chat .zuni-panel{height:min(390px,60dvh);max-height:60dvh}
+body.dark .zuni-top-details .zuni-top-chat{background:#201c2a;border-color:#3a334b}
+@media(max-width:650px){
+  .products-page > .zuni-top-details[open],.dashboard > .zuni-top-details[open]{width:min(100%,288px)}
+  .products-page > .zuni-top-details .zuni-top-chat,
+  .dashboard > .zuni-top-details .zuni-top-chat{width:min(390px,calc(100vw - 32px));right:0}
+}
