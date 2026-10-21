@@ -722,3 +722,11 @@ body.dark .sim{--sim-revenue:#af91ff;--sim-cost:#f0abc8;--sim-soft:rgba(175,145,
 @media(prefers-reduced-motion:reduce){
   .sim .sim-product-bar{animation:none!important}
 }
+
+/* Mesma animacao de entrada do seletor, aplicada ao guia de simulacoes. */
+.sim #simGuide{
+  animation:sim-product-enter .72s cubic-bezier(.22,.61,.36,1) .06s both;
+}
+@media(prefers-reduced-motion:reduce){
+  .sim #simGuide{animation:none!important}
+}
