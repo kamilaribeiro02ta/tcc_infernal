@@ -462,6 +462,11 @@ function createApi() {
     const client=await getPool().connect();
     try{
       await client.query("BEGIN");
+      const removed=await client.query(provider === "postgresql"
+        ? "SELECT id FROM zuz_products WHERE company_id=$1 AND NOT (id = ANY($2::uuid[])) AND EXISTS (SELECT 1 FROM zuz_sales s WHERE s.product_id=zuz_products.id)"
+        : "SELECT id FROM zuz_products WHERE company_id=$1 AND id NOT IN (SELECT value FROM json_each($2)) AND EXISTS (SELECT 1 FROM zuz_sales s WHERE s.product_id=zuz_products.id)",
+        [company.id,provider === "postgresql" ? verified.map(product=>product.id) : JSON.stringify(verified.map(product=>product.id))]);
+      if(removed.rows.length)fail(409,"Este produto possui vendas registradas e não pode ser excluído.");
       // Produtos com vendas reais não podem ser apagados (histórico imutável).
       await client.query(provider === "postgresql" ? "DELETE FROM zuz_products WHERE company_id=$1 AND NOT (id = ANY($2::uuid[])) AND NOT EXISTS (SELECT 1 FROM zuz_sales s WHERE s.product_id=zuz_products.id)" : "DELETE FROM zuz_products WHERE company_id=$1 AND id NOT IN (SELECT value FROM json_each($2)) AND NOT EXISTS (SELECT 1 FROM zuz_sales s WHERE s.product_id=zuz_products.id)",
         [company.id,provider === "postgresql" ? verified.map(product=>product.id) : JSON.stringify(verified.map(product=>product.id))]);
