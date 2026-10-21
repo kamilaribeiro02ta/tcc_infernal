@@ -64,6 +64,7 @@
       }
       for(const conversation of data.conversations) {
         const item=document.createElement("div");
+        item.dataset.conversationId=conversation.id;
         item.className="ia-conversation"+(conversation.id===currentConversationId?" selected":"");
         const open=document.createElement("button");
         open.type="button";
@@ -89,6 +90,7 @@
         conversationList.append(item);
       }
       filterConversations();
+      markConversation(currentConversationId);
     }catch(error){
       conversationList.replaceChildren();
       const notice=document.createElement("div");
@@ -106,8 +108,38 @@
       status.textContent=error.message;
     }
   }
+  function markConversation(id) {
+    conversationList.querySelectorAll(".ia-conversation").forEach(item=>{
+      const selected=item.dataset.conversationId===id;
+      item.classList.toggle("selected",selected);
+      const button=item.querySelector(".ia-conversation-open");
+      if(selected)button.setAttribute("aria-current","true");
+      else button.removeAttribute("aria-current");
+    });
+  }
+  function setHistoryOpen(open) {
+    historyPane.classList.toggle("mobile-open",open);
+    historyToggle.setAttribute("aria-expanded",String(open));
+    historyPane.inert=window.matchMedia("(max-width: 700px)").matches&&!open;
+  }
+  const historyViewport=window.matchMedia("(max-width: 700px)");
+  historyViewport.addEventListener("change",()=>setHistoryOpen(false));
+  setHistoryOpen(false);
+  document.addEventListener("keydown",event=>{
+    if(event.key==="Escape"&&historyPane.classList.contains("mobile-open")){
+      setHistoryOpen(false);historyToggle.focus();
+    }
+  });
+  let conversationAnimation;
   async function openConversation(id) {
-    if(busy)return;
+    if(busy||id===currentConversationId)return;
+    busy=true;
+    send.disabled=true;
+    const previousId=currentConversationId;
+    markConversation(id);
+    messages.classList.add("is-history-loading");
+    messages.setAttribute("aria-busy","true");
+    status.textContent="Abrindo conversa...";
     try {
       const data=await api("conversations/"+encodeURIComponent(id));
       currentConversationId=id;
@@ -122,10 +154,24 @@
       suggestions.hidden=true;
       setMascote("idle");
       status.textContent="Conversa recuperada. Você pode continuar de onde parou.";
-      await refreshConversations();
-      historyPane.classList.remove("mobile-open");
-      historyToggle.setAttribute("aria-expanded","false");
-    }catch(error){status.textContent=error.message;}
+      markConversation(id);
+      const wasOpen=historyPane.classList.contains("mobile-open");
+      setHistoryOpen(false);
+      if(wasOpen)historyToggle.focus();
+      messages.classList.remove("is-history-loading");
+      if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches&&messages.animate){
+        conversationAnimation?.cancel();
+        conversationAnimation=messages.animate(
+          [{opacity:0,transform:"translateY(8px)"},{opacity:1,transform:"translateY(0)"}],
+          {duration:240,easing:"cubic-bezier(.22,.61,.36,1)"}
+        );
+      }
+    }catch(error){markConversation(previousId);status.textContent=error.message;}
+    finally{
+      messages.classList.remove("is-history-loading");
+      messages.removeAttribute("aria-busy");
+      busy=false;send.disabled=false;
+    }
   }
   function newConversation(){
     if(busy)return;
@@ -141,8 +187,7 @@
   }
   document.getElementById("newChatSidebar").addEventListener("click",newConversation);
   historyToggle.addEventListener("click",()=>{
-    const open=historyPane.classList.toggle("mobile-open");
-    historyToggle.setAttribute("aria-expanded",String(open));
+    setHistoryOpen(!historyPane.classList.contains("mobile-open"));
   });
   refreshConversations();
 

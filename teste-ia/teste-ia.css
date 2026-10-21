@@ -443,3 +443,39 @@ body.dark .bubble.assistant { background:#29292f; color:#f3f1fa; border-color:rg
 .ia-action-controls button:first-child { background:#6a3df0; color:#fff; border-color:#6a3df0; }
 .ia-action-controls button:disabled { opacity:.6; cursor:wait; }
 .ia-action-controls :is(button,a):focus-visible { outline:2px solid var(--ia-accent); outline-offset:3px; }
+
+/* Transições do histórico sem reconstruir a lista ao selecionar uma conversa. */
+.ia-conversation {
+  transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease;
+}
+.ia-conversation:hover { transform:translateX(3px); }
+.ia-conversation:active { transform:translateX(2px) scale(.985); }
+.ia-conversation.selected {
+  border-color:color-mix(in srgb,var(--ia-accent) 28%,transparent);
+  box-shadow:inset 3px 0 0 var(--ia-accent);
+}
+.ia-conversation-open:focus-visible {
+  outline:2px solid var(--ia-accent);outline-offset:-4px;border-radius:12px;
+}
+.messages { transition:opacity .16s ease; }
+.messages.is-history-loading { opacity:.45; }
+@media(max-width:700px) {
+  .ia-history {
+    display:flex;
+    opacity:0;
+    transform:translateX(24px);
+    visibility:hidden;
+    pointer-events:none;
+    transition:transform .26s cubic-bezier(.22,.61,.36,1),opacity .22s ease,visibility .26s;
+  }
+  .ia-history.mobile-open {
+    opacity:1;
+    transform:translateX(0);
+    visibility:visible;
+    pointer-events:auto;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .ia-history,.ia-conversation,.messages { transition:none!important; }
+  .ia-conversation:hover,.ia-conversation:active { transform:none; }
+}
