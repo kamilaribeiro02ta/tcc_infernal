@@ -13,3 +13,26 @@ body.dark .zuni-mini{--zc-bg:#201c2a;--zc-text:#f3f1fa;--zc-muted:#c7c2db;--zc-l
 .sim-zuni-chat .zuni-inline .zuni-panel{position:static;inset:auto;width:100%;height:460px;max-height:none;box-shadow:none;animation:none}
 .sim-zuni-chat .zuni-inline .zuni-close{display:none}
 @media(max-width:600px){.sim-zuni-chat .zuni-inline .zuni-panel{height:min(500px,65dvh)}}
+
+/* Simulações: a seção já é o contêiner visual; não criar outro card dentro dela. */
+.sim .sim-assistant .sim-zuni-chat{flex:1;min-width:0;display:flex;flex-direction:column;margin-top:12px}
+.sim .sim-assistant .sim-zuni-chat .zuni-inline{flex:1;min-width:0;display:flex;flex-direction:column;background:transparent}
+.sim .sim-assistant .sim-zuni-chat .zuni-inline .zuni-panel{
+  flex:1;min-width:0;width:100%;height:420px;min-height:320px;
+  background:transparent;border:0;border-radius:0;box-shadow:none;overflow:hidden;
+}
+.sim .sim-assistant .sim-zuni-chat .zuni-panel header{
+  padding:14px 0 16px;border-bottom:1px solid var(--zc-line);background:transparent;
+}
+.sim .sim-assistant .sim-zuni-chat .zuni-messages{padding:20px 0;min-height:0}
+.sim .sim-assistant .sim-zuni-chat .zuni-status{padding:0;margin:6px 0}
+.sim .sim-assistant .sim-zuni-chat .zuni-form{
+  padding:16px 0 0;gap:10px;background:transparent;border-top:1px solid var(--zc-line);
+}
+.sim .sim-assistant .sim-zuni-chat .zuni-form textarea{
+  min-height:48px;resize:vertical;border-radius:12px;
+}
+@media(max-width:700px){
+  .sim .sim-assistant .sim-zuni-chat .zuni-inline .zuni-panel{height:390px;min-height:290px}
+  .sim .sim-assistant .sim-zuni-chat .zuni-messages{padding:14px 0}
+}
