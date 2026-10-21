@@ -195,3 +195,17 @@ body.dark .zuni-top-details .zuni-top-chat{background:#201c2a;border-color:#3a33
 @media(max-height:480px){
  .zuni-mini:not(.zuni-inline) .zuni-panel{height:calc(100dvh - 92px);max-height:calc(100dvh - 92px);bottom:60px}
 }
+
+/* Entrada e hover do atalho da Zuni, inclusive quando criado via JavaScript. */
+.zuni-top-details {
+ animation: zuz-zuni-enter .72s cubic-bezier(.22,.61,.36,1) .16s both;
+ transition: border-color .24s ease, box-shadow .24s ease, background-color .24s ease;
+}
+.zuni-top-details:hover {border-color:#a98dff;box-shadow:0 10px 26px rgba(60,40,130,.12);}
+.zuni-top-details>summary {transition:background-color .24s ease;}
+.zuni-top-details>summary:hover {background:rgba(106,61,240,.045);}
+@keyframes zuz-zuni-enter {
+ from {opacity:0;transform:translateY(34px);filter:blur(7px);}
+ to {opacity:1;transform:translateY(0);filter:blur(0);}
+}
+@media(prefers-reduced-motion:reduce){.zuni-top-details{animation:none!important;}}
