@@ -2416,3 +2416,12 @@ body.dark .about-work-page .about-objective.about-objective-prototype{border-top
   .about-work-page .about-ai{padding-bottom:28px}
   .about-work-page .about-objective.about-objective-prototype{padding-top:36px}
 }
+
+/* Divisor mais curto e visível entre IA e protótipo. */
+.about-work-page .about-objective.about-objective-prototype{border-top:0}
+.about-work-page .about-objective.about-objective-prototype::before{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:min(76%,900px);height:2px;background:rgba(111,99,136,.38);
+  border-radius:999px;
+}
+body.dark .about-work-page .about-objective.about-objective-prototype::before{background:rgba(255,255,255,.28)}
