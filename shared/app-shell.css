@@ -555,3 +555,10 @@ body.dark .sidebar #iconMoon {
     overflow: visible !important;
   }
 }
+
+/* Avatar do perfil: roxo ZUZ, sem tonalidade azul. */
+.sidebar .login-block .avatar,
+.sidebar .profile-sidebar-avatar{
+  background:#6a3df0 !important;
+  background-image:none !important;
+}
