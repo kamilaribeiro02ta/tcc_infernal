@@ -74,3 +74,17 @@ test("referências de produto são isoladas no mecanismo de precificação",()=>
   assert.equal(result.market.count,0);
   assert.equal(result.recommendedRange.high,null);
 });
+
+test("recuperacao do lote usa custo de todas as unidades, taxas e custos fixos",()=>{
+  const p={...product(),baseCost:8,additionalCosts:[],salePrice:10,units:110};
+  const cfg={...settings(),monthlyUnits:110,taxesPct:0,fixedCosts:[]};
+  const r=simulation.calculate(p,cfg,simulation.defaults(p)[1]);
+  assert.equal(r.batchRecoveryUnits,88);
+  assert.equal(r.breakEvenUnits,0,"ponto de equilibrio operacional permanece distinto");
+  const taxed=simulation.calculate(p,{...cfg,taxesPct:10},simulation.defaults(p)[1]);
+  assert.equal(taxed.batchRecoveryUnits,98);
+  const fixed=simulation.calculate(p,{...cfg,fixedCosts:[{label:"Aluguel",value:100}]},simulation.defaults(p)[1]);
+  assert.equal(fixed.batchRecoveryUnits,98);
+  const zero=simulation.calculate(p,cfg,{...simulation.defaults(p)[1],price:0});
+  assert.equal(zero.batchRecoveryUnits,null);
+});
