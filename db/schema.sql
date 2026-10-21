@@ -120,3 +120,18 @@ CREATE TABLE IF NOT EXISTS zuz_sales (
 CREATE INDEX IF NOT EXISTS idx_zuz_sales_company_date ON zuz_sales(company_id,sold_at DESC);
 ALTER TABLE zuz_inventory ENABLE ROW LEVEL SECURITY;
 ALTER TABLE zuz_sales ENABLE ROW LEVEL SECURITY;
+
+
+CREATE TABLE IF NOT EXISTS zuz_calendar_events (
+ id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ company_id UUID NOT NULL REFERENCES zuz_companies(id) ON DELETE CASCADE,
+ title VARCHAR(160) NOT NULL,
+ type VARCHAR(20) NOT NULL CHECK(type IN ('compromisso','encomenda','lembrete','observacao')),
+ event_date DATE NOT NULL,
+ event_time VARCHAR(5),
+ notes TEXT NOT NULL DEFAULT '',
+ created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+ updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_zuz_calendar_company_date ON zuz_calendar_events(company_id,event_date);
+ALTER TABLE zuz_calendar_events ENABLE ROW LEVEL SECURITY;
