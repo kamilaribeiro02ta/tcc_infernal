@@ -121,7 +121,7 @@
       ["Sobre as respostas","A ZUZ pode mostrar análise calculada ou resposta da IA, conforme o serviço disponível.","As recomendações não garantem resultados de vendas."],
       ["Controle do usuário","Uma proposta de alteração só afeta o cenário se você escolher aplicá-la.","A assistente não muda os produtos cadastrados automaticamente."]]}
   };
-  const progress=new Map(),drafts=new Map(),answers=new Map();
+  const progress=new Map();
   const root=document.querySelector(".workspace-page.sim");
   if(!root)return;
   let current=null;
@@ -276,7 +276,7 @@
   function render(){
     if(!current)return;
     const topic=current.topic,g=GUIDE[topic],index=progress.get(topic)||0,
-      s=g.steps[index],saved=answers.get(topic);
+      s=g.steps[index];
     panel.replaceChildren();
     const header=elem("div","sim-tutorial-header"),left=elem("div","");
     left.append(elem("span","sim-tutorial-eyebrow","ENTENDER · SIMULAÇÕES"),elem("h3","",g.name));
@@ -298,91 +298,11 @@
     next.type="button";next.dataset.simHelpAction="next";
     nav.append(back,next);
     const qa=elem("div","sim-tutorial-ask");
-    qa.append(elem("h4","","Perguntar à ZUZ"),elem("p","sim-tutorial-small","Escreva sua dúvida específica sobre este assunto."));
-    const textarea=elem("textarea","sim-tutorial-question");
-    textarea.rows=2;textarea.maxLength=600;
-    textarea.value=drafts.get(topic)||"";
-    textarea.placeholder=topic==="price"?"Ex.: E se eu cobrar R$ 40?":"Ex.: Como uso isso no meu negócio?";
-    textarea.setAttribute("aria-label","Pergunta à ZUZ sobre "+g.name);
-    const send=elem("button","sim-tutorial-send","Enviar pergunta");
-    send.type="button";send.dataset.simHelpAction="ask";
-    const answer=elem("div","sim-tutorial-answer");answer.hidden=!saved;answer.setAttribute("role","status");answer.setAttribute("aria-live","polite");
-    if(saved)renderAnswer(answer,saved,topic);
-    qa.append(textarea,send,answer);
+    qa.append(elem("h4","","Chat da Zuni"),elem("p","sim-tutorial-small","Tire suas dúvidas sobre esta simulação com a Zuni."));
+    const chatButton=elem("button","sim-tutorial-send","Falar com a Zuni");chatButton.type="button";
+    chatButton.addEventListener("click",()=>window.ZuniChat.open({context:"Simulações — "+g.name+". "+g.steps.map(s=>s[1]).join(" ")}));
+    qa.append(chatButton);
     panel.append(header,count,bar,subtitle,body,example,nav,qa);
-  }
-  function renderAnswer(box,result,topic){
-    box.replaceChildren();
-    const source=result.source==="ia"?"Resposta da ZUZ IA":
-      result.source==="guia_contextual"?"Orientação guiada pela ZUZ":"Orientação local (serviço indisponível)";
-    box.hidden=false;
-    box.append(elem("strong","",source),elem("p","",String(result.answer||"Tente perguntar de outra maneira.").slice(0,2500)));
-    const suggestion=result.suggestion;
-    if(!suggestion||suggestion.field!==topic)return;
-    const field=$(topic),value=Number(suggestion.value);
-    if(!field||!Number.isFinite(value))return;
-    const apply=elem("button","sim-tutorial-apply",String(suggestion.label||"Usar valor")+" · Confirmar");
-    apply.type="button";
-    apply.addEventListener("click",()=>{
-      const ranges={
-        price:[0,100000000],units:[1,1000000],margin:[0,90],
-        changePct:[-100,500],goalAmount:[0,1000000000],referencePrice:[.01,100000000]
-      };
-      const bounds=ranges[topic];
-      if(!bounds||value<bounds[0]||value>bounds[1]||(topic==="units"&&!Number.isInteger(value)))return;
-      if(topic==="margin"){
-        const conf=window.ZUZPricing?.loadSettings?.()||{};
-        if(value+(Number(conf.taxesPct)||0)+(Number(conf.sellingFeesPct)||0)>=100){
-          alert("A soma de margem, tributos e taxas deve ser menor que 100%.");return;
-        }
-      }
-      if(!window.confirm("Usar "+String(suggestion.label||value)+" na simulação? O cadastro original não será alterado."))return;
-      field.value=String(value);
-      field.dispatchEvent(new Event("input",{bubbles:true}));
-      field.dispatchEvent(new Event("change",{bubbles:true}));
-      apply.disabled=true;
-      box.append(elem("p","sim-tutorial-applied","Valor aplicado após sua confirmação. Confira os resultados do cenário."));
-    });
-    box.append(apply);
-  }
-  function localGuide(topic){
-    const g=GUIDE[topic];
-    return "Não foi possível consultar o serviço de orientação neste momento. "+
-      g.steps[0][1]+" "+g.steps[1][2]+
-      "\n\nNenhum campo foi alterado. Você pode continuar usando o tutorial.";
-  }
-  async function ask(){
-    if(!current)return;
-    const topic=current.topic,button=current.button;
-    const textarea=panel.querySelector(".sim-tutorial-question"),
-      answer=panel.querySelector(".sim-tutorial-answer"),
-      send=panel.querySelector(".sim-tutorial-send"),
-      message=textarea.value.trim();
-    drafts.set(topic,textarea.value);
-    if(message.length<3){textarea.focus();return;}
-    send.disabled=true;send.textContent="Consultando...";
-    answer.hidden=false;answer.textContent="Preparando orientação...";
-    let result;
-    try {
-      if(!window.ZUZAPI)throw new Error("offline");
-      result=await window.ZUZAPI.request("POST","/help/simulations",{
-        topic,message,
-        context:{
-          productName:$("product")?.selectedOptions?.[0]?.textContent||"",
-          price:$("price")?.value||"",
-          units:$("units")?.value||"",
-          margin:$("margin")?.value||"",
-          changePct:$("changePct")?.value||"",
-          costMode:$("changeMode")?.value||""
-        }
-      });
-    } catch(error) {
-      result={source:"guia_local",answer:localGuide(topic)};
-    }
-    answers.set(topic,result);
-    if(!current||current.topic!==topic||current.button!==button)return;
-    send.disabled=false;send.textContent="Enviar pergunta";
-    renderAnswer(answer,result,topic);
   }
   // Decorar somente os campos existentes. Nenhum tutorial abre automaticamente.
   const fields=[
@@ -414,12 +334,8 @@
         else{progress.set(current.topic,idx+1);render();}
         break;
       }
-      case "ask":ask();break;
+
     }
-  });
-  root.addEventListener("input",event=>{
-    if(event.target.matches(".sim-tutorial-question")&&current)
-      drafts.set(current.topic,event.target.value);
   });
   document.addEventListener("keydown",event=>{
     if(event.key==="Escape"&&current)close(true);

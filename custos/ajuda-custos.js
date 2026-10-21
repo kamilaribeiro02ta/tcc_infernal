@@ -241,72 +241,11 @@
     const next=el("button","cost-tutorial-next",index===item.steps.length-1?"Concluir":"Próximo");next.type="button";next.dataset.costAction="next";
     nav.append(back,next);
     const ask=el("div","cost-tutorial-ask");
-    const askHeading=el("h4","","Perguntar à ZUZ");
-    ask.append(askHeading,el("p","","Sua dúvida é sobre este campo? Escreva com suas palavras."));
-    const question=el("textarea","cost-tutorial-question");
-    question.id="cost-tutorial-question";
-    question.rows=2;question.maxLength=600;
-    question.setAttribute("aria-label","Escreva sua dúvida para a ZUZ sobre "+item.name);
-    question.placeholder=topic==="sellingFeesPct"?"Ex.: Como informar Pix e cartão?":"Ex.: Como calculo isso no meu negócio?";
-    const askButton=el("button","cost-tutorial-ask-button","Enviar pergunta");askButton.type="button";askButton.dataset.costAction="ask";
-    const answer=el("div","cost-tutorial-answer");answer.hidden=true;answer.setAttribute("role","status");answer.setAttribute("aria-live","polite");
-    ask.append(question,askButton,answer);
+    ask.append(el("h4","","Chat da Zuni"),el("p","","Tire suas dúvidas sobre este campo com a Zuni."));
+    const chatButton=el("button","cost-tutorial-ask-button","Falar com a Zuni");chatButton.type="button";
+    chatButton.addEventListener("click",()=>window.ZuniChat.open({context:"Custos — "+item.name+". "+item.steps.map(s=>s[1]).join(" ")}));
+    ask.append(chatButton);
     panel.append(head,stepInfo,bar,sub,desc,example,nav,ask);
-  }
-  async function askZuz() {
-    if(!active)return;
-    const textarea=panel.querySelector("textarea"),answer=panel.querySelector(".cost-tutorial-answer");
-    const button=panel.querySelector('[data-cost-action="ask"]');
-    const message=textarea.value.trim();
-    if(message.length<3){textarea.focus();return;}
-    const topic=active.topic;
-    const owner=active.trigger;
-    const month=Number($("monthlyUnits")?.value);
-    const fixed=[...$("fixedRows").querySelectorAll(".row .b")].reduce((sum,input)=>sum+(Number(input.value)>0?Number(input.value):0),0);
-    button.disabled=true;
-    button.textContent="Consultando...";
-    answer.hidden=false;
-    answer.textContent="Preparando orientação...";
-    let result;
-    try{
-      if(!window.ZUZAPI)throw Error("offline");
-      result=await window.ZUZAPI.request("POST","/help/costs",{
-        topic,message,
-        context:{segment:$("segment").value.trim().slice(0,80),
-          operationType:$("operationType").value,
-          monthlyUnits:Number.isFinite(month)?month:0,
-          fixedTotal:Number(fixed.toFixed(2))}
-      });
-    }catch(error){
-      const steps=T[topic].steps;
-      result={source:"guia_local",answer:
-        "A orientação interativa está disponível, mas a conversa com o servidor não pôde ser concluída. "+
-        steps[0][1]+" "+steps[1][2]+
-        "\n\nConsulte registros ou documentos reais para confirmar os valores. Nenhum campo foi alterado."};
-    }
-    if(!active||active.topic!==topic||active.trigger!==owner)return;
-    button.disabled=false;button.textContent="Enviar pergunta";
-    answer.replaceChildren();
-    const source=result.source==="ia"?"ZUZ IA":result.source==="guia_contextual"?"Orientação guiada pela ZUZ":"Orientação local (IA indisponível)";
-    answer.append(el("strong","",source),el("p","",String(result.answer||"Não foi possível responder.").slice(0,2400)));
-    const suggestion=result.suggestion;
-    if(suggestion&&suggestion.field===topic&&Number.isFinite(Number(suggestion.value))){
-      const apply=el("button","cost-tutorial-apply",suggestion.label+" (confirmar)");
-      apply.type="button";
-      apply.addEventListener("click",()=>{
-        const input=$(topic),value=Number(suggestion.value);
-        if(!input||!Number.isFinite(value))return;
-        const taxes=topic==="taxesPct"?value:Number($("taxesPct").value)||0;
-        const fees=topic==="sellingFeesPct"?value:Number($("sellingFeesPct").value)||0;
-        const margin=topic==="defaultMargin"?value:Number($("defaultMargin").value)||0;
-        if(taxes+fees+margin>=100){alert("A soma de tributos, taxas e margem deve ser menor que 100%.");return;}
-        if(!window.confirm("Preencher "+T[topic].name+" com "+String(value).replace(".",",")+"%? O perfil só será salvo ao clicar em Salvar."))return;
-        input.value=String(value);input.dispatchEvent(new Event("input",{bubbles:true}));
-        answer.append(el("p","cost-applied-message","Valor preenchido após sua confirmação. Revise e salve o perfil para guardar a alteração."));
-        apply.disabled=true;
-      });
-      answer.append(apply);
-    }
   }
   function buildPreview(){
     const summary=$("summary");
@@ -382,7 +321,7 @@
         else {progress.set(active.topic,n+1);renderHelp();}
         break;
       }
-      case "ask":askZuz();break;
+
     }
   });
   const relocate=()=>{if(active)position();};
