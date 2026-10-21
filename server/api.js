@@ -462,8 +462,8 @@ function createApi() {
     const client=await getPool().connect();
     try{
       await client.query("BEGIN");
-      // Preserva os produtos existentes para não apagar vendas reais vinculadas a eles.
-      await client.query(provider === "postgresql" ? "DELETE FROM zuz_products WHERE company_id=$1 AND NOT (id = ANY($2::uuid[]))" : "DELETE FROM zuz_products WHERE company_id=$1 AND id NOT IN (SELECT value FROM json_each($2))",
+      // Produtos com vendas reais não podem ser apagados (histórico imutável).
+      await client.query(provider === "postgresql" ? "DELETE FROM zuz_products WHERE company_id=$1 AND NOT (id = ANY($2::uuid[])) AND NOT EXISTS (SELECT 1 FROM zuz_sales s WHERE s.product_id=zuz_products.id)" : "DELETE FROM zuz_products WHERE company_id=$1 AND id NOT IN (SELECT value FROM json_each($2)) AND NOT EXISTS (SELECT 1 FROM zuz_sales s WHERE s.product_id=zuz_products.id)",
         [company.id,provider === "postgresql" ? verified.map(product=>product.id) : JSON.stringify(verified.map(product=>product.id))]);
       for(const p of verified){
         const current=await client.query("SELECT company_id FROM zuz_products WHERE id=$1",[p.id]);
