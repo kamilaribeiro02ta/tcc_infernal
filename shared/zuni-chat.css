@@ -178,3 +178,20 @@ body.dark .zuni-top-details .zuni-top-chat{background:#201c2a;border-color:#3a33
   .products-page > .zuni-top-details .zuni-top-chat,
   .dashboard > .zuni-top-details .zuni-top-chat{width:min(390px,calc(100vw - 32px));right:0}
 }
+
+
+/* Responsividade e áreas seguras: chat flutuante */
+.zuni-mini:not(.zuni-inline){max-width:calc(100vw - 24px)}
+.zuni-mini:not(.zuni-inline) .zuni-panel{max-width:calc(100vw - 24px);max-height:calc(100dvh - 112px);min-height:0}
+.zuni-panel,.zuni-panel *{box-sizing:border-box}
+.zuni-panel header{flex-shrink:0;min-width:0}
+.zuni-panel header div{min-width:0}
+.zuni-panel .zuni-form{flex-shrink:0;min-width:0}
+.zuni-panel .zuni-messages{min-width:0;overflow-x:hidden}
+@media(max-width:600px){
+ .zuni-mini:not(.zuni-inline){right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom))}
+ .zuni-mini:not(.zuni-inline) .zuni-panel{width:calc(100vw - 24px);height:min(520px,calc(100dvh - 104px - env(safe-area-inset-bottom)));max-height:calc(100dvh - 104px - env(safe-area-inset-bottom));right:0}
+}
+@media(max-height:480px){
+ .zuni-mini:not(.zuni-inline) .zuni-panel{height:calc(100dvh - 92px);max-height:calc(100dvh - 92px);bottom:60px}
+}
