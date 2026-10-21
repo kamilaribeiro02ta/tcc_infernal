@@ -71,3 +71,33 @@
 .zuz-sales__records table{min-width:390px}
 @media(max-width:520px){.zuz-sales__stock-overview{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.zuz-sales__stock-overview>div{transition:none;transform:none!important}}
+
+/* Refinamento final de hierarquia, feedback e movimento discreto. */
+.zuz-sales{--sales-space:8px;--sales-radius:12px}
+.zuz-sales__head{gap:16px}
+.zuz-sales__grid,.zuz-sales__stock-overview{gap:12px}
+.zuz-sales__workspace{margin-top:24px}
+.zuz-sales__tabs{padding:8px;gap:8px}
+.zuz-sales__tabs .zuz-sales__tab{min-height:48px;padding:10px 14px;line-height:1.4}
+.zuz-sales__tabs .zuz-sales__tab:active{transform:scale(.99)}
+.zuz-sales__form{animation:zuz-sales-enter .24s ease-out both}
+.zuz-sales__form-head{margin-bottom:24px}
+.zuz-sales__fields{gap:16px}
+.zuz-sales__fields label{font-size:.81rem;gap:8px}
+.zuz-sales__fields input,.zuz-sales__fields select{min-height:48px}
+.zuz-sales__form-footer{margin-top:24px}
+.zuz-sales__form-footer button[type="submit"]{min-height:48px;border-radius:12px;padding:12px 20px}
+.zuz-sales__form-footer button[type="submit"]:disabled{cursor:not-allowed}
+.zuz-sales__feedback{font-weight:500}
+.zuz-sales__feedback[data-state="error"]{color:#b42318}
+.zuz-sales__feedback[data-state="success"]{color:#16804a}
+.zuz-sales__feedback[data-state="info"]{color:var(--text-secondary,#686377)}
+.zuz-sales__operation-summary.is-warning{border-color:#e3aa64;background:rgba(227,170,100,.1);color:var(--text-primary,#222)}
+.zuz-sales__table{scrollbar-width:thin}
+.zuz-sales__table table{font-variant-numeric:tabular-nums}
+.zuz-sales__table th{white-space:nowrap}
+.zuz-sales__records .zuz-sales__table{transition:border-color .2s ease,box-shadow .2s ease}
+.zuz-sales__records .zuz-sales__table:hover{border-color:color-mix(in srgb,var(--sales-accent) 22%,var(--border,#eee));box-shadow:0 7px 20px rgba(60,40,130,.045)}
+@keyframes zuz-sales-enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.zuz-sales__tabs .zuz-sales__tab{min-height:48px;padding:10px 8px}.zuz-sales__form{padding:20px 16px}.zuz-sales__records{gap:12px}}
+@media(prefers-reduced-motion:reduce){.zuz-sales__form{animation:none!important}.zuz-sales__tabs .zuz-sales__tab:active{transform:none}.zuz-sales__records .zuz-sales__table{transition:none}}
