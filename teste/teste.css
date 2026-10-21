@@ -1790,3 +1790,8 @@ body:not(.dark) .closing-band a {
     transform: none !important;
   }
 }
+
+/* Centralizar o texto de apresentação da ZUZ sem alterar os cards. */
+.manifesto-section{justify-items:center}
+.manifesto-copy{width:100%;max-width:1100px;margin-inline:auto;text-align:center}
+.manifesto-copy p{text-align:center;text-wrap:balance}
