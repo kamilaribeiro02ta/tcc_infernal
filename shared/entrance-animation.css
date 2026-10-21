@@ -64,3 +64,19 @@
 @media (prefers-reduced-motion: reduce) {
  .page-rise > :is(.workspace-heading,.workspace-panel,.sim-guide,.sim-market-secondary,.profile-intro,.account-section,.team-card,.business-hub,.business-section,.auth-form-side,.auth-visual,.onboard-topbar,.onboard-workspace,.zuz-sales,.products-market-card,.hero-shell,.about-hero) { animation: none !important; }
 }
+
+/* Componentes destacados que não recebiam o efeito de entrada e hover. */
+.page-rise > .zuni-top-details,
+.page-rise > .zuni-top-details[open] {
+  animation: zuz-page-rise .72s cubic-bezier(.22,.61,.36,1) .16s both;
+}
+.page-rise > .products-market-card {
+  transition: border-color .24s ease, box-shadow .24s ease;
+}
+.page-rise > .products-market-card:hover {
+  border-color: var(--primary,#8c6bff);
+  box-shadow: 0 16px 36px rgba(60,40,130,.13);
+}
+@media(prefers-reduced-motion:reduce){
+ .page-rise > .zuni-top-details,.page-rise > .zuni-top-details[open] {animation:none!important;}
+}
