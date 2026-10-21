@@ -104,3 +104,17 @@ body.dark .zuni-panel header .zuni-wordmark{filter:invert(1)}
 
 /* Remover o botao flutuante global sem desativar o chat acionado por outras interfaces. */
 .zuni-mini > .zuni-launch{display:none!important}
+
+/* Chat compacto expansivel no topo de Produtos e Analises. */
+.zuni-top-details{margin:18px 0 24px;border:1px solid var(--zc-line,#e7e5ed);border-radius:16px;background:var(--zc-bg,#fff);overflow:hidden;color:inherit}
+.zuni-top-details>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;list-style:none;padding:14px 18px;font:600 14px/1.5 Poppins,sans-serif}
+.zuni-top-details>summary::-webkit-details-marker{display:none}
+.zuni-top-details>summary span{font-size:11px;font-weight:500;color:#6a3df0}
+.zuni-top-details[open]>summary{border-bottom:1px solid #e7e5ed}
+.zuni-top-chat{padding:0 16px 16px}
+.zuni-top-chat .zuni-inline{position:static;inset:auto;width:100%}
+.zuni-top-chat .zuni-inline .zuni-panel{position:static;inset:auto;width:100%;height:330px;max-height:55dvh;border:0;border-radius:0;box-shadow:none;animation:none}
+.zuni-top-chat .zuni-inline .zuni-launch,.zuni-top-chat .zuni-inline .zuni-close{display:none!important}
+body.dark .zuni-top-details{background:#201c2a;border-color:#3a334b;color:#f3f1fa}
+body.dark .zuni-top-details[open]>summary{border-color:#3a334b}
+@media(max-width:600px){.zuni-top-details{margin:14px 0 20px}.zuni-top-chat{padding:0 10px 10px}.zuni-top-chat .zuni-inline .zuni-panel{height:320px;max-height:60dvh}}
