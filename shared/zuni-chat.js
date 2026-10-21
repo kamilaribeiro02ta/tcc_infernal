@@ -7,17 +7,19 @@
   <div class="zuni-messages" role="log" aria-live="polite" aria-relevant="additions text"></div>
   <p class="zuni-status" role="status"></p><form class="zuni-form"><textarea rows="2" maxlength="3000" aria-label="Mensagem para a Zuni" placeholder="Escreva sua dúvida…" required></textarea><button type="submit">Enviar</button></form></section>`;
   const simulationHost=document.getElementById("zuniSimulationChat");
-  if(simulationHost){root.classList.add("zuni-inline");simulationHost.append(root);}else document.body.append(root);
+  const topHost=document.querySelector(".zuni-top-chat");
+  const inlineHost=simulationHost||topHost;
+  if(inlineHost){root.classList.add("zuni-inline");inlineHost.append(root);}else document.body.append(root);
   const panel=root.querySelector(".zuni-panel"),launcher=root.querySelector(".zuni-launch"),messages=root.querySelector(".zuni-messages"),status=root.querySelector(".zuni-status"),input=root.querySelector("textarea"),send=root.querySelector('[type="submit"]');
-  if(simulationHost){panel.hidden=false;panel.removeAttribute("role");launcher.hidden=true;root.querySelector(".zuni-close").hidden=true;}
-  let busy=false,conversationId=null,returnFocus=launcher,context=simulationHost?"Simulações: ajude a interpretar preços, custos e cenários sem alterar produtos sem confirmação.":"";
+  if(inlineHost){panel.hidden=false;panel.removeAttribute("role");launcher.hidden=true;root.querySelector(".zuni-close").hidden=true;}
+  let busy=false,conversationId=null,returnFocus=launcher,context=simulationHost?"Simulações: ajude a interpretar preços, custos e cenários sem alterar produtos sem confirmação.":topHost?(location.pathname.includes("produtos")?"Produtos: ajude com cadastro, custos e precificação.":"Análises: ajude a interpretar gráficos, faturamento e margens."):"";
   function open(options={}) {
     returnFocus=document.activeElement;context=options.context||context;
     panel.hidden=false;launcher.setAttribute("aria-expanded","true");
     // A saudação inicial vem da primeira resposta do assistente, sem duplicação no chat.
     if(options.message)ask(options.message);else input.focus();
   }
-  function close(){if(simulationHost)return;panel.hidden=true;launcher.setAttribute("aria-expanded","false");if(returnFocus?.isConnected)returnFocus.focus();}
+  function close(){if(inlineHost)return;panel.hidden=true;launcher.setAttribute("aria-expanded","false");if(returnFocus?.isConnected)returnFocus.focus();}
   launcher.addEventListener("click",()=>panel.hidden?open():close());root.querySelector(".zuni-close").addEventListener("click",close);
   panel.addEventListener("keydown",e=>{if(e.key==="Escape"){e.stopPropagation();close();}});
   window.ZuniChat={open};
