@@ -42,11 +42,12 @@
  const stockForm=root.querySelector("#zuzStockForm"),saleForm=root.querySelector("#zuzSaleForm"),metrics=root.querySelector("#zuzSalesMetrics");
  saleForm.elements.soldAt.value=date();
  const tabs=[root.querySelector("#zuzTabSale"),root.querySelector("#zuzTabStock")];
- function selectTab(index){
+ function selectTab(index,focus=false){
   [saleForm,stockForm].forEach((form,i)=>{form.hidden=i!==index;});
   tabs.forEach((tab,i)=>{tab.classList.toggle("is-active",i===index);tab.setAttribute("aria-selected",String(i===index));tab.tabIndex=i===index?0:-1;});
+  if(focus)tabs[index].focus();
  }
- tabs.forEach((tab,i)=>tab.addEventListener("click",()=>selectTab(i)));
+ tabs.forEach((tab,i)=>{tab.addEventListener("click",()=>selectTab(i));tab.addEventListener("keydown",event=>{if(!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;event.preventDefault();const next=event.key==="Home"?0:event.key==="End"?tabs.length-1:(i+(event.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length;selectTab(next,true);});});
  selectTab(0);
  function updateSummary(){
   const balances=snapshot();
@@ -55,13 +56,13 @@
   const quantity=Number(saleForm.elements.quantity.value);
   const unitPrice=Number(saleForm.elements.unitPrice.value);
   const saleText=!saleId?"Selecione um produto para consultar o saldo disponível.":saleBalance===undefined?"Estoque ainda não informado para este produto.":"Disponível: "+saleBalance+" unidade(s)"+(quantity>0&&Number.isInteger(quantity)?" · Saldo após venda: "+(saleBalance-quantity)+" unidade(s)"+(quantity>saleBalance?" — estoque insuficiente":""):"")+(quantity>0&&unitPrice>0?" · Total: "+currency(quantity*unitPrice):"");
-  root.querySelector("#zuzSaleSummary").textContent=saleText;
+  const saleSummary=root.querySelector("#zuzSaleSummary");saleSummary.textContent=saleText;saleSummary.classList.toggle("is-warning",saleId!==""&&saleBalance!==undefined&&quantity>saleBalance);
   root.querySelector("#zuzStockSummary").textContent=!stockId?"Selecione um produto para consultar o estoque atual.":"Estoque atual: "+(balances.get(stockId)??"não informado")+" unidade(s). O novo valor substituirá o atual.";
  }
  [saleForm,stockForm].forEach(form=>form.addEventListener("input",updateSummary));
  [saleForm,stockForm].forEach(form=>form.addEventListener("change",updateSummary));
 
- function feedback(form,message){form.querySelector(".zuz-sales__feedback").textContent=message;}
+ function feedback(form,message,type="info"){const el=form.querySelector(".zuz-sales__feedback");el.textContent=message;el.dataset.state=message?type:"";el.setAttribute("role",type==="error"?"alert":"status");}
  function snapshot(){return new Map(inventory.map(x=>[String(x.product_id),Number(x.quantity)]));}
  function render(){
   const byId=new Map(products.map(p=>[String(p.id),p]));
@@ -91,13 +92,13 @@
    if(!Array.isArray(data.inventory)||!Array.isArray(data.sales))throw new Error("Resposta inválida.");
    inventory=data.inventory;sales=data.sales;loaded=true;failed=false;
    feedback(stockForm,"");
-  }catch(e){loaded=false;failed=true;inventory=[];sales=[];feedback(stockForm,"");}
+  }catch(e){loaded=false;failed=true;inventory=[];sales=[];feedback(stockForm,"","error");}
   render();
  }
  root.addEventListener("click",event=>{if(event.target.closest("[data-retry-sales]"))load();});
  async function submit(form,method,path,data,success){
   if(busy||!loaded||failed)return;busy=true;feedback(form,"Salvando...");render();
-  try{await window.ZUZAPI.request(method,path,data);await load();feedback(form,success);window.dispatchEvent(new CustomEvent("zuz:sales:updated"));}catch(e){feedback(form,e.message||"Falha ao salvar.");}finally{busy=false;render();}
+  try{await window.ZUZAPI.request(method,path,data);await load();feedback(form,success,"success");window.dispatchEvent(new CustomEvent("zuz:sales:updated"));}catch(e){feedback(form,e.message||"Falha ao salvar.","error");}finally{busy=false;render();}
  }
  stockForm.addEventListener("submit",e=>{e.preventDefault();const productId=stockForm.elements.productId.value;const quantity=Number(stockForm.elements.quantity.value);if(!productId||!Number.isSafeInteger(quantity)||quantity<0)return feedback(stockForm,"Informe produto e quantidade válida.");submit(stockForm,"PUT","/company/inventory/"+encodeURIComponent(productId),{quantity},"Estoque atualizado.");});
  saleForm.elements.productId.addEventListener("change",()=>{const p=products.find(x=>String(x.id)===saleForm.elements.productId.value);if(p)saleForm.elements.unitPrice.value=Number(p.salePrice||0).toFixed(2);});
