@@ -57,7 +57,7 @@ function registerSalesInventory(router,{asyncRoute,getCompany}){
    const product=current.payload&&typeof current.payload==="object"?current.payload:current;
    const base=productPricing(product,company.settings||{});
    // Custo variável unitário total inclui encargos de venda calculados sobre o preço REAL.
-   const unitCost=Number(base.unitBaseCost)+unitPrice*Number(base.variableRatePct||0)/100;
+   const unitCost=Number(base.directCost)+unitPrice*Number(base.variableRatePct||0)/100;
    if(!validMoney(unitCost,true)){await client.query("ROLLBACK");return res.status(400).json({error:"Não foi possível calcular o custo da venda."});}
    const id=require("crypto").randomUUID();
    await client.query("INSERT INTO zuz_sales(id,company_id,product_id,quantity,unit_price,unit_cost,sold_at) VALUES($1,$2,$3,$4,$5,$6,$7)",[id,company.id,productId,quantity,unitPrice,unitCost,soldAt]);
