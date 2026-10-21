@@ -319,7 +319,7 @@
   decorateResult();
   for(const [id,topic] of [
     ["chartTitle","chart"],["comparisonTitle","comparison"],["goalTitle","goal"],
-    ["marketTitle","market"],["historyTitle","history"],["aiTitle","ai"]])decorateSection(id,topic);
+    ["marketTitle","market"],["historyTitle","history"]])decorateSection(id,topic);
   root.addEventListener("click",event=>{
     const btn=event.target.closest("[data-sim-help-topic]");
     if(btn&&root.contains(btn)){const t=btn.dataset.simHelpTopic;if(GUIDE[t])show(t,btn);return;}
