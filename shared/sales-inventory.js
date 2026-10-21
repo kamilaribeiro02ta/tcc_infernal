@@ -8,6 +8,7 @@
  let products=[],inventory=[],sales=[],busy=false,loaded=false,failed=false;
  root.innerHTML=`
  
+ <div class="zuz-sales__head"><div><span class="zuz-sales__eyebrow">GESTÃO DE PRODUTOS</span><h2>Vendas e estoque</h2><p>Registre suas vendas e acompanhe as unidades disponíveis.</p></div></div>
  <div class="zuz-sales__grid" id="zuzSalesMetrics"></div><div class="zuz-sales__stock-overview" id="zuzStockOverview"></div>
  <div class="zuz-sales__workspace">
    <div class="zuz-sales__tabs" role="tablist" aria-label="Operação">
