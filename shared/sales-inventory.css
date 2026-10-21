@@ -29,3 +29,34 @@
 @media(max-width:680px){.zuz-sales__body{grid-template-columns:1fr}.zuz-sales__fields{grid-template-columns:repeat(2,minmax(0,1fr))}.zuz-sales__fields label:first-child,.zuz-sales__fields label:has(input[name="soldAt"]){grid-column:1/-1}}
 @media(max-width:420px){.zuz-sales__fields{grid-template-columns:1fr}.zuz-sales__fields label:first-child,.zuz-sales__fields label:has(input[name="soldAt"]){grid-column:auto}.zuz-sales__form button[type="submit"]{width:100%}}
 @media(prefers-reduced-motion:reduce){.zuz-sales__form,.zuz-sales__metric,.zuz-sales__form button,.zuz-sales__fields :is(input,select){transition:none!important;transform:none!important}}
+
+/* Painel único: navegação por abas e formulário focado. */
+.zuz-sales{padding:clamp(20px,3vw,32px);background:var(--surface,#fff)}
+.zuz-sales__eyebrow{display:block;color:var(--primary,#6a3df0);font-size:.69rem;font-weight:700;letter-spacing:.11em;margin-bottom:8px}
+.zuz-sales__grid{margin:22px 0 16px}
+.zuz-sales__workspace{margin-top:26px;border:1px solid var(--border,#e9e6f0);border-radius:20px;overflow:hidden;background:var(--bg-card,var(--surface,#fff))}
+.zuz-sales__tabs{display:flex;gap:6px;padding:8px;border-bottom:1px solid var(--border,#e9e6f0);background:var(--bg,#faf9fc)}
+.zuz-sales__tabs .zuz-sales__tab{flex:1;min-height:46px;border:0;border-radius:12px;background:transparent;color:var(--text-secondary,#686377);font:600 .86rem/1.4 Poppins,sans-serif;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.zuz-sales__tabs .zuz-sales__tab:hover{background:rgba(106,61,240,.07);color:var(--primary,#6a3df0)}
+.zuz-sales__tabs .zuz-sales__tab.is-active{background:var(--surface,#fff);color:var(--primary,#6a3df0);box-shadow:0 2px 12px rgba(40,30,80,.09)}
+.zuz-sales__tabs .zuz-sales__tab:focus-visible{outline:2px solid var(--primary,#6a3df0);outline-offset:-3px}
+.zuz-sales__body{display:block}
+.zuz-sales__form{border:0!important;box-shadow:none!important;border-radius:0;padding:clamp(18px,3vw,30px);max-width:760px;margin:auto;background:transparent}
+.zuz-sales__form[hidden]{display:none!important}
+.zuz-sales__form:hover{border:0;box-shadow:none}
+.zuz-sales__form-head{margin-bottom:24px}
+.zuz-sales__form h3{font-size:1.18rem;margin-bottom:7px}
+.zuz-sales__form p{margin:0;max-width:65ch}
+.zuz-sales__fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px}
+.zuz-sales__fields label:first-child{grid-column:1/-1}
+.zuz-sales__fields label:has(input[name="soldAt"]){grid-column:1/-1}
+.zuz-sales__fields input,.zuz-sales__fields select{width:100%;height:48px}
+.zuz-sales__operation-summary{margin-top:22px;padding:14px 16px;border:1px solid var(--border,#ece8f3);border-radius:12px;background:var(--bg,#faf9fc);color:var(--text-secondary,#686377);font-size:.81rem;line-height:1.6}
+.zuz-sales__form-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:20px}
+.zuz-sales__form-footer .zuz-sales__feedback{order:2;flex:1 1 220px;margin:0;font-size:.8rem}
+.zuz-sales__form-footer button[type="submit"]{order:1;margin:0;min-width:165px}
+.zuz-sales__records{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:20px}
+.zuz-sales__records .zuz-sales__table{margin:0;min-width:0}
+@media(max-width:800px){.zuz-sales__records{grid-template-columns:1fr}}
+@media(max-width:600px){.zuz-sales__fields{grid-template-columns:1fr}.zuz-sales__fields label:first-child,.zuz-sales__fields label:has(input[name="soldAt"]){grid-column:auto}.zuz-sales__form-footer{align-items:stretch;flex-direction:column}.zuz-sales__form-footer button[type="submit"]{width:100%}.zuz-sales__form-footer .zuz-sales__feedback{flex:auto}.zuz-sales__tabs .zuz-sales__tab{font-size:.77rem}}
+@media(prefers-reduced-motion:reduce){.zuz-sales__tabs .zuz-sales__tab{transition:none}}
