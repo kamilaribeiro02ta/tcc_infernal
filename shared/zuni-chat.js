@@ -12,7 +12,7 @@
   function open(options={}) {
     returnFocus=document.activeElement;context=options.context||context;
     panel.hidden=false;launcher.setAttribute("aria-expanded","true");
-    if(!messages.children.length)bubble("model","Oi! Sou a Zuni. Qual é a sua dúvida?");
+    // A saudação inicial vem da primeira resposta do assistente, sem duplicação no chat.
     if(options.message)ask(options.message);else input.focus();
   }
   function close(){panel.hidden=true;launcher.setAttribute("aria-expanded","false");if(returnFocus?.isConnected)returnFocus.focus();}
@@ -115,6 +115,7 @@
           const result=await api("actions/"+encodeURIComponent(action.id),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision})});
           showState(result.state);
           status.textContent=result.state==="completed"?"Produto salvo na sua conta.":"Ação cancelada.";
+           if(result.state==="completed" && window.location.pathname.toLowerCase().includes("/produtos/")) window.location.reload();
         }catch(error){feedback.textContent=error.message;buttons.forEach(b=>b.disabled=false);}
       });controls.append(button);
     }
