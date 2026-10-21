@@ -17,6 +17,7 @@ const pricing = require("../shared/pricing-core");
 const money = require("../shared/money");
 const {schemas,validateBody}=require("./validation");
 const {registerSalesInventory}=require("./sales-inventory");
+const {registerCalendarRoutes}=require("./calendar-routes");
 // O motor estatístico só é carregado ao consultar previsões;
 // falha nele não pode bloquear cadastro, login e sessão.
 const predictPrice = (...args) => require("../shared/price-prediction").predictPrice(...args);
@@ -520,6 +521,7 @@ function createApi() {
     res.status(201).json({ product:created });
   }));
   registerSalesInventory(router,{asyncRoute,getCompany});
+  registerCalendarRoutes(router,{asyncRoute,getCompany});
   registerSimulationRoutes(router,{asyncRoute,getCompany});
   router.use((err,req,res,_next)=>{
     console.error("Erro API ZUZ:",err.message);
