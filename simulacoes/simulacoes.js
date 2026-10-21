@@ -436,7 +436,6 @@
       }catch(error){status("Falha ao salvar: "+error.message,"error");}
       finally{E.saveSimulation.disabled=false;}
     });
-;
   }
   bindGuide();
   bind();
