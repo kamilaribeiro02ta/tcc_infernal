@@ -154,7 +154,7 @@
         card.append(node("small",integer(result.units)+" unidades · receita "+money(result.revenue)));
         card.append(node("small","Custo de produção ("+integer(result.units)+" un.): "+money(result.directCost*result.units)));
         card.append(node("small","Custos e taxas totais do período: "+money(result.periodCosts)));
-        card.append(node("small","Ponto de equilíbrio: "+(result.contributionMargin<=0?"não atingível":result.fixedTotal===0?"sem custos fixos considerados":integer(result.breakEvenUnits)+" un.")));
+        card.append(node("small","Unidades para pagar os custos do lote: "+(result.batchRecoveryUnits===null?"não atingível":integer(result.batchRecoveryUnits)+" un.")));
         const label=node("b","Resultado: "+money(result.profit));
         if(result.profit<0)label.classList.add("is-negative");
         card.append(label);
