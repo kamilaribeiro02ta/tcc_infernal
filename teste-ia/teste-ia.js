@@ -118,6 +118,7 @@
         const node=bubble(entry.role,entry.text);
         if(entry.role==="model")renderAnswer(node,entry.text);
       }
+      for(const action of data.actions||[])actionCard(action);
       suggestions.hidden=true;
       setMascote("idle");
       status.textContent="Conversa recuperada. Você pode continuar de onde parou.";
@@ -213,6 +214,37 @@
     return node;
   }
 
+  function actionCard(action) {
+    const card=document.createElement("div");card.className="bubble assistant ia-action-card";
+    const title=document.createElement("strong");title.textContent=action.kind==="create_product"?"Confirmar cadastro":"Confirmar alteração";
+    const details=document.createElement("p"),p=action.product;
+    const brl=value=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(value);
+    details.style.whiteSpace="pre-line";
+    details.textContent=`${p.name} · ${p.category}\n${p.costs.map(c=>`${c.name}: ${brl(c.value)}`).join("\n")}\nVenda: ${brl(p.salePrice)} · Margem desejada: ${p.targetMargin}%\nVolume mensal: ${p.units} unidades`;
+    const feedback=document.createElement("p");feedback.setAttribute("role","status");
+    const controls=document.createElement("div");controls.className="ia-action-controls";
+    card.append(title,details,controls,feedback);
+    const showState=state=>{
+      if(state==="pending")return;
+      controls.replaceChildren();feedback.textContent=state==="completed"?"Salvo na sua conta.":"Ação cancelada.";
+      if(state==="completed"){
+        const link=document.createElement("a");link.href="../produtos/produtos.html";link.textContent="Ver produtos";controls.append(link);
+      }
+    };
+    for(const [decision,label] of [["confirm",title.textContent],["cancel","Cancelar"]]){
+      const button=document.createElement("button");button.type="button";button.textContent=label;
+      button.addEventListener("click",async()=>{
+        const buttons=[...controls.querySelectorAll("button")];buttons.forEach(b=>b.disabled=true);
+        try{
+          const result=await api("actions/"+encodeURIComponent(action.id),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision})});
+          showState(result.state);
+          status.textContent=result.state==="completed"?"Produto salvo na sua conta.":"Ação cancelada.";
+        }catch(error){feedback.textContent=error.message;buttons.forEach(b=>b.disabled=false);}
+      });controls.append(button);
+    }
+    showState(action.state);messages.append(card);scrollBottom();
+  }
+
   async function ask(text) {
     text = String(text || "").trim();
     if (!text || busy) return;
@@ -244,11 +276,12 @@
       pending.classList.remove("ia-typing");
       pending.removeAttribute("aria-label");
       renderAnswer(pending, answer);
+      for(const action of data.actions||[])actionCard(action);
       setMascote("talking");
       mascotTimer = setTimeout(() => { setMascote("idle"); scheduleSleep(); }, 2800);
       history.push({ role: "user", text }, { role: "model", text: answer });
       history = history.slice(-20);
-      status.textContent = "Ambiente de testes: nenhuma alteração foi salva na sua empresa.";
+      status.textContent = "Cadastros e alterações só são salvos após sua confirmação no card.";
       scrollBottom();
     } catch (error) {
       setMascote("sleeping");

@@ -435,3 +435,11 @@ body.dark .bubble.assistant { background:#29292f; color:#f3f1fa; border-color:rg
   margin-top: 12px;
   line-height: 1.5;
 }
+
+.ia-action-card { width:min(96%,640px); }
+.ia-action-card > strong { display:block; margin-bottom:12px; }
+.ia-action-controls { display:flex; flex-wrap:wrap; gap:8px; }
+.ia-action-controls button,.ia-action-controls a { min-height:44px; padding:10px 16px; border:1px solid var(--ia-line); border-radius:10px; font:500 13px Poppins,sans-serif; cursor:pointer; background:var(--ia-surface);color:var(--ia-text);text-decoration:none; }
+.ia-action-controls button:first-child { background:#6a3df0; color:#fff; border-color:#6a3df0; }
+.ia-action-controls button:disabled { opacity:.6; cursor:wait; }
+.ia-action-controls :is(button,a):focus-visible { outline:2px solid var(--ia-accent); outline-offset:3px; }

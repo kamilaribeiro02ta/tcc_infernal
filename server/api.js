@@ -101,7 +101,7 @@ async function appendRecommendation(client, companyId, product, settings) {
 }
 function createApi() {
   const router = express.Router();
-  registerGeminiTestRoute(router, asyncRoute, getUser);
+  registerGeminiTestRoute(router, asyncRoute, getUser, {appendRecommendation});
   router.get("/health", asyncRoute(async (_req, res) => {
     res.setHeader("Cache-Control", "no-store");
     try{res.json(await require("./backend-status").health(query,provider));}

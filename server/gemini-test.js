@@ -1,5 +1,6 @@
 "use strict";
 
+const actions = require("./zuni-actions");
 const { randomUUID } = require("node:crypto");
 const { query, provider } = require("./database");
 let schemaReady = null;
@@ -36,7 +37,7 @@ function ensureHistorySchema() {
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta";
 const modelCache = {models:[],expires:0};
 const sleep = ms => new Promise(resolve => setTimeout(resolve,ms));
-const instructions = "Você é Zuni, a mascote e assistente virtual da ZUZ, sistema brasileiro de precificação para pequenos negócios. Quando perguntarem seu nome, apresente-se como Zuni de forma natural. Seja acessível, profissional e evite apresentações repetitivas. Responda em português do Brasil de modo claro e objetivo. Ajude com custos, despesas, margem e preços, explicando hipóteses e cálculos. Solicite os dados que faltarem. Nunca invente cotações de mercado ou alíquotas tributárias. Não alegue acesso ou capacidade de alterar cadastros, produtos e simulações.";
+const instructions = "Você é Zuni, a mascote e assistente virtual da ZUZ, sistema brasileiro de precificação para pequenos negócios. Quando perguntarem seu nome, apresente-se como Zuni de forma natural. Seja acessível, profissional e evite apresentações repetitivas. Responda em português do Brasil de modo claro e objetivo. Ajude com custos, despesas, margem e preços, explicando hipóteses e cálculos. Solicite os dados que faltarem. Nunca invente cotações de mercado ou alíquotas tributárias. Você pode consultar produtos, calcular preços e preparar cadastros e alterações usando EXCLUSIVAMENTE as ferramentas disponíveis. Ao receber pedido para cadastrar ou alterar, colete nome, categoria, ao menos dois custos unitários com nome e valor, preço de venda, margem desejada e volume mensal. Nunca invente dados, IDs ou custos e nunca use zero para preencher dados ausentes. Consulte produtos para obter IDs e dados antes de alterar. Não afirme que salvou: as ferramentas de escrita só preparam propostas e o usuário precisa confirmar no card. Quando faltarem dados, pergunte de forma curta e guiada. Não execute ações fora das ferramentas, não exclua produtos e não diga que pode salvar simulações por enquanto.";
 
 function candidatesFromList(models) {
   const eligible = models.filter(model =>
@@ -107,7 +108,7 @@ function errorMessage(result, exhaustedModels=false) {
   return "A API Gemini retornou HTTP "+(result?.status||"desconhecido")+". Verifique o acesso à API.";
 }
 
-function registerGeminiTestRoute(router, asyncRoute, getUser) {
+function registerGeminiTestRoute(router, asyncRoute, getUser, services = {}) {
   const auth = async (req,res) => {
     const user=await getUser(req);
     if (!user) {res.status(401).json({error:"Faça login na ZUZ."});return null;}
@@ -128,7 +129,7 @@ function registerGeminiTestRoute(router, asyncRoute, getUser) {
     const row=await query("SELECT id,title,created_at,updated_at FROM zuz_ai_conversations WHERE id=$1 AND user_id=$2",[req.params.id,user.id]);
     if(!row.rows[0])return res.status(404).json({error:"Conversa não encontrada."});
     const messages=await query("SELECT role,content AS text,created_at FROM zuz_ai_messages WHERE conversation_id=$1 ORDER BY created_at,id LIMIT 500",[req.params.id]);
-    res.json({conversation:row.rows[0],messages:messages.rows});
+    res.json({conversation:row.rows[0],messages:messages.rows,actions:await actions.listActions(user.id,req.params.id)});
   }));
   router.delete("/ai/conversations/:id",asyncRoute(async(req,res)=>{
     const user=await auth(req,res);if(!user)return;
@@ -136,6 +137,12 @@ function registerGeminiTestRoute(router, asyncRoute, getUser) {
     await ensureHistorySchema();
     await query("DELETE FROM zuz_ai_conversations WHERE id=$1 AND user_id=$2",[req.params.id,user.id]);
     res.json({ok:true});
+  }));
+  router.post("/ai/actions/:id",asyncRoute(async(req,res)=>{
+    res.setHeader("Cache-Control","no-store");
+    const user=await auth(req,res);if(!user)return;
+    const result=await actions.resolveAction(user.id,req.params.id,req.body?.decision,services.appendRecommendation);
+    res.json(result);
   }));
   router.post("/ai/test",asyncRoute(async (req,res)=>{
     res.setHeader("Cache-Control","no-store");
@@ -186,20 +193,58 @@ function registerGeminiTestRoute(router, asyncRoute, getUser) {
           body:JSON.stringify({
             systemInstruction:{parts:[{text:instructions}]},
             contents,
+            tools:[{functionDeclarations:actions.declarations}],
             generationConfig:{maxOutputTokens:700,temperature:0.4}
           })
         },remaining);
         if(result.ok){
-          const reply=(result.body.candidates?.[0]?.content?.parts||[]).map(p=>p.text||"").join("").trim();
-          if(reply){
+          const parts=result.body.candidates?.[0]?.content?.parts||[];
+          let reply=parts.map(p=>p.text||"").join("").trim();
+          const calls=parts.filter(p=>p.functionCall).map(p=>p.functionCall);
+          const proposals=[];
+          if(reply||calls.length){
             const id=requestedId||randomUUID();
             if(!requestedId){
               await query("INSERT INTO zuz_ai_conversations(id,user_id,title) VALUES($1,$2,$3)",[id,user.id,message.slice(0,116)]);
             }
+            if(calls.length){
+              let activeParts=parts;
+              const toolContents=[...contents];
+              for(let round=0;round<3;round++){
+                const activeCalls=activeParts.filter(p=>p.functionCall).map(p=>p.functionCall);
+                if(!activeCalls.length)break;
+                const outcomes=[],responses=[];
+                for(const call of activeCalls.slice(0,4)){
+                  let outcome;
+                  try{outcome=await actions.executeTool(call,user.id,id);}
+                  catch(error){outcome={reply:error.name==="ZodError"?"Faltam dados válidos para esta ação. Informe nome, categoria, dois custos unitários, preço de venda, margem e volume mensal. Nenhuma alteração foi salva.":error.status?error.message:"Não foi possível preparar esta ação. Nenhuma alteração foi confirmada."};}
+                  outcomes.push(outcome.reply);
+                  if(outcome.action)proposals.push(outcome.action);
+                  responses.push({functionResponse:{name:call.name,...(call.id?{id:call.id}:{}),response:outcome}});
+                }
+                reply=outcomes.join("\n\n");
+                // Uma consulta pode fornecer o ID para a próxima ferramenta na mesma mensagem.
+                // Propostas de escrita são apresentadas imediatamente para confirmação.
+                if(proposals.length||activeCalls.length>4||round===2||deadline-Date.now()<2200)break;
+                toolContents.push({role:"model",parts:activeParts},{role:"user",parts:responses});
+                try{
+                  const followup=await request(ENDPOINT+"/models/"+encodeURIComponent(model)+":generateContent",key,{
+                    method:"POST",headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify({systemInstruction:{parts:[{text:instructions}]},contents:toolContents,
+                      tools:[{functionDeclarations:actions.declarations}],generationConfig:{maxOutputTokens:700,temperature:0.4}})
+                  },Math.min(9500,deadline-Date.now()-350));
+                  if(!followup.ok)break;
+                  activeParts=followup.body.candidates?.[0]?.content?.parts||[];
+                  if(!activeParts.some(p=>p.functionCall)){
+                    reply=activeParts.map(p=>p.text||"").join("").trim()||reply;break;
+                  }
+                }catch{break;}
+              }
+            }
             await query("INSERT INTO zuz_ai_messages(id,conversation_id,role,content) VALUES($1,$2,$3,$4)",[randomUUID(),id,"user",message]);
             await query("INSERT INTO zuz_ai_messages(id,conversation_id,role,content) VALUES($1,$2,$3,$4)",[randomUUID(),id,"model",reply]);
             await query("UPDATE zuz_ai_conversations SET updated_at=CURRENT_TIMESTAMP WHERE id=$1 AND user_id=$2",[id,user.id]);
-            return res.json({reply,model,conversationId:id});
+            return res.json({reply,model,conversationId:id,actions:proposals});
           }
           last={status:502,body:{error:{message:"empty model response"}}};
           continue;
