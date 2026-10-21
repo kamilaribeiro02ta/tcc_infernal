@@ -150,3 +150,17 @@ CREATE TABLE IF NOT EXISTS zuz_sales (
  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_zuz_sales_company_date ON zuz_sales(company_id,sold_at DESC);
+
+
+CREATE TABLE IF NOT EXISTS zuz_calendar_events (
+ id TEXT PRIMARY KEY,
+ company_id TEXT NOT NULL REFERENCES zuz_companies(id) ON DELETE CASCADE,
+ title TEXT NOT NULL,
+ type TEXT NOT NULL CHECK(type IN ('compromisso','encomenda','lembrete','observacao')),
+ event_date TEXT NOT NULL,
+ event_time TEXT,
+ notes TEXT NOT NULL DEFAULT '',
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_zuz_calendar_company_date ON zuz_calendar_events(company_id,event_date);
