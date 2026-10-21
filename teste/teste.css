@@ -1794,4 +1794,4 @@ body:not(.dark) .closing-band a {
 /* Centralizar o texto de apresentação da ZUZ sem alterar os cards. */
 .manifesto-section{justify-items:center}
 .manifesto-copy{width:100%;max-width:1100px;margin-inline:auto;text-align:center}
-.manifesto-copy p{text-align:justify;text-align-last:justify;text-wrap:wrap;hyphens:auto}
+.manifesto-copy p{text-align:justify;text-align-last:left;text-wrap:wrap;hyphens:none;font-size:clamp(20px,2.1vw,30px);line-height:1.4}
