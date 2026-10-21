@@ -36,3 +36,8 @@ body.dark .zuni-mini{--zc-bg:#201c2a;--zc-text:#f3f1fa;--zc-muted:#c7c2db;--zc-l
   .sim .sim-assistant .sim-zuni-chat .zuni-inline .zuni-panel{height:390px;min-height:290px}
   .sim .sim-assistant .sim-zuni-chat .zuni-messages{padding:14px 0}
 }
+
+/* Identidade Zuni: marca vetorial no lugar da tipografia serifada. */
+.zuni-panel header .zuni-wordmark{display:block;width:105px;height:42px;max-width:100%;object-fit:contain;object-position:left center}
+body.dark .zuni-panel header .zuni-wordmark{filter:invert(1)}
+.zuni-panel header div small{margin-top:0}
