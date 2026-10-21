@@ -123,6 +123,10 @@ body.dark .zm-search-shell,html[data-theme="dark"] .zm-search-shell{--zm-purple:
 .zm-search-shell {
   animation: zuz-market-rise .65s cubic-bezier(.22,.61,.36,1) both;
 }
+/* Produtos: mesma entrada com deslocamento e blur dos demais painéis. */
+#marketSearchMountProducts .zm-search-shell {
+  animation: zuz-page-rise .72s cubic-bezier(.22,.61,.36,1) .18s both;
+}
 .zm-search-shell .zm-offer-row,
 .zm-search-shell .zm-catalog-item {
   animation: zuz-market-rise .4s cubic-bezier(.22,.61,.36,1) both;
