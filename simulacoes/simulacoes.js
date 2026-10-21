@@ -436,36 +436,7 @@
       }catch(error){status("Falha ao salvar: "+error.message,"error");}
       finally{E.saveSimulation.disabled=false;}
     });
-    E.aiForm.addEventListener("submit",async(event)=>{
-      event.preventDefault();
-      const message=E.aiInput.value.trim();
-      if(!message||!product()||!active())return;
-      E.askAI.disabled=true;E.aiInput.value="";E.aiProposal.hidden=true;E.aiProposal.replaceChildren();
-      appendChat(message,true);
-      try{
-        const response=await api.request("POST","/simulations/assistant",{message,
-          context:{productId:product().id,scenario:active(),references}});
-        appendChat(response.answer||"Não consegui analisar este cenário.",false,response.source);
-        if(response.proposal){
-          const suggestion=response.proposal;
-          E.aiProposal.hidden=false;
-          E.aiProposal.append(node("p","A ZUZ propôs preço de "+money(suggestion.price)+", volume de "+
-            integer(suggestion.units)+" un. e variação de custos de "+suggestion.changePct+
-            "% ("+(suggestion.changeMode==="fixed"?"custos fixos":"custos variáveis")+"). Deseja usar estes valores somente no cenário?"));
-          const targetId=selected;
-          const button=makeButton("Aplicar somente neste cenário",()=>{
-            const target=scenarios.find(s=>s.id===targetId);
-            if(!target)return;
-            target.price=suggestion.price;target.units=suggestion.units;
-            target.changePct=suggestion.changePct;target.changeMode=suggestion.changeMode;
-            selectScenario(targetId);E.aiProposal.hidden=true;
-            status("Proposta aplicada à simulação. Produto original preservado.","success");
-          });
-          button.className="workspace-primary";E.aiProposal.append(button);
-        }
-      }catch(error){appendChat("Não foi possível consultar a ZUZ: "+error.message);}
-      finally{E.askAI.disabled=false;}
-    });
+;
   }
   bindGuide();
   bind();
