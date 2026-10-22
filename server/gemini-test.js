@@ -191,7 +191,7 @@ function registerGeminiTestRoute(router, asyncRoute, getUser, services = {}) {
           method:"POST",
           headers:{"Content-Type":"application/json"},
           body:JSON.stringify({
-            systemInstruction:{parts:[{text:instructions+(requestedId?" Esta é a continuação de uma conversa: NÃO se apresente, não cumprimente e não recomece o atendimento.":" Esta é uma nova conversa: cumprimente brevemente uma única vez.")}]},
+            systemInstruction:{parts:[{text:instructions+" Data atual no fuso America/Sao_Paulo: "+new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit",weekday:"long"}).format(new Date())+". Ao interpretar sexta-feira, amanhã ou semana que vem, use essa data e confirme a data escolhida na proposta."+(requestedId?" Esta é a continuação de uma conversa: NÃO se apresente, não cumprimente e não recomece o atendimento.":" Esta é uma nova conversa: cumprimente brevemente uma única vez.")}]},
             contents,
             tools:[{functionDeclarations:actions.declarations}],
             generationConfig:{maxOutputTokens:700,temperature:0.4}
