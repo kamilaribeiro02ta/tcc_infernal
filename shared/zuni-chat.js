@@ -96,7 +96,7 @@
 
   function actionCard(action) {
     const card=document.createElement("div");card.className="bubble assistant ia-action-card";
-    const labels={create_product:"Confirmar cadastro",update_product:"Confirmar alteração",create_calendar:"Agendar evento",set_inventory:"Atualizar estoque",record_sale:"Registrar venda"};
+    const labels={create_product:"Confirmar cadastro",update_product:"Confirmar alteração",create_calendar:"Agendar evento",set_inventory:"Atualizar estoque",record_sale:"Registrar venda",update_company_settings:"Salvar configurações"};
     const title=document.createElement("strong");title.textContent=labels[action.kind]||"Confirmar ação";
     const details=document.createElement("p"),p=action.product||{};
     const brl=value=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(value);
@@ -107,6 +107,8 @@
       details.textContent=`${p.title}\nTipo: ${p.type}\nData: ${p.date}${p.time?" às "+p.time:""}${p.notes?"\n"+p.notes:""}`;
     }else if(action.kind==="set_inventory"){
       details.textContent=`${p.productName||p.productId}\nNovo estoque total: ${p.quantity} unidades`;
+    }else if(action.kind==="update_company_settings"){
+      details.textContent=Object.entries(p).map(([key,value])=>key+": "+String(value)).join("\n");
     }else if(action.kind==="record_sale"){
       details.textContent=`${p.productName||p.productId}\nQuantidade: ${p.quantity}\nPreço unitário: ${brl(p.unitPrice)}\nTotal: ${brl(p.quantity*p.unitPrice)}\nData: ${p.soldAt}\nA venda será descontada do estoque.`;
     }
