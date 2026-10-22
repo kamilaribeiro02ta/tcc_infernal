@@ -440,7 +440,7 @@
 
   function productVisual(product) {
     if (product.image) {
-      return '<img class="product-thumb" src="' + escapeHtml(product.image) + '" alt="">';
+      return '<img class="product-thumb" loading="lazy" decoding="async" src="' + escapeHtml(product.image) + '" alt="">';
     }
 
     return '<span class="product-thumb product-thumb-placeholder"><i class="bx bx-package"></i></span>';
