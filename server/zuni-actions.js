@@ -125,7 +125,7 @@ async function resolveAction(userId,id,decision,appendRecommendation){
   if(Date.now()-Date.parse(action.created_at)>86400000)fail(409,"Esta proposta expirou. Peça uma nova à Zuni.");
   const data=decode(action.payload);
   if(["create_calendar","set_inventory","record_sale","update_company_settings"].includes(action.kind)){
-   const p=action.kind==="create_calendar"?calendarSchema.parse(data.product):action.kind==="set_inventory"?stockSchema.parse(data.product):action.kind==="record_sale"?saleSchema.parse(data.product):settingsSchema.parse(data.product);
+   const p=action.kind==="create_calendar"?calendarSchema.parse(data.product):action.kind==="set_inventory"?stockSchema.strip().parse(data.product):action.kind==="record_sale"?saleSchema.strip().parse(data.product):settingsSchema.parse(data.product);
    let savedId=null;
    if(action.kind==="update_company_settings"){
     const fresh=(await client.query("SELECT * FROM zuz_companies WHERE id=$1 AND owner_id=$2"+(provider==="postgresql"?" FOR UPDATE":""),[company.id,userId])).rows[0];
