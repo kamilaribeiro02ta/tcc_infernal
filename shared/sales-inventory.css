@@ -225,3 +225,23 @@ body.dark .zuz-sales__records button:hover{background:#503b7b}
 
 /* Aba ativa: roxo oficial da identidade ZUZ no modo escuro. */
 body.dark .zuz-sales__tabs .zuz-sales__tab.is-active{background:#6a3df0;color:#fff;border:1px solid #8c6bff;box-shadow:0 3px 12px rgba(106,61,240,.22)}
+
+
+/* Cards de indicadores: contraste consistente no modo escuro. */
+body.dark .zuz-sales__metric,
+body.dark .zuz-sales__stock-overview > div {
+  background: #1e1832;
+  border-color: #453a60;
+  color: #f3f1fa;
+}
+body.dark .zuz-sales__metric span,
+body.dark .zuz-sales__metric small,
+body.dark .zuz-sales__stock-overview > div span {
+  color: #c7c2db;
+  opacity: 1;
+}
+body.dark .zuz-sales__metric strong,
+body.dark .zuz-sales__stock-overview > div strong {
+  color: #f3f1fa;
+  opacity: 1;
+}
