@@ -96,11 +96,20 @@
 
   function actionCard(action) {
     const card=document.createElement("div");card.className="bubble assistant ia-action-card";
-    const title=document.createElement("strong");title.textContent=action.kind==="create_product"?"Confirmar cadastro":"Confirmar alteração";
-    const details=document.createElement("p"),p=action.product;
+    const labels={create_product:"Confirmar cadastro",update_product:"Confirmar alteração",create_calendar:"Agendar evento",set_inventory:"Atualizar estoque",record_sale:"Registrar venda"};
+    const title=document.createElement("strong");title.textContent=labels[action.kind]||"Confirmar ação";
+    const details=document.createElement("p"),p=action.product||{};
     const brl=value=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(value);
     details.style.whiteSpace="pre-line";
-    details.textContent=`${p.name} · ${p.category}\n${p.costs.map(c=>`${c.name}: ${brl(c.value)}`).join("\n")}\nVenda: ${brl(p.salePrice)} · Margem desejada: ${p.targetMargin}%\nVolume mensal: ${p.units} unidades`;
+    if(["create_product","update_product"].includes(action.kind)){
+      details.textContent=`${p.name} · ${p.category}\n${(p.costs||[]).map(c=>`${c.name}: ${brl(c.value)}`).join("\n")}\nVenda: ${brl(p.salePrice)} · Margem desejada: ${p.targetMargin}%\nVolume mensal: ${p.units} unidades`;
+    }else if(action.kind==="create_calendar"){
+      details.textContent=`${p.title}\nTipo: ${p.type}\nData: ${p.date}${p.time?" às "+p.time:""}${p.notes?"\n"+p.notes:""}`;
+    }else if(action.kind==="set_inventory"){
+      details.textContent=`${p.productName||p.productId}\nNovo estoque total: ${p.quantity} unidades`;
+    }else if(action.kind==="record_sale"){
+      details.textContent=`${p.productName||p.productId}\nQuantidade: ${p.quantity}\nPreço unitário: ${brl(p.unitPrice)}\nTotal: ${brl(p.quantity*p.unitPrice)}\nData: ${p.soldAt}\nA venda será descontada do estoque.`;
+    }
     const feedback=document.createElement("p");feedback.setAttribute("role","status");
     const controls=document.createElement("div");controls.className="ia-action-controls";
     card.append(title,details,controls,feedback);
@@ -108,7 +117,7 @@
       if(state==="pending")return;
       controls.replaceChildren();feedback.textContent=state==="completed"?"Salvo na sua conta.":"Ação cancelada.";
       if(state==="completed"){
-        const link=document.createElement("a");link.href="/produtos/produtos.html";link.textContent="Ver produtos";controls.append(link);
+        const link=document.createElement("a");link.href=action.kind==="create_calendar"?"/garfico/grafico.html":"/produtos/produtos.html";link.textContent=action.kind==="create_calendar"?"Ver calendário":"Ver produtos";controls.append(link);
       }
     };
     for(const [decision,label] of [["confirm",title.textContent],["cancel","Cancelar"]]){
@@ -118,8 +127,8 @@
         try{
           const result=await api("actions/"+encodeURIComponent(action.id),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision})});
           showState(result.state);
-          status.textContent=result.state==="completed"?"Produto salvo na sua conta.":"Ação cancelada.";
-           if(result.state==="completed" && window.location.pathname.toLowerCase().includes("/produtos/")) window.location.reload();
+          status.textContent=result.state==="completed"?"Ação salva na sua conta.":"Ação cancelada.";
+           if(result.state==="completed" && (window.location.pathname.toLowerCase().includes("/produtos/")||window.location.pathname.toLowerCase().includes("/garfico/"))) window.location.reload();
         }catch(error){feedback.textContent=error.message;buttons.forEach(b=>b.disabled=false);}
       });controls.append(button);
     }
