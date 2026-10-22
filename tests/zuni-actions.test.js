@@ -102,6 +102,7 @@ test("Zuni: calendário, estoque e vendas exigem confirmação e respeitam a con
  const stock=await agent.post("/api/ai/test").send({message:"Configure estoque"}).expect(200);
  await agent.post("/api/ai/actions/"+stock.body.actions[0].id).send({decision:"confirm"}).expect(200);
  await agent.get("/api/company/inventory").expect(r=>assert.equal(Number(r.body.inventory[0].quantity),20));
+ // Confirmação de proposta inclui productName para exibição no cartão; esse metadado não pode impedir o salvamento.
  nextCall={name:"record_sale",args:{productId,quantity:5,unitPrice:5,soldAt:"2026-11-02"}};
  const sale=await agent.post("/api/ai/test").send({message:"Registre cinco vendidos"}).expect(200);
  await agent.post("/api/ai/actions/"+sale.body.actions[0].id).send({decision:"cancel"}).expect(200);
