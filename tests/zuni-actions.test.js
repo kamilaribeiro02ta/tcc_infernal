@@ -80,3 +80,34 @@ test("Zuni: cadastra custo unitário agregado sem inventar ingredientes",async()
    assert.equal(r.body.products[0].additionalCosts[0].value,0.6);
  });
 });
+
+test("Zuni: calendário, estoque e vendas exigem confirmação e respeitam a conta",async()=>{
+ const agent=request.agent(app),other=request.agent(app);
+ await agent.post("/api/auth/signup").send({name:"Teste Operação",email:"operacao@zuni.test",password:"SenhaTeste123!"}).expect(201);
+ await agent.put("/api/company").send({name:"Doceria",operationType:"producao"}).expect(200);
+ await other.post("/api/auth/signup").send({name:"Outra Conta",email:"outra@zuni.test",password:"SenhaTeste123!"}).expect(201);
+ await other.put("/api/company").send({name:"Outra Doceria",operationType:"producao"}).expect(200);
+ nextCall={name:"create_product",args:product};
+ const register=await agent.post("/api/ai/test").send({message:"Cadastre brigadeiro"}).expect(200);
+ const confirmed=await agent.post("/api/ai/actions/"+register.body.actions[0].id).send({decision:"confirm"}).expect(200);
+ const productId=confirmed.body.productId;
+ nextCall={name:"create_calendar",args:{title:"Entrega de bolo",type:"encomenda",date:"2026-11-02",time:"14:00",notes:"Pedido confirmado"}};
+ const calendar=await agent.post("/api/ai/test").send({message:"Agende entrega"}).expect(200);
+ const event=calendar.body.actions[0];assert.equal(event.kind,"create_calendar");
+ await other.post("/api/ai/actions/"+event.id).send({decision:"confirm"}).expect(404);
+ await agent.get("/api/company/calendar?start=2026-11-01&end=2026-11-30").expect(r=>assert.equal(r.body.events.length,0));
+ await agent.post("/api/ai/actions/"+event.id).send({decision:"confirm"}).expect(200);
+ await agent.get("/api/company/calendar?start=2026-11-01&end=2026-11-30").expect(r=>assert.equal(r.body.events.length,1));
+ nextCall={name:"set_inventory",args:{productId,quantity:20}};
+ const stock=await agent.post("/api/ai/test").send({message:"Configure estoque"}).expect(200);
+ await agent.post("/api/ai/actions/"+stock.body.actions[0].id).send({decision:"confirm"}).expect(200);
+ await agent.get("/api/company/inventory").expect(r=>assert.equal(Number(r.body.inventory[0].quantity),20));
+ nextCall={name:"record_sale",args:{productId,quantity:5,unitPrice:5,soldAt:"2026-11-02"}};
+ const sale=await agent.post("/api/ai/test").send({message:"Registre cinco vendidos"}).expect(200);
+ await agent.post("/api/ai/actions/"+sale.body.actions[0].id).send({decision:"cancel"}).expect(200);
+ await agent.get("/api/company/inventory").expect(r=>assert.equal(Number(r.body.inventory[0].quantity),20));
+ const sale2=await agent.post("/api/ai/test").send({message:"Registre cinco vendidos"}).expect(200);
+ await agent.post("/api/ai/actions/"+sale2.body.actions[0].id).send({decision:"confirm"}).expect(200);
+ await agent.get("/api/company/inventory").expect(r=>{assert.equal(Number(r.body.inventory[0].quantity),15);assert.equal(r.body.sales.length,1);});
+ await other.get("/api/company/inventory").expect(r=>assert.equal(r.body.sales.length,0));
+});
