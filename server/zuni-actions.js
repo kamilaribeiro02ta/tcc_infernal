@@ -11,6 +11,7 @@ const productSchema=z.object({name:z.string().trim().min(1).max(180),category:z.
 
 const day=z.string().regex(/^20\d{2}-(0[1-9]|1[0-2])-([0-2]\d|3[01])$/).refine(v=>!Number.isNaN(Date.parse(v+"T12:00:00Z"))&&new Date(v+"T12:00:00Z").toISOString().slice(0,10)===v,"Data inválida");
 const calendarSchema=z.object({title:z.string().trim().min(1).max(160),type:z.enum(["compromisso","encomenda","lembrete","observacao"]),date:day,time:z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).optional(),notes:z.string().max(3000).optional()}).strict();
+const settingsSchema=z.object({segment:z.string().trim().max(120).optional(),operationType:z.enum(["producao","revenda","servico","misto"]).optional(),positioning:z.enum(["preco","mercado","diferenciacao"]).optional(),targetCustomer:z.string().trim().max(500).optional(),monthlyUnits:z.number().int().min(1).max(1000000000).optional(),taxesPct:z.number().finite().min(0).max(99).optional(),sellingFeesPct:z.number().finite().min(0).max(99).optional(),defaultMargin:z.number().finite().min(0).max(90).optional()}).strict().refine(x=>Object.keys(x).length>0,"Informe uma mudança.");
 const stockSchema=z.object({productId:z.string().uuid(),quantity:z.number().int().min(0).max(1000000000)}).strict();
 const saleSchema=z.object({productId:z.string().uuid(),quantity:z.number().int().min(1).max(1000000000),unitPrice:amount.positive(),soldAt:day}).strict();
 const calendarProperties={title:{type:"STRING"},type:{type:"STRING",enum:["compromisso","encomenda","lembrete","observacao"]},date:{type:"STRING",description:"Data YYYY-MM-DD; informe data explícita, não invente datas relativas sem contexto confiável"},time:{type:"STRING",description:"Hora HH:mm opcional"},notes:{type:"STRING"}};
@@ -18,7 +19,7 @@ const recordProposal=async(kind,product,company,userId,conversationId,extra={})=
  await ensureSchema();
  const id=randomUUID(),payload={product,...extra};
  await query("INSERT INTO zuz_ai_actions(id,user_id,company_id,conversation_id,kind,payload,created_at) VALUES($1,$2,$3,$4,$5,$6,$7)",[id,userId,company.id,conversationId,kind,JSON.stringify(payload),new Date().toISOString()]);
- return {reply:"Preparei a ação de "+({create_calendar:"calendário",set_inventory:"estoque",record_sale:"venda"}[kind]||"cadastro")+". Confira todos os detalhes e confirme no card antes de salvar.",action:{id,kind,product,state:"pending"}};
+ return {reply:"Preparei a ação de "+({create_calendar:"calendário",set_inventory:"estoque",record_sale:"venda",update_company_settings:"configurações da empresa"}[kind]||"cadastro")+". Confira todos os detalhes e confirme no card antes de salvar.",action:{id,kind,product,state:"pending"}};
 };
 const properties={name:{type:"STRING"},category:{type:"STRING"},costs:{type:"ARRAY",description:"Um ou mais custos unitários confirmados pelo usuário. Aceite custo agregado por unidade (total do lote dividido pela quantidade), sem inventar divisão entre ingredientes.",items:{type:"OBJECT",properties:{name:{type:"STRING"},value:{type:"NUMBER"}},required:["name","value"]}},salePrice:{type:"NUMBER"},targetMargin:{type:"NUMBER"},units:{type:"INTEGER",description:"Volume mensal estimado informado pelo usuário"}};
 const productParameters={type:"OBJECT",properties,required:Object.keys(properties)};
@@ -26,6 +27,8 @@ const declarations=[
  {name:"list_products",description:"Consulta produtos da conta logada; use para encontrar o ID antes de alterar um produto.",parameters:{type:"OBJECT",properties:{search:{type:"STRING"}},required:[]}},
  {name:"create_product",description:"Prepara cadastro com custos unitários confirmados, inclusive um custo agregado; preço, margem e volume podem ser sugestões explicitamente aprovadas pelo usuário. Só salva após confirmação no card.",parameters:productParameters},
  {name:"update_product",description:"Prepara alteração de um produto existente. Consulte o ID e preserve dados não alterados. Só salva após confirmação.",parameters:{type:"OBJECT",properties:{productId:{type:"STRING"},product:productParameters},required:["productId","product"]}},
+ {name:"get_company_settings",description:"Consulta configurações atuais da empresa do usuário, incluindo margem, taxas, posicionamento e público-alvo.",parameters:{type:"OBJECT",properties:{},required:[]}},
+ {name:"update_company_settings",description:"Prepara alteração parcial de configurações da empresa. Só modifica os campos explicitamente informados e aprovados. Exige confirmação em card antes de salvar.",parameters:{type:"OBJECT",properties:{segment:{type:"STRING"},operationType:{type:"STRING",enum:["producao","revenda","servico","misto"]},positioning:{type:"STRING",enum:["preco","mercado","diferenciacao"]},targetCustomer:{type:"STRING"},monthlyUnits:{type:"INTEGER"},taxesPct:{type:"NUMBER"},sellingFeesPct:{type:"NUMBER"},defaultMargin:{type:"NUMBER"}},required:[]}},
  {name:"list_inventory",description:"Consulta estoque real da conta. Para definir estoque, primeiro consulte produto pelo ID.",parameters:{type:"OBJECT",properties:{search:{type:"STRING"}},required:[]}},
  {name:"list_calendar",description:"Consulta compromissos, encomendas e lembretes existentes em um período. Não escreve.",parameters:{type:"OBJECT",properties:{start:{type:"STRING"},end:{type:"STRING"}},required:["start","end"]}},
  {name:"create_calendar",description:"Prepara novo compromisso, encomenda, lembrete ou observação no calendário. Não salva sem confirmação; peça data exata se ambígua.",parameters:{type:"OBJECT",properties:calendarProperties,required:["title","type","date"]}},
@@ -62,6 +65,16 @@ async function executeTool(call,userId,conversationId){
   return {reply:`Cálculo ZUZ com as configurações da sua empresa:\nPreço sugerido: R$ ${result.suggestedPrice.toFixed(2)}\nCusto unitário: R$ ${result.unitBaseCost.toFixed(2)}\nResultado unitário: R$ ${result.unitProfit.toFixed(2)}\nNenhum cadastro foi alterado.`};
  }
 
+
+ if(call.name==="get_company_settings"){
+  z.object({}).strict().parse(args);
+  return {reply:"Configurações atuais da sua empresa:\n"+JSON.stringify({name:company.name,segment:company.segment,operationType:company.operation_type,settings:company.settings||{}},null,2)};
+ }
+ if(call.name==="update_company_settings"){
+  const changes=settingsSchema.parse(args);
+  const original=JSON.stringify({settings:company.settings||{},segment:company.segment,operationType:company.operation_type});
+  return recordProposal(call.name,changes,company,userId,conversationId,{original});
+ }
  if(call.name==="list_inventory"){
   const {search=""}=z.object({search:z.string().max(180).optional()}).strict().parse(args);
   const result=await query("SELECT p.id,p.name,COALESCE(i.quantity,0) AS quantity FROM zuz_products p LEFT JOIN zuz_inventory i ON i.product_id=p.id AND i.company_id=p.company_id WHERE p.company_id=$1 ORDER BY p.name LIMIT 500",[company.id]);
@@ -111,10 +124,16 @@ async function resolveAction(userId,id,decision,appendRecommendation){
   }
   if(Date.now()-Date.parse(action.created_at)>86400000)fail(409,"Esta proposta expirou. Peça uma nova à Zuni.");
   const data=decode(action.payload);
-  if(["create_calendar","set_inventory","record_sale"].includes(action.kind)){
-   const p=action.kind==="create_calendar"?calendarSchema.parse(data.product):action.kind==="set_inventory"?stockSchema.parse(data.product):saleSchema.parse(data.product);
+  if(["create_calendar","set_inventory","record_sale","update_company_settings"].includes(action.kind)){
+   const p=action.kind==="create_calendar"?calendarSchema.parse(data.product):action.kind==="set_inventory"?stockSchema.parse(data.product):action.kind==="record_sale"?saleSchema.parse(data.product):settingsSchema.parse(data.product);
    let savedId=null;
-   if(action.kind==="create_calendar"){
+   if(action.kind==="update_company_settings"){
+    const fresh=(await client.query("SELECT * FROM zuz_companies WHERE id=$1 AND owner_id=$2"+(provider==="postgresql"?" FOR UPDATE":""),[company.id,userId])).rows[0];
+    if(!fresh||JSON.stringify({settings:fresh.settings||{},segment:fresh.segment,operationType:fresh.operation_type})!==data.original)fail(409,"As configurações mudaram desde a proposta. Peça uma nova à Zuni.");
+    const settings=pricing.normalize({...fresh.settings,...p,segment:p.segment??fresh.segment,operationType:p.operationType??fresh.operation_type});
+    if(settings.taxesPct+settings.sellingFeesPct+settings.defaultMargin>=100)fail(400,"Taxas, tarifas e margem padrão precisam somar menos de 100%.");
+    await client.query("UPDATE zuz_companies SET settings=$1::jsonb,segment=$2,operation_type=$3,updated_at=NOW() WHERE id=$4 AND owner_id=$5",[JSON.stringify(settings),p.segment??fresh.segment,p.operationType??fresh.operation_type,company.id,userId]);
+   }else    if(action.kind==="create_calendar"){
     savedId=randomUUID();
     await client.query("INSERT INTO zuz_calendar_events(id,company_id,title,type,event_date,event_time,notes) VALUES($1,$2,$3,$4,$5,$6,$7)",[savedId,company.id,p.title,p.type,p.date,p.time||null,p.notes||""]);
    }else{
