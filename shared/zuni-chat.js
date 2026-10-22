@@ -119,7 +119,7 @@
       if(state==="pending")return;
       controls.replaceChildren();feedback.textContent=state==="completed"?"Salvo na sua conta.":"Ação cancelada.";
       if(state==="completed"){
-        const link=document.createElement("a");link.href=action.kind==="create_calendar"?"/garfico/grafico.html":"/produtos/produtos.html";link.textContent=action.kind==="create_calendar"?"Ver calendário":"Ver produtos";controls.append(link);
+        const link=document.createElement("a");link.href=action.kind==="create_calendar"?"/garfico/grafico.html":action.kind==="update_company_settings"?"/perfil/perfil.html":"/produtos/produtos.html";link.textContent=action.kind==="create_calendar"?"Ver calendário":action.kind==="update_company_settings"?"Ver configurações":"Ver produtos";controls.append(link);
       }
     };
     for(const [decision,label] of [["confirm",title.textContent],["cancel","Cancelar"]]){
