@@ -328,7 +328,7 @@ function createApi() {
     if (!company) return res.json({ company:null, categories:[], products:[] });
     const [categories,products]=await Promise.all([
       query("SELECT id,label,cost_type,unit FROM zuz_cost_categories WHERE company_id=$1 ORDER BY label",[company.id]),
-      query("SELECT * FROM zuz_products WHERE company_id=$1 ORDER BY created_at DESC",[company.id])
+      query(provider === "postgresql" ? "SELECT payload FROM zuz_products WHERE company_id=$1 ORDER BY created_at DESC" : "SELECT * FROM zuz_products WHERE company_id=$1 ORDER BY created_at DESC",[company.id])
     ]);
     res.json({ company, categories:categories.rows, products:products.rows.map(row=>row.payload && Object.keys(row.payload).length ? row.payload : row) });
   }));
